@@ -1,0 +1,14 @@
+API LINKS:
+  * API v1  https://shikimori.one/api/doc/1.0
+  * API v2  https://shikimori.one/api/doc/2.0 
+  * OAuth2  https://shikimori.one/oauth
+
+=== OAuth APP :: PUBLIC INFO ===
+  URL:
+    - https://shikimori.one/oauth/applications/15
+  NAME:
+    - Api Test
+  CLIENT ID:
+    - bce7ad35b631293ff006be882496b29171792c8839b5094115268da7a97ca34c
+  CLIENT SECRET:
+    - 811459eada36b14ff0cf0cc353f8162e72a7d6e6c7930b647a5c587d1beffe68
