@@ -11,32 +11,45 @@ import (
 )
 
 var (
-  applic = "Api Test"
-  bearer = "Bearer " + parseToken()
+  bearer    = "Bearer " + parseToken()
+  url_shiki = "https://shikimori.one/api/users/whoami"
 )
 
 func parseToken() string {
-  err := godotenv.Load(".env")
+  err := godotenv.Load("config.env")
   if err != nil {
-    log.Fatal("Not found .env file")
+    log.Fatal("Not found config.env")
   }
 
   result := os.Getenv("ACCESS_TOKEN")
   if result == "" {
-    log.Fatal("ACCESS TOKEN not found")
+    log.Fatal("Not found ACCESS_TOKEN")
   }
 
   return result
 }
 
-func main() {
+func parseApplication() string {
+  err := godotenv.Load("config.env")
+  if err != nil {
+    log.Fatal("Not found config.env")
+  }
+
+  result := os.Getenv("APP_NAME")
+  if result == "" {
+    log.Fatal("Not found APP_NAME")
+  }
+
+  return result
+}
+
+func exampleRequest() map[string]interface{} {
   var result map[string]interface{}
-  var URL_SHIKIMORI = "https://shikimori.one/api/users/whoami"
 
   client := http.Client{}
 
-  req, err := http.NewRequest("GET", URL_SHIKIMORI, nil)
-  req.Header.Add("User-Agent", applic)
+  req, err := http.NewRequest("GET", url_shiki, nil)
+  req.Header.Add("User-Agent", parseApplication())
   req.Header.Add("Authorization", bearer)
   if err != nil {
     log.Fatal(err)
@@ -48,5 +61,9 @@ func main() {
   }
 
   json.NewDecoder(resp.Body).Decode(&result)
-  fmt.Println(result)
+  return result
+}
+
+func main() {
+  fmt.Println(exampleRequest())
 }
