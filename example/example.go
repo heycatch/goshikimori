@@ -10,10 +10,14 @@ import (
   "github.com/joho/godotenv"
 )
 
-var (
-  bearer    = "Bearer " + parseToken()
-  url_shiki = "https://shikimori.one/api/users/whoami"
+const (
+  bearer   = "Bearer "
+  orig_url = "https://shikimori.one/api/"
 )
+
+type TestApiVerOne struct {
+  Test_conn string `json:"users/whoami"`
+}
 
 func parseToken() string {
   err := godotenv.Load("config.env")
@@ -43,10 +47,10 @@ func parseApplication() string {
   return result
 }
 
-func exampleRequest() ([]byte, error) {
-  req, err := http.NewRequest("GET", url_shiki, nil)
+func exampleRequest(input TestApiVerOne) ([]byte, error) {
+  req, err := http.NewRequest("GET", orig_url+input.Test_conn, nil)
   req.Header.Add("User-Agent", parseApplication())
-  req.Header.Add("Authorization", bearer)
+  req.Header.Add("Authorization", bearer+parseToken())
   if err != nil {
     log.Fatal(err)
   }
@@ -61,8 +65,14 @@ func exampleRequest() ([]byte, error) {
   return ioutil.ReadAll(resp.Body)
 }
 
+func (a TestApiVerOne) String() string {
+  return fmt.Sprintf("%s", a.Test_conn)
+}
+
 func main() {
-  result, err := exampleRequest()
+  tc := TestApiVerOne{Test_conn:"users/whoami"}
+
+  result, err := exampleRequest(tc)
   if err != nil {
     log.Fatal(err)
   }
