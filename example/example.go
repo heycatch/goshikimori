@@ -5,7 +5,7 @@ import (
   "fmt"
   "net/http"
   "log"
-  "encoding/json"
+  "io/ioutil"
 
   "github.com/joho/godotenv"
 )
@@ -43,11 +43,7 @@ func parseApplication() string {
   return result
 }
 
-func exampleRequest() map[string]interface{} {
-  var result map[string]interface{}
-
-  client := http.Client{}
-
+func exampleRequest() ([]byte, error) {
   req, err := http.NewRequest("GET", url_shiki, nil)
   req.Header.Add("User-Agent", parseApplication())
   req.Header.Add("Authorization", bearer)
@@ -55,15 +51,21 @@ func exampleRequest() map[string]interface{} {
     log.Fatal(err)
   }
 
+  client := &http.Client{}
   resp, err := client.Do(req)
   if err != nil {
     log.Fatal(err)
   }
+  defer resp.Body.Close()
 
-  json.NewDecoder(resp.Body).Decode(&result)
-  return result
+  return ioutil.ReadAll(resp.Body)
 }
 
 func main() {
-  fmt.Println(exampleRequest())
+  result, err := exampleRequest()
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  fmt.Println(string(result))
 }
