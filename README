@@ -1,3 +1,0 @@
-* Change ACCESS_TOKEN and REFRESH_TOKEN in Makefile
-  - Check connection: make test
-  - Refresh token: make refresh
