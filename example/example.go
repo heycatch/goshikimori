@@ -15,8 +15,22 @@ const (
   orig_url = "https://shikimori.one/api/"
 )
 
-type TestApiVerOne struct {
+type TestApi struct {
   Test_conn string `json:"users/whoami"`
+}
+
+type AnimesApi struct {
+  Animes string `json:"animes/"`
+  Id     string `json:":id/"`
+  OtherAnimes struct {
+    Roles          string `json:"roles"`
+    Similar        string `json:"similar"`
+    Related        string `json:"related"`
+    Screenshots    string `json:"screenshots"`
+    Franchise      string `json:"franchise"`
+    External_links string `json:"external_link"`
+    Topics         string `json:"topics"`
+  }
 }
 
 func parseToken() string {
@@ -47,8 +61,12 @@ func parseApplication() string {
   return result
 }
 
-func exampleRequest(input TestApiVerOne) ([]byte, error) {
-  req, err := http.NewRequest("GET", orig_url+input.Test_conn, nil)
+func exampleRequest(input AnimesApi) ([]byte, error) {
+  req, err := http.NewRequest("GET", orig_url+input.
+    Animes+input.Id+input.OtherAnimes.Roles+input.
+    OtherAnimes.Similar+input.OtherAnimes.Related+input.
+    OtherAnimes.Screenshots+input.OtherAnimes.Franchise+input.
+    OtherAnimes.External_links+input.OtherAnimes.Topics, nil)
   req.Header.Add("User-Agent", parseApplication())
   req.Header.Add("Authorization", bearer+parseToken())
   if err != nil {
@@ -65,14 +83,22 @@ func exampleRequest(input TestApiVerOne) ([]byte, error) {
   return ioutil.ReadAll(resp.Body)
 }
 
-func (a TestApiVerOne) String() string {
+func (a TestApi) StringTest() string {
   return fmt.Sprintf("%s", a.Test_conn)
 }
 
-func main() {
-  tc := TestApiVerOne{Test_conn:"users/whoami"}
+func (n AnimesApi) StringAnimes() string {
+  return fmt.Sprintf("%s %s %s %s %s %s %s %s %s", n.Animes, n.Id,
+    n.OtherAnimes.Roles, n.OtherAnimes.Similar,
+    n.OtherAnimes.Related, n.OtherAnimes.Screenshots,
+    n.OtherAnimes.Franchise, n.OtherAnimes.External_links,
+    n.OtherAnimes.Topics)
+}
 
-  result, err := exampleRequest(tc)
+func main() {
+  gg := AnimesApi{Animes:"animes/", Id:"24/"}
+  gg.OtherAnimes.Topics = "topics"
+  result, err := exampleRequest(gg)
   if err != nil {
     log.Fatal(err)
   }
