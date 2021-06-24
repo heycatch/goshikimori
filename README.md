@@ -1,4 +1,6 @@
-# goshiki API for golang
+<div align="center">
+  <h1>goshik api for golang</h1>
+</div>
 
 ## Foreword
 - Work with API occurs only through OAuth2.
