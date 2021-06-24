@@ -9,8 +9,10 @@ API LINKS:
 === OAuth APP :: PUBLIC INFO ===
   URL:
     - https://shikimori.one/oauth/applications/15
-  NAME:
+  NAME APPLICATION:
     - Api Test
+  TOKEN:
+    - Generate private token on OAuth2 page
   CLIENT ID:
     - bce7ad35b631293ff006be882496b29171792c8839b5094115268da7a97ca34c
   CLIENT SECRET:

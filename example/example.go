@@ -12,7 +12,9 @@ import (
 
 const (
   bearer   = "Bearer "
-  orig_url = "https://shikimori.one/api/"
+  urlOrig  = "%s://%s"
+  protocol = "https"
+  urlShiki = "shikimori.one/api/"
 )
 
 type TestApi struct {
@@ -62,11 +64,12 @@ func parseApplication() string {
 }
 
 func exampleRequest(input AnimesApi) ([]byte, error) {
-  req, err := http.NewRequest("GET", orig_url+input.
-    Animes+input.Id+input.OtherAnimes.Roles+input.
-    OtherAnimes.Similar+input.OtherAnimes.Related+input.
-    OtherAnimes.Screenshots+input.OtherAnimes.Franchise+input.
-    OtherAnimes.External_links+input.OtherAnimes.Topics, nil)
+  req, err := http.NewRequest("GET", fmt.Sprintf(urlOrig,
+    protocol, urlShiki)+input.Animes+input.Id+input.
+    OtherAnimes.Roles+input.OtherAnimes.Similar+input.
+    OtherAnimes.Related+input.OtherAnimes.Screenshots+input.
+    OtherAnimes.Franchise+input.OtherAnimes.External_links+input.
+    OtherAnimes.Topics, nil)
   req.Header.Add("User-Agent", parseApplication())
   req.Header.Add("Authorization", bearer+parseToken())
   if err != nil {
@@ -96,7 +99,7 @@ func (n AnimesApi) StringAnimes() string {
 }
 
 func main() {
-  gg := AnimesApi{Animes:"animes/", Id:"24/"}
+  gg := AnimesApi{Animes:"animes/", Id:"22/"}
   gg.OtherAnimes.Topics = "topics"
   result, err := exampleRequest(gg)
   if err != nil {
