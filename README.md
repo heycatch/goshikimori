@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>goshik api for golang</h1>
+  <h1>shikimori.one api for golang</h1>
 </div>
 
 ## Foreword
@@ -12,9 +12,9 @@
 
 ## Makefile
 - First step:
-  * Add app "User-Agent: APPLICATION_NAME_HER"
-  * Add access token "Authorization: Bearer ACCEESS_TOKEN_HER"
-  * Add refresh token refresh_token="REFREHS_TOKEN_HER"
+  * Add app "User-Agent: `APPLICATION_NAME_HER`"
+  * Add access token "Authorization: Bearer `ACCEESS_TOKEN_HER`"
+  * Add refresh token refresh_token="`REFREHS_TOKEN_HER`"
 - Second step:
   * make test (check test connection)
   * make refresh (refresh access token)

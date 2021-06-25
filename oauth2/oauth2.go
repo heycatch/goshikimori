@@ -18,8 +18,8 @@ const (
   urlShiki     = "shikimori.one/api/"
 )
 
-func NewRequest(input api.Animes) ([]byte, error) {
-  req, err := http.NewRequest("GET", fmt.Sprintf(urlOrig,
+func NewRequest(method string, input api.Animes) ([]byte, error) {
+  req, err := http.NewRequest(method, fmt.Sprintf(urlOrig,
     protocol, urlShiki)+input.Animes+"/"+input.Id+"/"+input.
     Other.Roles+"/"+input.Other.Similar+"/"+input.
     Other.Related+"/"+input.Other.Screenshots+"/"+input.

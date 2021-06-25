@@ -18,8 +18,8 @@ type Animes struct {
 }
 
 func (a Animes) StringAnimes() string {
-  return fmt.Sprintf("%s %s %s %s %s %s %s %s %s", a.Animes, a.Id,
-    a.Other.Roles, a.Other.Similar,
+  return fmt.Sprintf("%s %s %s %s %s %s %s %s %s",
+    a.Animes, a.Id, a.Other.Roles, a.Other.Similar,
     a.Other.Related, a.Other.Screenshots,
     a.Other.Franchise, a.Other.External_links,
     a.Other.Topics)
