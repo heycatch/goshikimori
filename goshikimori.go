@@ -1,12 +1,13 @@
-package oauth2
+package main
 
 import (
   "fmt"
   "log"
   "net/http"
   "io/ioutil"
+  "strings"
 
-  "goshiki/api"
+  "goshikimori/api"
 )
 
 const (
@@ -18,13 +19,14 @@ const (
   urlShiki     = "shikimori.one/api/"
 )
 
-func NewRequest(method string, input api.Animes) ([]byte, error) {
-  req, err := http.NewRequest(method, fmt.Sprintf(urlOrig,
-    protocol, urlShiki)+input.Animes+"/"+input.Id+"/"+input.
-    Other.Roles+"/"+input.Other.Similar+"/"+input.
-    Other.Related+"/"+input.Other.Screenshots+"/"+input.
-    Other.Franchise+"/"+input.Other.External_links+"/"+input.
-    Other.Topics, nil)
+func Parameters(s ...string) string {
+  p := strings.Join(s, "/")
+  return p
+}
+
+func NewRequest(method, input string) ([]byte, error) {
+  req, err := http.NewRequest(
+    method, fmt.Sprintf(urlOrig, protocol, urlShiki)+input, nil)
   req.Header.Add("User-Agent", oauth_app)
   req.Header.Add("Authorization", bearer+access_token)
   if err != nil {
@@ -39,4 +41,15 @@ func NewRequest(method string, input api.Animes) ([]byte, error) {
   defer resp.Body.Close()
 
   return ioutil.ReadAll(resp.Body)
+}
+
+func main() {
+  result, err := NewRequest(
+    "GET",
+    Parameters(api.Animes, api.FoundID("24"), api.Similar),
+  )
+  if err != nil {
+    log.Fatal(err)
+  }
+  fmt.Println(string(result))
 }
