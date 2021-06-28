@@ -138,11 +138,6 @@ const (
   User_images = "user_images"
 )
 
-// User rates section
-const (
-  User_rates = "user_rates" // DEPRECATED
-)
-
 // Users section
 const (
   Users           = "users"
