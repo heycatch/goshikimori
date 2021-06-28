@@ -6,8 +6,6 @@ import (
   "net/http"
   "io/ioutil"
   "strings"
-
-  "github.com/vexilology/goshikimori/api"
 )
 
 const (
