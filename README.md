@@ -3,7 +3,7 @@
 </div>
 
 ## Foreword
-- Work with API occurs only through OAuth2.
+Work with API occurs only through OAuth2.
 
 ## Documentation
 * API v1 https://shikimori.one/api/doc/1.0
@@ -11,7 +11,7 @@
 * OAuth2 https://shikimori.one/oauth
 
 ## Install
-- go get github.com/vexilology/goshikimori
+go get github.com/vexilology/goshikimori
 
 ## Example
 ``` golang

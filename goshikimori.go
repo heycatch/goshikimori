@@ -1,4 +1,4 @@
-package main
+package goshikimori
 
 import (
   "fmt"
@@ -7,7 +7,7 @@ import (
   "io/ioutil"
   "strings"
 
-  "goshikimori/api"
+  "github.com/vexilology/goshikimori/api"
 )
 
 const (
@@ -39,17 +39,4 @@ func NewRequest(oauth2, access_token, method, input string) ([]byte, error) {
   defer resp.Body.Close()
 
   return ioutil.ReadAll(resp.Body)
-}
-
-func main() {
-  result, err := NewRequest(
-    "APP_NAME",
-    "ACCESS_TOKEN",
-    "GET",
-    Parameters(api.Users, api.FoundID("ID"), api.Friends),
-  )
-  if err != nil {
-    log.Fatal(err)
-  }
-  fmt.Println(string(result))
 }
