@@ -22,12 +22,14 @@ import (
   "log"
 
   "github.com/vexilology/goshikimori"
+  "github.com/vexilology/goshikimori/api"
 )
 
 func main() {
   result, err := goshikimori.NewRequest(
     "APP_NAME",
     "ACCESS_TOKEN",
+    "GET",
     goshikimori.Parameters(api.Users, api.FoundID("ID_HER"), api.Friends),
   )
   if err != nil {
