@@ -11,8 +11,6 @@ import (
 )
 
 const (
-  oauth_app    = ""
-  access_token = ""
   bearer       = "Bearer "
   urlOrig      = "%s://%s"
   protocol     = "https"
@@ -24,10 +22,10 @@ func Parameters(s ...string) string {
   return p
 }
 
-func NewRequest(method, input string) ([]byte, error) {
+func NewRequest(oauth2, access_token, method, input string) ([]byte, error) {
   req, err := http.NewRequest(
     method, fmt.Sprintf(urlOrig, protocol, urlShiki)+input, nil)
-  req.Header.Add("User-Agent", oauth_app)
+  req.Header.Add("User-Agent", oauth2)
   req.Header.Add("Authorization", bearer+access_token)
   if err != nil {
     log.Fatal(err)
@@ -45,8 +43,10 @@ func NewRequest(method, input string) ([]byte, error) {
 
 func main() {
   result, err := NewRequest(
+    "APP_NAME",
+    "ACCESS_TOKEN",
     "GET",
-    Parameters(api.Animes, api.FoundID("24"), api.Similar),
+    Parameters(api.Users, api.FoundID("ID"), api.Friends),
   )
   if err != nil {
     log.Fatal(err)
