@@ -11,7 +11,9 @@ Work with API occurs only through OAuth2.
 * OAuth2 https://shikimori.one/oauth
 
 ## Install
+```
 go get github.com/vexilology/goshikimori
+```
 
 ## Example
 ``` golang

@@ -4,11 +4,9 @@ run:
 	go build . && ./goshikimori
 
 test:
-	curl -X GET https://shikimori.one/api/users/whoami \
-	-H "User-Agent: " \
-	-H "Authorization: Bearer "
+	go test -v
 
-refresh:
+token:
 	curl -X POST "https://shikimori.one/oauth/token" \
 	-H "User-Agent: " \
 	-F grant_type="refresh_token" \

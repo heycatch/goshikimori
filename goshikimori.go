@@ -9,10 +9,10 @@ import (
 )
 
 const (
-  bearer       = "Bearer "
-  urlOrig      = "%s://%s"
-  protocol     = "https"
-  urlShiki     = "shikimori.one/api/"
+  bearer   = "Bearer "
+  urlOrig  = "%s://%s"
+  protocol = "https"
+  urlShiki = "shikimori.one/api/"
 )
 
 func Parameters(s ...string) string {
@@ -20,10 +20,10 @@ func Parameters(s ...string) string {
   return p
 }
 
-func NewRequest(oauth2, access_token, method, input string) ([]byte, error) {
+func NewRequest(app, access_token, method, input string) ([]byte, error) {
   req, err := http.NewRequest(
     method, fmt.Sprintf(urlOrig, protocol, urlShiki)+input, nil)
-  req.Header.Add("User-Agent", oauth2)
+  req.Header.Add("User-Agent", app)
   req.Header.Add("Authorization", bearer+access_token)
   if err != nil {
     log.Fatal(err)
