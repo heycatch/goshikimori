@@ -1,8 +1,5 @@
-<div align="center">
-  <h1>shikimori.one api for golang</h1>
-</div>
-
-## Foreword
+## About
+A small library for interacting with shikimori, written in golang.
 Work with API occurs only through OAuth2.
 
 ## Documentation
