@@ -20,20 +20,28 @@ import (
   "fmt"
   "log"
 
-  "github.com/vexilology/goshikimori"
+  g "github.com/vexilology/goshikimori"
   "github.com/vexilology/goshikimori/api"
+  "github.com/vexilology/goshikimori/req"
 )
 
+func returnConf() *req.Config {
+  return &req.Config{
+    "APPLICATION_NAME",
+    "PRIVATE_KEY",
+  }
+}
+
 func main() {
-  result, err := goshikimori.NewRequest(
-    "APP_NAME",
-    "ACCESS_TOKEN",
-    "GET",
-    goshikimori.Parameters(api.Users, api.FoundID("ID_HER"), api.Friends),
-  )
+  conf := returnConf()
+
+  r, err := g.NewRequest(conf.Application, conf.SecretKey, req.Get,
+    g.Parameters(api.Users, api.Whoami))
   if err != nil {
     log.Fatal(err)
   }
-  fmt.Println(string(result))
+
+  // GET /api/users/whoami
+  fmt.Println(string(r))
 }
 ```
