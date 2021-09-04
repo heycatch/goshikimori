@@ -1,8 +1,8 @@
 package req
 
 type Config struct {
-  Application string `json:"App"`
-  SecretKey   string `json:"Key"`
+  Application string
+  SecretKey   string
 }
 
 const (
