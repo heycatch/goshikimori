@@ -12,7 +12,7 @@ Work with API occurs only through OAuth2.
 go get github.com/vexilology/goshikimori
 ```
 
-## Example
+## Example 1
 ``` golang
 package main
 
@@ -42,6 +42,40 @@ func main() {
   }
 
   // GET /api/users/whoami
+  fmt.Println(string(r))
+}
+
+```
+## Example 2
+``` golang
+package main
+
+import (
+  "fmt"
+  "log"
+
+  g "github.com/vexilology/goshikimori"
+  "github.com/vexilology/goshikimori/api"
+  "github.com/vexilology/goshikimori/req"
+)
+
+func returnConf() *req.Config {
+  return &req.Config{
+    "APPLICATION_NAME",
+    "PRIVATE_KEY",
+  }
+}
+
+func main() {
+  conf := returnConf()
+
+  r, err := g.NewRequest(conf.Application, conf.SecretKey, req.Get,
+    g.Parameters(api.Animes, api.Id(1)))
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // GET /api/animes/1
   fmt.Println(string(r))
 }
 ```

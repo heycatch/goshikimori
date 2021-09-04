@@ -1,11 +1,6 @@
 package api
 
-type Num struct {
-  Id string `json:":id"`
-}
+import "strconv"
 
-func FoundID(s string) string {
-  create := new(Num)
-  create.Id = s
-  return s
-}
+// convert from int to string and return ID
+func Id(i int) string { return strconv.Itoa(i) }
