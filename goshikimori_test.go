@@ -5,7 +5,6 @@ import (
   "testing"
   "math/rand"
   "time"
-  "fmt"
 
   "github.com/vexilology/goshikimori/api"
 )
@@ -16,9 +15,9 @@ const (
   test_access_token = ""
 )
 
-func random_number(min, max int) string {
+func random_number(min, max int) int {
   r := rand.Intn(max-min) + min
-  return fmt.Sprintf("%v", r)
+  return r
 }
 
 func TestRequest(t *testing.T) {
@@ -28,7 +27,7 @@ func TestRequest(t *testing.T) {
     test_app,
     test_access_token,
     test_method,
-    Parameters(api.Characters, api.FoundID(random_number(1, 5))),
+    Parameters(api.Characters, api.Id(random_number(1, 5))),
   )
 
   if test_app != "" && test_access_token != "" {
