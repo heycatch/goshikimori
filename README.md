@@ -12,6 +12,12 @@ Work with API occurs only through OAuth2.
 go get github.com/vexilology/goshikimori
 ```
 
+## Version
+```
+go version go1.17 linux/amd64
+GNU Make 4.2.1
+```
+
 ## Example 1
 ``` golang
 package main
@@ -42,7 +48,7 @@ func main() {
   }
 
   // GET /api/users/whoami
-  fmt.Println(string(r))
+  fmt.Printf("%s\n", r)
 }
 
 ```
@@ -76,6 +82,6 @@ func main() {
   }
 
   // GET /api/animes/1
-  fmt.Println(string(r))
+  fmt.Printf("%s\n", r)
 }
 ```
