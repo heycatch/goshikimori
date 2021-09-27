@@ -1,39 +1,42 @@
 package goshikimori
 
 import (
-  "log"
   "testing"
   "math/rand"
   "time"
 
   "github.com/vexilology/goshikimori/api"
+  "github.com/vexilology/goshikimori/req"
 )
 
 const (
-  test_method = "GET"
-  test_app = ""
-  test_access_token = ""
+  api_test = "Application"
+  key_test = "SecretKey"
 )
 
-func random_number(min, max int) int {
-  r := rand.Intn(max-min) + min
-  return r
+func returnConf() *req.Config {
+  return &req.Config{
+    api_test,
+    key_test,
+  }
 }
+
+func random_number(min, max int) int { return rand.Intn(max-min)+min }
 
 func TestRequest(t *testing.T) {
   rand.Seed(time.Now().UnixNano())
+  conf := returnConf()
 
-  req, _ := NewRequest(
-    test_app,
-    test_access_token,
-    test_method,
-    Parameters(api.Characters, api.Id(random_number(1, 5))),
-  )
+  r, _ := NewRequest(conf.Application, conf.SecretKey, req.Get,
+    Parameters(api.Characters, api.Id(random_number(1, 5))))
 
-  if test_app != "" && test_access_token != "" {
-    t.Log("Correct reuqest")
-    log.Println(string(req))
+  if conf.Application != "" && conf.SecretKey != "" {
+    if r != nil {
+      t.Logf("%s\n", r)
+    } else {
+      t.Errorf("%s\n", r)
+    }
   } else {
-    t.Error("Bad request or problems with your app")
+    t.Error("Not found Application or SecretKey")
   }
 }
