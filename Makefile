@@ -1,15 +1,25 @@
-test_go:
+App :=
+Key :=
+
+client_id :=
+client_secret :=
+refresh :=
+
+list:
+	@grep '^[^#[:space:]].*:' Makefile
+
+test:
 	go test -v
 
-test_request:
-	curl -X GET http://shikimori.one/api/users/whoami \
-	-H "User-Agent: APPLICATION_NAME" \
-	-H "Authorization: Bearer ACCESS_TOKEN"
+request:
+	curl -X GET https://shikimori.one/api/users/whoami \
+	-H "User-Agent: $(App)" \
+	-H "Authorization: Bearer $(Key)"
 
 token:
 	curl -X POST "https://shikimori.one/oauth/token" \
-	-H "User-Agent: APPLICATION_NAME" \
+	-H "User-Agent: $(App)" \
 	-F grant_type="refresh_token" \
-	-F client_id="CLIENT_ID" \
-	-F client_secret="CLIENT_SECRET" \
-	-F refresh_token="REFRESH_TOKEN"
+	-F client_id="$(client_id)" \
+	-F client_secret="$(client_secret)" \
+	-F refresh_token="$(refresh)"
