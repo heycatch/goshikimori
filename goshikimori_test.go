@@ -29,7 +29,7 @@ func TestRequest(t *testing.T) {
 
   r, _ := NewRequest(
     conf.Application, conf.SecretKey, req.Get,
-    Parameters(api.Characters, api.Id(random_number(1, 5)))
+    Parameters(api.Characters, api.Id(random_number(1, 5))),
   )
 
   if conf.Application != "" && conf.SecretKey != "" {

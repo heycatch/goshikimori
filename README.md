@@ -43,7 +43,7 @@ func main() {
 
   r, err := g.NewRequest(
     conf.Application, conf.SecretKey, req.Get,
-    g.Parameters(api.Users, api.Whoami)
+    g.Parameters(api.Users, api.Whoami),
   )
   if err != nil {
     log.Fatal(err)
@@ -79,7 +79,7 @@ func main() {
 
   r, err := g.NewRequest(
     conf.Application, conf.SecretKey, req.Get,
-    g.Parameters(api.Animes, api.Id(1))
+    g.Parameters(api.Animes, api.Id(1)),
   )
   if err != nil {
     log.Fatal(err)
