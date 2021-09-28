@@ -18,8 +18,7 @@ const (
 func Parameters(s ...string) string { return strings.Join(s, "/") }
 
 func NewRequest(app, access_token, method, input string) ([]byte, error) {
-  req, err := http.NewRequest(
-    method, fmt.Sprintf(urlOrig, protocol, urlShiki, input), nil)
+  req, err := http.NewRequest(method, fmt.Sprintf(urlOrig, protocol, urlShiki, input), nil)
   req.Header.Add("User-Agent", app)
   req.Header.Add("Authorization", bearer+access_token)
   if err != nil {

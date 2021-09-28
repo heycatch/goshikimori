@@ -27,8 +27,10 @@ func TestRequest(t *testing.T) {
   rand.Seed(time.Now().UnixNano())
   conf := returnConf()
 
-  r, _ := NewRequest(conf.Application, conf.SecretKey, req.Get,
-    Parameters(api.Characters, api.Id(random_number(1, 5))))
+  r, _ := NewRequest(
+    conf.Application, conf.SecretKey, req.Get,
+    Parameters(api.Characters, api.Id(random_number(1, 5)))
+  )
 
   if conf.Application != "" && conf.SecretKey != "" {
     if r != nil {

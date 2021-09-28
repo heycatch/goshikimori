@@ -41,8 +41,10 @@ func returnConf() *req.Config {
 func main() {
   conf := returnConf()
 
-  r, err := g.NewRequest(conf.Application, conf.SecretKey, req.Get,
-    g.Parameters(api.Users, api.Whoami))
+  r, err := g.NewRequest(
+    conf.Application, conf.SecretKey, req.Get,
+    g.Parameters(api.Users, api.Whoami)
+  )
   if err != nil {
     log.Fatal(err)
   }
@@ -75,8 +77,10 @@ func returnConf() *req.Config {
 func main() {
   conf := returnConf()
 
-  r, err := g.NewRequest(conf.Application, conf.SecretKey, req.Get,
-    g.Parameters(api.Animes, api.Id(1)))
+  r, err := g.NewRequest(
+    conf.Application, conf.SecretKey, req.Get,
+    g.Parameters(api.Animes, api.Id(1))
+  )
   if err != nil {
     log.Fatal(err)
   }
