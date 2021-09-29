@@ -12,8 +12,8 @@ import (
 )
 
 const (
-  api_test = "Application"
-  key_test = "SecretKey"
+  api_test = ""
+  key_test = ""
 )
 
 func returnConf() *req.Config {
