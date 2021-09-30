@@ -3,8 +3,6 @@ package api
 
 // Global section
 const (
-  Search         = "search"
-
   Characters     = "characters"
 
   Clubs          = "clubs"
