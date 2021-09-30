@@ -89,3 +89,39 @@ func main() {
   fmt.Printf("%s\n", r)
 }
 ```
+
+## Example 3
+``` golang
+package main
+
+import (
+  "fmt"
+  "log"
+
+  g "github.com/vexilology/goshikimori"
+  "github.com/vexilology/goshikimori/api"
+  "github.com/vexilology/goshikimori/req"
+)
+
+func returnConf() *req.Config {
+  return &req.Config{
+    "APPLICATION_NAME",
+    "PRIVATE_KEY",
+  }
+}
+
+func main() {
+  conf := returnConf()
+
+  r, err := g.NewRequest(
+    conf.Application, conf.SecretKey, req.Get,
+    g.Parameters(api.Animes, api.Search("Initial D First")),
+  )
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  // GET /api/animes/?search=Initial_D_First
+  fmt.Printf("%s\n", r)
+}
+```
