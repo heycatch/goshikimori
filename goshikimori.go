@@ -69,7 +69,7 @@ func (c *Configuration) SearchUser(s string) (api.User, error) {
   return u, json.Unmarshal(data, &u)
 }
 
-func (c *Configuration) SearchAnime(s string) ([]api.Anime, error) {
+func (c *Configuration) SearchAnime(s string) ([]api.Animes, error) {
   req, err := http.NewRequest(
     http.MethodGet, fmt.Sprintf(urlOrig, protocol, urlShiki,
     ConvertAnime(s)), nil,
@@ -92,7 +92,7 @@ func (c *Configuration) SearchAnime(s string) ([]api.Anime, error) {
     log.Fatal(err)
   }
 
-  var a []api.Anime
+  var a []api.Animes
   return a, json.Unmarshal(data, &a)
 }
 

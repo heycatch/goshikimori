@@ -39,7 +39,7 @@ type AnimeSize struct {
   X48      string `json:"x48"`
 }
 
-type Anime struct {
+type Animes struct {
   Id             int       `json:"id"`
   Name           string    `json:"name"`
   Russian        string    `json:"russian"`
