@@ -26,33 +26,24 @@ import (
   "fmt"
   "log"
 
-  g "github.com/vexilology/goshikimori"
-  "github.com/vexilology/goshikimori/api"
-  "github.com/vexilology/goshikimori/req"
+  g "github.com/vexilology/goshikimori/goshikimori"
 )
 
-func returnConf() *req.Config {
-  return &req.Config{
-    "APPLICATION_NAME",
-    "PRIVATE_KEY",
-  }
+func conf() *g.Configuration {
+  return g.Add(
+    "APPLICATION NAME",
+    "PERSONAL KEY",
+  )
 }
 
 func main() {
-  conf := returnConf()
-
-  r, err := g.NewRequest(
-    conf.Application, conf.SecretKey, req.Get,
-    g.Parameters(api.Users, api.Whoami),
-  )
+  c := conf()
+  r, err := c.SearchUser("incarnati0n")
   if err != nil {
     log.Fatal(err)
   }
-
-  // GET /api/users/whoami
-  fmt.Printf("%s\n", r)
+  fmt.Printf("%d - %s - %s\n", r.Id, r.Last_Online, r.Sex)
 }
-
 ```
 ## Example 2
 ``` golang
@@ -62,31 +53,25 @@ import (
   "fmt"
   "log"
 
-  g "github.com/vexilology/goshikimori"
-  "github.com/vexilology/goshikimori/api"
-  "github.com/vexilology/goshikimori/req"
+  g "github.com/vexilology/goshikimori/goshikimori"
 )
 
-func returnConf() *req.Config {
-  return &req.Config{
-    "APPLICATION_NAME",
-    "PRIVATE_KEY",
-  }
+func conf() *g.Configuration {
+  return g.Add(
+    "APPLICATION NAME",
+    "PERSONAL KEY",
+  )
 }
 
 func main() {
-  conf := returnConf()
-
-  r, err := g.NewRequest(
-    conf.Application, conf.SecretKey, req.Get,
-    g.Parameters(api.Animes, api.Id(1)),
-  )
+  c := conf()
+  r, err := c.SearchAnime("Initial D")
   if err != nil {
     log.Fatal(err)
   }
-
-  // GET /api/animes/1
-  fmt.Printf("%s\n", r)
+  for _, values := range r {
+    fmt.Println(values.Name, values.Status, values.Score)
+  }
 }
 ```
 
@@ -98,30 +83,24 @@ import (
   "fmt"
   "log"
 
-  g "github.com/vexilology/goshikimori"
-  "github.com/vexilology/goshikimori/api"
-  "github.com/vexilology/goshikimori/req"
+  g "github.com/vexilology/goshikimori/goshikimori"
 )
 
-func returnConf() *req.Config {
-  return &req.Config{
-    "APPLICATION_NAME",
-    "PRIVATE_KEY",
-  }
+func conf() *g.Configuration {
+  return g.Add(
+    "APPLICATION NAME",
+    "PERSONAL KEY",
+  )
 }
 
 func main() {
-  conf := returnConf()
-
-  r, err := g.NewRequest(
-    conf.Application, conf.SecretKey, req.Get,
-    g.Parameters(api.Animes, api.Search("Initial D First")),
-  )
+  c := conf()
+  r, err := c.SearchManga("Initial D")
   if err != nil {
     log.Fatal(err)
   }
-
-  // GET /api/animes/?search=Initial_D_First
-  fmt.Printf("%s\n", r)
+  for _, values := range r {
+    fmt.Println(values.Name, values.Volumes, values.Chapters)
+  }
 }
 ```
