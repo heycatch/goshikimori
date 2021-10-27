@@ -10,7 +10,7 @@ type UserSize struct {
   X16  string `json:"x16"`
 }
 
-type User struct {
+type Users struct {
   Id            int      `json:"id"`
   Nickname      string   `json:"nickname"`
   Avatar        string   `json:"avatar"`

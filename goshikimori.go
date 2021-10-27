@@ -42,7 +42,7 @@ func ConvertManga(s string) string {
   return fmt.Sprintf("mangas?search=%s", c)
 }
 
-func (c *Configuration) SearchUser(s string) (api.User, error) {
+func (c *Configuration) SearchUser(s string) (api.Users, error) {
   req, err := http.NewRequest(
     http.MethodGet, fmt.Sprintf(urlOrig, protocol, urlShiki,
     ConvertUser(s)), nil,
@@ -65,7 +65,7 @@ func (c *Configuration) SearchUser(s string) (api.User, error) {
     log.Fatal(err)
   }
 
-  var u api.User
+  var u api.Users
   return u, json.Unmarshal(data, &u)
 }
 
