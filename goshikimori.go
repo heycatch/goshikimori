@@ -119,6 +119,6 @@ func (c *Configuration) SearchManga(s string) ([]api.Mangas, error) {
     log.Fatal(err)
   }
 
-  var a []api.Mangas
-  return a, json.Unmarshal(data, &a)
+  var m []api.Mangas
+  return m, json.Unmarshal(data, &m)
 }
