@@ -47,21 +47,24 @@ func ConvertRanobe(s string) string {
   return fmt.Sprintf("ranobe?search=%s", c)
 }
 
-func (c *Configuration) SearchUser(s string) (api.Users, error) {
+func (c *Configuration) NewGetRequest(f string) *http.Request {
   req, err := http.NewRequest(
-    http.MethodGet, fmt.Sprintf(urlOrig, protocol, urlShiki,
-    ConvertUser(s)), nil,
+    http.MethodGet,
+    fmt.Sprintf(urlOrig, protocol, urlShiki, f), nil,
   )
   req.Header.Add("User-Agent", c.Application)
   req.Header.Add("Authorization", bearer + c.PrivateKey)
   if err != nil {
-    log.Println(err)
+    log.Fatal(err)
   }
+  return req
+}
 
+func (c *Configuration) SearchUser(s string) (api.Users, error) {
   client := &http.Client{}
-  resp, err := client.Do(req)
+  resp, err := client.Do(c.NewGetRequest(ConvertUser(s)))
   if err != nil {
-    log.Println(err)
+    log.Fatal(err)
   }
   defer resp.Body.Close()
 
@@ -75,20 +78,10 @@ func (c *Configuration) SearchUser(s string) (api.Users, error) {
 }
 
 func (c *Configuration) SearchAnime(s string) ([]api.Animes, error) {
-  req, err := http.NewRequest(
-    http.MethodGet, fmt.Sprintf(urlOrig, protocol, urlShiki,
-    ConvertAnime(s)), nil,
-  )
-  req.Header.Add("User-Agent", c.Application)
-  req.Header.Add("Authorization", bearer + c.PrivateKey)
-  if err != nil {
-    log.Println(err)
-  }
-
   client := &http.Client{}
-  resp, err := client.Do(req)
+  resp, err := client.Do(c.NewGetRequest(ConvertAnime(s)))
   if err != nil {
-    log.Println(err)
+    log.Fatal(err)
   }
   defer resp.Body.Close()
 
@@ -102,20 +95,10 @@ func (c *Configuration) SearchAnime(s string) ([]api.Animes, error) {
 }
 
 func (c *Configuration) SearchManga(s string) ([]api.Mangas, error) {
-  req, err := http.NewRequest(
-    http.MethodGet, fmt.Sprintf(urlOrig, protocol, urlShiki,
-    ConvertManga(s)), nil,
-  )
-  req.Header.Add("User-Agent", c.Application)
-  req.Header.Add("Authorization", bearer + c.PrivateKey)
-  if err != nil {
-    log.Println(err)
-  }
-
   client := &http.Client{}
-  resp, err := client.Do(req)
+  resp, err := client.Do(c.NewGetRequest(ConvertManga(s)))
   if err != nil {
-    log.Println(err)
+    log.Fatal(err)
   }
   defer resp.Body.Close()
 
@@ -129,20 +112,10 @@ func (c *Configuration) SearchManga(s string) ([]api.Mangas, error) {
 }
 
 func (c *Configuration) SearchRanobe(s string) ([]api.Mangas, error) {
-  req, err := http.NewRequest(
-    http.MethodGet, fmt.Sprintf(urlOrig, protocol, urlShiki,
-    ConvertRanobe(s)), nil,
-  )
-  req.Header.Add("User-Agent", c.Application)
-  req.Header.Add("Authorization", bearer + c.PrivateKey)
-  if err != nil {
-    log.Println(err)
-  }
-
   client := &http.Client{}
-  resp, err := client.Do(req)
+  resp, err := client.Do(c.NewGetRequest(ConvertRanobe(s)))
   if err != nil {
-    log.Println(err)
+    log.Fatal(err)
   }
   defer resp.Body.Close()
 
