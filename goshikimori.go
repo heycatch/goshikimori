@@ -42,6 +42,11 @@ func ConvertManga(s string) string {
   return fmt.Sprintf("mangas?search=%s", c)
 }
 
+func ConvertRanobe(s string) string {
+  c := strings.Replace(s, " ", "+", -1)
+  return fmt.Sprintf("ranobe?search=%s", c)
+}
+
 func (c *Configuration) SearchUser(s string) (api.Users, error) {
   req, err := http.NewRequest(
     http.MethodGet, fmt.Sprintf(urlOrig, protocol, urlShiki,
@@ -100,6 +105,33 @@ func (c *Configuration) SearchManga(s string) ([]api.Mangas, error) {
   req, err := http.NewRequest(
     http.MethodGet, fmt.Sprintf(urlOrig, protocol, urlShiki,
     ConvertManga(s)), nil,
+  )
+  req.Header.Add("User-Agent", c.Application)
+  req.Header.Add("Authorization", bearer + c.PrivateKey)
+  if err != nil {
+    log.Println(err)
+  }
+
+  client := &http.Client{}
+  resp, err := client.Do(req)
+  if err != nil {
+    log.Println(err)
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  var m []api.Mangas
+  return m, json.Unmarshal(data, &m)
+}
+
+func (c *Configuration) SearchRanobe(s string) ([]api.Mangas, error) {
+  req, err := http.NewRequest(
+    http.MethodGet, fmt.Sprintf(urlOrig, protocol, urlShiki,
+    ConvertRanobe(s)), nil,
   )
   req.Header.Add("User-Agent", c.Application)
   req.Header.Add("Authorization", bearer + c.PrivateKey)

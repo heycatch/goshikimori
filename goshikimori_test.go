@@ -71,3 +71,22 @@ func TestMangas(t *testing.T) {
     }
   }
 }
+
+func TestRanobe(t *testing.T) {
+  c := conf()
+  r, err := c.SearchRanobe("Vampire Knight")
+  if err != nil {
+    log.Fatal(err)
+  }
+  for _, values := range r {
+    if api_test != "" && key_test != "" {
+      if values.Volumes == 1 && values.Chapters == 6 {
+        t.Logf("Ranobe %s id %d - found", values.Name, values.Id)
+      } else {
+        t.Errorf("Ranobe %s id %d - not found", values.Name, values.Id)
+      }
+    } else {
+      t.Error("Not found Application or SecretKey")
+    }
+  }
+}
