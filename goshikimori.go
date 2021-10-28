@@ -4,6 +4,7 @@ import (
   "fmt"
   "log"
   "net/http"
+  "io"
   "io/ioutil"
   "strings"
   "encoding/json"
@@ -27,24 +28,32 @@ func Add(app, key string) *Configuration {
   return &Configuration{Application: app, PrivateKey: key}
 }
 
-func ConvertUser(s string) string {
+func convertUser(s string) string {
   c := strings.Replace(s, " ", "+", -1)
   return fmt.Sprintf("users/%s", c)
 }
 
-func ConvertAnime(s string) string {
+func convertAnime(s string) string {
   c := strings.Replace(s, " ", "+", -1)
   return fmt.Sprintf("animes?search=%s", c)
 }
 
-func ConvertManga(s string) string {
+func convertManga(s string) string {
   c := strings.Replace(s, " ", "+", -1)
   return fmt.Sprintf("mangas?search=%s", c)
 }
 
-func ConvertRanobe(s string) string {
+func convertRanobe(s string) string {
   c := strings.Replace(s, " ", "+", -1)
   return fmt.Sprintf("ranobe?search=%s", c)
+}
+
+func decodeJSON(r io.Reader, i interface{}) error {
+  data, err := ioutil.ReadAll(r)
+  if err != nil {
+    log.Fatal(err)
+  }
+  return json.Unmarshal(data, i)
 }
 
 func (c *Configuration) NewGetRequest(f string) *http.Request {
@@ -62,68 +71,48 @@ func (c *Configuration) NewGetRequest(f string) *http.Request {
 
 func (c *Configuration) SearchUser(s string) (api.Users, error) {
   client := &http.Client{}
-  resp, err := client.Do(c.NewGetRequest(ConvertUser(s)))
+  resp, err := client.Do(c.NewGetRequest(convertUser(s)))
   if err != nil {
     log.Fatal(err)
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    log.Fatal(err)
-  }
-
   var u api.Users
-  return u, json.Unmarshal(data, &u)
+  return u, decodeJSON(resp.Body, &u)
 }
 
 func (c *Configuration) SearchAnime(s string) ([]api.Animes, error) {
   client := &http.Client{}
-  resp, err := client.Do(c.NewGetRequest(ConvertAnime(s)))
+  resp, err := client.Do(c.NewGetRequest(convertAnime(s)))
   if err != nil {
     log.Fatal(err)
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    log.Fatal(err)
-  }
-
   var a []api.Animes
-  return a, json.Unmarshal(data, &a)
+  return a, decodeJSON(resp.Body, &a)
 }
 
 func (c *Configuration) SearchManga(s string) ([]api.Mangas, error) {
   client := &http.Client{}
-  resp, err := client.Do(c.NewGetRequest(ConvertManga(s)))
+  resp, err := client.Do(c.NewGetRequest(convertManga(s)))
   if err != nil {
     log.Fatal(err)
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    log.Fatal(err)
-  }
-
   var m []api.Mangas
-  return m, json.Unmarshal(data, &m)
+  return m, decodeJSON(resp.Body, &m)
 }
 
 func (c *Configuration) SearchRanobe(s string) ([]api.Mangas, error) {
   client := &http.Client{}
-  resp, err := client.Do(c.NewGetRequest(ConvertRanobe(s)))
+  resp, err := client.Do(c.NewGetRequest(convertRanobe(s)))
   if err != nil {
     log.Fatal(err)
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    log.Fatal(err)
-  }
-
-  var m []api.Mangas
-  return m, json.Unmarshal(data, &m)
+  var r []api.Mangas
+  return r, decodeJSON(resp.Body, &r)
 }
