@@ -6,7 +6,7 @@ import (
   "fmt"
   "log"
 
-  g "github.com/vexilology/goshikimori/goshikimori"
+  g "github.com/vexilology/goshikimori"
 )
 
 func conf() *g.Configuration {
@@ -33,7 +33,7 @@ import (
   "fmt"
   "log"
 
-  g "github.com/vexilology/goshikimori/goshikimori"
+  g "github.com/vexilology/goshikimori"
 )
 
 func conf() *g.Configuration {
@@ -63,7 +63,7 @@ import (
   "fmt"
   "log"
 
-  g "github.com/vexilology/goshikimori/goshikimori"
+  g "github.com/vexilology/goshikimori"
 )
 
 func conf() *g.Configuration {
