@@ -51,9 +51,17 @@ func convertRanobe(s string) string {
 func decodeJSON(r io.Reader, i interface{}) error {
   data, err := ioutil.ReadAll(r)
   if err != nil {
-    log.Fatal(err)
+    return err
   }
   return json.Unmarshal(data, i)
+}
+
+func checkStatus(s string) bool {
+  if s == "200 OK" {
+    return true
+  } else {
+    return false
+  }
 }
 
 func (c *Configuration) NewGetRequest(f string) *http.Request {
@@ -77,6 +85,10 @@ func (c *Configuration) SearchUser(s string) (api.Users, error) {
   }
   defer resp.Body.Close()
 
+  ok := checkStatus(resp.Status); if ok != true {
+    log.Fatal("200 status code not found, check your app or private key.")
+  }
+
   var u api.Users
   return u, decodeJSON(resp.Body, &u)
 }
@@ -88,6 +100,10 @@ func (c *Configuration) SearchAnime(s string) ([]api.Animes, error) {
     log.Fatal(err)
   }
   defer resp.Body.Close()
+
+  ok := checkStatus(resp.Status); if ok != true {
+    log.Fatal("200 status code not found, check your app or private key.")
+  }
 
   var a []api.Animes
   return a, decodeJSON(resp.Body, &a)
@@ -101,6 +117,10 @@ func (c *Configuration) SearchManga(s string) ([]api.Mangas, error) {
   }
   defer resp.Body.Close()
 
+  ok := checkStatus(resp.Status); if ok != true {
+    log.Fatal("200 status code not found, check your app or private key.")
+  }
+
   var m []api.Mangas
   return m, decodeJSON(resp.Body, &m)
 }
@@ -112,6 +132,10 @@ func (c *Configuration) SearchRanobe(s string) ([]api.Mangas, error) {
     log.Fatal(err)
   }
   defer resp.Body.Close()
+
+  ok := checkStatus(resp.Status); if ok != true {
+    log.Fatal("200 status code not found, check your app or private key.")
+  }
 
   var r []api.Mangas
   return r, decodeJSON(resp.Body, &r)
