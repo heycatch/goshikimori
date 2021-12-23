@@ -69,3 +69,17 @@ func TestRanobe(t *testing.T) {
     t.Error("Not found Application or SecretKey")
   }
 }
+
+func TestClub(t *testing.T) {
+  c := conf()
+  r := c.SearchClub("milf thred")
+  if api_test != "" && key_test != "" {
+    if r.Id == 372 && r.Is_censored == true {
+      t.Logf("Best club %s - found", r.Name)
+    } else {
+      t.Errorf("Argument %v or id %d - not found", r.Is_censored, r.Id)
+    }
+  } else {
+    t.Error("Not found Application or SecretKey")
+  }
+}

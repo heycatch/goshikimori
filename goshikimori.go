@@ -28,27 +28,32 @@ func Add(app, key string) *Configuration {
 }
 
 func convertUser(s string) string {
-  c := strings.Replace(s, " ", "+", -1)
-  return fmt.Sprintf("users/%s", c)
+  r := strings.Replace(s, " ", "+", -1)
+  return fmt.Sprintf("users/%s", r)
 }
 
 func convertAnime(s string) string {
-  c := strings.Replace(s, " ", "+", -1)
-  return fmt.Sprintf("animes?search=%s", c)
+  r := strings.Replace(s, " ", "+", -1)
+  return fmt.Sprintf("animes?search=%s", r)
 }
 
 func convertManga(s string) string {
-  c := strings.Replace(s, " ", "+", -1)
-  return fmt.Sprintf("mangas?search=%s", c)
+  r := strings.Replace(s, " ", "+", -1)
+  return fmt.Sprintf("mangas?search=%s", r)
 }
 
 func convertRanobe(s string) string {
-  c := strings.Replace(s, " ", "+", -1)
-  return fmt.Sprintf("ranobe?search=%s", c)
+  r := strings.Replace(s, " ", "+", -1)
+  return fmt.Sprintf("ranobe?search=%s", r)
 }
 
-func checkStatus(s string) bool {
-  if s == "200 OK" {
+func convertClub(s string) string {
+  r := strings.Replace(s, " ", "+", -1)
+  return fmt.Sprintf("clubs?search=%s", r)
+}
+
+func checkStatus(i int) bool {
+  if i == http.StatusOK {
     return true
   } else {
     return false
@@ -76,7 +81,7 @@ func (c *Configuration) SearchUser(s string) api.Users {
   }
   defer resp.Body.Close()
 
-  ok := checkStatus(resp.Status); if ok != true {
+  ok := checkStatus(resp.StatusCode); if ok != true {
     log.Fatal("request failed, check your app or private key")
   }
 
@@ -102,7 +107,7 @@ func (c *Configuration) SearchAnime(s string) api.Animes {
   }
   defer resp.Body.Close()
 
-  ok := checkStatus(resp.Status); if ok != true {
+  ok := checkStatus(resp.StatusCode); if ok != true {
     log.Fatal("request failed, check your app or private key")
   }
 
@@ -133,7 +138,7 @@ func (c *Configuration) SearchManga(s string) api.Mangas {
   }
   defer resp.Body.Close()
 
-  ok := checkStatus(resp.Status); if ok != true {
+  ok := checkStatus(resp.StatusCode); if ok != true {
     log.Fatal("request failed, check your app or private key")
   }
 
@@ -164,7 +169,7 @@ func (c *Configuration) SearchRanobe(s string) api.Mangas {
   }
   defer resp.Body.Close()
 
-  ok := checkStatus(resp.Status); if ok != true {
+  ok := checkStatus(resp.StatusCode); if ok != true {
     log.Fatal("request failed, check your app or private key")
   }
 
@@ -185,4 +190,35 @@ func (c *Configuration) SearchRanobe(s string) api.Mangas {
   }
 
   return rr
+}
+
+func (c *Configuration) SearchClub(s string) api.Clubs {
+  client := &http.Client{}
+  resp, err := client.Do(c.NewGetRequest(convertClub(s)))
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer resp.Body.Close()
+
+  ok := checkStatus(resp.StatusCode); if ok != true {
+    log.Fatal("request failed, check your app or private key")
+  }
+
+  var l []api.Clubs
+  var ll api.Clubs
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  if json.Unmarshal(data, &l); err != nil {
+    log.Fatal(err)
+  }
+
+  for _, value := range l {
+    ll = value
+  }
+
+  return ll
 }

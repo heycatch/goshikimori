@@ -38,6 +38,7 @@ SearchUser(string)
 SearchAnime(string)
 SearchManga(string)
 SearchRanobe(string)
+SearchClub(string)
 ```
 
 ## Available API
@@ -132,6 +133,29 @@ SearchRanobe(string)
       <li>Chapters</li>
       <li>Aired_on</li>
       <li>Released_on</li>
+    </ul>
+</details>
+
+<details>
+  <summary>Club request</summary>
+    <ul>
+      <li>Id</li>
+      <li>Name</li>
+      <li>
+        <details>
+          <summary>Logo</summary>
+            <ul>
+              <li>Logo.Original</li>
+              <li>Logo.Main</li>
+              <li>Logo.X96</li>
+              <li>Logo.X73</li>
+              <li>Logo.X48</li>
+            </ul>
+        </details>
+      </li>
+      <li>Is_censored</li>
+      <li>Join_policy</li>
+      <li>Comment_policy</li>
     </ul>
 </details>
 

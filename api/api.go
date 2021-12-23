@@ -68,3 +68,20 @@ type Mangas struct {
   Aired_on    string    `json:"aired_on"`
   Released_on string    `json:"released_on"`
 }
+
+type ClubSize struct {
+  Original string `json:"original"`
+  Main     string `json:"main"`
+  X96      string `json:"x96"`
+  X73      string `json:"x73"`
+  X48      string `json:"x48"`
+}
+
+type Clubs struct {
+  Id             int      `json:"id"`
+  Name           string   `json:"name"`
+  Logo           ClubSize `json:"logo"`
+  Is_censored    bool     `json:"is_censored"`
+  Join_policy    string   `json:"join_policy"`
+  Comment_policy string   `json:"comment_policy"`
+}
