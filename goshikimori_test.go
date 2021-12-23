@@ -1,9 +1,6 @@
 package goshikimori
 
-import (
-  "testing"
-  "log"
-)
+import "testing"
 
 const (
   api_test = ""
@@ -19,15 +16,12 @@ func conf() *Configuration {
 
 func TestUser(t *testing.T) {
   c := conf()
-  r, err := c.SearchUser("incarnati0n")
-  if err != nil {
-    log.Fatal(err)
-  }
+  s := c.SearchUser("incarnati0n")
   if api_test != "" && key_test != "" {
-    if r.Id == 181833 && r.Sex == "male" {
-      t.Logf("User %s id %d - found", r.Nickname, r.Id)
+    if s.Id == 181833 && s.Sex == "male" {
+      t.Logf("User %s id %d - found", s.Nickname, s.Id)
     } else {
-      t.Errorf("User %s id %d - not found", r.Nickname, r.Id)
+      t.Errorf("User %s id %d - not found", s.Nickname, s.Id)
     }
   } else {
     t.Error("Not found Application or SecretKey")
@@ -36,57 +30,42 @@ func TestUser(t *testing.T) {
 
 func TestAnimes(t *testing.T) {
   c := conf()
-  r, err := c.SearchAnime("Initial D")
-  if err != nil {
-    log.Fatal(err)
-  }
-  for _, values := range r {
-    if api_test != "" && key_test != "" {
-      if values.Id == 12725 && values.Status == "released" {
-        t.Logf("Anime %s id %d - found", values.Name, values.Id)
-      } else {
-        t.Errorf("Anime %s id %d - not found", values.Name, values.Id)
-      }
+  s := c.SearchAnime("Initial D")
+  if api_test != "" && key_test != "" {
+    if s.Id == 12725 && s.Status == "released" {
+      t.Logf("Anime %s id %d - found", s.Name, s.Id)
     } else {
-      t.Error("Not found Application or SecretKey")
+      t.Errorf("Anime %s id %d - not found", s.Name, s.Id)
     }
+  } else {
+    t.Error("Not found Application or SecretKey")
   }
 }
 
 func TestMangas(t *testing.T) {
   c := conf()
-  r, err := c.SearchManga("Initial D")
-  if err != nil {
-    log.Fatal(err)
-  }
-  for _, values := range r {
-    if api_test != "" && key_test != "" {
-      if values.Volumes == 48 && values.Chapters == 724 {
-        t.Logf("Manga %s id %d - found", values.Name, values.Id)
-      } else {
-        t.Errorf("Manga %s id %d - not found", values.Name, values.Id)
-      }
+  r := c.SearchManga("Initial D")
+  if api_test != "" && key_test != "" {
+    if r.Volumes == 48 && r.Chapters == 724 {
+      t.Logf("Manga %s id %d - found", r.Name, r.Id)
     } else {
-      t.Error("Not found Application or SecretKey")
+      t.Errorf("Manga %s id %d - not found", r.Name, r.Id)
     }
+  } else {
+    t.Error("Not found Application or SecretKey")
   }
 }
 
 func TestRanobe(t *testing.T) {
   c := conf()
-  r, err := c.SearchRanobe("Vampire Knight")
-  if err != nil {
-    log.Fatal(err)
-  }
-  for _, values := range r {
-    if api_test != "" && key_test != "" {
-      if values.Volumes == 1 && values.Chapters == 6 {
-        t.Logf("Ranobe %s id %d - found", values.Name, values.Id)
-      } else {
-        t.Errorf("Ranobe %s id %d - not found", values.Name, values.Id)
-      }
+  r := c.SearchRanobe("Vampire Knight")
+  if api_test != "" && key_test != "" {
+    if r.Volumes == 1 && r.Chapters == 6 {
+      t.Logf("Ranobe %s id %d - found", r.Name, r.Id)
     } else {
-      t.Error("Not found Application or SecretKey")
+      t.Errorf("Ranobe %s id %d - not found", r.Name, r.Id)
     }
+  } else {
+    t.Error("Not found Application or SecretKey")
   }
 }
