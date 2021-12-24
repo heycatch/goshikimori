@@ -52,6 +52,15 @@ func convertClub(s string) string {
   return fmt.Sprintf("clubs?search=%s", r)
 }
 
+func convertAchievements(i int) string {
+  return fmt.Sprintf("achievements?user_id=%d", i)
+}
+
+func ConvertNeko(s string) string {
+  r := strings.Replace(strings.ToLower(s), " ", "_", -1)
+  return fmt.Sprintf("%s", r)
+}
+
 func checkStatus(i int) bool {
   if i == http.StatusOK {
     return true
@@ -221,4 +230,30 @@ func (c *Configuration) SearchClub(s string) api.Clubs {
   }
 
   return ll
+}
+
+func (c *Configuration) SearchAchievement(i int) []api.Achievements {
+  client := &http.Client{}
+  resp, err := client.Do(c.NewGetRequest(convertAchievements(i)))
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer resp.Body.Close()
+
+  ok := checkStatus(resp.StatusCode); if ok != true {
+    log.Fatal("request failed, check your app or private key")
+  }
+
+  var a []api.Achievements
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  if json.Unmarshal(data, &a); err != nil {
+    log.Fatal(err)
+  }
+
+  return a
 }

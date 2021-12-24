@@ -1,5 +1,7 @@
 package api
 
+import "time"
+
 type UserSize struct {
   X160 string `json:"x160"`
   X148 string `json:"x148"`
@@ -84,4 +86,14 @@ type Clubs struct {
   Is_censored    bool     `json:"is_censored"`
   Join_policy    string   `json:"join_policy"`
   Comment_policy string   `json:"comment_policy"`
+}
+
+type Achievements struct {
+  Id         int       `json:"id"`
+  Neko_id    string    `json:"neko_id"`
+  Level      int       `json:"level"`
+  Progress   int       `json:"progress"`
+  User_id    int       `json:"user_id"`
+  Created_at time.Time `json:"created_at"`
+  Updated_at time.Time `json:"updated_at"`
 }

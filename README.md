@@ -8,7 +8,7 @@ Work with API occurs only through OAuth2.
 go get github.com/vexilology/goshikimori
 ```
 
-## Example
+## Examples
 ``` golang
 package main
 
@@ -25,20 +25,58 @@ func conf() *g.Configuration {
   )
 }
 
+// Found User
 func main() {
   c := conf()
   s := c.SearchAnime("Initial D")
   fmt.Println(s.Name, s.Status, s.Score)
 }
 ```
+``` golang
+package main
+
+import (
+  "fmt"
+
+  g "github.com/vexilology/goshikimori/goshikimori"
+)
+
+func conf() *g.Configuration {
+  return g.Add(
+    "Api Test",
+    "9z4yB8Gi_zsfwPAws2SvHj-zeojWOvhxYMauEQYvEqM",
+  )
+}
+
+// To search for achievements you need ONLY ID
+func foundId() int {
+  c := conf()
+  r := c.SearchUser("incarnati0n")
+  return r.Id
+}
+
+// Found Achievements
+func main() {
+  c := conf()
+  r := c.SearchAchievement(foundId())
+  for _, v := range r {
+    if v.Neko_id == g.ConvertNeko("Initial D") {
+      fmt.Printf("level: %d - progress %d\n", v.Level, v.Progress)
+      fmt.Printf("created: %v - updated: %v\n", v.Created_at, v.Updated_at)
+    }
+  }
+}
+```
 
 ## Available functions
 ```golang
-SearchUser(string)
-SearchAnime(string)
-SearchManga(string)
-SearchRanobe(string)
-SearchClub(string)
+SearchUser(string) // found users
+SearchAnime(string) // found animes
+SearchManga(string) // found mangas
+SearchRanobe(string) // found ranobes
+SearchClub(string) // found clubs
+SearchAchievement(int) // found achievements
+ConvertNeko(string) // search by anime name in achievements
 ```
 
 ## Available API
@@ -156,6 +194,19 @@ SearchClub(string)
       <li>Is_censored</li>
       <li>Join_policy</li>
       <li>Comment_policy</li>
+    </ul>
+</details>
+
+<details>
+  <summary>Achievement request</summary>
+    <ul>
+      <li>Id</li>
+      <li>Neko_id</li>
+      <li>Level</li>
+      <li>Progress</li>
+      <li>User_id</li>
+      <li>Created_at</li>
+      <li>Updated_at</li>
     </ul>
 </details>
 
