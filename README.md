@@ -43,8 +43,8 @@ import (
 
 func conf() *g.Configuration {
   return g.Add(
-    "Api Test",
-    "9z4yB8Gi_zsfwPAws2SvHj-zeojWOvhxYMauEQYvEqM",
+    "APPLICATION NAME",
+    "PERSONAL KEY",
   )
 }
 
