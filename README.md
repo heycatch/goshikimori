@@ -38,7 +38,7 @@ package main
 import (
   "fmt"
 
-  g "github.com/vexilology/goshikimori/goshikimori"
+  g "github.com/vexilology/goshikimori"
 )
 
 func conf() *g.Configuration {
