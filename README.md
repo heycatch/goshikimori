@@ -48,19 +48,14 @@ func conf() *g.Configuration {
   )
 }
 
-// To search for achievements you need ONLY ID
-func foundId() int {
-  c := conf()
-  r := c.SearchUser("incarnati0n")
-  return r.Id
-}
-
 // Found Achievements
 func main() {
   c := conf()
-  r := c.SearchAchievement(foundId())
+  // To search for achievements you need ONLY Id
+  u := c.SearchUser("incarnati0n")
+  r := c.SearchAchievement(u.Id)
   for _, v := range r {
-    if v.Neko_id == g.ConvertNeko("Initial D") {
+    if v.Neko_id == g.NekoSearch("Initial D") {
       fmt.Printf("level: %d - progress %d\n", v.Level, v.Progress)
       fmt.Printf("created: %v - updated: %v\n", v.Created_at, v.Updated_at)
     }
@@ -76,7 +71,7 @@ SearchManga(string) // found mangas
 SearchRanobe(string) // found ranobes
 SearchClub(string) // found clubs
 SearchAchievement(int) // found achievements
-ConvertNeko(string) // search by anime name in achievements
+NekoSearch(string) // search by anime name in achievements
 ```
 
 ## Available API

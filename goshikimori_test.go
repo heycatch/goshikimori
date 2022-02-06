@@ -14,72 +14,104 @@ func conf() *Configuration {
   )
 }
 
+func validConst() bool {
+  if api_test != "" && key_test != "" {
+    return true
+  }
+  return false
+}
+
 func TestUser(t *testing.T) {
+  if ok := validConst(); ok == false {
+    t.Log("not found application or key")
+  }
+
   c := conf()
   s := c.SearchUser("incarnati0n")
-  if api_test != "" && key_test != "" {
-    if s.Id == 181833 && s.Sex == "male" {
-      t.Logf("User %s id %d - found", s.Nickname, s.Id)
-    } else {
-      t.Errorf("User %s id %d - not found", s.Nickname, s.Id)
-    }
+
+  if s.Id == 181833 && s.Sex == "male" {
+    t.Logf("User %s id %d - found", s.Nickname, s.Id)
   } else {
-    t.Error("Not found Application or SecretKey")
+    t.Errorf("User %s id %d - not found", s.Nickname, s.Id)
   }
 }
 
 func TestAnimes(t *testing.T) {
+  if ok := validConst(); ok == false {
+    t.Log("not found application or key")
+  }
+
   c := conf()
   s := c.SearchAnime("Initial D")
-  if api_test != "" && key_test != "" {
-    if s.Id == 12725 && s.Status == "released" {
-      t.Logf("Anime %s id %d - found", s.Name, s.Id)
-    } else {
-      t.Errorf("Anime %s id %d - not found", s.Name, s.Id)
-    }
+
+  if s.Id == 12725 && s.Status == "released" {
+    t.Logf("Anime %s id %d - found", s.Name, s.Id)
   } else {
-    t.Error("Not found Application or SecretKey")
+    t.Errorf("Anime %s id %d - not found", s.Name, s.Id)
   }
 }
 
 func TestMangas(t *testing.T) {
+  if ok := validConst(); ok == false {
+    t.Log("not found application or key")
+  }
+
   c := conf()
   r := c.SearchManga("Initial D")
-  if api_test != "" && key_test != "" {
-    if r.Volumes == 48 && r.Chapters == 724 {
-      t.Logf("Manga %s id %d - found", r.Name, r.Id)
-    } else {
-      t.Errorf("Manga %s id %d - not found", r.Name, r.Id)
-    }
+
+  if r.Volumes == 48 && r.Chapters == 724 {
+    t.Logf("Manga %s id %d - found", r.Name, r.Id)
   } else {
-    t.Error("Not found Application or SecretKey")
+    t.Errorf("Manga %s id %d - not found", r.Name, r.Id)
   }
 }
 
 func TestRanobe(t *testing.T) {
+  if ok := validConst(); ok == false {
+    t.Log("not found application or key")
+  }
+
   c := conf()
   r := c.SearchRanobe("Vampire Knight")
-  if api_test != "" && key_test != "" {
-    if r.Volumes == 1 && r.Chapters == 6 {
-      t.Logf("Ranobe %s id %d - found", r.Name, r.Id)
-    } else {
-      t.Errorf("Ranobe %s id %d - not found", r.Name, r.Id)
-    }
+
+  if r.Volumes == 1 && r.Chapters == 6 {
+    t.Logf("Ranobe %s id %d - found", r.Name, r.Id)
   } else {
-    t.Error("Not found Application or SecretKey")
+    t.Errorf("Ranobe %s id %d - not found", r.Name, r.Id)
   }
 }
 
 func TestClub(t *testing.T) {
+  if ok := validConst(); ok == false {
+    t.Log("not found application or key")
+  }
+
   c := conf()
   r := c.SearchClub("milf thred")
-  if api_test != "" && key_test != "" {
-    if r.Id == 372 && r.Is_censored == true {
-      t.Logf("Best club %s - found", r.Name)
-    } else {
-      t.Errorf("Argument %v or id %d - not found", r.Is_censored, r.Id)
-    }
+
+  if r.Is_censored == true {
+    t.Logf("Best club %s - found", r.Name)
   } else {
-    t.Error("Not found Application or SecretKey")
+    t.Errorf("Argument %v or id %d - not found", r.Is_censored, r.Id)
+  }
+}
+
+func TestAchievements(t *testing.T) {
+  if ok := validConst(); ok == false {
+    t.Log("not found application or key")
+  }
+
+  c := conf()
+  u := c.SearchUser("incarnati0n")
+  r := c.SearchAchievement(u.Id)
+
+  for _, v := range r {
+    if v.Neko_id == NekoSearch("Initial D") {
+      if v.Progress == 100 {
+        t.Logf("Found %d progress", v.Progress)
+      } else {
+        t.Errorf("Not found %d progress", v.Progress)
+      }
+    }
   }
 }

@@ -56,7 +56,7 @@ func convertAchievements(i int) string {
   return fmt.Sprintf("achievements?user_id=%d", i)
 }
 
-func ConvertNeko(s string) string {
+func NekoSearch(s string) string {
   r := strings.Replace(strings.ToLower(s), " ", "_", -1)
   return fmt.Sprintf("%s", r)
 }
