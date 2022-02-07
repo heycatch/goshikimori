@@ -51,7 +51,6 @@ func conf() *g.Configuration {
 // Found Achievements
 func main() {
   c := conf()
-  // To search for achievements you need ONLY Id
   u := c.SearchUser("incarnati0n")
   r := c.SearchAchievement(u.Id)
   for _, v := range r {
@@ -65,13 +64,16 @@ func main() {
 
 ## Available functions
 ```golang
-SearchUser(string) // found users
-SearchAnime(string) // found animes
-SearchManga(string) // found mangas
-SearchRanobe(string) // found ranobes
-SearchClub(string) // found clubs
-SearchAchievement(int) // found achievements
-NekoSearch(string) // search by anime name in achievements
+SearchUser(string) // Find users. Check User request.
+SearchAnime(string) // Find animes. Check Anime request.
+SearchManga(string) // Find mangas. Check Manga request.
+SearchRanobe(string) // Find ranobes. Check Manga request.
+SearchClub(string) // Find clubs. Check Club request.
+SearchAchievement(int) // Find achievements with anime ID. Check Achievements request.
+NekoSearch(string) // Search by anime name in achievements.
+SearchSimilarAnime(int) // Find similar anime with anime ID. Check Anime request.
+SearchSimilarManga(int) // Find similar manga with manga ID. Check Manga request.
+SearchSimilarRanobe(int) // Find similar ranobe with ranobe ID. Check Manga request.
 ```
 
 ## Available API
