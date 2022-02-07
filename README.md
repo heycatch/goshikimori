@@ -66,14 +66,14 @@ func main() {
 ```golang
 SearchUser(string) // Find users. Check User request.
 SearchAnime(string) // Find animes. Check Anime request.
-SearchManga(string) // Find mangas. Check Manga request.
-SearchRanobe(string) // Find ranobes. Check Manga request.
+SearchManga(string) // Find mangas. Check Manga/Ranobe request.
+SearchRanobe(string) // Find ranobes. Check Manga/Ranobe request.
 SearchClub(string) // Find clubs. Check Club request.
 SearchAchievement(int) // Find achievements with anime ID. Check Achievements request.
 NekoSearch(string) // Search by anime name in achievements.
 SearchSimilarAnime(int) // Find similar anime with anime ID. Check Anime request.
-SearchSimilarManga(int) // Find similar manga with manga ID. Check Manga request.
-SearchSimilarRanobe(int) // Find similar ranobe with ranobe ID. Check Manga request.
+SearchSimilarManga(int) // Find similar manga with manga ID. Check Manga/Ranobe request.
+SearchSimilarRanobe(int) // Find similar ranobe with ranobe ID. Check Manga/Ranobe request.
 ```
 
 ## Available API
