@@ -25,7 +25,6 @@ func conf() *g.Configuration {
   )
 }
 
-// Found User
 func main() {
   c := conf()
   s := c.SearchAnime("Initial D")
@@ -48,7 +47,6 @@ func conf() *g.Configuration {
   )
 }
 
-// Found Achievements
 func main() {
   c := conf()
   u := c.SearchUser("incarnati0n")
@@ -61,24 +59,50 @@ func main() {
   }
 }
 ```
+``` golang
+package main
+
+import (
+  "fmt"
+
+  g "github.com/vexilology/goshikimori"
+)
+
+func conf() *g.Configuration {
+  return g.Add(
+    "APPLICATION NAME",
+    "PERSONAL KEY",
+  )
+}
+
+func main() {
+  c := conf()
+  a := c.SearchAnime("Initial D")
+  r := c.SearchRelatedAnime(a.Id)
+  fmt.Println(r.Relation, r.Relation_Russian, r.Anime.Score)
+}
+```
 
 ## Available functions
 ```golang
-SearchUser(string) // Find users. Check User request.
-SearchAnime(string) // Find animes. Check Anime request.
-SearchManga(string) // Find mangas. Check Manga/Ranobe request.
-SearchRanobe(string) // Find ranobes. Check Manga/Ranobe request.
-SearchClub(string) // Find clubs. Check Club request.
+SearchUser(string) // Find users. Check Users request.
+SearchAnime(string) // Find animes. Check Animes request.
+SearchManga(string) // Find mangas. Check Mangas/Ranobes request.
+SearchRanobe(string) // Find ranobes. Check Mangas/Ranobes request.
+SearchClub(string) // Find clubs. Check Clubs request.
 SearchAchievement(int) // Find achievements with anime ID. Check Achievements request.
 NekoSearch(string) // Search by anime name in achievements.
-SearchSimilarAnime(int) // Find similar anime with anime ID. Check Anime request.
-SearchSimilarManga(int) // Find similar manga with manga ID. Check Manga/Ranobe request.
-SearchSimilarRanobe(int) // Find similar ranobe with ranobe ID. Check Manga/Ranobe request.
+SearchSimilarAnime(int) // Find similar anime with anime ID. Check Animes request.
+SearchSimilarManga(int) // Find similar manga with manga ID. Check Mangas/Ranobes request.
+SearchSimilarRanobe(int) // Find similar ranobe with ranobe ID. Check Mangas/Ranobes request.
+SearchRelatedAnime(int) // Find related anime with anime ID. Check RelatedAnimes request.
+SearchRelatedManga(int) // Find related manga with manga ID. Check RelatedMangas/Ranobes request.
+SearchRelatedRanobe(int) // Find related ranobe with ranobe ID. Check RelatedMangas/Ranobes request.
 ```
 
 ## Available API
 <details>
-  <summary>User request</summary>
+  <summary>Users request</summary>
     <ul>
       <li>Id</li>
       <li>Nickname</li>
@@ -116,7 +140,7 @@ SearchSimilarRanobe(int) // Find similar ranobe with ranobe ID. Check Manga/Rano
 </details>
 
 <details>
-  <summary>Anime request</summary>
+  <summary>Animes request</summary>
     <ul>
       <li>Id</li>
       <li>Name</li>
@@ -144,7 +168,7 @@ SearchSimilarRanobe(int) // Find similar ranobe with ranobe ID. Check Manga/Rano
 </details>
 
 <details>
-  <summary>Manga/Ranobe request</summary>
+  <summary>Mangas/Ranobes request</summary>
     <ul>
       <li>Id</li>
       <li>Name</li>
@@ -172,7 +196,7 @@ SearchSimilarRanobe(int) // Find similar ranobe with ranobe ID. Check Manga/Rano
 </details>
 
 <details>
-  <summary>Club request</summary>
+  <summary>Clubs request</summary>
     <ul>
       <li>Id</li>
       <li>Name</li>
@@ -195,7 +219,7 @@ SearchSimilarRanobe(int) // Find similar ranobe with ranobe ID. Check Manga/Rano
 </details>
 
 <details>
-  <summary>Achievement request</summary>
+  <summary>Achievements request</summary>
     <ul>
       <li>Id</li>
       <li>Neko_id</li>
@@ -204,6 +228,82 @@ SearchSimilarRanobe(int) // Find similar ranobe with ranobe ID. Check Manga/Rano
       <li>User_id</li>
       <li>Created_at</li>
       <li>Updated_at</li>
+    </ul>
+</details>
+
+<details>
+  <summary>RelatedAnimes request</summary>
+    <ul>
+      <li>Relation</li>
+      <li>Relation_Russian</li>
+      <li>
+        <details>
+          <summary>Anime</summary>
+            <ul>
+              <li>Id</li>
+              <li>Name</li>
+              <li>Russian</li>
+              <li>
+                <details>
+                  <summary>Image</summary>
+                    <ul>
+                      <li>Image.Original</li>
+                      <li>Image.Preview</li>
+                      <li>Image.X96</li>
+                      <li>Image.X48</li>
+                    </ul>
+                </details>
+              </li>
+              <li>Url</li>
+              <li>Kind</li>
+              <li>Score</li>
+              <li>Status</li>
+              <li>Episodes</li>
+              <li>Episodes_aired</li>
+              <li>Aired_on</li>
+              <li>Released_on</li>
+            </ul>
+        </details>
+      </li>
+      <li>Manga</li>
+    </ul>
+</details>
+
+<details>
+  <summary>RelatedMangas/Ranobes request</summary>
+    <ul>
+      <li>Relation</li>
+      <li>Relation_Russian</li>
+      <li>
+        <details>
+          <summary>Manga</summary>
+            <ul>
+              <li>Id</li>
+              <li>Name</li>
+              <li>Russian</li>
+              <li>
+                <details>
+                  <summary>Image</summary>
+                    <ul>
+                      <li>Image.Original</li>
+                      <li>Image.Preview</li>
+                      <li>Image.X96</li>
+                      <li>Image.X48</li>
+                    </ul>
+                </details>
+              </li>
+              <li>Url</li>
+              <li>Kind</li>
+              <li>Score</li>
+              <li>Status</li>
+              <li>Volumes</li>
+              <li>Chapters</li>
+              <li>Aired_on</li>
+              <li>Released_on</li>
+            </ul>
+        </details>
+      </li>
+      <li>Anime</li>
     </ul>
 </details>
 

@@ -56,16 +56,30 @@ func convertAchievements(i int) string {
   return fmt.Sprintf("achievements?user_id=%d", i)
 }
 
-func convertSimilarAnime(i int) string {
-  return fmt.Sprintf("animes/%d/similar", i)
+func convertSimilar(i int, s string) string {
+  switch s {
+  case "anime":
+    return fmt.Sprintf("animes/%d/similar", i)
+  case "manga":
+    return fmt.Sprintf("mangas/%d/similar", i)
+  case "ranobe":
+    return fmt.Sprintf("ranobe/%d/similar", i)
+  default:
+    return ""
+  }
 }
 
-func convertSimilarManga(i int) string {
-  return fmt.Sprintf("mangas/%d/similar", i)
-}
-
-func convertSimilarRanobe(i int) string {
-  return fmt.Sprintf("ranobe/%d/similar", i)
+func convertRelated(i int, s string) string {
+  switch s {
+  case "anime":
+    return fmt.Sprintf("animes/%d/related", i)
+  case "manga":
+    return fmt.Sprintf("mangas/%d/related", i)
+  case "ranobe":
+    return fmt.Sprintf("ranobe/%d/related", i)
+  default:
+    return ""
+  }
 }
 
 func NekoSearch(s string) string {
@@ -103,7 +117,7 @@ func (c *Configuration) SearchUser(s string) api.Users {
   defer resp.Body.Close()
 
   ok := checkStatus(resp.StatusCode); if ok != true {
-    log.Fatal("request failed, check your app or private key")
+    log.Fatal("request failed")
   }
 
   var u api.Users
@@ -129,7 +143,7 @@ func (c *Configuration) SearchAnime(s string) api.Animes {
   defer resp.Body.Close()
 
   ok := checkStatus(resp.StatusCode); if ok != true {
-    log.Fatal("request failed, check your app or private key")
+    log.Fatal("request failed")
   }
 
   var a []api.Animes
@@ -153,14 +167,14 @@ func (c *Configuration) SearchAnime(s string) api.Animes {
 
 func (c *Configuration) SearchSimilarAnime(i int) api.Animes {
   client := &http.Client{}
-  resp, err := client.Do(c.NewGetRequest(convertSimilarAnime(i)))
+  resp, err := client.Do(c.NewGetRequest(convertSimilar(i, "anime")))
   if err != nil {
     log.Fatal(err)
   }
   defer resp.Body.Close()
 
   ok := checkStatus(resp.StatusCode); if ok != true {
-    log.Fatal("request failed, check your app or private key")
+    log.Fatal("request failed")
   }
 
   var a []api.Animes
@@ -184,14 +198,14 @@ func (c *Configuration) SearchSimilarAnime(i int) api.Animes {
 
 func (c *Configuration) SearchSimilarManga(i int) api.Mangas {
   client := &http.Client{}
-  resp, err := client.Do(c.NewGetRequest(convertSimilarManga(i)))
+  resp, err := client.Do(c.NewGetRequest(convertSimilar(i, "manga")))
   if err != nil {
     log.Fatal(err)
   }
   defer resp.Body.Close()
 
   ok := checkStatus(resp.StatusCode); if ok != true {
-    log.Fatal("request failed, check your app or private key")
+    log.Fatal("request failed")
   }
 
   var m []api.Mangas
@@ -215,18 +229,111 @@ func (c *Configuration) SearchSimilarManga(i int) api.Mangas {
 
 func (c *Configuration) SearchSimilarRanobe(i int) api.Mangas {
   client := &http.Client{}
-  resp, err := client.Do(c.NewGetRequest(convertSimilarRanobe(i)))
+  resp, err := client.Do(c.NewGetRequest(convertSimilar(i, "ranobe")))
   if err != nil {
     log.Fatal(err)
   }
   defer resp.Body.Close()
 
   ok := checkStatus(resp.StatusCode); if ok != true {
-    log.Fatal("request failed, check your app or private key")
+    log.Fatal("request failed")
   }
 
   var m []api.Mangas
   var mm api.Mangas
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  if json.Unmarshal(data, &m); err != nil {
+    log.Fatal(err)
+  }
+
+  for _, value := range m {
+    mm = value
+  }
+
+  return mm
+}
+
+func (c *Configuration) SearchRelatedAnime(i int) api.RelatedAnimes {
+  client := &http.Client{}
+  resp, err := client.Do(c.NewGetRequest(convertRelated(i, "anime")))
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer resp.Body.Close()
+
+  ok := checkStatus(resp.StatusCode); if ok != true {
+    log.Fatal("request failed")
+  }
+
+  var a []api.RelatedAnimes
+  var aa api.RelatedAnimes
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  if json.Unmarshal(data, &a); err != nil {
+    log.Fatal(err)
+  }
+
+  for _, value := range a {
+    aa = value
+  }
+
+  return aa
+}
+
+func (c *Configuration) SearchRelatedManga(i int) api.RelatedMangas {
+  client := &http.Client{}
+  resp, err := client.Do(c.NewGetRequest(convertRelated(i, "manga")))
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer resp.Body.Close()
+
+  ok := checkStatus(resp.StatusCode); if ok != true {
+    log.Fatal("request failed")
+  }
+
+  var m []api.RelatedMangas
+  var mm api.RelatedMangas
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  if json.Unmarshal(data, &m); err != nil {
+    log.Fatal(err)
+  }
+
+  for _, value := range m {
+    mm = value
+  }
+
+  return mm
+}
+
+func (c *Configuration) SearchRelatedRanobe(i int) api.RelatedMangas {
+  client := &http.Client{}
+  resp, err := client.Do(c.NewGetRequest(convertRelated(i, "ranobe")))
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer resp.Body.Close()
+
+  ok := checkStatus(resp.StatusCode); if ok != true {
+    log.Fatal("request failed")
+  }
+
+  var m []api.RelatedMangas
+  var mm api.RelatedMangas
 
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
@@ -253,7 +360,7 @@ func (c *Configuration) SearchManga(s string) api.Mangas {
   defer resp.Body.Close()
 
   ok := checkStatus(resp.StatusCode); if ok != true {
-    log.Fatal("request failed, check your app or private key")
+    log.Fatal("request failed")
   }
 
   var m []api.Mangas
@@ -284,7 +391,7 @@ func (c *Configuration) SearchRanobe(s string) api.Mangas {
   defer resp.Body.Close()
 
   ok := checkStatus(resp.StatusCode); if ok != true {
-    log.Fatal("request failed, check your app or private key")
+    log.Fatal("request failed")
   }
 
   var r []api.Mangas
@@ -315,7 +422,7 @@ func (c *Configuration) SearchClub(s string) api.Clubs {
   defer resp.Body.Close()
 
   ok := checkStatus(resp.StatusCode); if ok != true {
-    log.Fatal("request failed, check your app or private key")
+    log.Fatal("request failed")
   }
 
   var l []api.Clubs
@@ -346,7 +453,7 @@ func (c *Configuration) SearchAchievement(i int) []api.Achievements {
   defer resp.Body.Close()
 
   ok := checkStatus(resp.StatusCode); if ok != true {
-    log.Fatal("request failed, check your app or private key")
+    log.Fatal("request failed")
   }
 
   var a []api.Achievements

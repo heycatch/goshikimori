@@ -97,3 +97,17 @@ type Achievements struct {
   Created_at time.Time `json:"created_at"`
   Updated_at time.Time `json:"updated_at"`
 }
+
+type RelatedAnimes struct {
+  Relation         string `json:"relation"`
+  Relation_Russian string `json:"relation_russian"`
+  Anime            Animes `json:"anime"`
+  Manga            bool   `json:"manga"`
+}
+
+type RelatedMangas struct {
+  Relation         string `json:"relation"`
+  Relation_Russian string `json:"relation_russian"`
+  Manga            Mangas `json:"manga"`
+  Anime            bool   `json:"anime"`
+}
