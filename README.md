@@ -98,6 +98,7 @@ SearchSimilarRanobe(int) // Find similar ranobe with ranobe ID. Check Mangas/Ran
 SearchRelatedAnime(int) // Find related anime with anime ID. Check RelatedAnimes request.
 SearchRelatedManga(int) // Find related manga with manga ID. Check RelatedMangas/Ranobes request.
 SearchRelatedRanobe(int) // Find related ranobe with ranobe ID. Check RelatedMangas/Ranobes request.
+SearchAnimeScreenshots(int) // Find anime-screenshots with anime ID. Check AnimeScreenshots request.
 ```
 
 ## Available API
@@ -304,6 +305,14 @@ SearchRelatedRanobe(int) // Find related ranobe with ranobe ID. Check RelatedMan
         </details>
       </li>
       <li>Anime</li>
+    </ul>
+</details>
+
+<details>
+  <summary>AnimeScreenshots request</summary>
+    <ul>
+      <li>Original</li>
+      <li>Preview</li>
     </ul>
 </details>
 

@@ -111,3 +111,8 @@ type RelatedMangas struct {
   Manga            Mangas `json:"manga"`
   Anime            bool   `json:"anime"`
 }
+
+type AnimeScreenshots struct {
+  Original string `json:"original"`
+  Preview  string `json:"preview"`
+}

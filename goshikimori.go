@@ -56,6 +56,10 @@ func convertAchievements(i int) string {
   return fmt.Sprintf("achievements?user_id=%d", i)
 }
 
+func convertAnimeScreenshots(i int) string {
+  return fmt.Sprintf("animes/%d/screenshots", i)
+}
+
 func convertSimilar(i int, s string) string {
   switch s {
   case "anime":
@@ -163,6 +167,37 @@ func (c *Configuration) SearchAnime(s string) api.Animes {
   }
 
   return aa
+}
+
+func (c *Configuration) SearchAnimeScreenshots(i int) api.AnimeScreenshots {
+  client := &http.Client{}
+  resp, err := client.Do(c.NewGetRequest(convertAnimeScreenshots(i)))
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer resp.Body.Close()
+
+  ok := checkStatus(resp.StatusCode); if ok != true {
+    log.Fatal("request failed")
+  }
+
+  var s []api.AnimeScreenshots
+  var ss api.AnimeScreenshots
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+
+  if json.Unmarshal(data, &s); err != nil {
+    log.Fatal(err)
+  }
+
+  for _, value := range s {
+    ss = value
+  }
+
+  return ss
 }
 
 func (c *Configuration) SearchSimilarAnime(i int) api.Animes {
