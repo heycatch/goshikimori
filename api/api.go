@@ -116,3 +116,13 @@ type AnimeScreenshots struct {
   Original string `json:"original"`
   Preview  string `json:"preview"`
 }
+
+type AnimeVideos struct {
+  Id         int    `json:"id"`
+  Url        string `json:"url"`
+  Image_url  string `json:"image_url"`
+  Player_url string `json:"player_url"`
+  Name       string `json:"name"`
+  Kind       string `json:"kind"`
+  Hosting    string `json:"hosting"`
+}

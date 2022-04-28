@@ -99,6 +99,7 @@ SearchRelatedAnime(int) // Find related anime with anime ID. Check RelatedAnimes
 SearchRelatedManga(int) // Find related manga with manga ID. Check RelatedMangas/Ranobes request.
 SearchRelatedRanobe(int) // Find related ranobe with ranobe ID. Check RelatedMangas/Ranobes request.
 SearchAnimeScreenshots(int) // Find anime-screenshots with anime ID. Check AnimeScreenshots request.
+SearchAnimeVideos(int) // Find anime-videos with anime ID. Check AnimeVideos request.
 ```
 
 ## Available API
@@ -313,6 +314,19 @@ SearchAnimeScreenshots(int) // Find anime-screenshots with anime ID. Check Anime
     <ul>
       <li>Original</li>
       <li>Preview</li>
+    </ul>
+</details>
+
+<details>
+  <summary>AnimeVideos request</summary>
+    <ul>
+      <li>Id</li>
+      <li>Url</li>
+      <li>Image_url</li>
+      <li>Player_url</li>
+      <li>Name</li>
+      <li>Kind</li>
+      <li>Hosting</li>
     </ul>
 </details>
 
