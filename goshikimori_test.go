@@ -1,6 +1,9 @@
 package goshikimori
 
-import "testing"
+import (
+  "time"
+  "testing"
+)
 
 const (
   api_test = ""
@@ -14,7 +17,7 @@ func conf() *Configuration {
   )
 }
 
-func validConst() bool {
+func start() bool {
   if api_test != "" && key_test != "" {
     return true
   }
@@ -22,7 +25,7 @@ func validConst() bool {
 }
 
 func TestUser(t *testing.T) {
-  if ok := validConst(); ok == false {
+  if ok := start(); ok == false {
     t.Log("not found application or key")
   }
 
@@ -37,7 +40,7 @@ func TestUser(t *testing.T) {
 }
 
 func TestAnimes(t *testing.T) {
-  if ok := validConst(); ok == false {
+  if ok := start(); ok == false {
     t.Log("not found application or key")
   }
 
@@ -52,7 +55,7 @@ func TestAnimes(t *testing.T) {
 }
 
 func TestMangas(t *testing.T) {
-  if ok := validConst(); ok == false {
+  if ok := start(); ok == false {
     t.Log("not found application or key")
   }
 
@@ -67,7 +70,7 @@ func TestMangas(t *testing.T) {
 }
 
 func TestRanobe(t *testing.T) {
-  if ok := validConst(); ok == false {
+  if ok := start(); ok == false {
     t.Log("not found application or key")
   }
 
@@ -82,7 +85,7 @@ func TestRanobe(t *testing.T) {
 }
 
 func TestClub(t *testing.T) {
-  if ok := validConst(); ok == false {
+  if ok := start(); ok == false {
     t.Log("not found application or key")
   }
 
@@ -97,7 +100,7 @@ func TestClub(t *testing.T) {
 }
 
 func TestAchievements(t *testing.T) {
-  if ok := validConst(); ok == false {
+  if ok := start(); ok == false {
     t.Log("not found application or key")
   }
 
@@ -113,5 +116,25 @@ func TestAchievements(t *testing.T) {
         t.Errorf("Not found %d progress", v.Progress)
       }
     }
+  }
+}
+
+func TestAnimeVideos(t *testing.T) {
+  if ok := start(); ok == false {
+    t.Log("not found application or key")
+  }
+
+  // too many requests at once
+  t.Log("Waiting 5 seconds...")
+  time.Sleep(5 * time.Second)
+
+  c := conf()
+  a := c.SearchAnime("initial d first stage")
+  v := c.SearchAnimeVideos(a.Id)
+
+  if v.Id == 24085 {
+    t.Logf("Found %s", v.Name)
+  } else {
+    t.Log("Videos not found")
   }
 }
