@@ -91,17 +91,14 @@ func main() {
 ```golang
 SearchUser(string) // Find users. Check Users request.
 SearchAnime(string) // Find animes. Check Animes request.
-SearchManga(string) // Find mangas. Check Mangas/Ranobes request.
-SearchRanobe(string) // Find ranobes. Check Mangas/Ranobes request.
+SearchManga(string) // Find mangas. Check Mangas request.
 SearchClub(string) // Find clubs. Check Clubs request.
 SearchAchievement(int) // Find achievements with anime ID. Check Achievements request.
 NekoSearch(string) // Search by anime name in achievements.
 SearchSimilarAnime(int) // Find similar anime with anime ID. Check Animes request.
-SearchSimilarManga(int) // Find similar manga with manga ID. Check Mangas/Ranobes request.
-SearchSimilarRanobe(int) // Find similar ranobe with ranobe ID. Check Mangas/Ranobes request.
+SearchSimilarManga(int) // Find similar manga with manga ID. Check Mangas request.
 SearchRelatedAnime(int) // Find related anime with anime ID. Check RelatedAnimes request.
-SearchRelatedManga(int) // Find related manga with manga ID. Check RelatedMangas/Ranobes request.
-SearchRelatedRanobe(int) // Find related ranobe with ranobe ID. Check RelatedMangas/Ranobes request.
+SearchRelatedManga(int) // Find related manga with manga ID. Check RelatedMangas request.
 SearchAnimeScreenshots(int) // Find anime-screenshots with anime ID. Check AnimeScreenshots request.
 SearchAnimeVideos(int) // Find anime-videos with anime ID. Check AnimeVideos request.
 ```
@@ -174,7 +171,7 @@ SearchAnimeVideos(int) // Find anime-videos with anime ID. Check AnimeVideos req
 </details>
 
 <details>
-  <summary>Mangas/Ranobes request</summary>
+  <summary>Mangas request</summary>
     <ul>
       <li>Id</li>
       <li>Name</li>
@@ -276,7 +273,7 @@ SearchAnimeVideos(int) // Find anime-videos with anime ID. Check AnimeVideos req
 </details>
 
 <details>
-  <summary>RelatedMangas/Ranobes request</summary>
+  <summary>RelatedMangas request</summary>
     <ul>
       <li>Relation</li>
       <li>Relation_Russian</li>

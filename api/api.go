@@ -126,3 +126,19 @@ type AnimeVideos struct {
   Kind       string `json:"kind"`
   Hosting    string `json:"hosting"`
 }
+
+// NOTES: removed Person -> nil
+// becuase nil is not a type
+type Characters struct {
+  Id      int       `json:"id"`
+  Name    string    `json:"name"`
+  Russian string    `json:"russian"`
+  Image   AnimeSize `json:"image"`
+  Url     string    `json:"url"`
+}
+
+type Roles struct {
+  Roles         []string   `json:"roles"`
+  Roles_Russian []string   `json:"roles_russian"`
+  Character     Characters `json:"character"`
+}

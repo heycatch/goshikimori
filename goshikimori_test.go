@@ -69,21 +69,6 @@ func TestMangas(t *testing.T) {
   }
 }
 
-func TestRanobe(t *testing.T) {
-  if ok := start(); ok == false {
-    t.Log("not found application or key")
-  }
-
-  c := conf()
-  r := c.SearchRanobe("Vampire Knight")
-
-  if r.Volumes == 1 && r.Chapters == 6 {
-    t.Logf("Ranobe %s id %d - found", r.Name, r.Id)
-  } else {
-    t.Errorf("Ranobe %s id %d - not found", r.Name, r.Id)
-  }
-}
-
 func TestClub(t *testing.T) {
   if ok := start(); ok == false {
     t.Log("not found application or key")
@@ -104,6 +89,10 @@ func TestAchievements(t *testing.T) {
     t.Log("not found application or key")
   }
 
+  // too many requests at once
+  t.Log("Waiting 5 seconds...")
+  time.Sleep(5 * time.Second)
+
   c := conf()
   u := c.SearchUser("incarnati0n")
   r := c.SearchAchievement(u.Id)
@@ -123,10 +112,6 @@ func TestAnimeVideos(t *testing.T) {
   if ok := start(); ok == false {
     t.Log("not found application or key")
   }
-
-  // too many requests at once
-  t.Log("Waiting 5 seconds...")
-  time.Sleep(5 * time.Second)
 
   c := conf()
   a := c.SearchAnime("initial d first stage")

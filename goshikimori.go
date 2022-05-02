@@ -70,15 +70,19 @@ func readData(data []byte, s string) {
     if reflect.DeepEqual(data, []byte{91, 93}) {
       log.Fatal(c)
     }
-  case "anime", "manga", "ranobe":
+  case "anime", "manga":
     if reflect.DeepEqual(data, []byte{91, 93}) {
       log.Fatal(c)
     }
-  case "similarAnime", "similarManga", "similarRanobe":
+  case "similarAnime", "similarManga":
     if reflect.DeepEqual(data, []byte{91, 93}) {
       log.Fatal(c)
     }
-  case "relatedAnime", "relatedManga", "relatedRanobe":
+  case "relatedAnime", "relatedManga":
+    if reflect.DeepEqual(data, []byte{91, 93}) {
+      log.Fatal(c)
+    }
+  case "rolesAnime", "rolesManga":
     if reflect.DeepEqual(data, []byte{91, 93}) {
       log.Fatal(c)
     }
@@ -97,14 +101,23 @@ func convertAnimeVideos(i int) string {
   return fmt.Sprintf("animes/%d/videos", i)
 }
 
+func convertRoles(i int, s string) string {
+  switch s {
+  case "anime":
+    return fmt.Sprintf("animes/%d/roles", i)
+  case "manga":
+    return fmt.Sprintf("mangas/%d/roles", i)
+  default:
+    return ""
+  }
+}
+
 func convertSimilar(i int, s string) string {
   switch s {
   case "anime":
     return fmt.Sprintf("animes/%d/similar", i)
   case "manga":
     return fmt.Sprintf("mangas/%d/similar", i)
-  case "ranobe":
-    return fmt.Sprintf("ranobe/%d/similar", i)
   default:
     return ""
   }
@@ -116,13 +129,12 @@ func convertRelated(i int, s string) string {
     return fmt.Sprintf("animes/%d/related", i)
   case "manga":
     return fmt.Sprintf("mangas/%d/related", i)
-  case "ranobe":
-    return fmt.Sprintf("ranobe/%d/related", i)
   default:
     return ""
   }
 }
 
+// String formatting for achievements search
 func NekoSearch(s string) string {
   r := strings.Replace(strings.ToLower(s), " ", "_", -1)
   return fmt.Sprintf("%s", r)
@@ -277,34 +289,6 @@ func (c *Configuration) SearchSimilarManga(i int) api.Mangas {
   return mm
 }
 
-func (c *Configuration) SearchSimilarRanobe(i int) api.Mangas {
-  resp, err := client.Do(c.NewGetRequest(
-    convertSimilar(i, "ranobe")))
-  if err != nil {
-    log.Fatal(err)
-  }
-  defer resp.Body.Close()
-
-  var m []api.Mangas
-  var mm api.Mangas
-
-  data, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    log.Fatal(err)
-  }
-  readData(data, "similarRanobe")
-
-  if err := json.Unmarshal(data, &m); err != nil {
-    log.Fatal(err)
-  }
-
-  for _, value := range m {
-    mm = value
-  }
-
-  return mm
-}
-
 func (c *Configuration) SearchRelatedAnime(i int) api.RelatedAnimes {
   resp, err := client.Do(c.NewGetRequest(
     convertRelated(i, "anime")))
@@ -361,34 +345,6 @@ func (c *Configuration) SearchRelatedManga(i int) api.RelatedMangas {
   return mm
 }
 
-func (c *Configuration) SearchRelatedRanobe(i int) api.RelatedMangas {
-  resp, err := client.Do(c.NewGetRequest(
-    convertRelated(i, "ranobe")))
-  if err != nil {
-    log.Fatal(err)
-  }
-  defer resp.Body.Close()
-
-  var m []api.RelatedMangas
-  var mm api.RelatedMangas
-
-  data, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    log.Fatal(err)
-  }
-  readData(data, "relatedRanobe")
-
-  if err := json.Unmarshal(data, &m); err != nil {
-    log.Fatal(err)
-  }
-
-  for _, value := range m {
-    mm = value
-  }
-
-  return mm
-}
-
 func (c *Configuration) SearchManga(s string) api.Mangas {
   resp, err := client.Do(c.NewGetRequest(
     "mangas?search=" + url.QueryEscape(s)))
@@ -415,34 +371,6 @@ func (c *Configuration) SearchManga(s string) api.Mangas {
   }
 
   return mm
-}
-
-func (c *Configuration) SearchRanobe(s string) api.Mangas {
-  resp, err := client.Do(c.NewGetRequest(
-    "ranobe?search=" + url.QueryEscape(s)))
-  if err != nil {
-    log.Fatal(err)
-  }
-  defer resp.Body.Close()
-
-  var r []api.Mangas
-  var rr api.Mangas
-
-  data, err := ioutil.ReadAll(resp.Body)
-  if err != nil {
-    log.Fatal(err)
-  }
-  readData(data, "ranobe")
-
-  if err := json.Unmarshal(data, &r); err != nil {
-    log.Fatal(err)
-  }
-
-  for _, value := range r {
-    rr = value
-  }
-
-  return rr
 }
 
 func (c *Configuration) SearchClub(s string) api.Clubs {
@@ -523,4 +451,60 @@ func (c *Configuration) SearchAnimeVideos(i int) api.AnimeVideos {
   }
 
   return vv
+}
+
+func (c *Configuration) SearchAnimeRoles(i int) api.Roles {
+  resp, err := client.Do(c.NewGetRequest(
+    convertRoles(i, "anime")))
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer resp.Body.Close()
+
+  var r []api.Roles
+  var rr api.Roles
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+  readData(data, "rolesAnime")
+
+  if err := json.Unmarshal(data, &r); err != nil {
+    log.Fatal(err)
+  }
+
+  for _, value := range r {
+    rr = value
+  }
+
+  return rr
+}
+
+func (c *Configuration) SearchMangaRoles(i int) api.Roles {
+  resp, err := client.Do(c.NewGetRequest(
+    convertRoles(i, "manga")))
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer resp.Body.Close()
+
+  var r []api.Roles
+  var rr api.Roles
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+  readData(data, "rolesManga")
+
+  if err := json.Unmarshal(data, &r); err != nil {
+    log.Fatal(err)
+  }
+
+  for _, value := range r {
+    rr = value
+  }
+
+  return rr
 }
