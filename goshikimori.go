@@ -102,36 +102,15 @@ func convertAnimeVideos(i int) string {
 }
 
 func convertRoles(i int, s string) string {
-  switch s {
-  case "anime":
-    return fmt.Sprintf("animes/%d/roles", i)
-  case "manga":
-    return fmt.Sprintf("mangas/%d/roles", i)
-  default:
-    return ""
-  }
+  return fmt.Sprintf("%s/%d/roles", s, i)
 }
 
 func convertSimilar(i int, s string) string {
-  switch s {
-  case "anime":
-    return fmt.Sprintf("animes/%d/similar", i)
-  case "manga":
-    return fmt.Sprintf("mangas/%d/similar", i)
-  default:
-    return ""
-  }
+  return fmt.Sprintf("%s/%d/similar", s, i)
 }
 
 func convertRelated(i int, s string) string {
-  switch s {
-  case "anime":
-    return fmt.Sprintf("animes/%d/related", i)
-  case "manga":
-    return fmt.Sprintf("mangas/%d/related", i)
-  default:
-    return ""
-  }
+  return fmt.Sprintf("%s/%d/related", s, i)
 }
 
 // String formatting for achievements search
@@ -235,7 +214,7 @@ func (c *Configuration) SearchAnimeScreenshots(i int) api.AnimeScreenshots {
 
 func (c *Configuration) SearchSimilarAnime(i int) api.Animes {
   resp, err := client.Do(c.NewGetRequest(
-    convertSimilar(i, "anime")))
+    convertSimilar(i, "animes")))
   if err != nil {
     log.Fatal(err)
   }
@@ -263,7 +242,7 @@ func (c *Configuration) SearchSimilarAnime(i int) api.Animes {
 
 func (c *Configuration) SearchSimilarManga(i int) api.Mangas {
   resp, err := client.Do(c.NewGetRequest(
-    convertSimilar(i, "manga")))
+    convertSimilar(i, "mangas")))
   if err != nil {
     log.Fatal(err)
   }
@@ -291,7 +270,7 @@ func (c *Configuration) SearchSimilarManga(i int) api.Mangas {
 
 func (c *Configuration) SearchRelatedAnime(i int) api.RelatedAnimes {
   resp, err := client.Do(c.NewGetRequest(
-    convertRelated(i, "anime")))
+    convertRelated(i, "animes")))
   if err != nil {
     log.Fatal(err)
   }
@@ -319,7 +298,7 @@ func (c *Configuration) SearchRelatedAnime(i int) api.RelatedAnimes {
 
 func (c *Configuration) SearchRelatedManga(i int) api.RelatedMangas {
   resp, err := client.Do(c.NewGetRequest(
-    convertRelated(i, "manga")))
+    convertRelated(i, "mangas")))
   if err != nil {
     log.Fatal(err)
   }
@@ -455,7 +434,7 @@ func (c *Configuration) SearchAnimeVideos(i int) api.AnimeVideos {
 
 func (c *Configuration) SearchAnimeRoles(i int) api.Roles {
   resp, err := client.Do(c.NewGetRequest(
-    convertRoles(i, "anime")))
+    convertRoles(i, "animes")))
   if err != nil {
     log.Fatal(err)
   }
@@ -483,7 +462,7 @@ func (c *Configuration) SearchAnimeRoles(i int) api.Roles {
 
 func (c *Configuration) SearchMangaRoles(i int) api.Roles {
   resp, err := client.Do(c.NewGetRequest(
-    convertRoles(i, "manga")))
+    convertRoles(i, "mangas")))
   if err != nil {
     log.Fatal(err)
   }

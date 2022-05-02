@@ -270,7 +270,6 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
             </ul>
         </details>
       </li>
-      <li>Manga</li>
     </ul>
 </details>
 
@@ -308,7 +307,6 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
             </ul>
         </details>
       </li>
-      <li>Anime</li>
     </ul>
 </details>
 

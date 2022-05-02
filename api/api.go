@@ -98,18 +98,20 @@ type Achievements struct {
   Updated_at time.Time `json:"updated_at"`
 }
 
+// NOTES: removed Manga -> bool
+// json: cannot unmarshal manga now
 type RelatedAnimes struct {
   Relation         string `json:"relation"`
   Relation_Russian string `json:"relation_russian"`
   Anime            Animes `json:"anime"`
-  Manga            bool   `json:"manga"`
 }
 
+// NOTES: removed Anime -> bool
+// json: cannot unmarshal anime now
 type RelatedMangas struct {
   Relation         string `json:"relation"`
   Relation_Russian string `json:"relation_russian"`
   Manga            Mangas `json:"manga"`
-  Anime            bool   `json:"anime"`
 }
 
 type AnimeScreenshots struct {
@@ -127,8 +129,6 @@ type AnimeVideos struct {
   Hosting    string `json:"hosting"`
 }
 
-// NOTES: removed Person -> nil
-// becuase nil is not a type
 type Characters struct {
   Id      int       `json:"id"`
   Name    string    `json:"name"`
@@ -137,6 +137,8 @@ type Characters struct {
   Url     string    `json:"url"`
 }
 
+// NOTES: removed Person -> nil
+// becuase nil is not a type
 type Roles struct {
   Roles         []string   `json:"roles"`
   Roles_Russian []string   `json:"roles_russian"`
