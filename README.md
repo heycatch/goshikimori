@@ -101,6 +101,8 @@ SearchRelatedAnime(int) // Find related anime with anime ID. Check RelatedAnimes
 SearchRelatedManga(int) // Find related manga with manga ID. Check RelatedMangas request.
 SearchAnimeScreenshots(int) // Find anime-screenshots with anime ID. Check AnimeScreenshots request.
 SearchAnimeVideos(int) // Find anime-videos with anime ID. Check AnimeVideos request.
+SearchAnimeRoles(int) // Find anime roles with anime ID. Check AnimeRoles/MangaRoles request.
+SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaRoles request.
 ```
 
 ## Available API
@@ -328,6 +330,36 @@ SearchAnimeVideos(int) // Find anime-videos with anime ID. Check AnimeVideos req
       <li>Name</li>
       <li>Kind</li>
       <li>Hosting</li>
+    </ul>
+</details>
+
+<details>
+  <summary>AnimeRoles/MangaRoles request</summary>
+    <ul>
+      <li>Roles</li>
+      <li>Roles_Russian</li>
+      <li>
+        <details>
+          <summary>Character</summary>
+          <ul>
+            <li>Id</li>
+            <li>Name</li>
+            <li>Russian</li>
+            <li>
+              <details>
+                <summary>Image</summary>
+                  <ul>
+                    <li>Image.Original</li>
+                    <li>Image.Preview</li>
+                    <li>Image.X96</li>
+                    <li>Image.X48</li>
+                  </ul>
+              </details>
+            </li>
+          </ul>
+          <li>Url</li>
+        </details>
+      </li>
     </ul>
 </details>
 
