@@ -21,16 +21,6 @@ const (
   urlShiki = "shikimori.one/api"
 )
 
-var page_not_found = []byte{
-  123, 34, 109, 101, 115, 115, 97, 103,
-  101, 34, 58, 34, 208, 161, 209, 130, 209,
-  128, 208, 176, 208, 189, 208, 184, 209, 134,
-  208, 176, 32, 208, 189, 208, 181, 32, 208,
-  189, 208, 176, 208, 185, 208, 180, 208, 181,
-  208, 189, 208, 176, 34, 44, 34, 99, 111, 100,
-  101, 34, 58, 52, 48, 52, 125,
-}
-
 var client = &http.Client{}
 
 type Configuration struct {
@@ -50,42 +40,17 @@ func (c *CustomError) Error() string {
   return fmt.Sprintf("Not found %s", c.Err)
 }
 
-func readData(data []byte, s string) {
-  c := &CustomError{Err: errors.New(s)}
+func readStatusCode(code int, name string) {
+  c := &CustomError{Err: errors.New(name)}
+  if code == 404 {
+    log.Fatal(c)
+  }
+}
 
-  switch s {
-  case "user":
-    if reflect.DeepEqual(data, page_not_found) {
-      log.Fatal(c)
-    }
-  case "videos":
-    if reflect.DeepEqual(data, []byte{91, 93}) {
-      log.Fatal(c)
-    }
-  case "screenshots":
-    if reflect.DeepEqual(data, []byte{91, 93}) {
-      log.Fatal(c)
-    }
-  case "clubs":
-    if reflect.DeepEqual(data, []byte{91, 93}) {
-      log.Fatal(c)
-    }
-  case "anime", "manga":
-    if reflect.DeepEqual(data, []byte{91, 93}) {
-      log.Fatal(c)
-    }
-  case "similarAnime", "similarManga":
-    if reflect.DeepEqual(data, []byte{91, 93}) {
-      log.Fatal(c)
-    }
-  case "relatedAnime", "relatedManga":
-    if reflect.DeepEqual(data, []byte{91, 93}) {
-      log.Fatal(c)
-    }
-  case "rolesAnime", "rolesManga":
-    if reflect.DeepEqual(data, []byte{91, 93}) {
-      log.Fatal(c)
-    }
+func readData(data []byte, name string) {
+  c := &CustomError{Err: errors.New(name)}
+  if reflect.DeepEqual(data, []byte{91, 93}) {
+    log.Fatal(c)
   }
 }
 
@@ -142,13 +107,14 @@ func (c *Configuration) SearchUser(s string) api.Users {
   }
   defer resp.Body.Close()
 
+  readStatusCode(resp.StatusCode, "user")
+
   var u api.Users
 
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
     log.Fatal(err)
   }
-  readData(data, "user")
 
   if err := json.Unmarshal(data, &u); err != nil {
     log.Fatal(err)
@@ -367,7 +333,7 @@ func (c *Configuration) SearchClub(s string) api.Clubs {
   if err != nil {
     log.Fatal(err)
   }
-  readData(data, "clubs")
+  readData(data, "club")
 
   if err := json.Unmarshal(data, &l); err != nil {
     log.Fatal(err)
