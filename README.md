@@ -35,6 +35,7 @@ func main() {
 package main
 
 import (
+  "os"
   "fmt"
 
   g "github.com/vexilology/goshikimori"
@@ -55,6 +56,9 @@ func main() {
     if v.Neko_id == g.NekoSearch("Initial D") {
       fmt.Printf("level: %d - progress %d\n", v.Level, v.Progress)
       fmt.Printf("created: %v - updated: %v\n", v.Created_at, v.Updated_at)
+    } else {
+      fmt.Println("Achievement not found")
+      os.Exit(1)
     }
   }
 }

@@ -8,6 +8,8 @@ import (
   "strings"
   "encoding/json"
   "net/url"
+  "errors"
+  "reflect"
 
   "github.com/vexilology/goshikimori/api"
 )
@@ -19,6 +21,16 @@ const (
   urlShiki = "shikimori.one/api"
 )
 
+var page_not_found = []byte{
+  123, 34, 109, 101, 115, 115, 97, 103,
+  101, 34, 58, 34, 208, 161, 209, 130, 209,
+  128, 208, 176, 208, 189, 208, 184, 209, 134,
+  208, 176, 32, 208, 189, 208, 181, 32, 208,
+  189, 208, 176, 208, 185, 208, 180, 208, 181,
+  208, 189, 208, 176, 34, 44, 34, 99, 111, 100,
+  101, 34, 58, 52, 48, 52, 125,
+}
+
 var client = &http.Client{}
 
 type Configuration struct {
@@ -28,6 +40,49 @@ type Configuration struct {
 
 func Add(app, key string) *Configuration {
   return &Configuration{Application: app, PrivateKey: key}
+}
+
+type CustomError struct {
+  Err error
+}
+
+func (c *CustomError) Error() string {
+  return fmt.Sprintf("Not found %s", c.Err)
+}
+
+func readData(data []byte, s string) {
+  c := &CustomError{Err: errors.New(s)}
+
+  switch s {
+  case "user":
+    if reflect.DeepEqual(data, page_not_found) {
+      log.Fatal(c)
+    }
+  case "videos":
+    if reflect.DeepEqual(data, []byte{91, 93}) {
+      log.Fatal(c)
+    }
+  case "screenshots":
+    if reflect.DeepEqual(data, []byte{91, 93}) {
+      log.Fatal(c)
+    }
+  case "clubs":
+    if reflect.DeepEqual(data, []byte{91, 93}) {
+      log.Fatal(c)
+    }
+  case "anime", "manga", "ranobe":
+    if reflect.DeepEqual(data, []byte{91, 93}) {
+      log.Fatal(c)
+    }
+  case "similarAnime", "similarManga", "similarRanobe":
+    if reflect.DeepEqual(data, []byte{91, 93}) {
+      log.Fatal(c)
+    }
+  case "relatedAnime", "relatedManga", "relatedRanobe":
+    if reflect.DeepEqual(data, []byte{91, 93}) {
+      log.Fatal(c)
+    }
+  }
 }
 
 func convertAchievements(i int) string {
@@ -87,6 +142,7 @@ func (c *Configuration) NewGetRequest(f string) *http.Request {
   return req
 }
 
+// NOTES: search by user is case sensitive
 func (c *Configuration) SearchUser(s string) api.Users {
   resp, err := client.Do(c.NewGetRequest(
     "users/" + url.QueryEscape(s)))
@@ -101,8 +157,9 @@ func (c *Configuration) SearchUser(s string) api.Users {
   if err != nil {
     log.Fatal(err)
   }
+  readData(data, "user")
 
-  if json.Unmarshal(data, &u); err != nil {
+  if err := json.Unmarshal(data, &u); err != nil {
     log.Fatal(err)
   }
 
@@ -124,8 +181,9 @@ func (c *Configuration) SearchAnime(s string) api.Animes {
   if err != nil {
     log.Fatal(err)
   }
+  readData(data, "anime")
 
-  if json.Unmarshal(data, &a); err != nil {
+  if err := json.Unmarshal(data, &a); err != nil {
     log.Fatal(err)
   }
 
@@ -150,8 +208,9 @@ func (c *Configuration) SearchAnimeScreenshots(i int) api.AnimeScreenshots {
   if err != nil {
     log.Fatal(err)
   }
+  readData(data, "screenshots")
 
-  if json.Unmarshal(data, &s); err != nil {
+  if err := json.Unmarshal(data, &s); err != nil {
     log.Fatal(err)
   }
 
@@ -177,8 +236,9 @@ func (c *Configuration) SearchSimilarAnime(i int) api.Animes {
   if err != nil {
     log.Fatal(err)
   }
+  readData(data, "similarAnime")
 
-  if json.Unmarshal(data, &a); err != nil {
+  if err := json.Unmarshal(data, &a); err != nil {
     log.Fatal(err)
   }
 
@@ -204,8 +264,9 @@ func (c *Configuration) SearchSimilarManga(i int) api.Mangas {
   if err != nil {
     log.Fatal(err)
   }
+  readData(data, "similarManga")
 
-  if json.Unmarshal(data, &m); err != nil {
+  if err := json.Unmarshal(data, &m); err != nil {
     log.Fatal(err)
   }
 
@@ -231,8 +292,9 @@ func (c *Configuration) SearchSimilarRanobe(i int) api.Mangas {
   if err != nil {
     log.Fatal(err)
   }
+  readData(data, "similarRanobe")
 
-  if json.Unmarshal(data, &m); err != nil {
+  if err := json.Unmarshal(data, &m); err != nil {
     log.Fatal(err)
   }
 
@@ -258,8 +320,9 @@ func (c *Configuration) SearchRelatedAnime(i int) api.RelatedAnimes {
   if err != nil {
     log.Fatal(err)
   }
+  readData(data, "relatedAnime")
 
-  if json.Unmarshal(data, &a); err != nil {
+  if err := json.Unmarshal(data, &a); err != nil {
     log.Fatal(err)
   }
 
@@ -285,8 +348,9 @@ func (c *Configuration) SearchRelatedManga(i int) api.RelatedMangas {
   if err != nil {
     log.Fatal(err)
   }
+  readData(data, "relatedManga")
 
-  if json.Unmarshal(data, &m); err != nil {
+  if err := json.Unmarshal(data, &m); err != nil {
     log.Fatal(err)
   }
 
@@ -312,8 +376,9 @@ func (c *Configuration) SearchRelatedRanobe(i int) api.RelatedMangas {
   if err != nil {
     log.Fatal(err)
   }
+  readData(data, "relatedRanobe")
 
-  if json.Unmarshal(data, &m); err != nil {
+  if err := json.Unmarshal(data, &m); err != nil {
     log.Fatal(err)
   }
 
@@ -339,8 +404,9 @@ func (c *Configuration) SearchManga(s string) api.Mangas {
   if err != nil {
     log.Fatal(err)
   }
+  readData(data, "manga")
 
-  if json.Unmarshal(data, &m); err != nil {
+  if err := json.Unmarshal(data, &m); err != nil {
     log.Fatal(err)
   }
 
@@ -366,8 +432,9 @@ func (c *Configuration) SearchRanobe(s string) api.Mangas {
   if err != nil {
     log.Fatal(err)
   }
+  readData(data, "ranobe")
 
-  if json.Unmarshal(data, &r); err != nil {
+  if err := json.Unmarshal(data, &r); err != nil {
     log.Fatal(err)
   }
 
@@ -393,8 +460,9 @@ func (c *Configuration) SearchClub(s string) api.Clubs {
   if err != nil {
     log.Fatal(err)
   }
+  readData(data, "clubs")
 
-  if json.Unmarshal(data, &l); err != nil {
+  if err := json.Unmarshal(data, &l); err != nil {
     log.Fatal(err)
   }
 
@@ -405,6 +473,10 @@ func (c *Configuration) SearchClub(s string) api.Clubs {
   return ll
 }
 
+// NOTES: as a result, we return a complete list of all achievements.
+// Next comes the filtering through "NekoSearch" and the error about obtaining
+// specific achievements is already being processed there.
+// See example in README.md
 func (c *Configuration) SearchAchievement(i int) []api.Achievements {
   resp, err := client.Do(c.NewGetRequest(convertAchievements(i)))
   if err != nil {
@@ -419,7 +491,7 @@ func (c *Configuration) SearchAchievement(i int) []api.Achievements {
     log.Fatal(err)
   }
 
-  if json.Unmarshal(data, &a); err != nil {
+  if err := json.Unmarshal(data, &a); err != nil {
     log.Fatal(err)
   }
 
@@ -440,8 +512,9 @@ func (c *Configuration) SearchAnimeVideos(i int) api.AnimeVideos {
   if err != nil {
     log.Fatal(err)
   }
+  readData(data, "videos")
 
-  if json.Unmarshal(data, &v); err != nil {
+  if err := json.Unmarshal(data, &v); err != nil {
     log.Fatal(err)
   }
 
