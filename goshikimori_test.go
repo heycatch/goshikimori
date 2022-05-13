@@ -3,7 +3,16 @@ package goshikimori
 import (
   "time"
   "testing"
+  "fmt"
 )
+
+type StatusBar struct {
+  Percent int
+  Cur     int
+  Total   int
+  Rate    string
+  Graph   string
+}
 
 const (
   api_test = ""
@@ -16,6 +25,40 @@ func conf() *Configuration {
     key_test,
   )
 }
+
+func (s *StatusBar) NewOption(start, end int) {
+  s.Cur = start
+  s.Total = end
+
+  if s.Graph == "" {
+    s.Graph = "#"
+  }
+
+  s.Percent = s.getPercent()
+
+  for i := 0; i < int(s.Percent); i += 2 {
+    s.Rate += s.Graph
+  }
+}
+
+func (s *StatusBar) getPercent() int {
+  return int((float32(s.Cur) / float32(s.Total)) * 100)
+}
+
+func (s *StatusBar) Play(cur int) {
+  s.Cur = cur
+  last := s.Percent
+  s.Percent = s.getPercent()
+
+  if s.Percent != last && s.Percent%2 == 0 {
+    s.Rate += s.Graph
+  }
+
+  fmt.Printf("\r[%-10s]%3d%% %8d/%d",
+    s.Rate, s.Percent, s.Cur, s.Total)
+}
+
+func (s *StatusBar) Finish() { fmt.Println() }
 
 func start() bool {
   if api_test != "" && key_test != "" {
@@ -85,13 +128,19 @@ func TestClub(t *testing.T) {
 }
 
 func TestAchievements(t *testing.T) {
+  var s StatusBar
+
   if ok := start(); ok == false {
     t.Log("not found application or key")
   }
 
-  // too many requests at once
-  t.Log("Waiting 5 seconds...")
-  time.Sleep(5 * time.Second)
+  fmt.Println("Too many requests at once, waiting 10 seconds...")
+  s.NewOption(0, 10)
+  for i := 0; i <= 10; i++ {
+    s.Play(int(i))
+    time.Sleep(1 * time.Second)
+  }
+  s.Finish()
 
   c := conf()
   u := c.SearchUser("incarnati0n")
