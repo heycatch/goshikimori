@@ -642,3 +642,25 @@ func (c *Configuration) SearchMangaRoles(i int) api.Roles {
 
   return rr
 }
+
+func (c *Configuration) SearchBans() []api.Bans {
+  resp, err := client.Do(c.NewGetRequest("bans"))
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer resp.Body.Close()
+
+  var b []api.Bans
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+  readData(data, "bans")
+
+  if err := json.Unmarshal(data, &b); err != nil {
+    log.Fatal(err)
+  }
+
+  return b
+}

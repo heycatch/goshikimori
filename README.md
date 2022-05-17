@@ -29,6 +29,7 @@ SearchAnimeScreenshots(int) // Find anime-screenshots with anime ID. Check Anime
 SearchAnimeVideos(int) // Find anime-videos with anime ID. Check AnimeVideos request.
 SearchAnimeRoles(int) // Find anime roles with anime ID. Check AnimeRoles/MangaRoles request.
 SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaRoles request.
+SearchBans() // Find last bans. Check Bans request.
 ```
 
 ## Available API
@@ -55,18 +56,18 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
       <li>Online</li>
       <li>Name</li>
       <li>Sex</li>
-      <li>Full_Years</li>
-      <li>Last_Online</li>
+      <li>Full_years</li>
+      <li>Last_online</li>
       <li>Website</li>
       <li>Location</li>
       <li>Banned</li>
       <li>About</li>
       <li>AboutHTML</li>
       <li>Common_Info</li>
-      <li>Show_Comments</li>
-      <li>In_Friends</li>
-      <li>Is_Ignored</li>
-      <li>Style_Id</li>
+      <li>Show_comments</li>
+      <li>In_friends</li>
+      <li>Is_ignored</li>
+      <li>Style_id</li>
     </ul>
 </details>
 <details>
@@ -298,6 +299,57 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
           </ul>
         </details>
       </li>
+    </ul>
+</details>
+<details>
+  <summary>Bans request</summary>
+    <ul>
+      <li>Id</li>
+      <li>User_id</li>
+      <li>
+        <details>
+          <summary>Comment</summary>
+          <ul>
+            <li>Id</li>
+            <li>Commentable_id</li>
+            <li>Commentable_type</li>
+            <li>Body</li>
+            <li>User_id</li>
+            <li>Created_at</li>
+            <li>Updated_at</li>
+            <li>Is_offtopic</li>
+          </ul>
+        </details>
+      </li>
+      <li>Moderator_id</li>
+      <li>Reason</li>
+      <li>Created_at</li>
+      <li>Duration_minutes</li>
+      <li>
+        <details>
+          <summary>User</summary>
+          <ul>
+            <li>Id</li>
+            <li>Nickname</li>
+            <li>Avatar</li>
+            <li>
+              <details>
+                <summary>Image</summary>
+                <ul>
+                  <li>X160</li>
+                  <li>X148</li>
+                  <li>X80</li>
+                  <li>X64</li>
+                  <li>X48</li>
+                  <li>X32</li>
+                  <li>X16</li>
+                </ul>
+              </details>
+            </li>
+          </ul>
+        </details>
+      </li>
+      <li>Last_online_at</li>
     </ul>
 </details>
 

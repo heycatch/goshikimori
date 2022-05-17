@@ -20,18 +20,18 @@ type Users struct {
   Online        string   `json:"last_online_at"`
   Name          string   `json:"name"`
   Sex           string   `json:"sex"`
-  Full_Years    int      `json:"full_years"`
-  Last_Online   string   `json:"last_online"`
+  Full_years    int      `json:"full_years"`
+  Last_online   string   `json:"last_online"`
   Website       string   `json:"website"`
   Location      string   `json:"location"`
   Banned        bool     `json:"banned"`
   About         string   `json:"about"`
   AboutHTML     string   `json:"about_html"`
-  Common_Info   []string `json:"common_info"`
-  Show_Comments bool     `json:"show_comments"`
-  In_Friends    bool     `json:"in_friends"`
-  Is_Ignored    bool     `json:"is_ignored"`
-  Style_Id      int      `json:"style_id"`
+  Common_info   []string `json:"common_info"`
+  Show_comments bool     `json:"show_comments"`
+  In_friends    bool     `json:"in_friends"`
+  Is_ignored    bool     `json:"is_ignored"`
+  Style_id      int      `json:"style_id"`
 }
 
 type AnimeSize struct {
@@ -143,4 +143,34 @@ type Roles struct {
   Roles         []string   `json:"roles"`
   Roles_Russian []string   `json:"roles_russian"`
   Character     Characters `json:"character"`
+}
+
+type CommentInfo struct {
+  Id               int       `json:"id"`
+  Commentable_id   int       `json:"commentable_id"`
+  Commentable_type string    `json:"commentable_type"`
+  Body             string    `json:"body"`
+  User_id          int       `json:"user_id"`
+  Created_at       time.Time `json:"created_at"`
+  Updated_at       time.Time `json:"updated_at"`
+  Is_offtopic      bool      `json:"is_offtopic"`
+}
+
+type UserInfo struct {
+  Id       int      `json:"id"`
+  Nickname string   `json:"nickname"`
+  Avatar   string   `json:"avatar"`
+  Image    UserSize `json:"image"`
+}
+
+type Bans struct {
+  Id               int         `json:"id"`
+  User_id          int         `json:"user_id"`
+  Comment          CommentInfo `json:"comment"`
+  Moderator_id     int         `json:"moderator_id"`
+  Reason           string      `json:"reason"`
+  Created_at       time.Time   `json:"created_at"`
+  Duration_minutes int         `json:"duration_minutes"`
+  User             UserInfo    `json:"user"`
+  Last_online_at   time.Time   `json:"last_online_at"`
 }

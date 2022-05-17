@@ -129,3 +129,27 @@ func main() {
   fmt.Println(r.Relation, r.Relation_Russian, r.Anime.Score)
 }
 ```
+
+```golang
+package main
+
+import (
+  "fmt"
+  g "github.com/vexilology/goshikimori"
+)
+
+func conf() *g.Configuration {
+  return g.Add(
+    "APPLICATION NAME",
+    "PERSONAL KEY",
+  )
+}
+
+func main() {
+  c := conf()
+  b := c.SearchBans()
+  for _, v := range b {
+    fmt.Println(v.Id, v.Comment.Body, v.Reason)
+  }
+}
+```
