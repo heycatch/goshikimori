@@ -26,6 +26,34 @@ func main() {
 }
 ```
 
+```golang
+package main
+
+import (
+  "fmt"
+  g "github.com/vexilology/goshikimori"
+)
+
+func conf() *g.Configuration {
+  return g.Add(
+    "APPLICATION NAME",
+    "PERSONAL KEY",
+  )
+}
+
+func main() {
+  c := conf()
+  e := &g.Extra{
+    Limit: "1", Kind: "", Status: "released",
+    Season: "199x", Score: "",
+  }
+  a := c.ExtraSearchManga("Initial D", e)
+  for _, v := range a {
+    fmt.Println(v.Name, v.Released_on, v.Score)
+  }
+}
+```
+
 ``` golang
 package main
 

@@ -40,7 +40,8 @@ type Extra struct {
 }
 
 type Result interface {
-  ExtraOptions() string
+  ExtraOptionsAnime() string
+  ExtraOptionsManga() string
 }
 
 func Add(app, key string) *Configuration {
@@ -99,7 +100,7 @@ func NekoSearch(s string) string {
   return fmt.Sprintf("%s", r)
 }
 
-func (e *Extra) ExtraOptions() string {
+func (e *Extra) ExtraOptionsAnime() string {
   l, _ := strconv.Atoi(e.Limit)
   for i := 51; i <= l; i++ {
     e.Limit = "1"
@@ -162,6 +163,64 @@ func (e *Extra) ExtraOptions() string {
   v.Add("season", e.Season)
   v.Add("score", e.Score)
   v.Add("rating", e.Rating)
+
+  return v.Encode()
+}
+
+func (e *Extra) ExtraOptionsManga() string {
+  l, _ := strconv.Atoi(e.Limit)
+  for i := 51; i <= l; i++ {
+    e.Limit = "1"
+  }
+
+  var ok bool
+
+  kind_map := map[string]int{
+    "manga": 1, "manhwa": 2, "manhua": 3,
+    "light_novel": 5, "novel": 6,
+    "one_shot": 7, "doujin": 8,
+  }
+  _, ok = kind_map[e.Kind]
+  if ok {
+    time.Sleep(100 * time.Millisecond)
+  } else {
+    e.Kind = ""
+  }
+
+  status_map := map[string]int{
+    "anons": 1, "ongoing": 2, "released": 3,
+    "paused": 4, "discontinued": 5,
+  }
+  _, ok = status_map[e.Status]
+  if ok {
+    time.Sleep(100 * time.Millisecond)
+  } else {
+    e.Status = ""
+  }
+
+  season_map := map[string]int{
+    "summer_2017": 1, "spring_2016,fall_2016": 2,
+    "2016,!winter_2016": 3, "2016": 4,
+    "2014_2016": 5, "199x": 6,
+  }
+  _, ok = season_map[e.Season]
+  if ok {
+    time.Sleep(100 * time.Millisecond)
+  } else {
+    e.Status = ""
+  }
+
+  s, _ := strconv.Atoi(e.Score)
+  for i := 10; i <= s; i++ {
+    e.Score = ""
+  }
+
+  v := url.Values{}
+  v.Add("limit", e.Limit)
+  v.Add("kind", e.Kind)
+  v.Add("status", e.Status)
+  v.Add("season", e.Season)
+  v.Add("score", e.Score)
 
   return v.Encode()
 }
@@ -237,7 +296,7 @@ func (c *Configuration) SearchAnime(s string) api.Animes {
 
 func (c *Configuration) ExtraSearchAnime(name string, r Result) []api.Animes {
   resp, err := client.Do(c.NewGetRequest(
-    "animes?search=" + url.QueryEscape(name) + "&" + r.ExtraOptions()))
+    "animes?search=" + url.QueryEscape(name) + "&" + r.ExtraOptionsAnime()))
   if err != nil {
     log.Fatal(err)
   }
@@ -427,7 +486,7 @@ func (c *Configuration) SearchManga(s string) api.Mangas {
 
 func (c *Configuration) ExtraSearchManga(name string, r Result) []api.Mangas {
   resp, err := client.Do(c.NewGetRequest(
-    "mangas?search=" + url.QueryEscape(name) + "&" + r.ExtraOptions()))
+    "mangas?search=" + url.QueryEscape(name) + "&" + r.ExtraOptionsManga()))
   if err != nil {
     log.Fatal(err)
   }

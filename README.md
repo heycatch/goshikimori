@@ -14,9 +14,9 @@ go get -u github.com/vexilology/goshikimori
 ## Available functions
 ```golang
 SearchUser(string) // Find users. Check Users request.
-ExtraSearchAnime(string, interface) // Find animes. Check ExtraAnimes/ExtraMangas request.
+ExtraSearchAnime(string, interface) // Find animes. Check ExtraAnimes request.
 SearchAnime(string) // Find animes. Check Animes request.
-ExtraSearchManga(string, interface) // Find animes. Check ExtraAnimes/ExtraMangas request.
+ExtraSearchManga(string, interface) // Find animes. Check ExtraMangas request.
 SearchManga(string) // Find mangas. Check Mangas request.
 SearchClub(string) // Find clubs. Check Clubs request.
 SearchAchievement(int) // Find achievements with anime ID. Check Achievements request.
@@ -70,7 +70,7 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
     </ul>
 </details>
 <details>
-  <summary>ExtraAnimes/ExtraMangas request</summary>
+  <summary>ExtraAnimes request</summary>
     <ul>
       <li>Limit: 50 maximum</li>
       <li>Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48</li>
@@ -79,7 +79,7 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
       <li>Score: 9 maximum</li>
       <li>Rating: none, g, pg, pg_13, r, r_plus, rx</li>
     </ul>
-  Find an example her --> https://github.com/vexilology/goshikimori/tree/main/examples
+  Examples https://github.com/vexilology/goshikimori/tree/main/examples
 </details>
 <details>
   <summary>Animes request</summary>
@@ -107,6 +107,17 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
       <li>Aired_on</li>
       <li>Released_on</li>
     </ul>
+</details>
+<details>
+  <summary>ExtraMangas request</summary>
+    <ul>
+      <li>Limit: 50 maximum</li>
+      <li>Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin</li>
+      <li>Status: anons, ongoing, released, paused, discontinued</li>
+      <li>Season: summer_2017, "spring_2016,fall_2016", "2016,!winter_2016", 2016, 2014_2016, 199x</li>
+      <li>Score: 9 maximum</li>
+    </ul>
+  Examples https://github.com/vexilology/goshikimori/tree/main/examples
 </details>
 <details>
   <summary>Mangas request</summary>
