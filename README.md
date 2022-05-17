@@ -5,92 +5,18 @@ Work with API occurs only through OAuth2.
 
 ## Install
 ```
-go get github.com/vexilology/goshikimori
+go get -u github.com/vexilology/goshikimori
 ```
 
 ## Examples
-``` golang
-package main
-
-import (
-  "fmt"
-
-  g "github.com/vexilology/goshikimori"
-)
-
-func conf() *g.Configuration {
-  return g.Add(
-    "APPLICATION NAME",
-    "PERSONAL KEY",
-  )
-}
-
-func main() {
-  c := conf()
-  s := c.SearchAnime("Initial D")
-  fmt.Println(s.Name, s.Status, s.Score)
-}
-```
-``` golang
-package main
-
-import (
-  "os"
-  "fmt"
-
-  g "github.com/vexilology/goshikimori"
-)
-
-func conf() *g.Configuration {
-  return g.Add(
-    "APPLICATION NAME",
-    "PERSONAL KEY",
-  )
-}
-
-func main() {
-  c := conf()
-  u := c.SearchUser("incarnati0n")
-  r := c.SearchAchievement(u.Id)
-  for _, v := range r {
-    if v.Neko_id == g.NekoSearch("Initial D") {
-      fmt.Printf("level: %d - progress %d\n", v.Level, v.Progress)
-      fmt.Printf("created: %v - updated: %v\n", v.Created_at, v.Updated_at)
-    } else {
-      fmt.Println("Achievement not found")
-      os.Exit(1)
-    }
-  }
-}
-```
-``` golang
-package main
-
-import (
-  "fmt"
-
-  g "github.com/vexilology/goshikimori"
-)
-
-func conf() *g.Configuration {
-  return g.Add(
-    "APPLICATION NAME",
-    "PERSONAL KEY",
-  )
-}
-
-func main() {
-  c := conf()
-  a := c.SearchAnime("Initial D")
-  r := c.SearchRelatedAnime(a.Id)
-  fmt.Println(r.Relation, r.Relation_Russian, r.Anime.Score)
-}
-```
+* [Click her](https://github.com/vexilology/goshikimori/tree/main/examples)
 
 ## Available functions
 ```golang
 SearchUser(string) // Find users. Check Users request.
+ExtraSearchAnime(string, interface) // Find animes. Check ExtraAnimes/ExtraMangas request.
 SearchAnime(string) // Find animes. Check Animes request.
+ExtraSearchManga(string, interface) // Find animes. Check ExtraAnimes/ExtraMangas request.
 SearchManga(string) // Find mangas. Check Mangas request.
 SearchClub(string) // Find clubs. Check Clubs request.
 SearchAchievement(int) // Find achievements with anime ID. Check Achievements request.
@@ -143,7 +69,18 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
       <li>Style_Id</li>
     </ul>
 </details>
-
+<details>
+  <summary>ExtraAnimes/ExtraMangas request</summary>
+    <ul>
+      <li>Limit: 50 maximum</li>
+      <li>Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48</li>
+      <li>Status: anons, ongoing, released</li>
+      <li>Season: summer_2017, 2016, 2014_2016, 199x</li>
+      <li>Score: 9 maximum</li>
+      <li>Rating: none, g, pg, pg_13, r, r_plus, rx</li>
+    </ul>
+  Find an example her --> https://github.com/vexilology/goshikimori/tree/main/examples
+</details>
 <details>
   <summary>Animes request</summary>
     <ul>
@@ -171,7 +108,6 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
       <li>Released_on</li>
     </ul>
 </details>
-
 <details>
   <summary>Mangas request</summary>
     <ul>
@@ -199,7 +135,6 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
       <li>Released_on</li>
     </ul>
 </details>
-
 <details>
   <summary>Clubs request</summary>
     <ul>
@@ -222,7 +157,6 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
       <li>Comment_policy</li>
     </ul>
 </details>
-
 <details>
   <summary>Achievements request</summary>
     <ul>
@@ -235,7 +169,6 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
       <li>Updated_at</li>
     </ul>
 </details>
-
 <details>
   <summary>RelatedAnimes request</summary>
     <ul>
@@ -272,7 +205,6 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
       </li>
     </ul>
 </details>
-
 <details>
   <summary>RelatedMangas request</summary>
     <ul>
@@ -309,7 +241,6 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
       </li>
     </ul>
 </details>
-
 <details>
   <summary>AnimeScreenshots request</summary>
     <ul>
@@ -317,7 +248,6 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
       <li>Preview</li>
     </ul>
 </details>
-
 <details>
   <summary>AnimeVideos request</summary>
     <ul>
@@ -330,7 +260,6 @@ SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaR
       <li>Hosting</li>
     </ul>
 </details>
-
 <details>
   <summary>AnimeRoles/MangaRoles request</summary>
     <ul>

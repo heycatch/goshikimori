@@ -35,7 +35,7 @@ type Extra struct {
   Kind     string // tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48
   Status   string // anons, ongoing, released
   Season   string // summer_2017, 2016, 2014_2016, 199x
-  Score    string // 10 maximum
+  Score    string // 9 maximum
   Rating   string // none, g, pg, pg_13, r, r_plus, rx
 }
 
