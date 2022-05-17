@@ -10,6 +10,8 @@ import (
   "net/url"
   "errors"
   "reflect"
+  "strconv"
+  "time"
 
   "github.com/vexilology/goshikimori/api"
 )
@@ -26,6 +28,19 @@ var client = &http.Client{}
 type Configuration struct {
   Application string
   PrivateKey  string
+}
+
+type Extra struct {
+  Limit    string // 50 maximum
+  Kind     string // tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48
+  Status   string // anons, ongoing, released
+  Season   string // summer_2017, 2016, 2014_2016, 199x
+  Score    string // 10 maximum
+  Rating   string // none, g, pg, pg_13, r, r_plus, rx
+}
+
+type Result interface {
+  ExtraOptions() string
 }
 
 func Add(app, key string) *Configuration {
@@ -84,17 +99,86 @@ func NekoSearch(s string) string {
   return fmt.Sprintf("%s", r)
 }
 
-func (c *Configuration) NewGetRequest(f string) *http.Request {
+func (e *Extra) ExtraOptions() string {
+  l, _ := strconv.Atoi(e.Limit)
+  for i := 51; i <= l; i++ {
+    e.Limit = "1"
+  }
+
+  var ok bool
+
+  kind_map := map[string]int{
+    "tv": 1, "movie": 2, "ova": 3, "ona": 4,
+    "special": 5, "music": 6,
+    "tv_13": 7, "tv_24": 8, "tv_48": 9,
+  }
+  _, ok = kind_map[e.Kind]
+  if ok {
+    time.Sleep(100 * time.Millisecond)
+  } else {
+    e.Kind = ""
+  }
+
+  status_map := map[string]int{
+    "anons": 1, "ongoing": 2, "released": 3,
+  }
+  _, ok = status_map[e.Status]
+  if ok {
+    time.Sleep(100 * time.Millisecond)
+  } else {
+    e.Status = ""
+  }
+
+  season_map := map[string]int{
+    "summer_2017": 1, "2016": 2, "2014_2016": 3, "199x": 4,
+  }
+  _, ok = season_map[e.Season]
+  if ok {
+    time.Sleep(100 * time.Millisecond)
+  } else {
+    e.Status = ""
+  }
+
+  s, _ := strconv.Atoi(e.Score)
+  for i := 10; i <= s; i++ {
+    e.Score = ""
+  }
+
+  rating_map := map[string]int{
+    "none": 1, "g": 2, "pg": 3, "pg_13": 4,
+    "r": 5, "r_plus": 6, "rx": 7,
+  }
+  _, ok = rating_map[e.Rating]
+  if ok {
+    time.Sleep(100 * time.Millisecond)
+  } else {
+    e.Rating = ""
+  }
+
+  v := url.Values{}
+  v.Add("limit", e.Limit)
+  v.Add("kind", e.Kind)
+  v.Add("status", e.Status)
+  v.Add("season", e.Season)
+  v.Add("score", e.Score)
+  v.Add("rating", e.Rating)
+
+  return v.Encode()
+}
+
+func (c *Configuration) NewGetRequest(search string) *http.Request {
   req, err := http.NewRequest(
     http.MethodGet,
-    fmt.Sprintf(urlOrig, protocol, urlShiki, f),
+    fmt.Sprintf(urlOrig, protocol, urlShiki, search),
     nil,
   )
-  req.Header.Add("User-Agent", c.Application)
-  req.Header.Add("Authorization", bearer + c.PrivateKey)
   if err != nil {
     log.Fatal(err)
   }
+
+  req.Header.Add("User-Agent", c.Application)
+  req.Header.Add("Authorization", bearer + c.PrivateKey)
+
   return req
 }
 
@@ -149,6 +233,29 @@ func (c *Configuration) SearchAnime(s string) api.Animes {
   }
 
   return aa
+}
+
+func (c *Configuration) ExtraSearchAnime(name string, r Result) []api.Animes {
+  resp, err := client.Do(c.NewGetRequest(
+    "animes?search=" + url.QueryEscape(name) + "&" + r.ExtraOptions()))
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer resp.Body.Close()
+
+  var a []api.Animes
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+  readData(data, "anime")
+
+  if err := json.Unmarshal(data, &a); err != nil {
+    log.Fatal(err)
+  }
+
+  return a
 }
 
 func (c *Configuration) SearchAnimeScreenshots(i int) api.AnimeScreenshots {
@@ -316,6 +423,29 @@ func (c *Configuration) SearchManga(s string) api.Mangas {
   }
 
   return mm
+}
+
+func (c *Configuration) ExtraSearchManga(name string, r Result) []api.Mangas {
+  resp, err := client.Do(c.NewGetRequest(
+    "mangas?search=" + url.QueryEscape(name) + "&" + r.ExtraOptions()))
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer resp.Body.Close()
+
+  var m []api.Mangas
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+  readData(data, "manga")
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    log.Fatal(err)
+  }
+
+  return m
 }
 
 func (c *Configuration) SearchClub(s string) api.Clubs {

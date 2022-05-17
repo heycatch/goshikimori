@@ -172,3 +172,23 @@ func TestAnimeVideos(t *testing.T) {
     t.Log("Videos not found")
   }
 }
+
+func TestExtraAnimeSearch(t *testing.T) {
+  if ok := start(); ok == false {
+    t.Log("not found application or key")
+  }
+
+  c := conf()
+  e := &Extra{
+    Limit: "1", Kind: "", Status: "released",
+    Season: "199x", Score: "", Rating: "",
+  }
+  a := c.ExtraSearchAnime("initial d", e)
+  for _, v := range a {
+    if v.Released_on == "1998-12-06" {
+      t.Logf("%s found", v.Name)
+    } else {
+      t.Log("Anime not found")
+    }
+  }
+}
