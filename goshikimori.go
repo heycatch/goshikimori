@@ -26,17 +26,11 @@ const (
 var client = &http.Client{}
 
 type Configuration struct {
-  Application string
-  PrivateKey  string
+  Application, PrivateKey string
 }
 
 type Extra struct {
-  Limit    string // 50 maximum
-  Kind     string // tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48
-  Status   string // anons, ongoing, released
-  Season   string // summer_2017, 2016, 2014_2016, 199x
-  Score    string // 9 maximum
-  Rating   string // none, g, pg, pg_13, r, r_plus, rx
+  Limit, Kind, Status, Season, Score, Rating string
 }
 
 type Result interface {
@@ -100,6 +94,12 @@ func NekoSearch(s string) string {
   return fmt.Sprintf("%s", r)
 }
 
+// Limit  -> 50 maximum
+// Kind   -> tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48
+// Status -> anons, ongoing, released
+// Season -> summer_2017, 2016, 2014_2016, 199x
+// Score  -> 9 maximum
+// Rating -> none, g, pg, pg_13, r, r_plus, rx
 func (e *Extra) ExtraOptionsAnime() string {
   l, _ := strconv.Atoi(e.Limit)
   for i := 51; i <= l; i++ {
@@ -167,6 +167,13 @@ func (e *Extra) ExtraOptionsAnime() string {
   return v.Encode()
 }
 
+// Limit  -> 50 maximum
+// Kind   -> manga, manhwa, manhua,
+//           light_novel, novel, one_shot, doujin
+// Status -> anons, ongoing, released, paused, discontinued
+// Season -> summer_2017, "spring_2016,fall_2016",
+//           "2016,!winter_2016", 2016, 2014_2016, 199x
+// Score  -> 9 maximum
 func (e *Extra) ExtraOptionsManga() string {
   l, _ := strconv.Atoi(e.Limit)
   for i := 51; i <= l; i++ {
