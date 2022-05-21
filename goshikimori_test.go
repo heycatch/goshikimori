@@ -88,12 +88,15 @@ func TestAnimes(t *testing.T) {
   }
 
   c := conf()
-  s := c.SearchAnime("Initial D")
+  e := &Extra{Limit: "1"}
+  s := c.SearchAnime("Initial D", e)
 
-  if s.Id == 12725 && s.Status == "released" {
-    t.Logf("Anime %s id %d - found", s.Name, s.Id)
-  } else {
-    t.Errorf("Anime %s id %d - not found", s.Name, s.Id)
+  for _, v := range s {
+    if v.Id == 12725 && v.Status == "released" {
+      t.Logf("Anime %s id %d - found", v.Name, v.Id)
+    } else {
+      t.Errorf("Anime %s id %d - not found", v.Name, v.Id)
+    }
   }
 }
 
@@ -103,12 +106,15 @@ func TestMangas(t *testing.T) {
   }
 
   c := conf()
-  r := c.SearchManga("Initial D")
+  e := &Extra{Limit: "1"}
+  r := c.SearchManga("Initial D", e)
 
-  if r.Volumes == 48 && r.Chapters == 724 {
-    t.Logf("Manga %s id %d - found", r.Name, r.Id)
-  } else {
-    t.Errorf("Manga %s id %d - not found", r.Name, r.Id)
+  for _, v := range r {
+    if v.Volumes == 48 && v.Chapters == 724 {
+      t.Logf("Manga %s id %d - found", v.Name, v.Id)
+    } else {
+      t.Errorf("Manga %s id %d - not found", v.Name, v.Id)
+    }
   }
 }
 
@@ -118,12 +124,15 @@ func TestClub(t *testing.T) {
   }
 
   c := conf()
-  r := c.SearchClub("milf thred")
+  e := &Extra{Limit: "1"}
+  r := c.SearchClub("milf thred", e)
 
-  if r.Is_censored == true {
-    t.Logf("Best club %s - found", r.Name)
-  } else {
-    t.Errorf("Argument %v or id %d - not found", r.Is_censored, r.Id)
+  for _, v := range r {
+    if v.Is_censored == true {
+      t.Logf("Best club %s - found", v.Name)
+    } else {
+      t.Errorf("Argument %v or id %d - not found", v.Is_censored, v.Id)
+    }
   }
 }
 
@@ -163,32 +172,14 @@ func TestAnimeVideos(t *testing.T) {
   }
 
   c := conf()
-  a := c.SearchAnime("initial d first stage")
-  v := c.SearchAnimeVideos(a.Id)
+  f := c.FastIdAnime("initial d first stage")
+  w := c.SearchAnimeVideos(f)
 
-  if v.Id == 24085 {
-    t.Logf("Found %s", v.Name)
-  } else {
-    t.Log("Videos not found")
-  }
-}
-
-func TestExtraAnimeSearch(t *testing.T) {
-  if ok := start(); ok == false {
-    t.Log("not found application or key")
-  }
-
-  c := conf()
-  e := &Extra{
-    Limit: "1", Kind: "", Status: "released",
-    Season: "199x", Score: "", Rating: "",
-  }
-  a := c.ExtraSearchAnime("initial d", e)
-  for _, v := range a {
-    if v.Released_on == "1998-12-06" {
-      t.Logf("%s found", v.Name)
+  for _, v := range w {
+    if v.Id == 24085 {
+      t.Logf("Found %s", v.Name)
     } else {
-      t.Log("Anime not found")
+      t.Log("Videos not found")
     }
   }
 }

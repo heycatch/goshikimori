@@ -14,21 +14,21 @@ go get -u github.com/vexilology/goshikimori
 ## Available functions
 ```golang
 SearchUser(string) // Find users. Check Users request.
-ExtraSearchAnime(string, interface) // Find animes. Check ExtraAnimes request.
-SearchAnime(string) // Find animes. Check Animes request.
-ExtraSearchManga(string, interface) // Find animes. Check ExtraMangas request.
-SearchManga(string) // Find mangas. Check Mangas request.
-SearchClub(string) // Find clubs. Check Clubs request.
-SearchAchievement(int) // Find achievements with anime ID. Check Achievements request.
+SearchAnime(string, interface) // Find animes. Check Animes request.
+SearchManga(string, interface) // Find mangas. Check Mangas request.
+SearchClub(string, interface) // Find clubs. Check Clubs request.
+FastIdAnime(string) // Anime id search.
+FastIdManga(string) // Manga id search.
 NekoSearch(string) // Search by anime name in achievements.
-SearchSimilarAnime(int) // Find similar anime with anime ID. Check Animes request.
-SearchSimilarManga(int) // Find similar manga with manga ID. Check Mangas request.
-SearchRelatedAnime(int) // Find related anime with anime ID. Check RelatedAnimes request.
-SearchRelatedManga(int) // Find related manga with manga ID. Check RelatedMangas request.
-SearchAnimeScreenshots(int) // Find anime-screenshots with anime ID. Check AnimeScreenshots request.
-SearchAnimeVideos(int) // Find anime-videos with anime ID. Check AnimeVideos request.
-SearchAnimeRoles(int) // Find anime roles with anime ID. Check AnimeRoles/MangaRoles request.
-SearchMangaRoles(int) // Find manga roles with anime ID. Check AnimeRoles/MangaRoles request.
+SearchAchievement(int) // Find achievements with anime id. Check Achievements request.
+SearchAnimeScreenshots(int) // Find anime-screenshots with anime id. Check AnimeScreenshots request.
+SearchSimilarAnime(int) // Find similar anime with anime id. Check Animes request.
+SearchSimilarManga(int) // Find similar manga with manga id. Check Mangas request.
+SearchRelatedAnime(int) // Find related anime with anime id. Check RelatedAnimes request.
+SearchRelatedManga(int) // Find related manga with manga id. Check RelatedMangas request.
+SearchAnimeVideos(int) // Find anime-videos with anime id. Check AnimeVideos request.
+SearchAnimeRoles(int) // Find anime roles with anime id. Check AnimeRoles/MangaRoles request.
+SearchMangaRoles(int) // Find manga roles with anime id. Check AnimeRoles/MangaRoles request.
 SearchBans() // Find last bans. Check Bans request.
 ```
 
@@ -71,7 +71,7 @@ SearchBans() // Find last bans. Check Bans request.
     </ul>
 </details>
 <details>
-  <summary>ExtraAnimes request</summary>
+  <summary>Interface_Anime</summary>
     <ul>
       <li>Limit: 50 maximum</li>
       <li>Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48</li>
@@ -80,7 +80,6 @@ SearchBans() // Find last bans. Check Bans request.
       <li>Score: 9 maximum</li>
       <li>Rating: none, g, pg, pg_13, r, r_plus, rx</li>
     </ul>
-  Examples https://github.com/vexilology/goshikimori/tree/main/examples
 </details>
 <details>
   <summary>Animes request</summary>
@@ -110,7 +109,7 @@ SearchBans() // Find last bans. Check Bans request.
     </ul>
 </details>
 <details>
-  <summary>ExtraMangas request</summary>
+  <summary>Interface_Manga</summary>
     <ul>
       <li>Limit: 50 maximum</li>
       <li>Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin</li>
@@ -118,7 +117,6 @@ SearchBans() // Find last bans. Check Bans request.
       <li>Season: summer_2017, "spring_2016,fall_2016", "2016,!winter_2016", 2016, 2014_2016, 199x</li>
       <li>Score: 9 maximum</li>
     </ul>
-  Examples https://github.com/vexilology/goshikimori/tree/main/examples
 </details>
 <details>
   <summary>Mangas request</summary>
@@ -145,6 +143,12 @@ SearchBans() // Find last bans. Check Bans request.
       <li>Chapters</li>
       <li>Aired_on</li>
       <li>Released_on</li>
+    </ul>
+</details>
+<details>
+  <summary>Interface_Club</summary>
+    <ul>
+      <li>Limit: 30 maximum</li>
     </ul>
 </details>
 <details>
