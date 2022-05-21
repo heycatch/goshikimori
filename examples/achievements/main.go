@@ -20,4 +20,6 @@ func main() {
     if v.Neko_id == g.NekoSearch("initial d") {
       fmt.Printf("level: %d - progress %d\n", v.Level, v.Progress)
       fmt.Printf("created: %v - updated: %v\n", v.Created_at, v.Updated_at)
+    }
+  }
 }
