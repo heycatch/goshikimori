@@ -14,6 +14,9 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  u := c.SearchUser("incarnati0n")
-  fmt.Println(u.Id, u.Sex, u.Last_online, u.Name)
+  e := &g.Extra{Limit: "2"}
+  a := c.SearchClub("milf", e)
+  for _, v := range a {
+    fmt.Println(v.Id, v.Name, v.Is_censored)
+  }
 }
