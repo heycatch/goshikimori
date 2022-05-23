@@ -14,8 +14,8 @@ go get -u github.com/vexilology/goshikimori
 ## Available functions
 ```golang
 SearchUser(name string) // Find users. Check Users request.
-SearchAnime(name string, Extra interacce) // Find animes. Check Animes request.
-SearchManga(name string, Extra interace) // Find mangas. Check Mangas request.
+SearchAnime(name string, Extra interface) // Find animes. Check Animes request.
+SearchManga(name string, Extra interface) // Find mangas. Check Mangas request.
 SearchClub(name string, ExtraLimit interface) // Find clubs. Check Clubs request.
 FastIdAnime(name string) // Anime id search.
 FastIdManga(name string) // Manga id search.
