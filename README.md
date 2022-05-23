@@ -13,24 +13,24 @@ go get -u github.com/vexilology/goshikimori
 
 ## Available functions
 ```golang
-SearchUser(string) // Find users. Check Users request.
-SearchAnime(string, interface) // Find animes. Check Animes request.
-SearchManga(string, interface) // Find mangas. Check Mangas request.
-SearchClub(string, interface) // Find clubs. Check Clubs request.
-FastIdAnime(string) // Anime id search.
-FastIdManga(string) // Manga id search.
-NekoSearch(string) // Search by anime name in achievements.
-SearchAchievement(int) // Find achievements with anime id. Check Achievements request.
-SearchAnimeScreenshots(int) // Find anime-screenshots with anime id. Check AnimeScreenshots request.
-SearchSimilarAnime(int) // Find similar anime with anime id. Check Animes request.
-SearchSimilarManga(int) // Find similar manga with manga id. Check Mangas request.
-SearchRelatedAnime(int) // Find related anime with anime id. Check RelatedAnimes request.
-SearchRelatedManga(int) // Find related manga with manga id. Check RelatedMangas request.
-SearchAnimeVideos(int) // Find anime-videos with anime id. Check AnimeVideos request.
-SearchAnimeRoles(int) // Find anime roles with anime id. Check AnimeRoles/MangaRoles request.
-SearchMangaRoles(int) // Find manga roles with anime id. Check AnimeRoles/MangaRoles request.
+SearchUser(name string) // Find users. Check Users request.
+SearchAnime(name string, Extra interacce) // Find animes. Check Animes request.
+SearchManga(name string, Extra interace) // Find mangas. Check Mangas request.
+SearchClub(name string, ExtraLimit interface) // Find clubs. Check Clubs request.
+FastIdAnime(name string) // Anime id search.
+FastIdManga(name string) // Manga id search.
+NekoSearch(name string) // Search by anime name in achievements.
+SearchAchievement(id int) // Find achievements with anime id. Check Achievements request.
+SearchAnimeScreenshots(id int) // Find anime-screenshots with anime id. Check AnimeScreenshots request.
+SearchSimilarAnime(id int) // Find similar anime with anime id. Check Animes request.
+SearchSimilarManga(id int) // Find similar manga with manga id. Check Mangas request.
+SearchRelatedAnime(id int) // Find related anime with anime id. Check RelatedAnimes request.
+SearchRelatedManga(id int) // Find related manga with manga id. Check RelatedMangas request.
+SearchAnimeVideos(id int) // Find anime-videos with anime id. Check AnimeVideos request.
+SearchAnimeRoles(id int) // Find anime roles with anime id. Check AnimeRoles/MangaRoles request.
+SearchMangaRoles(id int) // Find manga roles with anime id. Check AnimeRoles/MangaRoles request.
 SearchBans() // Find last bans. Check Bans request.
-SearchCalendar() // Find calendar. Check Calendar request.
+SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request.
 ```
 
 ## Available API
@@ -392,6 +392,12 @@ SearchCalendar() // Find calendar. Check Calendar request.
           </ul>
         </details>
       </li>
+    </ul>
+</details>
+<details>
+  <summary>Interface_Calendar</summary>
+    <ul>
+      <li>Censored: true, false</li>
     </ul>
 </details>
 

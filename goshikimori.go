@@ -33,10 +33,25 @@ type Extra struct {
   Limit, Kind, Status, Season, Score, Rating string
 }
 
+type ExtraLimit struct {
+  Limit string
+}
+
+type ExtraCensored struct {
+  Censored string
+}
+
 type Result interface {
   OptionsAnime() string
   OptionsManga() string
-  OptionsClub()  string
+}
+
+type ResultLimit interface {
+  OptionsClub() string
+}
+
+type ResultCensored interface {
+  OptionsCalendar() string
 }
 
 func Add(app, key string) *Configuration {
@@ -87,6 +102,10 @@ func convertSimilar(i int, s string) string {
 
 func convertRelated(i int, s string) string {
   return fmt.Sprintf("%s/%d/related", s, i)
+}
+
+func convertCalendar(s string) string {
+  return fmt.Sprintf("calendar?%s", s)
 }
 
 // String formatting for achievements search
@@ -234,14 +253,33 @@ func (e *Extra) OptionsManga() string {
 }
 
 // Limit -> 30 maximum
-func (e *Extra) OptionsClub() string {
-  l, _ := strconv.Atoi(e.Limit)
+func (el *ExtraLimit) OptionsClub() string {
+  l, _ := strconv.Atoi(el.Limit)
   for i := 31; i <= l; i++ {
-    e.Limit = "1"
+    el.Limit = "1"
   }
 
   v := url.Values{}
-  v.Add("limit", e.Limit)
+  v.Add("limit", el.Limit)
+
+  return v.Encode()
+}
+
+// Censored -> true, false
+// Set to false to allow hentai, yaoi and yuri
+func (ec *ExtraCensored) OptionsCalendar() string {
+  var ok bool
+
+  censored_map := map[string]int{"true": 1, "false": 2}
+  _, ok = censored_map[ec.Censored]
+  if ok {
+    time.Sleep(100 * time.Millisecond)
+  } else {
+    ec.Censored = "false"
+  }
+
+  v := url.Values{}
+  v.Add("censored", ec.Censored)
 
   return v.Encode()
 }
@@ -512,7 +550,7 @@ func (c *Configuration) SearchRelatedManga(i int) []api.RelatedMangas {
   return m
 }
 
-func (c *Configuration) SearchClub(s string, r Result) []api.Clubs {
+func (c *Configuration) SearchClub(s string, r ResultLimit) []api.Clubs {
   resp, err := client.Do(
     c.NewGetRequest("clubs?search=" + url.QueryEscape(s) + "&" + r.OptionsClub()),
   )
@@ -651,8 +689,10 @@ func (c *Configuration) SearchBans() []api.Bans {
   return b
 }
 
-func (c *Configuration) SearchCalendar() []api.Calendar {
-  resp, err := client.Do(c.NewGetRequest("calendar"))
+func (c *Configuration) SearchCalendar(r ResultCensored) []api.Calendar {
+  resp, err := client.Do(
+    c.NewGetRequest(convertCalendar(r.OptionsCalendar())),
+  )
   if err != nil {
     log.Fatal(err)
   }
