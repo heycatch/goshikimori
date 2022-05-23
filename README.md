@@ -30,6 +30,7 @@ SearchAnimeVideos(int) // Find anime-videos with anime id. Check AnimeVideos req
 SearchAnimeRoles(int) // Find anime roles with anime id. Check AnimeRoles/MangaRoles request.
 SearchMangaRoles(int) // Find manga roles with anime id. Check AnimeRoles/MangaRoles request.
 SearchBans() // Find last bans. Check Bans request.
+SearchCalendar() // Find calendar. Check Calendar request.
 ```
 
 ## Available API
@@ -354,6 +355,43 @@ SearchBans() // Find last bans. Check Bans request.
         </details>
       </li>
       <li>Last_online_at</li>
+    </ul>
+</details>
+<details>
+  <summary>Calendar request</summary>
+    <ul>
+      <li>Next_episode</li>
+      <li>Next_episode_at</li>
+      <li>Duration</li>
+      <li>
+        <details>
+          <summary>Anime</summary>
+          <ul>
+            <li>Id</li>
+            <li>Name</li>
+            <li>Russian</li>
+            <li>
+              <details>
+                <summary>Image</summary>
+                  <ul>
+                    <li>Image.Original</li>
+                    <li>Image.Preview</li>
+                    <li>Image.X96</li>
+                    <li>Image.X48</li>
+                  </ul>
+              </details>
+            </li>
+            <li>Url</li>
+            <li>Kind</li>
+            <li>Score</li>
+            <li>Status</li>
+            <li>Episodes</li>
+            <li>Episodes_aired</li>
+            <li>Aired_on</li>
+            <li>Released_on</li>
+          </ul>
+        </details>
+      </li>
     </ul>
 </details>
 

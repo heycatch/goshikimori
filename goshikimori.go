@@ -650,3 +650,25 @@ func (c *Configuration) SearchBans() []api.Bans {
 
   return b
 }
+
+func (c *Configuration) SearchCalendar() []api.Calendar {
+  resp, err := client.Do(c.NewGetRequest("calendar"))
+  if err != nil {
+    log.Fatal(err)
+  }
+  defer resp.Body.Close()
+
+  var ca []api.Calendar
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    log.Fatal(err)
+  }
+  readData(data, "calendar")
+
+  if err := json.Unmarshal(data, &ca); err != nil {
+    log.Fatal(err)
+  }
+
+  return ca
+}

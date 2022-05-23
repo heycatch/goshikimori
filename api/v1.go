@@ -174,3 +174,10 @@ type Bans struct {
   User             UserInfo    `json:"user"`
   Last_online_at   time.Time   `json:"last_online_at"`
 }
+
+type Calendar struct {
+  Next_episode    int       `json:"next_episode"`
+  Next_episode_at time.Time `json:"next_episode_at"`
+  Duration        int       `json:"duration"`
+  Anime           Animes    `json:"anime"`
+}
