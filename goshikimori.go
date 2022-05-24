@@ -2,14 +2,11 @@ package goshikimori
 
 import (
   "fmt"
-  "log"
   "net/http"
   "io/ioutil"
   "strings"
   "encoding/json"
   "net/url"
-  "errors"
-  "reflect"
   "strconv"
   "time"
 
@@ -56,28 +53,6 @@ type ResultCensored interface {
 
 func Add(app, key string) *Configuration {
   return &Configuration{Application: app, PrivateKey: key}
-}
-
-type CustomError struct {
-  Err error
-}
-
-func (c *CustomError) Error() string {
-  return fmt.Sprintf("Not found %s", c.Err)
-}
-
-func readStatusCode(code int, name string) {
-  c := &CustomError{Err: errors.New(name)}
-  if code == 404 {
-    log.Fatal(c)
-  }
-}
-
-func readData(data []byte, name string) {
-  c := &CustomError{Err: errors.New(name)}
-  if reflect.DeepEqual(data, []byte{91, 93}) {
-    log.Fatal(c)
-  }
 }
 
 func convertAchievements(i int) string {
@@ -285,101 +260,89 @@ func (ec *ExtraCensored) OptionsCalendar() string {
 }
 
 func (c *Configuration) NewGetRequest(search string) *http.Request {
-  req, err := http.NewRequest(
-    http.MethodGet,
-    fmt.Sprintf(urlOrig, protocol, urlShiki, search),
-    nil,
-  )
-  if err != nil {
-    log.Fatal(err)
-  }
-
+  url := fmt.Sprintf(urlOrig, protocol, urlShiki, search)
+  req, _ := http.NewRequest(http.MethodGet, url, nil)
   req.Header.Add("User-Agent", c.Application)
   req.Header.Add("Authorization", bearer + c.PrivateKey)
-
   return req
 }
 
 // NOTES: search by user is case sensitive
-func (c *Configuration) SearchUser(s string) api.Users {
+func (c *Configuration) SearchUser(name string) (api.Users, error) {
+  var u api.Users
+
   resp, err := client.Do(
-    c.NewGetRequest("users/" + url.QueryEscape(s)),
+    c.NewGetRequest("users/" + url.QueryEscape(name)),
   )
   if err != nil {
-    log.Fatal(err)
+    return u, err
   }
   defer resp.Body.Close()
 
-  readStatusCode(resp.StatusCode, "user")
-
-  var u api.Users
-
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
-    log.Fatal(err)
+    return u, err
   }
 
   if err := json.Unmarshal(data, &u); err != nil {
-    log.Fatal(err)
+    return u, err
   }
 
-  return u
+  return u, nil
 }
 
-func (c *Configuration) SearchAnime(s string, r Result) []api.Animes {
+func (c *Configuration) SearchAnime(s string, r Result) ([]api.Animes, error) {
+  var a []api.Animes
+
   resp, err := client.Do(c.NewGetRequest(
     "animes?search=" + url.QueryEscape(s) + "&" + r.OptionsAnime(),
   ))
   if err != nil {
-    log.Fatal(err)
+    return a, err
   }
   defer resp.Body.Close()
 
-  var a []api.Animes
-
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
-    log.Fatal(err)
+    return a, err
   }
-  readData(data, "anime")
 
   if err := json.Unmarshal(data, &a); err != nil {
-    log.Fatal(err)
+    return nil, err
   }
 
-  return a
+  return a, nil
 }
 
-func (c *Configuration) SearchManga(s string, r Result) []api.Mangas {
+func (c *Configuration) SearchManga(s string, r Result) ([]api.Mangas, error) {
+  var m []api.Mangas
+
   resp, err := client.Do(c.NewGetRequest(
     "mangas?search=" + url.QueryEscape(s) + "&" + r.OptionsManga(),
   ))
   if err != nil {
-    log.Fatal(err)
+    return m, err
   }
   defer resp.Body.Close()
 
-  var m []api.Mangas
-
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
-    log.Fatal(err)
+    return m, err
   }
-  readData(data, "manga")
 
   if err := json.Unmarshal(data, &m); err != nil {
-    log.Fatal(err)
+    return nil, err
   }
 
-  return m
+  return m, nil
 }
 
-func (c *Configuration) FastIdAnime(s string) int {
+func (c *Configuration) FastIdAnime(s string) (int, error) {
   resp, err := client.Do(c.NewGetRequest(
     "animes?search=" + url.QueryEscape(s),
   ))
   if err != nil {
-    log.Fatal(err)
+    return 0, err
   }
   defer resp.Body.Close()
 
@@ -388,327 +351,301 @@ func (c *Configuration) FastIdAnime(s string) int {
 
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
-    log.Fatal(err)
+    return 0, err
   }
-  readData(data, "anime")
 
   if err := json.Unmarshal(data, &a); err != nil {
-    log.Fatal(err)
+    return 0, err
   }
 
   for _, v := range a {
     aa = v
   }
 
-  return aa.Id
+  return aa.Id, nil
 }
 
-func (c *Configuration) FastIdManga(s string) int {
+func (c *Configuration) FastIdManga(s string) (int, error) {
   resp, err := client.Do(c.NewGetRequest(
     "mangas?search=" + url.QueryEscape(s),
   ))
   if err != nil {
-    log.Fatal(err)
+    return 0, err
   }
-  defer resp.Body.Close()
 
   var m []api.Mangas
   var mm api.Mangas
 
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
-    log.Fatal(err)
+    return 0, err
   }
-  readData(data, "manga")
 
   if err := json.Unmarshal(data, &m); err != nil {
-    log.Fatal(err)
+    return 0, err
   }
 
   for _, v := range m {
     mm = v
   }
 
-  return mm.Id
+  return mm.Id, nil
 }
 
-func (c *Configuration) SearchAnimeScreenshots(i int) []api.AnimeScreenshots {
-  resp, err := client.Do(c.NewGetRequest(convertAnimeScreenshots(i)))
-  if err != nil {
-    log.Fatal(err)
-  }
-  defer resp.Body.Close()
-
+func (c *Configuration) SearchAnimeScreenshots(i int) ([]api.AnimeScreenshots, error) {
   var s []api.AnimeScreenshots
 
+  resp, err := client.Do(c.NewGetRequest(convertAnimeScreenshots(i)))
+  if err != nil {
+    return s, err
+  }
+  defer resp.Body.Close()
+
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
-    log.Fatal(err)
+    return s, err
   }
-  readData(data, "screenshots")
 
   if err := json.Unmarshal(data, &s); err != nil {
-    log.Fatal(err)
+    return nil, err
   }
 
-  return s
+  return s, nil
 }
 
-func (c *Configuration) SearchSimilarAnime(i int) []api.Animes {
-  resp, err := client.Do(
-    c.NewGetRequest(convertSimilar(i, "animes")),
-  )
-  if err != nil {
-    log.Fatal(err)
-  }
-  defer resp.Body.Close()
-
+func (c *Configuration) SearchSimilarAnime(i int) ([]api.Animes, error) {
   var a []api.Animes
 
-  data, err := ioutil.ReadAll(resp.Body)
+  resp, err := client.Do(c.NewGetRequest(convertSimilar(i, "animes")))
   if err != nil {
-    log.Fatal(err)
-  }
-  readData(data, "similarAnime")
-
-  if err := json.Unmarshal(data, &a); err != nil {
-    log.Fatal(err)
-  }
-
-  return a
-}
-
-func (c *Configuration) SearchSimilarManga(i int) []api.Mangas {
-  resp, err := client.Do(
-    c.NewGetRequest(convertSimilar(i, "mangas")),
-  )
-  if err != nil {
-    log.Fatal(err)
+    return a, err
   }
   defer resp.Body.Close()
 
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return a, err
+  }
+
+  if err := json.Unmarshal(data, &a); err != nil {
+    return nil, err
+  }
+
+  return a, nil
+}
+
+func (c *Configuration) SearchSimilarManga(i int) ([]api.Mangas, error) {
   var m []api.Mangas
 
-  data, err := ioutil.ReadAll(resp.Body)
+  resp, err := client.Do(c.NewGetRequest(convertSimilar(i, "mangas")))
   if err != nil {
-    log.Fatal(err)
-  }
-  readData(data, "similarManga")
-
-  if err := json.Unmarshal(data, &m); err != nil {
-    log.Fatal(err)
-  }
-
-  return m
-}
-
-func (c *Configuration) SearchRelatedAnime(i int) []api.RelatedAnimes {
-  resp, err := client.Do(
-    c.NewGetRequest(convertRelated(i, "animes")),
-  )
-  if err != nil {
-    log.Fatal(err)
+    return m, err
   }
   defer resp.Body.Close()
 
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return m, err
+  }
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    return nil, err
+  }
+
+  return m, nil
+}
+
+func (c *Configuration) SearchRelatedAnime(i int) ([]api.RelatedAnimes, error) {
   var a []api.RelatedAnimes
 
-  data, err := ioutil.ReadAll(resp.Body)
+  resp, err := client.Do(c.NewGetRequest(convertRelated(i, "animes")))
   if err != nil {
-    log.Fatal(err)
-  }
-  readData(data, "relatedAnime")
-
-  if err := json.Unmarshal(data, &a); err != nil {
-    log.Fatal(err)
-  }
-
-  return a
-}
-
-func (c *Configuration) SearchRelatedManga(i int) []api.RelatedMangas {
-  resp, err := client.Do(
-    c.NewGetRequest(convertRelated(i, "mangas")),
-  )
-  if err != nil {
-    log.Fatal(err)
+    return a, err
   }
   defer resp.Body.Close()
 
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return a, err
+  }
+
+  if err := json.Unmarshal(data, &a); err != nil {
+    return nil, err
+  }
+
+  return a, nil
+}
+
+func (c *Configuration) SearchRelatedManga(i int) ([]api.RelatedMangas, error) {
   var m []api.RelatedMangas
+
+  resp, err := client.Do(c.NewGetRequest(convertRelated(i, "mangas")))
+  if err != nil {
+    return m, err
+  }
+  defer resp.Body.Close()
 
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
-    log.Fatal(err)
+    return m, err
   }
-  readData(data, "relatedManga")
 
   if err := json.Unmarshal(data, &m); err != nil {
-    log.Fatal(err)
+    return nil, err
   }
 
-  return m
+  return m, nil
 }
 
-func (c *Configuration) SearchClub(s string, r ResultLimit) []api.Clubs {
+func (c *Configuration) SearchClub(s string, r ResultLimit) ([]api.Clubs, error) {
+  var cl []api.Clubs
+
   resp, err := client.Do(
     c.NewGetRequest("clubs?search=" + url.QueryEscape(s) + "&" + r.OptionsClub()),
   )
   if err != nil {
-    log.Fatal(err)
+    return cl, err
   }
   defer resp.Body.Close()
 
-  var l []api.Clubs
-
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
-    log.Fatal(err)
-  }
-  readData(data, "club")
-
-  if err := json.Unmarshal(data, &l); err != nil {
-    log.Fatal(err)
+    return cl, err
   }
 
-  return l
+  if err := json.Unmarshal(data, &cl); err != nil {
+    return nil, err
+  }
+
+  return cl, nil
 }
 
 // NOTES: as a result, we return a complete list of all achievements.
 // Next comes the filtering through "NekoSearch" and the error about obtaining
 // specific achievements is already being processed there.
 // See example in README.md
-func (c *Configuration) SearchAchievement(i int) []api.Achievements {
+func (c *Configuration) SearchAchievement(i int) ([]api.Achievements, error) {
+  var a []api.Achievements
+
   resp, err := client.Do(c.NewGetRequest(convertAchievements(i)))
   if err != nil {
-    log.Fatal(err)
+    return a, err
   }
   defer resp.Body.Close()
 
-  var a []api.Achievements
-
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
-    log.Fatal(err)
+    return a, err
   }
 
   if err := json.Unmarshal(data, &a); err != nil {
-    log.Fatal(err)
+    return nil, err
   }
 
-  return a
+  return a, nil
 }
 
-func (c *Configuration) SearchAnimeVideos(i int) []api.AnimeVideos {
-  resp, err := client.Do(c.NewGetRequest(convertAnimeVideos(i)))
-  if err != nil {
-    log.Fatal(err)
-  }
-  defer resp.Body.Close()
-
+func (c *Configuration) SearchAnimeVideos(i int) ([]api.AnimeVideos, error) {
   var v []api.AnimeVideos
 
+  resp, err := client.Do(c.NewGetRequest(convertAnimeVideos(i)))
+  if err != nil {
+    return v, err
+  }
+  defer resp.Body.Close()
+
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
-    log.Fatal(err)
+    return v, err
   }
-  readData(data, "videos")
 
   if err := json.Unmarshal(data, &v); err != nil {
-    log.Fatal(err)
+    return nil, err
   }
 
-  return v
+  return v, nil
 }
 
-func (c *Configuration) SearchAnimeRoles(i int) []api.Roles {
-  resp, err := client.Do(c.NewGetRequest(
-    convertRoles(i, "animes")))
+func (c *Configuration) SearchAnimeRoles(i int) ([]api.Roles, error) {
+  var r []api.Roles
+
+  resp, err := client.Do(c.NewGetRequest(convertRoles(i, "animes")))
   if err != nil {
-    log.Fatal(err)
+    return r, err
   }
   defer resp.Body.Close()
-
-  var r []api.Roles
 
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
-    log.Fatal(err)
+    return r, err
   }
-  readData(data, "rolesAnime")
 
   if err := json.Unmarshal(data, &r); err != nil {
-    log.Fatal(err)
+    return nil, err
   }
 
-  return r
+  return r, nil
 }
 
-func (c *Configuration) SearchMangaRoles(i int) []api.Roles {
-  resp, err := client.Do(c.NewGetRequest(
-    convertRoles(i, "mangas")))
+func (c *Configuration) SearchMangaRoles(i int) ([]api.Roles, error) {
+  var r []api.Roles
+
+  resp, err := client.Do(c.NewGetRequest(convertRoles(i, "mangas")))
   if err != nil {
-    log.Fatal(err)
+    return r, err
   }
   defer resp.Body.Close()
-
-  var r []api.Roles
 
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
-    log.Fatal(err)
+    return r, err
   }
-  readData(data, "rolesManga")
 
   if err := json.Unmarshal(data, &r); err != nil {
-    log.Fatal(err)
+    return nil, err
   }
 
-  return r
+  return r, nil
 }
 
-func (c *Configuration) SearchBans() []api.Bans {
-  resp, err := client.Do(c.NewGetRequest("bans"))
-  if err != nil {
-    log.Fatal(err)
-  }
-  defer resp.Body.Close()
-
+func (c *Configuration) SearchBans() ([]api.Bans, error) {
   var b []api.Bans
 
-  data, err := ioutil.ReadAll(resp.Body)
+  resp, err := client.Do(c.NewGetRequest("bans"))
   if err != nil {
-    log.Fatal(err)
-  }
-  readData(data, "bans")
-
-  if err := json.Unmarshal(data, &b); err != nil {
-    log.Fatal(err)
-  }
-
-  return b
-}
-
-func (c *Configuration) SearchCalendar(r ResultCensored) []api.Calendar {
-  resp, err := client.Do(
-    c.NewGetRequest(convertCalendar(r.OptionsCalendar())),
-  )
-  if err != nil {
-    log.Fatal(err)
+    return b, err
   }
   defer resp.Body.Close()
 
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return b, err
+  }
+
+  if err := json.Unmarshal(data, &b); err != nil {
+    return nil, err
+  }
+
+  return b, nil
+}
+
+func (c *Configuration) SearchCalendar(r ResultCensored) ([]api.Calendar, error) {
   var ca []api.Calendar
+
+  resp, err := client.Do(c.NewGetRequest(convertCalendar(r.OptionsCalendar())))
+  if err != nil {
+    return ca, err
+  }
+  defer resp.Body.Close()
 
   data, err := ioutil.ReadAll(resp.Body)
   if err != nil {
-    log.Fatal(err)
+    return ca, err
   }
-  readData(data, "calendar")
 
   if err := json.Unmarshal(data, &ca); err != nil {
-    log.Fatal(err)
+    return nil, err
   }
 
-  return ca
+  return ca, nil
 }

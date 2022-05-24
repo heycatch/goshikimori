@@ -18,7 +18,15 @@ func foundAnime() {
     Limit: "2", Kind: "", Status: "released",
     Season: "199x", Score: "", Rating: "",
   }
-  a := c.SearchAnime("initial d", e)
+  a, err := c.SearchAnime("initial d", e)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if len(a) == 0 {
+    fmt.Println("Anime not found")
+    return
+  }
   for _, v := range a {
     fmt.Println(v.Name, v.Released_on, v.Score)
   }
@@ -30,7 +38,15 @@ func foundManga() {
     Limit: "1", Kind: "", Status: "released",
     Season: "199x", Score: "8",
   }
-  m := c.SearchManga("initial d", e)
+  m, err := c.SearchManga("initial d", e)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if len(m) == 0 {
+    fmt.Println("Manga not found")
+    return
+  }
   for _, v := range m {
     fmt.Println(v.Name, v.Released_on, v.Score)
   }

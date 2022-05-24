@@ -4,6 +4,7 @@ import (
   "time"
   "testing"
   "fmt"
+  "os"
 )
 
 type StatusBar struct {
@@ -15,15 +16,12 @@ type StatusBar struct {
 }
 
 const (
-  api_test = ""
+  app_test = ""
   key_test = ""
 )
 
 func conf() *Configuration {
-  return Add(
-    api_test,
-    key_test,
-  )
+  return Add(app_test, key_test)
 }
 
 func (s *StatusBar) NewOption(start, end int) {
@@ -55,95 +53,85 @@ func (s *StatusBar) Play(cur int) {
   }
 
   fmt.Printf("\r[%-10s]%3d%% %8d/%d",
-    s.Rate, s.Percent, s.Cur, s.Total)
+    s.Rate, s.Percent, s.Cur, s.Total,
+  )
 }
 
 func (s *StatusBar) Finish() { fmt.Println() }
 
-func start() bool {
-  if api_test != "" && key_test != "" {
-    return true
+func TestStart(t *testing.T) {
+  if app_test != "" && key_test != "" {
+    t.Logf("Found: %s and %s", app_test, key_test)
+  } else {
+    t.Error("Not found application or key")
+    os.Exit(1)
   }
-  return false
 }
 
 func TestUser(t *testing.T) {
-  if ok := start(); ok == false {
-    t.Log("not found application or key")
-  }
-
+  name := "incarnati0n"
   c := conf()
-  s := c.SearchUser("incarnati0n")
+  s, _ := c.SearchUser(name)
 
   if s.Id == 181833 && s.Sex == "male" {
-    t.Logf("User %s id %d - found", s.Nickname, s.Id)
+    t.Logf("User: %s, Id: %d - found", s.Nickname, s.Id)
   } else {
-    t.Errorf("User %s id %d - not found", s.Nickname, s.Id)
+    t.Errorf("User: %s - not found", name)
   }
 }
 
 func TestAnimes(t *testing.T) {
-  if ok := start(); ok == false {
-    t.Log("not found application or key")
-  }
-
   c := conf()
-  e := &Extra{Limit: "1"}
-  s := c.SearchAnime("Initial D", e)
+  e := &Extra{
+    Limit: "1", Kind: "", Status: "",
+    Season: "", Score: "", Rating: "",
+  }
+  s, _ := c.SearchAnime("Initial D", e)
 
   for _, v := range s {
     if v.Id == 12725 && v.Status == "released" {
-      t.Logf("Anime %s id %d - found", v.Name, v.Id)
+      t.Logf("Anime: %s, Id: %d - found", v.Name, v.Id)
     } else {
-      t.Errorf("Anime %s id %d - not found", v.Name, v.Id)
+      t.Errorf("Anime: %s, Id: %d - not found", v.Name, v.Id)
     }
   }
 }
 
 func TestMangas(t *testing.T) {
-  if ok := start(); ok == false {
-    t.Log("not found application or key")
-  }
-
   c := conf()
-  e := &Extra{Limit: "1"}
-  r := c.SearchManga("Initial D", e)
+  e := &Extra{
+    Limit: "1", Kind: "", Status: "",
+    Season: "", Score: "", Rating: "",
+  }
+  r, _ := c.SearchManga("Initial D", e)
 
   for _, v := range r {
     if v.Volumes == 48 && v.Chapters == 724 {
-      t.Logf("Manga %s id %d - found", v.Name, v.Id)
+      t.Logf("Manga: %s, Id: %d - found", v.Name, v.Id)
     } else {
-      t.Errorf("Manga %s id %d - not found", v.Name, v.Id)
+      t.Errorf("Manga: %s, Id: %d - not found", v.Name, v.Id)
     }
   }
 }
 
 func TestClub(t *testing.T) {
-  if ok := start(); ok == false {
-    t.Log("not found application or key")
-  }
-
   c := conf()
-  e := &Extra{Limit: "1"}
-  r := c.SearchClub("milf thred", e)
+  e := &ExtraLimit{Limit: "1"}
+  r, _ := c.SearchClub("milf thred", e)
 
   for _, v := range r {
     if v.Is_censored == true {
-      t.Logf("Best club %s - found", v.Name)
+      t.Logf("Best club: %s - found", v.Name)
     } else {
-      t.Errorf("Argument %v or id %d - not found", v.Is_censored, v.Id)
+      t.Errorf("Argument: %v or Id: %d - not found", v.Is_censored, v.Id)
     }
   }
 }
 
 func TestAchievements(t *testing.T) {
-  var s StatusBar
-
-  if ok := start(); ok == false {
-    t.Log("not found application or key")
-  }
-
   fmt.Println("Too many requests at once, waiting 10 seconds...")
+
+  var s StatusBar
   s.NewOption(0, 10)
   for i := 0; i <= 10; i++ {
     s.Play(int(i))
@@ -152,34 +140,30 @@ func TestAchievements(t *testing.T) {
   s.Finish()
 
   c := conf()
-  u := c.SearchUser("incarnati0n")
-  r := c.SearchAchievement(u.Id)
+  u, _ := c.SearchUser("incarnati0n")
+  r, _ := c.SearchAchievement(u.Id)
 
   for _, v := range r {
     if v.Neko_id == NekoSearch("Initial D") {
       if v.Progress == 100 {
-        t.Logf("Found %d progress", v.Progress)
+        t.Logf("Found: %d progress", v.Progress)
       } else {
-        t.Errorf("Not found %d progress", v.Progress)
+        t.Error("Progress not found")
       }
     }
   }
 }
 
 func TestAnimeVideos(t *testing.T) {
-  if ok := start(); ok == false {
-    t.Log("not found application or key")
-  }
-
   c := conf()
-  f := c.FastIdAnime("initial d first stage")
-  w := c.SearchAnimeVideos(f)
+  f, _ := c.FastIdAnime("initial d first stage")
+  a, _ := c.SearchAnimeVideos(f)
 
-  for _, v := range w {
+  for _, v := range a {
     if v.Id == 24085 {
-      t.Logf("Found %s", v.Name)
+      t.Logf("Video: %s", v.Name)
     } else {
-      t.Log("Videos not found")
+      t.Log("Video not found, waiting...")
     }
   }
 }

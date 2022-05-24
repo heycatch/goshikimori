@@ -14,7 +14,11 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  b := c.SearchBans()
+  b, err := c.SearchBans()
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
   for _, v := range b {
     fmt.Println(v.Id, v.User.Id, v.User.Nickname)
   }

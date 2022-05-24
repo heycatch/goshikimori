@@ -14,8 +14,20 @@ func conf() *g.Configuration {
 
 func similarAnime() {
   c := conf()
-  a := c.FastIdAnime("vampire knight")
-  s := c.SearchSimilarAnime(a)
+  a, err := c.FastIdAnime("vampire knight")
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if a == 0 {
+    fmt.Println("Anime not found")
+    return
+  }
+  s, err := c.SearchSimilarAnime(a)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
   for _, v := range s {
     fmt.Println(v.Name, v.Id, v.Russian)
   }
@@ -23,8 +35,20 @@ func similarAnime() {
 
 func similarManga() {
   c := conf()
-  a := c.FastIdManga("initial d")
-  s := c.SearchSimilarManga(a)
+  a, err := c.FastIdManga("initial d")
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if a == 0 {
+    fmt.Println("Manga not found")
+    return
+  }
+  s, err := c.SearchSimilarManga(a)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
   for _, v := range s {
     fmt.Println(v.Name, v.Id, v.Russian)
   }

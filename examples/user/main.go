@@ -13,7 +13,16 @@ func conf() *g.Configuration {
 }
 
 func main() {
+  user := "incarnati0n"
   c := conf()
-  u := c.SearchUser("incarnati0n")
+  u, err := c.SearchUser(user)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if u.Id == 0 {
+    fmt.Printf("Not found %s\n", user)
+    return
+  }
   fmt.Println(u.Id, u.Sex, u.Last_online, u.Name)
 }

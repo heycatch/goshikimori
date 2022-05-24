@@ -15,7 +15,11 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
   e := &g.ExtraCensored{Censored: "false"}
-  ca := c.SearchCalendar(e)
+  ca, err := c.SearchCalendar(e)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
   for _, v := range ca {
     fmt.Println(
       v.Next_episode, v.Next_episode_at, v.Duration,

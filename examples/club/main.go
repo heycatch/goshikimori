@@ -15,7 +15,15 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
   e := &g.ExtraLimit{Limit: "2"}
-  a := c.SearchClub("milf", e)
+  a, err := c.SearchClub("milf", e)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if len(a) == 0 {
+    fmt.Println("Club not found")
+    return
+  }
   for _, v := range a {
     fmt.Println(v.Id, v.Name, v.Is_censored)
   }

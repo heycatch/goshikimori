@@ -107,7 +107,6 @@ type RelatedAnimes struct {
 }
 
 // NOTES: removed Anime -> bool
-// json: cannot unmarshal anime now
 type RelatedMangas struct {
   Relation         string `json:"relation"`
   Relation_Russian string `json:"relation_russian"`
@@ -129,7 +128,7 @@ type AnimeVideos struct {
   Hosting    string `json:"hosting"`
 }
 
-type Characters struct {
+type CharacterInfo struct {
   Id      int       `json:"id"`
   Name    string    `json:"name"`
   Russian string    `json:"russian"`
@@ -138,11 +137,10 @@ type Characters struct {
 }
 
 // NOTES: removed Person -> nil
-// becuase nil is not a type
 type Roles struct {
-  Roles         []string   `json:"roles"`
-  Roles_Russian []string   `json:"roles_russian"`
-  Character     Characters `json:"character"`
+  Roles         []string      `json:"roles"`
+  Roles_Russian []string      `json:"roles_russian"`
+  Character     CharacterInfo `json:"character"`
 }
 
 type CommentInfo struct {

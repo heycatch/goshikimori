@@ -14,7 +14,15 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  u := c.SearchUser("incarnati0n")
+  u, err := c.SearchUser("incarnati0n")
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if u.Id == 0 {
+    fmt.Println("User not found")
+    return
+  }
   r := c.SearchAchievement(u.Id)
   for _, v := range r {
     if v.Neko_id == g.NekoSearch("initial d") {

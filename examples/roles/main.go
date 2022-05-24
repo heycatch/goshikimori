@@ -14,8 +14,24 @@ func conf() *g.Configuration {
 
 func rolesAnime() {
   c := conf()
-  f := c.FastIdAnime("naruto")
-  r := c.SearchMangaRoles(f)
+  f, err := c.FastIdAnime("naruto")
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if f == 0 {
+    fmt.Println("Anime not found")
+    return
+  }
+  r, err := c.SearchMangaRoles(f)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if len(r) == 0 {
+    fmt.Println("Roles not found")
+    return
+  }
   for _, v := range r {
     fmt.Println(
       v.Roles, v.Roles_Russian,
@@ -26,8 +42,24 @@ func rolesAnime() {
 
 func rolesManga() {
   c := conf()
-  f := c.FastIdManga("naruto")
-  r := c.SearchMangaRoles(f)
+  f, err := c.FastIdManga("naruto")
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if f == 0 {
+    fmt.Println("Manga not found")
+    return
+  }
+  r, err := c.SearchMangaRoles(f)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if len(r) == 0 {
+    fmt.Println("Roles not found")
+    return
+  }
   for _, v := range r {
     fmt.Println(
       v.Roles, v.Roles_Russian,

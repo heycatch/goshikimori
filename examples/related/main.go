@@ -14,8 +14,20 @@ func conf() *g.Configuration {
 
 func relatedAnime() {
   c := conf()
-  a := c.FastIdAnime("initial d second stage")
-  r := c.SearchRelatedAnime(a)
+  a, err := c.FastIdAnime("initial d second stage")
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if a == 0 {
+    fmt.Println("Anime not found")
+    return
+  }
+  r, err := c.SearchRelatedAnime(a)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
   for _, v := range r {
     fmt.Println(v.Relation, v.Relation_Russian, v.Anime.Score)
   }
@@ -23,8 +35,20 @@ func relatedAnime() {
 
 func relatedManga() {
   c := conf()
-  m := c.FastIdManga("vampire knight")
-  r := c.SearchRelatedManga(m)
+  m, err := c.FastIdManga("vampire knight")
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if m == 0 {
+    fmt.Println("Manga not found")
+    return
+  }
+  r, err := c.SearchRelatedManga(m)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
   for _, v := range r {
     fmt.Println(
       v.Relation, v.Relation_Russian,
