@@ -12,26 +12,74 @@ type UserSize struct {
   X16  string `json:"x16"`
 }
 
+type StatusesAnime struct {
+  Id         int    `json:"id"`
+  Grouped_id string `json:"grouped_id"`
+  Name       string `json:"name"`
+  Size       int    `json:"size"`
+  Type       string `json:"type"`
+}
+
+type StatusesManga struct {
+  Id         int    `json:"id"`
+  Grouped_id string `json:"grouped_id"`
+  Name       string `json:"name"`
+  Size       int    `json:"size"`
+  Type       string `json:"type"`
+}
+
+// NOTES: ~Below I wrote that I deleted
+// Full_statuses -> no response after request.
+// Scores -> empty slice.
+// Types -> empty slice.
+// Ratings -> empty slice.
+// Has_anime? || Has_manga? -> always one boolean state: false.
+// Genres -> empty slice.
+// Publishers -> empty slice.
+// Activity -> no response after request.
+type StatusesInfo struct {
+  Anime  []StatusesAnime `json:"anime"`
+  Manga  []StatusesManga `json:"manga"`
+}
+
+type StatsInfo struct {
+  Statuses StatusesInfo `json:"statuses"`
+}
+
 type Users struct {
-  Id            int      `json:"id"`
-  Nickname      string   `json:"nickname"`
-  Avatar        string   `json:"avatar"`
-  Image         UserSize `json:"image"`
-  Online        string   `json:"last_online_at"`
-  Name          string   `json:"name"`
-  Sex           string   `json:"sex"`
-  Full_years    int      `json:"full_years"`
-  Last_online   string   `json:"last_online"`
-  Website       string   `json:"website"`
-  Location      string   `json:"location"`
-  Banned        bool     `json:"banned"`
-  About         string   `json:"about"`
-  AboutHTML     string   `json:"about_html"`
-  Common_info   []string `json:"common_info"`
-  Show_comments bool     `json:"show_comments"`
-  In_friends    bool     `json:"in_friends"`
-  Is_ignored    bool     `json:"is_ignored"`
-  Style_id      int      `json:"style_id"`
+  Id             int       `json:"id"`
+  Nickname       string    `json:"nickname"`
+  Avatar         string    `json:"avatar"`
+  Image          UserSize  `json:"image"`
+  Last_online_at time.Time `json:"last_online_at"`
+  Name           string    `json:"name"`
+  Sex            string    `json:"sex"`
+  Full_years     int       `json:"full_years"`
+  Last_online    string    `json:"last_online"`
+  Website        string    `json:"website"`
+  Location       string    `json:"location"`
+  Banned         bool      `json:"banned"`
+  About          string    `json:"about"`
+  AboutHTML      string    `json:"about_html"`
+  Common_info    []string  `json:"common_info"`
+  Show_comments  bool      `json:"show_comments"`
+  In_friends     bool      `json:"in_friends"`
+  Is_ignored     bool      `json:"is_ignored"`
+  Stats          StatsInfo `json:"stats"`
+  Style_id       int       `json:"style_id"`
+}
+
+type Who struct {
+  Id             int       `json:"id"`
+  Nickname       string    `json:"nickname"`
+  Avatar         string    `json:"avatar"`
+  Image          UserSize  `json:"image"`
+  Last_online_at time.Time `json:"last_online_at"`
+  Name           string    `json:"name"`
+  Sex            string    `json:"sex"`
+  Website        string    `json:"website"`
+  Birth_on       int       `json:"birst_on"`
+  Locale         string    `json:"locale"`
 }
 
 type AnimeSize struct {
@@ -99,7 +147,6 @@ type Achievements struct {
 }
 
 // NOTES: removed Manga -> bool
-// json: cannot unmarshal manga now
 type RelatedAnimes struct {
   Relation         string `json:"relation"`
   Relation_Russian string `json:"relation_russian"`

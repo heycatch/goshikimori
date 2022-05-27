@@ -23,7 +23,7 @@ const (
 var client = &http.Client{}
 
 type Configuration struct {
-  Application, PrivateKey string
+  Application, AccessToken string
 }
 
 type Extra struct {
@@ -51,41 +51,41 @@ type ResultCensored interface {
   OptionsCalendar() string
 }
 
-func Add(app, key string) *Configuration {
-  return &Configuration{Application: app, PrivateKey: key}
+func Add(app, tok string) *Configuration {
+  return &Configuration{Application: app, AccessToken: tok}
 }
 
-func convertAchievements(i int) string {
-  return fmt.Sprintf("achievements?user_id=%d", i)
+func convertAchievements(id int) string {
+  return fmt.Sprintf("achievements?user_id=%d", id)
 }
 
-func convertAnimeScreenshots(i int) string {
-  return fmt.Sprintf("animes/%d/screenshots", i)
+func convertAnimeScreenshots(id int) string {
+  return fmt.Sprintf("animes/%d/screenshots", id)
 }
 
-func convertAnimeVideos(i int) string {
-  return fmt.Sprintf("animes/%d/videos", i)
+func convertAnimeVideos(id int) string {
+  return fmt.Sprintf("animes/%d/videos", id)
 }
 
-func convertRoles(i int, s string) string {
-  return fmt.Sprintf("%s/%d/roles", s, i)
+func convertRoles(id int, name string) string {
+  return fmt.Sprintf("%s/%d/roles", name, id)
 }
 
-func convertSimilar(i int, s string) string {
-  return fmt.Sprintf("%s/%d/similar", s, i)
+func convertSimilar(id int, name string) string {
+  return fmt.Sprintf("%s/%d/similar", name, id)
 }
 
-func convertRelated(i int, s string) string {
-  return fmt.Sprintf("%s/%d/related", s, i)
+func convertRelated(id int, name string) string {
+  return fmt.Sprintf("%s/%d/related", name, id)
 }
 
-func convertCalendar(s string) string {
-  return fmt.Sprintf("calendar?%s", s)
+func convertCalendar(name string) string {
+  return fmt.Sprintf("calendar?%s", name)
 }
 
 // String formatting for achievements search
-func NekoSearch(s string) string {
-  r := strings.Replace(strings.ToLower(s), " ", "_", -1)
+func NekoSearch(name string) string {
+  r := strings.Replace(strings.ToLower(name), " ", "_", -1)
   return fmt.Sprintf("%s", r)
 }
 
@@ -263,7 +263,7 @@ func (c *Configuration) NewGetRequest(search string) *http.Request {
   url := fmt.Sprintf(urlOrig, protocol, urlShiki, search)
   req, _ := http.NewRequest(http.MethodGet, url, nil)
   req.Header.Add("User-Agent", c.Application)
-  req.Header.Add("Authorization", bearer + c.PrivateKey)
+  req.Header.Add("Authorization", bearer + c.AccessToken)
   return req
 }
 
@@ -291,11 +291,32 @@ func (c *Configuration) SearchUser(name string) (api.Users, error) {
   return u, nil
 }
 
-func (c *Configuration) SearchAnime(s string, r Result) ([]api.Animes, error) {
+func (c *Configuration) WhoAmi() (api.Who, error) {
+  var w api.Who
+
+  resp, err := client.Do(c.NewGetRequest("users/whoami"))
+  if err != nil {
+    return w, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return w, err
+  }
+
+  if err := json.Unmarshal(data, &w); err != nil {
+    return w, err
+  }
+
+  return w, nil
+}
+
+func (c *Configuration) SearchAnime(name string, r Result) ([]api.Animes, error) {
   var a []api.Animes
 
   resp, err := client.Do(c.NewGetRequest(
-    "animes?search=" + url.QueryEscape(s) + "&" + r.OptionsAnime(),
+    "animes?search=" + url.QueryEscape(name) + "&" + r.OptionsAnime(),
   ))
   if err != nil {
     return a, err
@@ -314,11 +335,11 @@ func (c *Configuration) SearchAnime(s string, r Result) ([]api.Animes, error) {
   return a, nil
 }
 
-func (c *Configuration) SearchManga(s string, r Result) ([]api.Mangas, error) {
+func (c *Configuration) SearchManga(name string, r Result) ([]api.Mangas, error) {
   var m []api.Mangas
 
   resp, err := client.Do(c.NewGetRequest(
-    "mangas?search=" + url.QueryEscape(s) + "&" + r.OptionsManga(),
+    "mangas?search=" + url.QueryEscape(name) + "&" + r.OptionsManga(),
   ))
   if err != nil {
     return m, err
@@ -337,9 +358,9 @@ func (c *Configuration) SearchManga(s string, r Result) ([]api.Mangas, error) {
   return m, nil
 }
 
-func (c *Configuration) FastIdAnime(s string) (int, error) {
+func (c *Configuration) FastIdAnime(name string) (int, error) {
   resp, err := client.Do(c.NewGetRequest(
-    "animes?search=" + url.QueryEscape(s),
+    "animes?search=" + url.QueryEscape(name),
   ))
   if err != nil {
     return 0, err
@@ -365,9 +386,9 @@ func (c *Configuration) FastIdAnime(s string) (int, error) {
   return aa.Id, nil
 }
 
-func (c *Configuration) FastIdManga(s string) (int, error) {
+func (c *Configuration) FastIdManga(name string) (int, error) {
   resp, err := client.Do(c.NewGetRequest(
-    "mangas?search=" + url.QueryEscape(s),
+    "mangas?search=" + url.QueryEscape(name),
   ))
   if err != nil {
     return 0, err
@@ -392,10 +413,10 @@ func (c *Configuration) FastIdManga(s string) (int, error) {
   return mm.Id, nil
 }
 
-func (c *Configuration) SearchAnimeScreenshots(i int) ([]api.AnimeScreenshots, error) {
+func (c *Configuration) SearchAnimeScreenshots(id int) ([]api.AnimeScreenshots, error) {
   var s []api.AnimeScreenshots
 
-  resp, err := client.Do(c.NewGetRequest(convertAnimeScreenshots(i)))
+  resp, err := client.Do(c.NewGetRequest(convertAnimeScreenshots(id)))
   if err != nil {
     return s, err
   }
@@ -413,10 +434,10 @@ func (c *Configuration) SearchAnimeScreenshots(i int) ([]api.AnimeScreenshots, e
   return s, nil
 }
 
-func (c *Configuration) SearchSimilarAnime(i int) ([]api.Animes, error) {
+func (c *Configuration) SearchSimilarAnime(id int) ([]api.Animes, error) {
   var a []api.Animes
 
-  resp, err := client.Do(c.NewGetRequest(convertSimilar(i, "animes")))
+  resp, err := client.Do(c.NewGetRequest(convertSimilar(id, "animes")))
   if err != nil {
     return a, err
   }
@@ -434,10 +455,10 @@ func (c *Configuration) SearchSimilarAnime(i int) ([]api.Animes, error) {
   return a, nil
 }
 
-func (c *Configuration) SearchSimilarManga(i int) ([]api.Mangas, error) {
+func (c *Configuration) SearchSimilarManga(id int) ([]api.Mangas, error) {
   var m []api.Mangas
 
-  resp, err := client.Do(c.NewGetRequest(convertSimilar(i, "mangas")))
+  resp, err := client.Do(c.NewGetRequest(convertSimilar(id, "mangas")))
   if err != nil {
     return m, err
   }
@@ -455,10 +476,10 @@ func (c *Configuration) SearchSimilarManga(i int) ([]api.Mangas, error) {
   return m, nil
 }
 
-func (c *Configuration) SearchRelatedAnime(i int) ([]api.RelatedAnimes, error) {
+func (c *Configuration) SearchRelatedAnime(id int) ([]api.RelatedAnimes, error) {
   var a []api.RelatedAnimes
 
-  resp, err := client.Do(c.NewGetRequest(convertRelated(i, "animes")))
+  resp, err := client.Do(c.NewGetRequest(convertRelated(id, "animes")))
   if err != nil {
     return a, err
   }
@@ -476,10 +497,10 @@ func (c *Configuration) SearchRelatedAnime(i int) ([]api.RelatedAnimes, error) {
   return a, nil
 }
 
-func (c *Configuration) SearchRelatedManga(i int) ([]api.RelatedMangas, error) {
+func (c *Configuration) SearchRelatedManga(id int) ([]api.RelatedMangas, error) {
   var m []api.RelatedMangas
 
-  resp, err := client.Do(c.NewGetRequest(convertRelated(i, "mangas")))
+  resp, err := client.Do(c.NewGetRequest(convertRelated(id, "mangas")))
   if err != nil {
     return m, err
   }
@@ -497,11 +518,11 @@ func (c *Configuration) SearchRelatedManga(i int) ([]api.RelatedMangas, error) {
   return m, nil
 }
 
-func (c *Configuration) SearchClub(s string, r ResultLimit) ([]api.Clubs, error) {
+func (c *Configuration) SearchClub(name string, r ResultLimit) ([]api.Clubs, error) {
   var cl []api.Clubs
 
   resp, err := client.Do(
-    c.NewGetRequest("clubs?search=" + url.QueryEscape(s) + "&" + r.OptionsClub()),
+    c.NewGetRequest("clubs?search=" + url.QueryEscape(name) + "&" + r.OptionsClub()),
   )
   if err != nil {
     return cl, err
@@ -524,10 +545,10 @@ func (c *Configuration) SearchClub(s string, r ResultLimit) ([]api.Clubs, error)
 // Next comes the filtering through "NekoSearch" and the error about obtaining
 // specific achievements is already being processed there.
 // See example in README.md
-func (c *Configuration) SearchAchievement(i int) ([]api.Achievements, error) {
+func (c *Configuration) SearchAchievement(id int) ([]api.Achievements, error) {
   var a []api.Achievements
 
-  resp, err := client.Do(c.NewGetRequest(convertAchievements(i)))
+  resp, err := client.Do(c.NewGetRequest(convertAchievements(id)))
   if err != nil {
     return a, err
   }
@@ -545,10 +566,10 @@ func (c *Configuration) SearchAchievement(i int) ([]api.Achievements, error) {
   return a, nil
 }
 
-func (c *Configuration) SearchAnimeVideos(i int) ([]api.AnimeVideos, error) {
+func (c *Configuration) SearchAnimeVideos(id int) ([]api.AnimeVideos, error) {
   var v []api.AnimeVideos
 
-  resp, err := client.Do(c.NewGetRequest(convertAnimeVideos(i)))
+  resp, err := client.Do(c.NewGetRequest(convertAnimeVideos(id)))
   if err != nil {
     return v, err
   }
@@ -566,10 +587,10 @@ func (c *Configuration) SearchAnimeVideos(i int) ([]api.AnimeVideos, error) {
   return v, nil
 }
 
-func (c *Configuration) SearchAnimeRoles(i int) ([]api.Roles, error) {
+func (c *Configuration) SearchAnimeRoles(id int) ([]api.Roles, error) {
   var r []api.Roles
 
-  resp, err := client.Do(c.NewGetRequest(convertRoles(i, "animes")))
+  resp, err := client.Do(c.NewGetRequest(convertRoles(id, "animes")))
   if err != nil {
     return r, err
   }
@@ -587,10 +608,10 @@ func (c *Configuration) SearchAnimeRoles(i int) ([]api.Roles, error) {
   return r, nil
 }
 
-func (c *Configuration) SearchMangaRoles(i int) ([]api.Roles, error) {
+func (c *Configuration) SearchMangaRoles(id int) ([]api.Roles, error) {
   var r []api.Roles
 
-  resp, err := client.Do(c.NewGetRequest(convertRoles(i, "mangas")))
+  resp, err := client.Do(c.NewGetRequest(convertRoles(id, "mangas")))
   if err != nil {
     return r, err
   }

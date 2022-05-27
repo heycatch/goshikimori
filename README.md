@@ -31,6 +31,7 @@ SearchAnimeRoles(id int) // Find anime roles with anime id. Check AnimeRoles/Man
 SearchMangaRoles(id int) // Find manga roles with anime id. Check AnimeRoles/MangaRoles request.
 SearchBans() // Find last bans. Check Bans request.
 SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request.
+WhoAmi() // Verify who am i. Check WhoAmi request.
 ```
 
 ## Available API
@@ -54,7 +55,7 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
             </ul>
         </details>
       </li>
-      <li>Online</li>
+      <li>Last_online_at</li>
       <li>Name</li>
       <li>Sex</li>
       <li>Full_years</li>
@@ -64,10 +65,42 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
       <li>Banned</li>
       <li>About</li>
       <li>AboutHTML</li>
-      <li>Common_Info</li>
+      <li>[]Common_Info</li>
       <li>Show_comments</li>
       <li>In_friends</li>
       <li>Is_ignored</li>
+      <li>
+        <details>
+          <summary>Stats</summary>
+            <ul>
+              <details>
+                <summary>Statuses</summary>
+                  <ul>
+                    <details>
+                      <summary>[]Anime</summary>
+                        <ul>
+                          <li>Id</li>
+                          <li>Grouped_id</li>
+                          <li>Name</li>
+                          <li>Size</li>
+                          <li>Type</li>
+                        </ul>
+                    </details>
+                    <details>
+                      <summary>[]Manga</summary>
+                        <ul>
+                          <li>Id</li>
+                          <li>Grouped_id</li>
+                          <li>Name</li>
+                          <li>Size</li>
+                          <li>Type</li>
+                        </ul>
+                    </details>
+                  </ul>
+              </details>
+            </ul>
+        </details>
+      </li>
       <li>Style_id</li>
     </ul>
 </details>
@@ -80,6 +113,34 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
       <li>Season: summer_2017, 2016, 2014_2016, 199x</li>
       <li>Score: 9 maximum</li>
       <li>Rating: none, g, pg, pg_13, r, r_plus, rx</li>
+    </ul>
+</details>
+<details>
+  <summary>WhoAmi request</summary>
+    <ul>
+      <li>Id</li>
+      <li>Nickname</li>
+      <li>Avatar</li>
+      <li>
+        <details>
+          <summary>Image</summary>
+            <ul>
+              <li>Image.X160</li>
+              <li>Image.X148</li>
+              <li>Image.X80</li>
+              <li>Image.X64</li>
+              <li>Image.X48</li>
+              <li>Image.X32</li>
+              <li>Image.X16</li>
+            </ul>
+        </details>
+      </li>
+      <li>Last_online_at</li>
+      <li>Name</li>
+      <li>Sex</li>
+      <li>Website</li>
+      <li>Birth_on</li>
+      <li>Locale</li>
     </ul>
 </details>
 <details>
@@ -280,8 +341,8 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
 <details>
   <summary>AnimeRoles/MangaRoles request</summary>
     <ul>
-      <li>Roles</li>
-      <li>Roles_Russian</li>
+      <li>[]Roles</li>
+      <li>[]Roles_Russian</li>
       <li>
         <details>
           <summary>Character</summary>

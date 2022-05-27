@@ -17,12 +17,10 @@ type StatusBar struct {
 
 const (
   app_test = ""
-  key_test = ""
+  tok_test = ""
 )
 
-func conf() *Configuration {
-  return Add(app_test, key_test)
-}
+func conf() *Configuration { return Add(app_test, tok_test) }
 
 func (s *StatusBar) NewOption(start, end int) {
   s.Cur = start
@@ -60,8 +58,8 @@ func (s *StatusBar) Play(cur int) {
 func (s *StatusBar) Finish() { fmt.Println() }
 
 func TestStart(t *testing.T) {
-  if app_test != "" && key_test != "" {
-    t.Logf("Found: %s and %s", app_test, key_test)
+  if app_test != "" && tok_test != "" {
+    t.Logf("Found: %s and %s", app_test, tok_test)
   } else {
     t.Error("Not found application or key")
     os.Exit(1)

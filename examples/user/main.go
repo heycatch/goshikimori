@@ -25,4 +25,12 @@ func main() {
     return
   }
   fmt.Println(u.Id, u.Sex, u.Last_online, u.Name)
+  fmt.Println()
+  for _, v := range u.Stats.Statuses.Anime {
+    fmt.Println(v.Id, v.Grouped_id, v.Name, v.Size, v.Type)
+  }
+  fmt.Println()
+  for _, v := range u.Stats.Statuses.Manga {
+    fmt.Println(v.Id, v.Grouped_id, v.Name, v.Size, v.Type)
+  }
 }
