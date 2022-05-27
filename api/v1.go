@@ -69,6 +69,14 @@ type Users struct {
   Style_id       int       `json:"style_id"`
 }
 
+type UserFriends struct {
+  Id             int       `json:"id"`
+  Nickname       string    `json:"nickname"`
+  Avatar         string    `json:"avatar"`
+  Image          UserSize  `json:"image"`
+  Last_online_at time.Time `json:"last_online_at"`
+}
+
 type Who struct {
   Id             int       `json:"id"`
   Nickname       string    `json:"nickname"`

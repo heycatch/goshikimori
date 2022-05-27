@@ -14,6 +14,9 @@ go get -u github.com/vexilology/goshikimori
 ## Available functions
 ```golang
 SearchUser(name string) // Find users. Check Users request.
+SearchUserFriends(id int) // Find users friends. Check UserFriends request.
+SearchUserClubs(id int) // Find users clubs. Check UserClubs request.
+WhoAmi() // Verify who am i. Check WhoAmi request.
 SearchAnime(name string, Extra interface) // Find animes. Check Animes request.
 SearchManga(name string, Extra interface) // Find mangas. Check Mangas request.
 SearchClub(name string, ExtraLimit interface) // Find clubs. Check Clubs request.
@@ -31,7 +34,6 @@ SearchAnimeRoles(id int) // Find anime roles with anime id. Check AnimeRoles/Man
 SearchMangaRoles(id int) // Find manga roles with anime id. Check AnimeRoles/MangaRoles request.
 SearchBans() // Find last bans. Check Bans request.
 SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request.
-WhoAmi() // Verify who am i. Check WhoAmi request.
 ```
 
 ## Available API
@@ -105,14 +107,48 @@ WhoAmi() // Verify who am i. Check WhoAmi request.
     </ul>
 </details>
 <details>
-  <summary>Interface_Anime</summary>
+  <summary>UserFriends request</summary>
     <ul>
-      <li>Limit: 50 maximum</li>
-      <li>Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48</li>
-      <li>Status: anons, ongoing, released</li>
-      <li>Season: summer_2017, 2016, 2014_2016, 199x</li>
-      <li>Score: 9 maximum</li>
-      <li>Rating: none, g, pg, pg_13, r, r_plus, rx</li>
+      <li>Id</li>
+      <li>Nickname</li>
+      <li>Avatar</li>
+      <li>
+        <details>
+          <summary>Image</summary>
+            <ul>
+              <li>Image.X160</li>
+              <li>Image.X148</li>
+              <li>Image.X80</li>
+              <li>Image.X64</li>
+              <li>Image.X48</li>
+              <li>Image.X32</li>
+              <li>Image.X16</li>
+            </ul>
+        </details>
+      </li>
+      <li>Last_online_at</li>
+    </ul>
+</details>
+<details>
+  <summary>UserClubs request</summary>
+    <ul>
+      <li>Id</li>
+      <li>Name</li>
+      <li>
+        <details>
+          <summary>Logo</summary>
+            <ul>
+              <li>Logo.Original</li>
+              <li>Logo.Main</li>
+              <li>Logo.X96</li>
+              <li>Logo.X73</li>
+              <li>Logo.X48</li>
+            </ul>
+        </details>
+      </li>
+      <li>Is_censored</li>
+      <li>Join_policy</li>
+      <li>Comment_policy</li>
     </ul>
 </details>
 <details>
@@ -141,6 +177,17 @@ WhoAmi() // Verify who am i. Check WhoAmi request.
       <li>Website</li>
       <li>Birth_on</li>
       <li>Locale</li>
+    </ul>
+</details>
+<details>
+  <summary>Interface_Anime</summary>
+    <ul>
+      <li>Limit: 50 maximum</li>
+      <li>Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48</li>
+      <li>Status: anons, ongoing, released</li>
+      <li>Season: summer_2017, 2016, 2014_2016, 199x</li>
+      <li>Score: 9 maximum</li>
+      <li>Rating: none, g, pg, pg_13, r, r_plus, rx</li>
     </ul>
 </details>
 <details>

@@ -83,6 +83,14 @@ func convertCalendar(name string) string {
   return fmt.Sprintf("calendar?%s", name)
 }
 
+func convertUserFriends(id int) string {
+  return fmt.Sprintf("users/%d/friends", id)
+}
+
+func convertUserClubs(id int) string {
+  return fmt.Sprintf("users/%d/clubs", id)
+}
+
 // String formatting for achievements search
 func NekoSearch(name string) string {
   r := strings.Replace(strings.ToLower(name), " ", "_", -1)
@@ -289,6 +297,48 @@ func (c *Configuration) SearchUser(name string) (api.Users, error) {
   }
 
   return u, nil
+}
+
+func (c *Configuration) SearchUserFriends(id int) ([]api.UserFriends, error) {
+  var uf []api.UserFriends
+
+  resp, err := client.Do(c.NewGetRequest(convertUserFriends(id)))
+  if err != nil {
+    return uf, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return uf, err
+  }
+
+  if err := json.Unmarshal(data, &uf); err != nil {
+    return nil, err
+  }
+
+  return uf, nil
+}
+
+func (c *Configuration) SearchUserClubs(id int) ([]api.Clubs, error) {
+  var uc []api.Clubs
+
+  resp, err := client.Do(c.NewGetRequest(convertUserClubs(id)))
+  if err != nil {
+    return uc, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return uc, err
+  }
+
+  if err := json.Unmarshal(data, &uc); err != nil {
+    return nil, err
+  }
+
+  return uc, nil
 }
 
 func (c *Configuration) WhoAmi() (api.Who, error) {
