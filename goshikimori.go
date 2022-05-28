@@ -8,7 +8,6 @@ import (
   "encoding/json"
   "net/url"
   "strconv"
-  "time"
 
   "github.com/vexilology/goshikimori/api"
 )
@@ -19,6 +18,8 @@ const (
   protocol = "https"
   urlShiki = "shikimori.one/api"
 )
+
+var ok bool
 
 var client = &http.Client{}
 
@@ -38,6 +39,14 @@ type ExtraCensored struct {
   Censored string
 }
 
+type ExtraAnimeRates struct {
+  Limit, Status, Censored string
+}
+
+type ExtraMangaRates struct {
+  Limit, Censored string
+}
+
 type Result interface {
   OptionsAnime() string
   OptionsManga() string
@@ -49,6 +58,14 @@ type ResultLimit interface {
 
 type ResultCensored interface {
   OptionsCalendar() string
+}
+
+type ResultAnimeRates interface {
+  OptionsAnimeRates() string
+}
+
+type ResultMangaRates interface {
+  OptionsMangaRates() string
 }
 
 func Add(app, tok string) *Configuration {
@@ -91,6 +108,10 @@ func convertUserClubs(id int) string {
   return fmt.Sprintf("users/%d/clubs", id)
 }
 
+func convertUserRates(id int, name, options string) string {
+  return fmt.Sprintf("users/%d/%s?%s", id, name, options)
+}
+
 // String formatting for achievements search
 func NekoSearch(name string) string {
   r := strings.Replace(strings.ToLower(name), " ", "_", -1)
@@ -105,11 +126,10 @@ func NekoSearch(name string) string {
 // Rating -> none, g, pg, pg_13, r, r_plus, rx
 func (e *Extra) OptionsAnime() string {
   l, _ := strconv.Atoi(e.Limit)
+  if l == 0 { e.Limit = "1" }
   for i := 51; i <= l; i++ {
     e.Limit = "1"
   }
-
-  var ok bool
 
   kind_map := map[string]int{
     "tv": 1, "movie": 2, "ova": 3, "ona": 4,
@@ -117,31 +137,19 @@ func (e *Extra) OptionsAnime() string {
     "tv_13": 7, "tv_24": 8, "tv_48": 9,
   }
   _, ok = kind_map[e.Kind]
-  if ok {
-    time.Sleep(100 * time.Millisecond)
-  } else {
-    e.Kind = ""
-  }
+  if !ok { e.Kind = "" }
 
   status_map := map[string]int{
     "anons": 1, "ongoing": 2, "released": 3,
   }
   _, ok = status_map[e.Status]
-  if ok {
-    time.Sleep(100 * time.Millisecond)
-  } else {
-    e.Status = ""
-  }
+  if !ok { e.Status = "" }
 
   season_map := map[string]int{
     "summer_2017": 1, "2016": 2, "2014_2016": 3, "199x": 4,
   }
   _, ok = season_map[e.Season]
-  if ok {
-    time.Sleep(100 * time.Millisecond)
-  } else {
-    e.Status = ""
-  }
+  if !ok { e.Status = "" }
 
   s, _ := strconv.Atoi(e.Score)
   for i := 10; i <= s; i++ {
@@ -153,11 +161,7 @@ func (e *Extra) OptionsAnime() string {
     "r": 5, "r_plus": 6, "rx": 7,
   }
   _, ok = rating_map[e.Rating]
-  if ok {
-    time.Sleep(100 * time.Millisecond)
-  } else {
-    e.Rating = ""
-  }
+  if !ok { e.Rating = "" }
 
   v := url.Values{}
   v.Add("limit", e.Limit)
@@ -179,11 +183,10 @@ func (e *Extra) OptionsAnime() string {
 // Score  -> 9 maximum
 func (e *Extra) OptionsManga() string {
   l, _ := strconv.Atoi(e.Limit)
+  if l == 0 { e.Limit = "1" }
   for i := 51; i <= l; i++ {
     e.Limit = "1"
   }
-
-  var ok bool
 
   kind_map := map[string]int{
     "manga": 1, "manhwa": 2, "manhua": 3,
@@ -191,22 +194,14 @@ func (e *Extra) OptionsManga() string {
     "one_shot": 7, "doujin": 8,
   }
   _, ok = kind_map[e.Kind]
-  if ok {
-    time.Sleep(100 * time.Millisecond)
-  } else {
-    e.Kind = ""
-  }
+  if !ok { e.Kind = "" }
 
   status_map := map[string]int{
     "anons": 1, "ongoing": 2, "released": 3,
     "paused": 4, "discontinued": 5,
   }
   _, ok = status_map[e.Status]
-  if ok {
-    time.Sleep(100 * time.Millisecond)
-  } else {
-    e.Status = ""
-  }
+  if !ok { e.Status = "" }
 
   season_map := map[string]int{
     "summer_2017": 1, "spring_2016,fall_2016": 2,
@@ -214,11 +209,7 @@ func (e *Extra) OptionsManga() string {
     "2014_2016": 5, "199x": 6,
   }
   _, ok = season_map[e.Season]
-  if ok {
-    time.Sleep(100 * time.Millisecond)
-  } else {
-    e.Status = ""
-  }
+  if !ok { e.Status = "" }
 
   s, _ := strconv.Atoi(e.Score)
   for i := 10; i <= s; i++ {
@@ -238,6 +229,7 @@ func (e *Extra) OptionsManga() string {
 // Limit -> 30 maximum
 func (el *ExtraLimit) OptionsClub() string {
   l, _ := strconv.Atoi(el.Limit)
+  if l == 0 { el.Limit = "1" }
   for i := 31; i <= l; i++ {
     el.Limit = "1"
   }
@@ -251,15 +243,9 @@ func (el *ExtraLimit) OptionsClub() string {
 // Censored -> true, false
 // Set to false to allow hentai, yaoi and yuri
 func (ec *ExtraCensored) OptionsCalendar() string {
-  var ok bool
-
   censored_map := map[string]int{"true": 1, "false": 2}
   _, ok = censored_map[ec.Censored]
-  if ok {
-    time.Sleep(100 * time.Millisecond)
-  } else {
-    ec.Censored = "false"
-  }
+  if !ok { ec.Censored = "false" }
 
   v := url.Values{}
   v.Add("censored", ec.Censored)
@@ -267,9 +253,61 @@ func (ec *ExtraCensored) OptionsCalendar() string {
   return v.Encode()
 }
 
+// Limit    -> 5000 maximum
+// Status   -> planned, watching, rewatching, completed, on_hold, dropped
+// Censored -> true, false
+// Set to true to discard hentai, yaoi and yuri
+func (ar *ExtraAnimeRates) OptionsAnimeRates() string {
+  l, _ := strconv.Atoi(ar.Limit)
+  if l == 0 { ar.Limit = "1" }
+  for i := 5001; i <= l; i++ {
+    ar.Limit = "1"
+  }
+
+  status_map := map[string]int{
+    "planned": 1, "watching": 2,
+    "rewatching": 3, "completed": 4,
+    "on_hold": 5, "dropped": 6,
+  }
+  _, ok = status_map[ar.Status]
+  if !ok { ar.Status = "watching" }
+
+  censored_map := map[string]int{"true": 1, "false": 2}
+  _, ok = censored_map[ar.Censored]
+  if !ok { ar.Censored = "false" }
+
+  v := url.Values{}
+  v.Add("limit", ar.Limit)
+  v.Add("status", ar.Status)
+  v.Add("censored", ar.Censored)
+
+  return v.Encode()
+}
+
+// Limit    -> 5000 maximum
+// Censored -> true, false
+// Set to true to discard hentai, yaoi and yuri
+func (mr *ExtraMangaRates) OptionsMangaRates() string {
+  l, _ := strconv.Atoi(mr.Limit)
+  if l == 0 { mr.Limit = "1" }
+  for i := 5001; i <= l; i++ {
+    mr.Limit = "1"
+  }
+
+  censored_map := map[string]int{"true": 1, "false": 2}
+  _, ok = censored_map[mr.Censored]
+  if !ok { mr.Censored = "false" }
+
+  v := url.Values{}
+  v.Add("limit", mr.Limit)
+  v.Add("censored", mr.Censored)
+
+  return v.Encode()
+}
+
 func (c *Configuration) NewGetRequest(search string) *http.Request {
-  url := fmt.Sprintf(urlOrig, protocol, urlShiki, search)
-  req, _ := http.NewRequest(http.MethodGet, url, nil)
+  full_url := fmt.Sprintf(urlOrig, protocol, urlShiki, search)
+  req, _ := http.NewRequest(http.MethodGet, full_url, nil)
   req.Header.Add("User-Agent", c.Application)
   req.Header.Add("Authorization", bearer + c.AccessToken)
   return req
@@ -339,6 +377,52 @@ func (c *Configuration) SearchUserClubs(id int) ([]api.Clubs, error) {
   }
 
   return uc, nil
+}
+
+func (c *Configuration) SearchUserAnimeRates(id int, r ResultAnimeRates) ([]api.UserAnimeRates, error) {
+  var ar []api.UserAnimeRates
+
+  resp, err := client.Do(c.NewGetRequest(
+    convertUserRates(id, "anime_rates", r.OptionsAnimeRates()),
+  ))
+  if err != nil {
+    return ar, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return ar, err
+  }
+
+  if err := json.Unmarshal(data, &ar); err != nil {
+    return nil, err
+  }
+
+  return ar, nil
+}
+
+func (c *Configuration) SearchUserMangaRates(id int, r ResultMangaRates) ([]api.UserMangaRates, error) {
+  var mr []api.UserMangaRates
+
+  resp, err := client.Do(c.NewGetRequest(
+    convertUserRates(id, "manga_rates", r.OptionsMangaRates()),
+  ))
+  if err != nil {
+    return mr, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return mr, err
+  }
+
+  if err := json.Unmarshal(data, &mr); err != nil {
+    return nil, err
+  }
+
+  return mr, nil
 }
 
 func (c *Configuration) WhoAmi() (api.Who, error) {

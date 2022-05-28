@@ -13,9 +13,11 @@ go get -u github.com/vexilology/goshikimori
 
 ## Available functions
 ```golang
-SearchUser(name string) // Find users. Check Users request.
-SearchUserFriends(id int) // Find users friends. Check UserFriends request.
-SearchUserClubs(id int) // Find users clubs. Check UserClubs request.
+SearchUser(name string) // Find user. Check Users request.
+SearchUserFriends(id int) // Find user friends with user id. Check UserFriends request.
+SearchUserClubs(id int) // Find user clubs with user id. Check UserClubs request.
+SearchUserAnimeRates(id int, ExtraAnimeRates interface) // Find user anime rates with user id. Check UserAnimeRates request.
+SearchUserMangaRates(id int, ExtraMangaRates interface) // Find user manga rates with user id. Check UserMangaRates request.
 WhoAmi() // Verify who am i. Check WhoAmi request.
 SearchAnime(name string, Extra interface) // Find animes. Check Animes request.
 SearchManga(name string, Extra interface) // Find mangas. Check Mangas request.
@@ -149,6 +151,156 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
       <li>Is_censored</li>
       <li>Join_policy</li>
       <li>Comment_policy</li>
+    </ul>
+</details>
+<details>
+  <summary>Interface_UserAnimeRates</summary>
+    <ul>
+      <li>Limit: 5000 maximum</li>
+      <li>Status: planned, watching, rewatching, completed, on_hold, dropped</li>
+      <li>Censored: true, false</li>
+    </ul>
+</details>
+<details>
+  <summary>UserAnimeRates request</summary>
+    <ul>
+      <li>Id</li>
+      <li>Score</li>
+      <li>Status</li>
+      <li>Text</li>
+      <li>Episodes</li>
+      <li>Text_html</li>
+      <li>Rewatches</li>
+      <li>Created_at</li>
+      <li>Updated_at</li>
+      <li>
+        <details>
+          <summary>User</summary>
+            <ul>
+              <li>Id</li>
+              <li>Nickname</li>
+              <li>Avatar</li>
+              <li>
+                <details>
+                  <summary>Image</summary>
+                    <ul>
+                      <li>Image.X160</li>
+                      <li>Image.X148</li>
+                      <li>Image.X80</li>
+                      <li>Image.X64</li>
+                      <li>Image.X48</li>
+                      <li>Image.X32</li>
+                      <li>Image.X16</li>
+                    </ul>
+                </details>
+              </li>
+            </ul>
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>Anime</summary>
+            <ul>
+              <li>Id</li>
+              <li>Name</li>
+              <li>Russian</li>
+              <li>
+                <details>
+                  <summary>Image</summary>
+                    <ul>
+                      <li>Image.Original</li>
+                      <li>Image.Preview</li>
+                      <li>Image.X96</li>
+                      <li>Image.X48</li>
+                    </ul>
+                </details>
+              </li>
+              <li>Url</li>
+              <li>Kind</li>
+              <li>Score</li>
+              <li>Status</li>
+              <li>Episodes</li>
+              <li>Episodes_aired</li>
+              <li>Aired_on</li>
+              <li>Released_on</li>
+            </ul>
+        </details>
+      </li>
+    </ul>
+</details>
+<details>
+  <summary>Interface_UserMangaRates</summary>
+    <ul>
+      <li>Limit: 5000 maximum</li>
+      <li>Censored: true, false</li>
+    </ul>
+</details>
+<details>
+  <summary>UserMangaRates request</summary>
+    <ul>
+      <li>Id</li>
+      <li>Score</li>
+      <li>Status</li>
+      <li>Text</li>
+      <li>Chapters</li>
+      <li>Volumes</li>
+      <li>Text_html</li>
+      <li>Rewatches</li>
+      <li>Created_at</li>
+      <li>Updated_at</li>
+      <li>
+        <details>
+          <summary>User</summary>
+            <ul>
+              <li>Id</li>
+              <li>Nickname</li>
+              <li>Avatar</li>
+              <li>
+                <details>
+                  <summary>Image</summary>
+                    <ul>
+                      <li>Image.X160</li>
+                      <li>Image.X148</li>
+                      <li>Image.X80</li>
+                      <li>Image.X64</li>
+                      <li>Image.X48</li>
+                      <li>Image.X32</li>
+                      <li>Image.X16</li>
+                    </ul>
+                </details>
+              </li>
+            </ul>
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>Manga</summary>
+            <ul>
+              <li>Id</li>
+              <li>Name</li>
+              <li>Russian</li>
+              <li>
+                <details>
+                  <summary>Image</summary>
+                    <ul>
+                      <li>Image.Original</li>
+                      <li>Image.Preview</li>
+                      <li>Image.X96</li>
+                      <li>Image.X48</li>
+                    </ul>
+                </details>
+              </li>
+              <li>Url</li>
+              <li>Kind</li>
+              <li>Score</li>
+              <li>Status</li>
+              <li>Volumes</li>
+              <li>Chapters</li>
+              <li>Aired_on</li>
+              <li>Released_on</li>
+            </ul>
+        </details>
+      </li>
     </ul>
 </details>
 <details>

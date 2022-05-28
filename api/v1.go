@@ -77,6 +77,42 @@ type UserFriends struct {
   Last_online_at time.Time `json:"last_online_at"`
 }
 
+// NOTES: ~Below I wrote that I deleted
+// Chapters -> nil
+// Volumes -> nil
+// Manga -> nil
+type UserAnimeRates struct {
+  Id         int         `json:"id"`
+  Score      int         `json:"score"`
+  Status     string      `json:"status"`
+  Text       string      `json:"text"`
+  Episodes   int         `json:"episodes"`
+  Text_html  string      `json:"text_html"`
+  Rewatches  int         `json:"rewatches"`
+  Created_at time.Time   `json:"created_at"`
+  Updated_at time.Time   `json:"updated_at"`
+  User       UserFriends `json:"user"`
+  Anime      Animes      `json:"anime"`
+}
+
+// NOTES: ~Below I wrote that I deleted
+// Episodes -> nil
+// Anime -> nil
+type UserMangaRates struct {
+  Id         int         `json:"id"`
+  Score      int         `json:"score"`
+  Status     string      `json:"status"`
+  Text       string      `json:"text"`
+  Chapters   int         `json:"chapters"`
+  Volumes    int         `json:"volumes"`
+  Text_html  string      `json:"text_html"`
+  Rewatches  int         `json:"rewatches"`
+  Created_at time.Time   `json:"created_at"`
+  Updated_at time.Time   `json:"updated_at"`
+  User       UserFriends `json:"user"`
+  Manga      Mangas      `json:"manga"`
+}
+
 type Who struct {
   Id             int       `json:"id"`
   Nickname       string    `json:"nickname"`
