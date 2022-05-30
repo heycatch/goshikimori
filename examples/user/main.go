@@ -26,6 +26,7 @@ func main() {
     fmt.Printf("Not found %s\n", user)
     return
   }
+  // user info
   fmt.Println(u.Id, u.Sex, u.Last_online, u.Name)
   fmt.Println()
   for _, v := range u.Stats.Statuses.Anime {
@@ -36,7 +37,7 @@ func main() {
     fmt.Println(v.Id, v.Grouped_id, v.Name, v.Size, v.Type)
   }
   fmt.Println()
-  // Search clubs
+  // user clubs
   uc, err := c.SearchUserClubs(u.Id)
   if err != nil {
     fmt.Println(err)
@@ -50,7 +51,7 @@ func main() {
     fmt.Println(v.Id, v.Name, v.Is_censored)
   }
   fmt.Println()
-  // Search friends
+  // user friends
   uf, err := c.SearchUserFriends(u.Id)
   if err != nil {
     fmt.Println(err)
@@ -63,8 +64,7 @@ func main() {
   for _, v := range uf {
     fmt.Println(v.Id, v.Nickname, v.Last_online_at)
   }
-  fmt.Println()
-  // Search anime and manga rates
+  // search anime and manga rates
   time.Sleep(5 * time.Second)
   fmt.Println("too many requests, wait 5 seconds")
   gar := &g.ExtraAnimeRates{Limit: "5", Status: "completed", Censored: ""}
@@ -95,7 +95,7 @@ func main() {
     fmt.Println(v.Status, v.Manga.Name, v.Chapters, v.Volumes, v.Score)
   }
   fmt.Println()
-  // Search favourites: anime, manga, characters, people,
+  // search favourites: anime, manga, characters, people,
   // mangakas, seyu and producers
   uf, err := c.SearchUserFavourites(u.Id)
   if err != nil {
@@ -115,5 +115,37 @@ func main() {
   }
   for _, v := range uf.Animes {
     fmt.Println(v.Id, v.Name, v.Russian, v.Image)
+  }
+  // user history
+  time.Sleep(5 * time.Second)
+  fmt.Println("too many requests, wait 5 seconds")
+  ett := &g.ExtraTargetType{Limit: "10", Target_type: "Anime"}
+  uh, err := c.SearchUserHistory(u.Id, ett)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if len(uh) == 0 {
+    fmt.Println("history not found")
+    return
+  }
+  for _, v := range uh {
+    fmt.Println(v.Id, v.Description, v.Target.Russian, v.Target.Episodes)
+  }
+  fmt.Println()
+  // user bans
+  ub, err := c.SearchUserBans(u.Id)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if len(ub) == 0 {
+    fmt.Println("bans not found")
+    return
+  }
+  for _, v := range ub {
+    fmt.Println(v.Comment, v.User.Id, v.User.Nickname,
+      v.Moderator.Id, v.Moderator.Nickname,
+    )
   }
 }

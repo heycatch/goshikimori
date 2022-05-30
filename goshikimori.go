@@ -14,9 +14,8 @@ import (
 
 const (
   bearer   = "Bearer "
-  urlOrig  = "%s://%s/%s"
   protocol = "https"
-  urlShiki = "shikimori.one/api"
+  urlshiki = "shikimori.one/api"
 )
 
 var ok bool
@@ -47,6 +46,10 @@ type ExtraMangaRates struct {
   Limit, Censored string
 }
 
+type ExtraTargetType struct {
+  Limit, Target_type string
+}
+
 type Result interface {
   OptionsAnime() string
   OptionsManga() string
@@ -69,6 +72,10 @@ type ResultMangaRates interface {
   OptionsMangaRates() string
 }
 
+type ResultUserHistory interface {
+  OptionsUserHistory() string
+}
+
 func Add(app, tok string) *Configuration {
   return &Configuration{Application: app, AccessToken: tok}
 }
@@ -77,12 +84,8 @@ func convertAchievements(id int) string {
   return fmt.Sprintf("achievements?user_id=%d", id)
 }
 
-func convertAnimeScreenshots(id int) string {
-  return fmt.Sprintf("animes/%d/screenshots", id)
-}
-
-func convertAnimeVideos(id int) string {
-  return fmt.Sprintf("animes/%d/videos", id)
+func convertAnime(id int, name string) string {
+  return fmt.Sprintf("animes/%d/%s", id, name)
 }
 
 func convertRoles(id int, name string) string {
@@ -101,26 +104,38 @@ func convertCalendar(name string) string {
   return fmt.Sprintf("calendar?%s", name)
 }
 
-func convertUserFriends(id int) string {
-  return fmt.Sprintf("users/%d/friends", id)
-}
-
-func convertUserClubs(id int) string {
-  return fmt.Sprintf("users/%d/clubs", id)
+func convertUser(id int, name string) string {
+  return fmt.Sprintf("users/%d/%s", id, name)
 }
 
 func convertUserRates(id int, name, options string) string {
   return fmt.Sprintf("users/%d/%s?%s", id, name, options)
 }
 
-func convertUserFavourites(id int, name string) string {
-  return fmt.Sprintf("users/%d/%s", id, name)
-}
-
 // string formatting for achievements search
 func NekoSearch(name string) string {
   r := strings.Replace(strings.ToLower(name), " ", "_", -1)
   return fmt.Sprintf("%s", r)
+}
+
+// Limit       -> 100
+// Target_type -> Anime, Manga
+func (ett *ExtraTargetType) OptionsUserHistory() string {
+  l, _ := strconv.Atoi(ett.Limit)
+  if l == 0 { ett.Limit = "1" }
+  for i := 101; i <= l; i++ {
+    ett.Limit = "1"
+  }
+
+  target_map := map[string]int{"Anime": 1, "Manga": 2}
+  _, ok = target_map[ett.Target_type]
+  if !ok { ett.Target_type = "Anime" }
+
+  v := url.Values{}
+  v.Add("limit", ett.Limit)
+  v.Add("target_type", ett.Target_type)
+
+  return v.Encode()
 }
 
 // Limit -> 100
@@ -325,7 +340,7 @@ func (mr *ExtraMangaRates) OptionsMangaRates() string {
 }
 
 func (c *Configuration) NewGetRequest(search string) *http.Request {
-  full_url := fmt.Sprintf(urlOrig, protocol, urlShiki, search)
+  full_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
   req, _ := http.NewRequest(http.MethodGet, full_url, nil)
   req.Header.Add("User-Agent", c.Application)
   req.Header.Add("Authorization", bearer + c.AccessToken)
@@ -383,7 +398,7 @@ func (c *Configuration) SearchUsers(name string, r ResultLimit) ([]api.Users, er
 func (c *Configuration) SearchUserFriends(id int) ([]api.UserFriends, error) {
   var uf []api.UserFriends
 
-  resp, err := client.Do(c.NewGetRequest(convertUserFriends(id)))
+  resp, err := client.Do(c.NewGetRequest(convertUser(id, "friends")))
   if err != nil {
     return uf, err
   }
@@ -404,7 +419,7 @@ func (c *Configuration) SearchUserFriends(id int) ([]api.UserFriends, error) {
 func (c *Configuration) SearchUserClubs(id int) ([]api.Clubs, error) {
   var uc []api.Clubs
 
-  resp, err := client.Do(c.NewGetRequest(convertUserClubs(id)))
+  resp, err := client.Do(c.NewGetRequest(convertUser(id, "clubs")))
   if err != nil {
     return uc, err
   }
@@ -471,9 +486,7 @@ func (c *Configuration) SearchUserMangaRates(id int, r ResultMangaRates) ([]api.
 func (c *Configuration) SearchUserFavourites(id int) (api.UserFavourites, error) {
   var uf api.UserFavourites
 
-  resp, err := client.Do(c.NewGetRequest(
-    convertUserFavourites(id, "favourites"),
-  ))
+  resp, err := client.Do(c.NewGetRequest(convertUser(id, "favourites")))
   if err != nil {
     return uf, err
   }
@@ -489,6 +502,52 @@ func (c *Configuration) SearchUserFavourites(id int) (api.UserFavourites, error)
   }
 
   return uf, nil
+}
+
+func (c *Configuration) SearchUserHistory(id int, r ResultUserHistory) ([]api.UserHistory, error) {
+  var uh []api.UserHistory
+
+  resp, err := client.Do(c.NewGetRequest(
+    convertUserRates(id, "history", r.OptionsUserHistory()),
+  ))
+  if err != nil {
+    return uh, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return uh, err
+  }
+
+  if err := json.Unmarshal(data, &uh); err != nil {
+    return nil, err
+  }
+
+  return uh, nil
+}
+
+func (c *Configuration) SearchUserBans(id int) ([]api.Bans, error) {
+  var b []api.Bans
+
+  resp, err := client.Do(c.NewGetRequest(
+    convertUser(id, "bans"),
+  ))
+  if err != nil {
+    return b, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return b, err
+  }
+
+  if err := json.Unmarshal(data, &b); err != nil {
+    return nil, err
+  }
+
+  return b, nil
 }
 
 func (c *Configuration) WhoAmi() (api.Who, error) {
@@ -616,7 +675,7 @@ func (c *Configuration) FastIdManga(name string) (int, error) {
 func (c *Configuration) SearchAnimeScreenshots(id int) ([]api.AnimeScreenshots, error) {
   var s []api.AnimeScreenshots
 
-  resp, err := client.Do(c.NewGetRequest(convertAnimeScreenshots(id)))
+  resp, err := client.Do(c.NewGetRequest(convertAnime(id, "screenshots")))
   if err != nil {
     return s, err
   }
@@ -769,7 +828,7 @@ func (c *Configuration) SearchAchievement(id int) ([]api.Achievements, error) {
 func (c *Configuration) SearchAnimeVideos(id int) ([]api.AnimeVideos, error) {
   var v []api.AnimeVideos
 
-  resp, err := client.Do(c.NewGetRequest(convertAnimeVideos(id)))
+  resp, err := client.Do(c.NewGetRequest(convertAnime(id, "videos")))
   if err != nil {
     return v, err
   }

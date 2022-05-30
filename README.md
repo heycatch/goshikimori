@@ -20,6 +20,8 @@ SearchUserClubs(id int) // Find user clubs with user id. Check UserClubs request
 SearchUserAnimeRates(id int, ExtraAnimeRates interface) // Find user anime rates with user id. Check UserAnimeRates request.
 SearchUserMangaRates(id int, ExtraMangaRates interface) // Find user manga rates with user id. Check UserMangaRates request.
 SearchUserFavourites(id int) // Find user favourites: anime, manga, characters, people,mangakas, seyu and producers with user id. Check UserFavourites request.
+SearchUserHistory(id int, ExtraTargetType interface) // Find user history(anime, manga) with user id. Check UserHistory request.
+SearchUserBans(id int) // Find user bans with user id. Check Bans request.
 WhoAmi() // Verify who am i. Check WhoAmi request.
 SearchAnime(name string, Extra interface) // Find animes. Check Animes request.
 SearchManga(name string, Extra interface) // Find mangas. Check Mangas request.
@@ -431,6 +433,52 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
     </ul>
 </details>
 <details>
+  <summary>Interface_UserHistory</summary>
+    <ul>
+      <li>Limit: 100 maximum</li>
+      <li>Target_type: Anime, Manga</li>
+    </ul>
+</details>
+<details>
+  <summary>UserHistory request</summary>
+    <ul>
+      <li>Id</li>
+      <li>Created_at</li>
+      <li>Description</li>
+      <li>
+        <details>
+          <summary>Target</summary>
+            <ul>
+              <li>Id</li>
+              <li>Name</li>
+              <li>Russian</li>
+              <li>
+                <details>
+                  <summary>Image</summary>
+                    <ul>
+                      <li>Image.Original</li>
+                      <li>Image.Preview</li>
+                      <li>Image.X96</li>
+                      <li>Image.X48</li>
+                    </ul>
+                </details>
+              </li>
+              <li>Url</li>
+              <li>Kind</li>
+              <li>Score</li>
+              <li>Status</li>
+              <li>Episodes</li>
+              <li>Episodes_aired</li>
+              <li>Volumes</li>
+              <li>Chapters</li>
+              <li>Aired_on</li>
+              <li>Released_on</li>
+            </ul>
+        </details>
+      </li>
+    </ul>
+</details>
+<details>
   <summary>WhoAmi request</summary>
     <ul>
       <li>Id</li>
@@ -709,6 +757,7 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
             <li>User_id</li>
             <li>Created_at</li>
             <li>Updated_at</li>
+            <li>Is_summary</li>
             <li>Is_offtopic</li>
           </ul>
         </details>
@@ -738,10 +787,35 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
                 </ul>
               </details>
             </li>
+            <li>Last_online_at</li>
           </ul>
         </details>
       </li>
-      <li>Last_online_at</li>
+      <li>
+        <details>
+          <summary>Moderator</summary>
+          <ul>
+            <li>Id</li>
+            <li>Nickname</li>
+            <li>Avatar</li>
+            <li>
+              <details>
+                <summary>Image</summary>
+                <ul>
+                  <li>X160</li>
+                  <li>X148</li>
+                  <li>X80</li>
+                  <li>X64</li>
+                  <li>X48</li>
+                  <li>X32</li>
+                  <li>X16</li>
+                </ul>
+              </details>
+            </li>
+            <li>Last_online_at</li>
+          </ul>
+        </details>
+      </li>
     </ul>
 </details>
 <details>

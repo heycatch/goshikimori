@@ -131,6 +131,32 @@ type UserFavourites struct {
   Producers  []UserFavouritesInfo `json:"producers"`
 }
 
+// Episodes and Episodes_aired only for anime
+// Volumes and Chapters only for manga
+type TargetInfo struct {
+  Id             int       `json:"id"`
+  Name           string    `json:"name"`
+  Russian        string    `json:"russian"`
+  Image          AnimeSize `json:"image"`
+  Url            string    `json:"url"`
+  Kind           string    `json:"kind"`
+  Score          string    `json:"score"`
+  Status         string    `json:"status"`
+  Episodes       int       `json:"episodes"`
+  Episodes_aired int       `json:"episodes_aired"`
+  Volumes        int       `json:"volumes"`
+  Chapters       int       `json:"chapters"`
+  Aired_on       string    `json:"aired_on"`
+  Released_on    string    `json:"released_on"`
+}
+
+type UserHistory struct {
+  Id          int        `json:"id"`
+  Created_at  time.Time  `json:"created_at"`
+  Description string     `json:"description"`
+  Target      TargetInfo `json:"target"`
+}
+
 type Who struct {
   Id             int       `json:"id"`
   Nickname       string    `json:"nickname"`
@@ -260,14 +286,16 @@ type CommentInfo struct {
   User_id          int       `json:"user_id"`
   Created_at       time.Time `json:"created_at"`
   Updated_at       time.Time `json:"updated_at"`
+  Is_summary       bool      `json:"is_summary"`
   Is_offtopic      bool      `json:"is_offtopic"`
 }
 
 type UserInfo struct {
-  Id       int      `json:"id"`
-  Nickname string   `json:"nickname"`
-  Avatar   string   `json:"avatar"`
-  Image    UserSize `json:"image"`
+  Id             int       `json:"id"`
+  Nickname       string    `json:"nickname"`
+  Avatar         string    `json:"avatar"`
+  Image          UserSize  `json:"image"`
+  Last_online_at time.Time `json:"last_online_at"`
 }
 
 type Bans struct {
@@ -279,7 +307,7 @@ type Bans struct {
   Created_at       time.Time   `json:"created_at"`
   Duration_minutes int         `json:"duration_minutes"`
   User             UserInfo    `json:"user"`
-  Last_online_at   time.Time   `json:"last_online_at"`
+  Moderator        UserInfo    `json:"moderator"`
 }
 
 type Calendar struct {
