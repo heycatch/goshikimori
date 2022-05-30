@@ -53,7 +53,8 @@ type Result interface {
 }
 
 type ResultLimit interface {
-  OptionsClub() string
+  OptionsUsers() string
+  OptionsClub()  string
 }
 
 type ResultCensored interface {
@@ -112,10 +113,28 @@ func convertUserRates(id int, name, options string) string {
   return fmt.Sprintf("users/%d/%s?%s", id, name, options)
 }
 
-// String formatting for achievements search
+func convertUserFavourites(id int, name string) string {
+  return fmt.Sprintf("users/%d/%s", id, name)
+}
+
+// string formatting for achievements search
 func NekoSearch(name string) string {
   r := strings.Replace(strings.ToLower(name), " ", "_", -1)
   return fmt.Sprintf("%s", r)
+}
+
+// Limit -> 100
+func (el *ExtraLimit) OptionsUsers() string {
+  l, _ := strconv.Atoi(el.Limit)
+  if l == 0 { el.Limit = "1" }
+  for i := 101; i <= l; i++ {
+    el.Limit = "1"
+  }
+
+  v := url.Values{}
+  v.Add("limit", el.Limit)
+
+  return v.Encode()
 }
 
 // Limit  -> 50 maximum
@@ -337,6 +356,30 @@ func (c *Configuration) SearchUser(name string) (api.Users, error) {
   return u, nil
 }
 
+// don't use Stats.Statuses.Anime and Stats.Statuses.Manga: empty slice
+func (c *Configuration) SearchUsers(name string, r ResultLimit) ([]api.Users, error) {
+  var u []api.Users
+
+  resp, err := client.Do(
+    c.NewGetRequest("users?search=" + url.QueryEscape(name) + "&" + r.OptionsUsers()),
+  )
+  if err != nil {
+    return u, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return u, err
+  }
+
+  if err := json.Unmarshal(data, &u); err != nil {
+    return nil, err
+  }
+
+  return u, nil
+}
+
 func (c *Configuration) SearchUserFriends(id int) ([]api.UserFriends, error) {
   var uf []api.UserFriends
 
@@ -423,6 +466,29 @@ func (c *Configuration) SearchUserMangaRates(id int, r ResultMangaRates) ([]api.
   }
 
   return mr, nil
+}
+
+func (c *Configuration) SearchUserFavourites(id int) (api.UserFavourites, error) {
+  var uf api.UserFavourites
+
+  resp, err := client.Do(c.NewGetRequest(
+    convertUserFavourites(id, "favourites"),
+  ))
+  if err != nil {
+    return uf, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return uf, err
+  }
+
+  if err := json.Unmarshal(data, &uf); err != nil {
+    return uf, err
+  }
+
+  return uf, nil
 }
 
 func (c *Configuration) WhoAmi() (api.Who, error) {
@@ -675,10 +741,10 @@ func (c *Configuration) SearchClub(name string, r ResultLimit) ([]api.Clubs, err
   return cl, nil
 }
 
-// NOTES: as a result, we return a complete list of all achievements.
-// Next comes the filtering through "NekoSearch" and the error about obtaining
+// as a result, we return a complete list of all achievements.
+// next comes the filtering through "NekoSearch" and the error about obtaining
 // specific achievements is already being processed there.
-// See example in README.md
+// see example in README.md
 func (c *Configuration) SearchAchievement(id int) ([]api.Achievements, error) {
   var a []api.Achievements
 

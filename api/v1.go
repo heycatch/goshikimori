@@ -28,7 +28,7 @@ type StatusesManga struct {
   Type       string `json:"type"`
 }
 
-// NOTES: ~Below I wrote that I deleted
+// ~Below I wrote that I deleted
 // Full_statuses -> no response after request.
 // Scores -> empty slice.
 // Types -> empty slice.
@@ -77,7 +77,7 @@ type UserFriends struct {
   Last_online_at time.Time `json:"last_online_at"`
 }
 
-// NOTES: ~Below I wrote that I deleted
+// ~Below I wrote that I deleted
 // Chapters -> nil
 // Volumes -> nil
 // Manga -> nil
@@ -95,7 +95,7 @@ type UserAnimeRates struct {
   Anime      Animes      `json:"anime"`
 }
 
-// NOTES: ~Below I wrote that I deleted
+// ~Below I wrote that I deleted
 // Episodes -> nil
 // Anime -> nil
 type UserMangaRates struct {
@@ -111,6 +111,24 @@ type UserMangaRates struct {
   Updated_at time.Time   `json:"updated_at"`
   User       UserFriends `json:"user"`
   Manga      Mangas      `json:"manga"`
+}
+
+// removed url -> nil
+type UserFavouritesInfo struct {
+  Id      int    `json:"id"`
+  Name    string `json:"name"`
+  Russian string `json:"russian"`
+  Image   string `json:"image"`
+}
+
+type UserFavourites struct {
+  Animes     []UserFavouritesInfo `json:"animes"`
+  Mangas     []UserFavouritesInfo `json:"mangas"`
+  Characters []UserFavouritesInfo `json:"characters"`
+  People     []UserFavouritesInfo `json:"people"`
+  Mangakas   []UserFavouritesInfo `json:"mangakas"`
+  Seyu       []UserFavouritesInfo `json:"seyu"`
+  Producers  []UserFavouritesInfo `json:"producers"`
 }
 
 type Who struct {
@@ -190,14 +208,14 @@ type Achievements struct {
   Updated_at time.Time `json:"updated_at"`
 }
 
-// NOTES: removed Manga -> bool
+// removed Manga -> bool
 type RelatedAnimes struct {
   Relation         string `json:"relation"`
   Relation_Russian string `json:"relation_russian"`
   Anime            Animes `json:"anime"`
 }
 
-// NOTES: removed Anime -> bool
+// removed Anime -> bool
 type RelatedMangas struct {
   Relation         string `json:"relation"`
   Relation_Russian string `json:"relation_russian"`
@@ -227,7 +245,7 @@ type CharacterInfo struct {
   Url     string    `json:"url"`
 }
 
-// NOTES: removed Person -> nil
+// removed Person -> nil
 type Roles struct {
   Roles         []string      `json:"roles"`
   Roles_Russian []string      `json:"roles_russian"`

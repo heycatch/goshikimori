@@ -94,4 +94,26 @@ func main() {
   for _, v := range mr {
     fmt.Println(v.Status, v.Manga.Name, v.Chapters, v.Volumes, v.Score)
   }
+  fmt.Println()
+  // Search favourites: anime, manga, characters, people,
+  // mangakas, seyu and producers
+  uf, err := c.SearchUserFavourites(u.Id)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if len(uf.Animes) == 0 {
+    fmt.Println("favourite animes not found")
+    return
+  }
+  for _, v := range uf.Animes {
+    fmt.Println(v.Id, v.Name, v.Russian, v.Image)
+  }
+  if len(uf.Mangas) == 0 {
+    fmt.Println("favourite mangas not found")
+    return
+  }
+  for _, v := range uf.Animes {
+    fmt.Println(v.Id, v.Name, v.Russian, v.Image)
+  }
 }

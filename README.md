@@ -13,11 +13,13 @@ go get -u github.com/vexilology/goshikimori
 
 ## Available functions
 ```golang
-SearchUser(name string) // Find user. Check Users request.
+SearchUsers(name string, ExtraLimit interface) // Find users. Check Users request. Many results, search is not case sensitive. Check Users request.
+SearchUser(name string) // Find user. Check User request. Single result, search is case sensitive. Check User request.
 SearchUserFriends(id int) // Find user friends with user id. Check UserFriends request.
 SearchUserClubs(id int) // Find user clubs with user id. Check UserClubs request.
 SearchUserAnimeRates(id int, ExtraAnimeRates interface) // Find user anime rates with user id. Check UserAnimeRates request.
 SearchUserMangaRates(id int, ExtraMangaRates interface) // Find user manga rates with user id. Check UserMangaRates request.
+SearchUserFavourites(id int) // Find user favourites: anime, manga, characters, people,mangakas, seyu and producers with user id. Check UserFavourites request.
 WhoAmi() // Verify who am i. Check WhoAmi request.
 SearchAnime(name string, Extra interface) // Find animes. Check Animes request.
 SearchManga(name string, Extra interface) // Find mangas. Check Mangas request.
@@ -40,7 +42,50 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
 
 ## Available API
 <details>
+  <summary>Interface_Users</summary>
+    <ul>
+      <li>Limit: 100 maximum</li>
+    </ul>
+</details>
+<details>
   <summary>Users request</summary>
+    <ul>
+      <li>Id</li>
+      <li>Nickname</li>
+      <li>Avatar</li>
+      <li>
+        <details>
+          <summary>Image</summary>
+            <ul>
+              <li>Image.X160</li>
+              <li>Image.X148</li>
+              <li>Image.X80</li>
+              <li>Image.X64</li>
+              <li>Image.X48</li>
+              <li>Image.X32</li>
+              <li>Image.X16</li>
+            </ul>
+        </details>
+      </li>
+      <li>Last_online_at</li>
+      <li>Name</li>
+      <li>Sex</li>
+      <li>Full_years</li>
+      <li>Last_online</li>
+      <li>Website</li>
+      <li>Location</li>
+      <li>Banned</li>
+      <li>About</li>
+      <li>AboutHTML</li>
+      <li>[]Common_Info</li>
+      <li>Show_comments</li>
+      <li>In_friends</li>
+      <li>Is_ignored</li>
+      <li>Style_id</li>
+    </ul>
+</details>
+<details>
+  <summary>User request</summary>
     <ul>
       <li>Id</li>
       <li>Nickname</li>
@@ -304,6 +349,88 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
     </ul>
 </details>
 <details>
+  <summary>UserFavourites request</summary>
+    <ul>
+      <li>
+        <details>
+          <summary>[]Animes</summary>
+            <ul>
+              <li>Id</li>
+              <li>Name</li>
+              <li>Russian</li>
+              <li>Image</li>
+            </ul>
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>[]Mangas</summary>
+            <ul>
+              <li>Id</li>
+              <li>Name</li>
+              <li>Russian</li>
+              <li>Image</li>
+            </ul>
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>[]Characters</summary>
+            <ul>
+              <li>Id</li>
+              <li>Name</li>
+              <li>Russian</li>
+              <li>Image</li>
+            </ul>
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>[]People</summary>
+            <ul>
+              <li>Id</li>
+              <li>Name</li>
+              <li>Russian</li>
+              <li>Image</li>
+            </ul>
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>[]Mangakas</summary>
+            <ul>
+              <li>Id</li>
+              <li>Name</li>
+              <li>Russian</li>
+              <li>Image</li>
+            </ul>
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>[]Seyu</summary>
+            <ul>
+              <li>Id</li>
+              <li>Name</li>
+              <li>Russian</li>
+              <li>Image</li>
+            </ul>
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>[]Producers</summary>
+            <ul>
+              <li>Id</li>
+              <li>Name</li>
+              <li>Russian</li>
+              <li>Image</li>
+            </ul>
+        </details>
+      </li>
+    </ul>
+</details>
+<details>
   <summary>WhoAmi request</summary>
     <ul>
       <li>Id</li>
@@ -332,7 +459,7 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
     </ul>
 </details>
 <details>
-  <summary>Interface_Anime</summary>
+  <summary>Interface_Animes</summary>
     <ul>
       <li>Limit: 50 maximum</li>
       <li>Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48</li>
@@ -370,7 +497,7 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
     </ul>
 </details>
 <details>
-  <summary>Interface_Manga</summary>
+  <summary>Interface_Mangas</summary>
     <ul>
       <li>Limit: 50 maximum</li>
       <li>Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin</li>
@@ -407,7 +534,7 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
     </ul>
 </details>
 <details>
-  <summary>Interface_Club</summary>
+  <summary>Interface_Clubs</summary>
     <ul>
       <li>Limit: 30 maximum</li>
     </ul>
@@ -618,6 +745,12 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
     </ul>
 </details>
 <details>
+  <summary>Interface_Calendar</summary>
+    <ul>
+      <li>Censored: true, false</li>
+    </ul>
+</details>
+<details>
   <summary>Calendar request</summary>
     <ul>
       <li>Next_episode</li>
@@ -652,12 +785,6 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
           </ul>
         </details>
       </li>
-    </ul>
-</details>
-<details>
-  <summary>Interface_Calendar</summary>
-    <ul>
-      <li>Censored: true, false</li>
     </ul>
 </details>
 
