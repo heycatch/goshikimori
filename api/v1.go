@@ -316,3 +316,41 @@ type Calendar struct {
   Duration        int       `json:"duration"`
   Anime           Animes    `json:"anime"`
 }
+
+type LinksInfo struct {
+  Id        int    `json:"id"`
+  Source_id int    `json:"source_id"`
+  Target_id int    `json:"target_id"`
+  Source    int    `json:"source"`
+  Target    int    `json:"target"`
+  Weight    int    `json:"weight"`
+  Relation  string `json:"relation"`
+}
+
+type NodesInfo struct {
+  Id        int    `json:"id"`
+  Date      int    `json:"date"`
+  Name      string `json:"name"`
+  Image_url string `json:"image_url"`
+  Year      int    `json:"year"`
+  Kind      string `json:"kind"`
+  Weight    int    `json:"weight"`
+}
+
+type Franchise struct {
+  Links      []LinksInfo `json:"links"`
+  Nodes      []NodesInfo `json:"nodes"`
+  Current_id int         `json:"current_id"`
+}
+
+type ExternalLinks struct {
+  Id          int       `json:"id"`
+  Kind        string    `json:"kind"`
+  Url         string    `json:"url"`
+  Source      string    `json:"source"`
+  Entry_id    int       `json:"entry_id"`
+  Entry_type  string    `json:"entry_type"`
+  Created_at  time.Time `json:"created_at"`
+  Updated_at  time.Time `json:"updated_at"`
+  Imported_at time.Time `json:"imported_at"`
+}

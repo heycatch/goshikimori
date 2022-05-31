@@ -13,21 +13,21 @@ go get -u github.com/vexilology/goshikimori
 
 ## Available functions
 ```golang
-SearchUsers(name string, ExtraLimit interface) // Find users. Check Users request. Many results, search is not case sensitive. Check Users request.
+SearchUsers(name string, ExtraLimit interface{}) // Find users. Check Users request. Many results, search is not case sensitive. Check Users request.
 SearchUser(name string) // Find user. Check User request. Single result, search is case sensitive. Check User request.
 SearchUserFriends(id int) // Find user friends with user id. Check UserFriends request.
 SearchUserClubs(id int) // Find user clubs with user id. Check UserClubs request.
-SearchUserAnimeRates(id int, ExtraAnimeRates interface) // Find user anime rates with user id. Check UserAnimeRates request.
-SearchUserMangaRates(id int, ExtraMangaRates interface) // Find user manga rates with user id. Check UserMangaRates request.
+SearchUserAnimeRates(id int, ExtraAnimeRates interface{}) // Find user anime rates with user id. Check UserAnimeRates request.
+SearchUserMangaRates(id int, ExtraMangaRates interface{}) // Find user manga rates with user id. Check UserMangaRates request.
 SearchUserFavourites(id int) // Find user favourites: anime, manga, characters, people,mangakas, seyu and producers with user id. Check UserFavourites request.
-SearchUserHistory(id int, ExtraTargetType interface) // Find user history(anime, manga) with user id. Check UserHistory request.
+SearchUserHistory(id int, ExtraTargetType interface{}) // Find user history(anime, manga) with user id. Check UserHistory request.
 SearchUserBans(id int) // Find user bans with user id. Check Bans request.
 WhoAmi() // Verify who am i. Check WhoAmi request.
-SearchAnime(name string, Extra interface) // Find animes. Check Animes request.
-SearchManga(name string, Extra interface) // Find mangas. Check Mangas request.
-SearchClub(name string, ExtraLimit interface) // Find clubs. Check Clubs request.
-FastIdAnime(name string) // Anime id search.
-FastIdManga(name string) // Manga id search.
+SearchAnime(name string, Extra interface{}) // Find animes. Check Animes request.
+SearchManga(name string, Extra interface{}) // Find mangas. Check Mangas request.
+SearchClub(name string, ExtraLimit interface{}) // Find clubs. Check Clubs request.
+FastIdAnime(name string) // Anime id search. Single result, search is case sensitive.
+FastIdManga(name string) // Manga id search. Single result, search is case sensitive.
 NekoSearch(name string) // Search by anime name in achievements.
 SearchAchievement(id int) // Find achievements with anime id. Check Achievements request.
 SearchAnimeScreenshots(id int) // Find anime-screenshots with anime id. Check AnimeScreenshots request.
@@ -38,8 +38,12 @@ SearchRelatedManga(id int) // Find related manga with manga id. Check RelatedMan
 SearchAnimeVideos(id int) // Find anime-videos with anime id. Check AnimeVideos request.
 SearchAnimeRoles(id int) // Find anime roles with anime id. Check AnimeRoles/MangaRoles request.
 SearchMangaRoles(id int) // Find manga roles with anime id. Check AnimeRoles/MangaRoles request.
+SearchAnimeFranchise(id int) // Find anime franchise with anime id. Check AnimeFranchise/MangaFranchise request.
+SearchMangaFranchise(id int) // Find manga franchise with manga id. Check AnimeFranchise/MangaFranchise request.
+SearchAnimeExternalLinks(id int) // Find anime external links with anime id. Check AnimeExternalLinks/MangaExternalLinks request.
+SearchMangaExternalLinks(id int) // Find manga external links with manga id. Check AnimeExternalLinks/MangaExternalLinks request.
 SearchBans() // Find last bans. Check Bans request.
-SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request.
+SearchCalendar(ExtraCensored interface{}) // Find calendar. Check Calendar request.
 ```
 
 ## Available API
@@ -739,6 +743,55 @@ SearchCalendar(ExtraCensored interface) // Find calendar. Check Calendar request
           </ul>
         </details>
       </li>
+    </ul>
+</details>
+<details>
+  <summary>AnimeFranchise/MangaFranchise request</summary>
+    <ul>
+      <li>
+        <details>
+          <summary>[]Links</summary>
+          <ul>
+            <li>Id</li>
+            <li>Source_id</li>
+            <li>Target_id</li>
+            <li>Source</li>
+            <li>Target</li>
+            <li>Weight</li>
+            <li>Relation</li>
+          </ul>
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>[]Nodes</summary>
+          <ul>
+            <li>Id</li>
+            <li>Date</li>
+            <li>Name</li>
+            <li>Image_url</li>
+            <li>Url</li>
+            <li>Year</li>
+            <li>Kind</li>
+            <li>Weight</li>
+          </ul>
+        </details>
+      </li>
+      <li>Current_id</li>
+    </ul>
+</details>
+<details>
+  <summary>AnimeExternalLinks/MangaExternalLinks request</summary>
+    <ul>
+      <li>Id</li>
+      <li>Kind</li>
+      <li>Url</li>
+      <li>Source</li>
+      <li>Entry_id</li>
+      <li>Entry_type</li>
+      <li>Created_at</li>
+      <li>Updated_at</li>
+      <li>Imported_at</li>
     </ul>
 </details>
 <details>

@@ -100,12 +100,20 @@ func convertRelated(id int, name string) string {
   return fmt.Sprintf("%s/%d/related", name, id)
 }
 
+func convertFranchise(id int, name string) string {
+  return fmt.Sprintf("%s/%d/franchise", name, id)
+}
+
 func convertCalendar(name string) string {
   return fmt.Sprintf("calendar?%s", name)
 }
 
 func convertUser(id int, name string) string {
   return fmt.Sprintf("users/%d/%s", id, name)
+}
+
+func convertExternalLinks(id int, name string) string {
+  return fmt.Sprintf("%s/%d/external_links", name, id)
 }
 
 func convertUserRates(id int, name, options string) string {
@@ -691,6 +699,86 @@ func (c *Configuration) SearchAnimeScreenshots(id int) ([]api.AnimeScreenshots, 
   }
 
   return s, nil
+}
+
+func (c *Configuration) SearchAnimeFranchise(id int) (api.Franchise, error) {
+  var f api.Franchise
+
+  resp, err := client.Do(c.NewGetRequest(convertFranchise(id, "animes")))
+  if err != nil {
+    return f, err
+  }
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return f, err
+  }
+
+  if err := json.Unmarshal(data, &f); err != nil {
+    return f, err
+  }
+
+  return f, nil
+}
+
+func (c *Configuration) SearchMangaFranchise(id int) (api.Franchise, error) {
+  var f api.Franchise
+
+  resp, err := client.Do(c.NewGetRequest(convertFranchise(id, "mangas")))
+  if err != nil {
+    return f, err
+  }
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return f, err
+  }
+
+  if err := json.Unmarshal(data, &f); err != nil {
+    return f, err
+  }
+
+  return f, nil
+}
+
+func (c *Configuration) SearchAnimeExternalLinks(id int) ([]api.ExternalLinks, error) {
+  var el []api.ExternalLinks
+
+  resp, err := client.Do(c.NewGetRequest(convertExternalLinks(id, "animes")))
+  if err != nil {
+    return el, err
+  }
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return el, err
+  }
+
+  if err := json.Unmarshal(data, &el); err != nil {
+    return nil, err
+  }
+
+  return el, nil
+}
+
+func (c *Configuration) SearchMangaExternalLinks(id int) ([]api.ExternalLinks, error) {
+  var el []api.ExternalLinks
+
+  resp, err := client.Do(c.NewGetRequest(convertExternalLinks(id, "mangas")))
+  if err != nil {
+    return el, err
+  }
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return el, err
+  }
+
+  if err := json.Unmarshal(data, &el); err != nil {
+    return nil, err
+  }
+
+  return el, nil
 }
 
 func (c *Configuration) SearchSimilarAnime(id int) ([]api.Animes, error) {
