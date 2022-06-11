@@ -44,6 +44,10 @@ SearchAnimeExternalLinks(id int) // Find anime external links with anime id. Che
 SearchMangaExternalLinks(id int) // Find manga external links with manga id. Check AnimeExternalLinks/MangaExternalLinks request.
 SearchBans() // Find last bans. Check Bans request.
 SearchCalendar(ExtraCensored interface{}) // Find calendar. Check Calendar request.
+SearchGenres() // Find genres. Check Genres request.
+SearchStudios() // Find studios. Check Studios request.
+SearchPublishers() // Find publishers. Check Publishers request.
+SearchForums() // Find forums. Check Forums request.
 ```
 
 ## Available API
@@ -912,6 +916,41 @@ SearchCalendar(ExtraCensored interface{}) // Find calendar. Check Calendar reque
           </ul>
         </details>
       </li>
+    </ul>
+</details>
+<details>
+  <summary>Genres request</summary>
+    <ul>
+      <li>Id</li>
+      <li>Name</li>
+      <li>Russian</li>
+      <li>Kind</li>
+    </ul>
+</details>
+<details>
+  <summary>Studios request</summary>
+    <ul>
+      <li>Id</li>
+      <li>Name</li>
+      <li>Filtered_name</li>
+      <li>Real</li>
+    </ul>
+</details>
+<details>
+  <summary>Publishers request</summary>
+    <ul>
+      <li>Id</li>
+      <li>Name</li>
+    </ul>
+</details>
+<details>
+  <summary>Forums request</summary>
+    <ul>
+      <li>Id</li>
+      <li>Position</li>
+      <li>Name</li>
+      <li>Permalink</li>
+      <li>Url</li>
     </ul>
 </details>
 

@@ -354,3 +354,31 @@ type ExternalLinks struct {
   Updated_at  time.Time `json:"updated_at"`
   Imported_at time.Time `json:"imported_at"`
 }
+
+type Genres struct {
+  Id      int    `json:"id"`
+  Name    string `json:"name"`
+  Russian string `json:"russian"`
+  Kind    string `json:"kind"`
+}
+
+// removed image -> nil
+type Studios struct {
+  Id            int    `json:"id"`
+  Name          string `json:"name"`
+  Filtered_name string `json:"filtered_name"`
+  Real          bool   `json:"real"`
+}
+
+type Publishers struct {
+  Id   int    `json:"id"`
+  Name string `json:"name"`
+}
+
+type Forums struct {
+  Id        int    `json:id"`
+  Position  int    `json:"position"`
+  Name      string `json:"name"`
+  Permalink string `json:"permalink"`
+  Url       string `json:"url"`
+}

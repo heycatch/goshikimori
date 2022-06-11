@@ -135,7 +135,7 @@ func (ett *ExtraTargetType) OptionsUserHistory() string {
     ett.Limit = "1"
   }
 
-  target_map := map[string]int{"Anime": 1, "Manga": 2}
+  target_map := map[string]int8{"Anime": 1, "Manga": 2}
   _, ok = target_map[ett.Target_type]
   if !ok { ett.Target_type = "Anime" }
 
@@ -173,7 +173,7 @@ func (e *Extra) OptionsAnime() string {
     e.Limit = "1"
   }
 
-  kind_map := map[string]int{
+  kind_map := map[string]int8{
     "tv": 1, "movie": 2, "ova": 3, "ona": 4,
     "special": 5, "music": 6,
     "tv_13": 7, "tv_24": 8, "tv_48": 9,
@@ -181,13 +181,13 @@ func (e *Extra) OptionsAnime() string {
   _, ok = kind_map[e.Kind]
   if !ok { e.Kind = "" }
 
-  status_map := map[string]int{
+  status_map := map[string]int8{
     "anons": 1, "ongoing": 2, "released": 3,
   }
   _, ok = status_map[e.Status]
   if !ok { e.Status = "" }
 
-  season_map := map[string]int{
+  season_map := map[string]int8{
     "summer_2017": 1, "2016": 2, "2014_2016": 3, "199x": 4,
   }
   _, ok = season_map[e.Season]
@@ -198,7 +198,7 @@ func (e *Extra) OptionsAnime() string {
     e.Score = ""
   }
 
-  rating_map := map[string]int{
+  rating_map := map[string]int8{
     "none": 1, "g": 2, "pg": 3, "pg_13": 4,
     "r": 5, "r_plus": 6, "rx": 7,
   }
@@ -230,7 +230,7 @@ func (e *Extra) OptionsManga() string {
     e.Limit = "1"
   }
 
-  kind_map := map[string]int{
+  kind_map := map[string]int8{
     "manga": 1, "manhwa": 2, "manhua": 3,
     "light_novel": 5, "novel": 6,
     "one_shot": 7, "doujin": 8,
@@ -238,14 +238,14 @@ func (e *Extra) OptionsManga() string {
   _, ok = kind_map[e.Kind]
   if !ok { e.Kind = "" }
 
-  status_map := map[string]int{
+  status_map := map[string]int8{
     "anons": 1, "ongoing": 2, "released": 3,
     "paused": 4, "discontinued": 5,
   }
   _, ok = status_map[e.Status]
   if !ok { e.Status = "" }
 
-  season_map := map[string]int{
+  season_map := map[string]int8{
     "summer_2017": 1, "spring_2016,fall_2016": 2,
     "2016,!winter_2016": 3, "2016": 4,
     "2014_2016": 5, "199x": 6,
@@ -285,7 +285,7 @@ func (el *ExtraLimit) OptionsClub() string {
 // Censored -> true, false
 // Set to false to allow hentai, yaoi and yuri
 func (ec *ExtraCensored) OptionsCalendar() string {
-  censored_map := map[string]int{"true": 1, "false": 2}
+  censored_map := map[string]int8{"true": 1, "false": 2}
   _, ok = censored_map[ec.Censored]
   if !ok { ec.Censored = "false" }
 
@@ -306,7 +306,7 @@ func (ar *ExtraAnimeRates) OptionsAnimeRates() string {
     ar.Limit = "1"
   }
 
-  status_map := map[string]int{
+  status_map := map[string]int8{
     "planned": 1, "watching": 2,
     "rewatching": 3, "completed": 4,
     "on_hold": 5, "dropped": 6,
@@ -314,7 +314,7 @@ func (ar *ExtraAnimeRates) OptionsAnimeRates() string {
   _, ok = status_map[ar.Status]
   if !ok { ar.Status = "watching" }
 
-  censored_map := map[string]int{"true": 1, "false": 2}
+  censored_map := map[string]int8{"true": 1, "false": 2}
   _, ok = censored_map[ar.Censored]
   if !ok { ar.Censored = "false" }
 
@@ -336,7 +336,7 @@ func (mr *ExtraMangaRates) OptionsMangaRates() string {
     mr.Limit = "1"
   }
 
-  censored_map := map[string]int{"true": 1, "false": 2}
+  censored_map := map[string]int8{"true": 1, "false": 2}
   _, ok = censored_map[mr.Censored]
   if !ok { mr.Censored = "false" }
 
@@ -1016,4 +1016,88 @@ func (c *Configuration) SearchCalendar(r ResultCensored) ([]api.Calendar, error)
   }
 
   return ca, nil
+}
+
+func (c *Configuration) SearchGenres() ([]api.Genres, error) {
+  var g []api.Genres
+
+  resp, err := client.Do(c.NewGetRequest("genres"))
+  if err != nil {
+    return g, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return g, err
+  }
+
+  if err := json.Unmarshal(data, &g); err != nil {
+    return nil, err
+  }
+
+  return g, nil
+}
+
+func (c *Configuration) SearchStudios() ([]api.Studios, error) {
+  var s []api.Studios
+
+  resp, err := client.Do(c.NewGetRequest("studios"))
+  if err != nil {
+    return s, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return s, err
+  }
+
+  if err := json.Unmarshal(data, &s); err != nil {
+    return nil, err
+  }
+
+  return s, nil
+}
+
+func (c *Configuration) SearchPublishers() ([]api.Publishers, error) {
+  var p []api.Publishers
+
+  resp, err := client.Do(c.NewGetRequest("publishers"))
+  if err != nil {
+    return p, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return p, err
+  }
+
+  if err := json.Unmarshal(data, &p); err != nil {
+    return nil, err
+  }
+
+  return p, nil
+}
+
+func (c *Configuration) SearchForums() ([]api.Forums, error) {
+  var f []api.Forums
+
+  resp, err := client.Do(c.NewGetRequest("forums"))
+  if err != nil {
+    return f, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return f, err
+  }
+
+  if err := json.Unmarshal(data, &f); err != nil {
+    return nil, err
+  }
+
+  return f, nil
 }
