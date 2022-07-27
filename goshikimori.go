@@ -10,6 +10,7 @@ import (
   "strconv"
 
   "github.com/vexilology/goshikimori/api"
+  "github.com/vexilology/goshikimori/transform"
 )
 
 const (
@@ -78,46 +79,6 @@ type ResultUserHistory interface {
 
 func Add(app, tok string) *Configuration {
   return &Configuration{Application: app, AccessToken: tok}
-}
-
-func convertAchievements(id int) string {
-  return fmt.Sprintf("achievements?user_id=%d", id)
-}
-
-func convertAnime(id int, name string) string {
-  return fmt.Sprintf("animes/%d/%s", id, name)
-}
-
-func convertRoles(id int, name string) string {
-  return fmt.Sprintf("%s/%d/roles", name, id)
-}
-
-func convertSimilar(id int, name string) string {
-  return fmt.Sprintf("%s/%d/similar", name, id)
-}
-
-func convertRelated(id int, name string) string {
-  return fmt.Sprintf("%s/%d/related", name, id)
-}
-
-func convertFranchise(id int, name string) string {
-  return fmt.Sprintf("%s/%d/franchise", name, id)
-}
-
-func convertCalendar(name string) string {
-  return fmt.Sprintf("calendar?%s", name)
-}
-
-func convertUser(id int, name string) string {
-  return fmt.Sprintf("users/%d/%s", id, name)
-}
-
-func convertExternalLinks(id int, name string) string {
-  return fmt.Sprintf("%s/%d/external_links", name, id)
-}
-
-func convertUserRates(id int, name, options string) string {
-  return fmt.Sprintf("users/%d/%s?%s", id, name, options)
 }
 
 // string formatting for achievements search
@@ -348,8 +309,8 @@ func (mr *ExtraMangaRates) OptionsMangaRates() string {
 }
 
 func (c *Configuration) NewGetRequest(search string) *http.Request {
-  full_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
-  req, _ := http.NewRequest(http.MethodGet, full_url, nil)
+  custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
+  req, _ := http.NewRequest(http.MethodGet, custom_url, nil)
   req.Header.Add("User-Agent", c.Application)
   req.Header.Add("Authorization", bearer + c.AccessToken)
   return req
@@ -406,7 +367,7 @@ func (c *Configuration) SearchUsers(name string, r ResultLimit) ([]api.Users, er
 func (c *Configuration) SearchUserFriends(id int) ([]api.UserFriends, error) {
   var uf []api.UserFriends
 
-  resp, err := client.Do(c.NewGetRequest(convertUser(id, "friends")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertUser(id, "friends")))
   if err != nil {
     return uf, err
   }
@@ -427,7 +388,7 @@ func (c *Configuration) SearchUserFriends(id int) ([]api.UserFriends, error) {
 func (c *Configuration) SearchUserClubs(id int) ([]api.Clubs, error) {
   var uc []api.Clubs
 
-  resp, err := client.Do(c.NewGetRequest(convertUser(id, "clubs")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertUser(id, "clubs")))
   if err != nil {
     return uc, err
   }
@@ -449,7 +410,7 @@ func (c *Configuration) SearchUserAnimeRates(id int, r ResultAnimeRates) ([]api.
   var ar []api.UserAnimeRates
 
   resp, err := client.Do(c.NewGetRequest(
-    convertUserRates(id, "anime_rates", r.OptionsAnimeRates()),
+    transform.ConvertUserRates(id, "anime_rates", r.OptionsAnimeRates()),
   ))
   if err != nil {
     return ar, err
@@ -472,7 +433,7 @@ func (c *Configuration) SearchUserMangaRates(id int, r ResultMangaRates) ([]api.
   var mr []api.UserMangaRates
 
   resp, err := client.Do(c.NewGetRequest(
-    convertUserRates(id, "manga_rates", r.OptionsMangaRates()),
+    transform.ConvertUserRates(id, "manga_rates", r.OptionsMangaRates()),
   ))
   if err != nil {
     return mr, err
@@ -494,7 +455,7 @@ func (c *Configuration) SearchUserMangaRates(id int, r ResultMangaRates) ([]api.
 func (c *Configuration) SearchUserFavourites(id int) (api.UserFavourites, error) {
   var uf api.UserFavourites
 
-  resp, err := client.Do(c.NewGetRequest(convertUser(id, "favourites")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertUser(id, "favourites")))
   if err != nil {
     return uf, err
   }
@@ -516,7 +477,7 @@ func (c *Configuration) SearchUserHistory(id int, r ResultUserHistory) ([]api.Us
   var uh []api.UserHistory
 
   resp, err := client.Do(c.NewGetRequest(
-    convertUserRates(id, "history", r.OptionsUserHistory()),
+    transform.ConvertUserRates(id, "history", r.OptionsUserHistory()),
   ))
   if err != nil {
     return uh, err
@@ -538,9 +499,7 @@ func (c *Configuration) SearchUserHistory(id int, r ResultUserHistory) ([]api.Us
 func (c *Configuration) SearchUserBans(id int) ([]api.Bans, error) {
   var b []api.Bans
 
-  resp, err := client.Do(c.NewGetRequest(
-    convertUser(id, "bans"),
-  ))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertUser(id, "bans")))
   if err != nil {
     return b, err
   }
@@ -683,7 +642,7 @@ func (c *Configuration) FastIdManga(name string) (int, error) {
 func (c *Configuration) SearchAnimeScreenshots(id int) ([]api.AnimeScreenshots, error) {
   var s []api.AnimeScreenshots
 
-  resp, err := client.Do(c.NewGetRequest(convertAnime(id, "screenshots")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertAnime(id, "screenshots")))
   if err != nil {
     return s, err
   }
@@ -704,7 +663,7 @@ func (c *Configuration) SearchAnimeScreenshots(id int) ([]api.AnimeScreenshots, 
 func (c *Configuration) SearchAnimeFranchise(id int) (api.Franchise, error) {
   var f api.Franchise
 
-  resp, err := client.Do(c.NewGetRequest(convertFranchise(id, "animes")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertFranchise(id, "animes")))
   if err != nil {
     return f, err
   }
@@ -724,7 +683,7 @@ func (c *Configuration) SearchAnimeFranchise(id int) (api.Franchise, error) {
 func (c *Configuration) SearchMangaFranchise(id int) (api.Franchise, error) {
   var f api.Franchise
 
-  resp, err := client.Do(c.NewGetRequest(convertFranchise(id, "mangas")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertFranchise(id, "mangas")))
   if err != nil {
     return f, err
   }
@@ -744,7 +703,7 @@ func (c *Configuration) SearchMangaFranchise(id int) (api.Franchise, error) {
 func (c *Configuration) SearchAnimeExternalLinks(id int) ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
 
-  resp, err := client.Do(c.NewGetRequest(convertExternalLinks(id, "animes")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertExternalLinks(id, "animes")))
   if err != nil {
     return el, err
   }
@@ -764,7 +723,7 @@ func (c *Configuration) SearchAnimeExternalLinks(id int) ([]api.ExternalLinks, e
 func (c *Configuration) SearchMangaExternalLinks(id int) ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
 
-  resp, err := client.Do(c.NewGetRequest(convertExternalLinks(id, "mangas")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertExternalLinks(id, "mangas")))
   if err != nil {
     return el, err
   }
@@ -784,7 +743,7 @@ func (c *Configuration) SearchMangaExternalLinks(id int) ([]api.ExternalLinks, e
 func (c *Configuration) SearchSimilarAnime(id int) ([]api.Animes, error) {
   var a []api.Animes
 
-  resp, err := client.Do(c.NewGetRequest(convertSimilar(id, "animes")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertSimilar(id, "animes")))
   if err != nil {
     return a, err
   }
@@ -805,7 +764,7 @@ func (c *Configuration) SearchSimilarAnime(id int) ([]api.Animes, error) {
 func (c *Configuration) SearchSimilarManga(id int) ([]api.Mangas, error) {
   var m []api.Mangas
 
-  resp, err := client.Do(c.NewGetRequest(convertSimilar(id, "mangas")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertSimilar(id, "mangas")))
   if err != nil {
     return m, err
   }
@@ -826,7 +785,7 @@ func (c *Configuration) SearchSimilarManga(id int) ([]api.Mangas, error) {
 func (c *Configuration) SearchRelatedAnime(id int) ([]api.RelatedAnimes, error) {
   var a []api.RelatedAnimes
 
-  resp, err := client.Do(c.NewGetRequest(convertRelated(id, "animes")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertRelated(id, "animes")))
   if err != nil {
     return a, err
   }
@@ -847,7 +806,7 @@ func (c *Configuration) SearchRelatedAnime(id int) ([]api.RelatedAnimes, error) 
 func (c *Configuration) SearchRelatedManga(id int) ([]api.RelatedMangas, error) {
   var m []api.RelatedMangas
 
-  resp, err := client.Do(c.NewGetRequest(convertRelated(id, "mangas")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertRelated(id, "mangas")))
   if err != nil {
     return m, err
   }
@@ -895,7 +854,7 @@ func (c *Configuration) SearchClub(name string, r ResultLimit) ([]api.Clubs, err
 func (c *Configuration) SearchAchievement(id int) ([]api.Achievements, error) {
   var a []api.Achievements
 
-  resp, err := client.Do(c.NewGetRequest(convertAchievements(id)))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertAchievements(id)))
   if err != nil {
     return a, err
   }
@@ -916,7 +875,7 @@ func (c *Configuration) SearchAchievement(id int) ([]api.Achievements, error) {
 func (c *Configuration) SearchAnimeVideos(id int) ([]api.AnimeVideos, error) {
   var v []api.AnimeVideos
 
-  resp, err := client.Do(c.NewGetRequest(convertAnime(id, "videos")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertAnime(id, "videos")))
   if err != nil {
     return v, err
   }
@@ -937,7 +896,7 @@ func (c *Configuration) SearchAnimeVideos(id int) ([]api.AnimeVideos, error) {
 func (c *Configuration) SearchAnimeRoles(id int) ([]api.Roles, error) {
   var r []api.Roles
 
-  resp, err := client.Do(c.NewGetRequest(convertRoles(id, "animes")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertRoles(id, "animes")))
   if err != nil {
     return r, err
   }
@@ -958,7 +917,7 @@ func (c *Configuration) SearchAnimeRoles(id int) ([]api.Roles, error) {
 func (c *Configuration) SearchMangaRoles(id int) ([]api.Roles, error) {
   var r []api.Roles
 
-  resp, err := client.Do(c.NewGetRequest(convertRoles(id, "mangas")))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertRoles(id, "mangas")))
   if err != nil {
     return r, err
   }
@@ -1000,7 +959,7 @@ func (c *Configuration) SearchBans() ([]api.Bans, error) {
 func (c *Configuration) SearchCalendar(r ResultCensored) ([]api.Calendar, error) {
   var ca []api.Calendar
 
-  resp, err := client.Do(c.NewGetRequest(convertCalendar(r.OptionsCalendar())))
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertCalendar(r.OptionsCalendar())))
   if err != nil {
     return ca, err
   }

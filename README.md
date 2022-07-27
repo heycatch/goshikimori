@@ -1,25 +1,24 @@
-## About
 A small library for interacting with shikimori, written in golang.
 The library allows you to search the shikimori database.
 Work with API occurs only through OAuth2.
 
-## Install
-```
-go get -u github.com/vexilology/goshikimori
+### Install
+```bash
+go get github.com/vexilology/goshikimori
 ```
 
-## Examples
+### Examples
 * [Click her](https://github.com/vexilology/goshikimori/tree/main/examples)
 
-## Available functions
+### Available functions
 ```golang
-SearchUsers(name string, ExtraLimit interface{}) // Find users. Check Users request. Many results, search is not case sensitive. Check Users request.
-SearchUser(name string) // Find user. Check User request. Single result, search is case sensitive. Check User request.
+SearchUsers(name string, ExtraLimit interface{}) // Find users. Many results, search is not case sensitive. Check Users request.
+SearchUser(name string) // Find user. Single result, search is case sensitive. Check User request.
 SearchUserFriends(id int) // Find user friends with user id. Check UserFriends request.
 SearchUserClubs(id int) // Find user clubs with user id. Check UserClubs request.
 SearchUserAnimeRates(id int, ExtraAnimeRates interface{}) // Find user anime rates with user id. Check UserAnimeRates request.
 SearchUserMangaRates(id int, ExtraMangaRates interface{}) // Find user manga rates with user id. Check UserMangaRates request.
-SearchUserFavourites(id int) // Find user favourites: anime, manga, characters, people,mangakas, seyu and producers with user id. Check UserFavourites request.
+SearchUserFavourites(id int) // Find user favourites: anime, manga, characters, people, mangakas, seyu and producers with user id. Check UserFavourites request.
 SearchUserHistory(id int, ExtraTargetType interface{}) // Find user history(anime, manga) with user id. Check UserHistory request.
 SearchUserBans(id int) // Find user bans with user id. Check Bans request.
 WhoAmi() // Verify who am i. Check WhoAmi request.
@@ -50,7 +49,7 @@ SearchPublishers() // Find publishers. Check Publishers request.
 SearchForums() // Find forums. Check Forums request.
 ```
 
-## Available API
+### Available API
 <details>
   <summary>Interface_Users</summary>
     <ul>
@@ -954,7 +953,7 @@ SearchForums() // Find forums. Check Forums request.
     </ul>
 </details>
 
-## Shikimori documentation
+### Shikimori documentation
 * [API v1](https://shikimori.one/api/doc/1.0)
 * [API v2](https://shikimori.one/api/doc/2.0)
 * [OAuth2](https://shikimori.one/oauth)
