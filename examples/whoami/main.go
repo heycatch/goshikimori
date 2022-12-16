@@ -12,7 +12,7 @@ func conf() *g.Configuration {
   )
 }
 
-func foundAnime() {
+func main() {
   c := conf()
   w, err := c.WhoAmi()
   if err != nil {
