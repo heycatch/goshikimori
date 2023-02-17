@@ -41,3 +41,7 @@ func ConvertExternalLinks(id int, name string) string {
 func ConvertUserRates(id int, name, options string) string {
   return fmt.Sprintf("users/%d/%s?%s", id, name, options)
 }
+
+func ConvertFriend(id int) string {
+  return fmt.Sprintf("friends/%d", id)
+}

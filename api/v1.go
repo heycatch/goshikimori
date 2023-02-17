@@ -382,3 +382,7 @@ type Forums struct {
   Permalink string `json:"permalink"`
   Url       string `json:"url"`
 }
+
+type FriendRequest struct {
+  Notice string `json:"notice"`
+}

@@ -47,6 +47,8 @@ SearchGenres() // Find genres. Check Genres request.
 SearchStudios() // Find studios. Check Studios request.
 SearchPublishers() // Find publishers. Check Publishers request.
 SearchForums() // Find forums. Check Forums request.
+AddFriend(id int) // Add friend. Check AddFriend/RemoveFriend request.
+RemoveFriend(id int) // Remove friend. Check AddFriend/RemoveFriend request.
 ```
 
 ### Available API
@@ -950,6 +952,12 @@ SearchForums() // Find forums. Check Forums request.
       <li>Name</li>
       <li>Permalink</li>
       <li>Url</li>
+    </ul>
+</details>
+<details>
+  <summary>AddFriend/RemoveFriend request</summary>
+    <ul>
+      <li>Notice</li>
     </ul>
 </details>
 

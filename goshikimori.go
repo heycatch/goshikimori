@@ -316,6 +316,24 @@ func (c *Configuration) NewGetRequest(search string) *http.Request {
   return req
 }
 
+func (c *Configuration) NewPostRequest(search string) *http.Request {
+  custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
+  data := url.Values{} // empty data
+  req, _ := http.NewRequest(http.MethodPost, custom_url, strings.NewReader(data.Encode()))
+  req.Header.Add("User-Agent", c.Application)
+  req.Header.Add("Authorization", bearer + c.AccessToken)
+  return req
+}
+
+func (c *Configuration) NewDeleteRequest(search string) *http.Request {
+  custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
+  data := url.Values{} // empty data
+  req, _ := http.NewRequest(http.MethodDelete, custom_url, strings.NewReader(data.Encode()))
+  req.Header.Add("User-Agent", c.Application)
+  req.Header.Add("Authorization", bearer + c.AccessToken)
+  return req
+}
+
 // NOTES: search by user is case sensitive
 func (c *Configuration) SearchUser(name string) (api.Users, error) {
   var u api.Users
@@ -1056,6 +1074,48 @@ func (c *Configuration) SearchForums() ([]api.Forums, error) {
 
   if err := json.Unmarshal(data, &f); err != nil {
     return nil, err
+  }
+
+  return f, nil
+}
+
+func (c *Configuration) AddFriend(id int) (api.FriendRequest, error) {
+  var f api.FriendRequest
+
+  resp, err := client.Do(c.NewPostRequest(transform.ConvertFriend(id)))
+  if err != nil {
+    return f, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return f, err
+  }
+
+  if err := json.Unmarshal(data, &f); err != nil {
+    return f, err
+  }
+
+  return f, nil
+}
+
+func (c *Configuration) RemoveFriend(id int) (api.FriendRequest, error) {
+  var f api.FriendRequest
+
+  resp, err := client.Do(c.NewDeleteRequest(transform.ConvertFriend(id)))
+  if err != nil {
+    return f, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return f, err
+  }
+
+  if err := json.Unmarshal(data, &f); err != nil {
+    return f, err
   }
 
   return f, nil
