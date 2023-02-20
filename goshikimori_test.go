@@ -81,7 +81,7 @@ func TestUser(t *testing.T) {
 func TestAnimes(t *testing.T) {
   c := conf()
   e := &Extra{
-    Limit: "1", Kind: "", Status: "",
+    Page: "1", Limit: "1", Kind: "", Status: "",
     Season: "", Score: "", Rating: "",
   }
   s, _ := c.SearchAnime("Initial D", e)
@@ -98,7 +98,7 @@ func TestAnimes(t *testing.T) {
 func TestMangas(t *testing.T) {
   c := conf()
   e := &Extra{
-    Limit: "1", Kind: "", Status: "",
+    Page: "1", Limit: "1", Kind: "", Status: "",
     Season: "", Score: "", Rating: "",
   }
   r, _ := c.SearchManga("Initial D", e)
@@ -114,7 +114,7 @@ func TestMangas(t *testing.T) {
 
 func TestClub(t *testing.T) {
   c := conf()
-  e := &ExtraLimit{Limit: "1"}
+  e := &ExtraLimit{Page: "1", Limit: "1"}
   r, _ := c.SearchClub("milf thred", e)
 
   for _, v := range r {
@@ -163,5 +163,15 @@ func TestAnimeVideos(t *testing.T) {
     } else {
       t.Log("Video not found, waiting...")
     }
+  }
+}
+
+func TestUserUnreadMessages(t *testing.T) {
+  c := conf()
+  u, _ := c.SearchUser("incarnati0n")
+  um, _ := c.UserUnreadMessages(u.Id)
+
+  if um.News > 0 || um.News == 0 {
+    t.Logf("Found: %d news", um.News)
   }
 }

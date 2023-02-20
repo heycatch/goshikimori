@@ -77,10 +77,9 @@ type UserFriends struct {
   Last_online_at time.Time `json:"last_online_at"`
 }
 
-// ~Below I wrote that I deleted
-// Chapters -> nil
-// Volumes -> nil
-// Manga -> nil
+// removed Chapters -> nil
+// removed Volumes -> nil
+// removed Manga -> nil
 type UserAnimeRates struct {
   Id         int         `json:"id"`
   Score      int         `json:"score"`
@@ -95,9 +94,8 @@ type UserAnimeRates struct {
   Anime      Animes      `json:"anime"`
 }
 
-// ~Below I wrote that I deleted
-// Episodes -> nil
-// Anime -> nil
+// removed Episodes -> nil
+// removed Anime -> nil
 type UserMangaRates struct {
   Id         int         `json:"id"`
   Score      int         `json:"score"`
@@ -113,7 +111,7 @@ type UserMangaRates struct {
   Manga      Mangas      `json:"manga"`
 }
 
-// removed url -> nil
+// removed Url -> nil
 type UserFavouritesInfo struct {
   Id      int    `json:"id"`
   Name    string `json:"name"`
@@ -385,4 +383,52 @@ type Forums struct {
 
 type FriendRequest struct {
   Notice string `json:"notice"`
+}
+
+type UnreadMessages struct {
+  Messages      int `json:"message"`
+  News          int `json:"news"`
+  Notifications int `json:"notifications"`
+}
+
+// removed Released_on -> nil
+// removed Aired_on -> nil
+type LinkedMessages struct {
+  Id             int       `json:"id"`
+  Topic_url      string    `json:"topic_url"`
+  Thread_id      int       `json:"thread_id"`
+  Topic_id       int       `json:"topic_id"`
+  Type           string    `json:"type"`
+  Name           string    `json:"name"`
+  Russian        string    `json:"russian"`
+  Image          AnimeSize `json:"image"`
+  Url            string    `json:"url"`
+  Kind           string    `json:"kind"`
+  Score          string    `json:"score"`
+  Status         string    `json:"status"`
+  Episodes       int       `json:"episodes"`
+  Episodes_aired int       `json:"episodes_aired"`
+}
+
+type FromToMessages struct {
+  Id             int       `json:"id"`
+  Nickname       string    `json:"nickname"`
+  Avatar         string    `json:"avatar"`
+  Image          UserSize  `json:"image"`
+  Last_online_at time.Time `json:"last_online_at"`
+  Url            string    `json:"url"`
+}
+
+type Messages struct {
+  Id          int            `json:"id"`
+  Kind        string         `json:"kind"`
+  Read        bool           `json:"read"`
+  Body        string         `json:"body"`
+  HTMLBody    string         `json:"html_body"`
+  Created_at  time.Time      `json:"created_at"`
+  Linked_id   int            `json:"linked_id"`
+  Linked_type string         `json:"linked_type"`
+  Linked      LinkedMessages `json:"linked"`
+  From        FromToMessages `json:"from"`
+  To          FromToMessages `json:"to"`
 }

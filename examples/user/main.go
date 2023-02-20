@@ -67,7 +67,7 @@ func main() {
   // search anime and manga rates
   time.Sleep(5 * time.Second)
   fmt.Println("too many requests, wait 5 seconds")
-  gar := &g.ExtraAnimeRates{Limit: "5", Status: "completed", Censored: ""}
+  gar := &g.ExtraAnimeRates{Page: "1", Limit: "5", Status: "completed", Censored: ""}
   ar, err := c.SearchUserAnimeRates(u.Id, gar)
   if err != nil {
     fmt.Println(err)
@@ -81,7 +81,7 @@ func main() {
     fmt.Println(v.Status, v.Anime.Name, v.Episodes, v.Score)
   }
   fmt.Println()
-  gmr := &g.ExtraMangaRates{Limit: "5", Censored: ""}
+  gmr := &g.ExtraMangaRates{Page: "1", Limit: "5", Censored: ""}
   mr, err := c.SearchUserMangaRates(u.Id, gmr)
   if err != nil {
     fmt.Println(err)
@@ -119,7 +119,7 @@ func main() {
   // user history
   time.Sleep(5 * time.Second)
   fmt.Println("too many requests, wait 5 seconds")
-  ett := &g.ExtraTargetType{Limit: "10", Target_type: "Anime"}
+  ett := &g.ExtraTargetType{Page: "1", Limit: "10", Target_type: "Anime"}
   uh, err := c.SearchUserHistory(u.Id, ett)
   if err != nil {
     fmt.Println(err)

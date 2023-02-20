@@ -45,3 +45,7 @@ func ConvertUserRates(id int, name, options string) string {
 func ConvertFriend(id int) string {
   return fmt.Sprintf("friends/%d", id)
 }
+
+func ConvertMessages(id int, name string) string {
+  return fmt.Sprintf("users/%d/messages?%s", id, name)
+}

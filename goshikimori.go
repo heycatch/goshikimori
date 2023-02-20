@@ -28,11 +28,11 @@ type Configuration struct {
 }
 
 type Extra struct {
-  Limit, Kind, Status, Season, Score, Rating string
+  Page, Limit, Kind, Status, Season, Score, Rating string
 }
 
 type ExtraLimit struct {
-  Limit string
+  Page, Limit string
 }
 
 type ExtraCensored struct {
@@ -40,15 +40,19 @@ type ExtraCensored struct {
 }
 
 type ExtraAnimeRates struct {
-  Limit, Status, Censored string
+  Page, Limit, Status, Censored string
 }
 
 type ExtraMangaRates struct {
-  Limit, Censored string
+  Page, Limit, Censored string
 }
 
 type ExtraTargetType struct {
-  Limit, Target_type string
+  Page, Limit, Target_type string
+}
+
+type ExtraMessages struct {
+  Page, Limit, Type string
 }
 
 type Result interface {
@@ -77,6 +81,10 @@ type ResultUserHistory interface {
   OptionsUserHistory() string
 }
 
+type ResultMessages interface {
+  OptionsMessages() string
+}
+
 func Add(app, tok string) *Configuration {
   return &Configuration{Application: app, AccessToken: tok}
 }
@@ -87,11 +95,50 @@ func NekoSearch(name string) string {
   return fmt.Sprintf("%s", r)
 }
 
-// Limit       -> 100
+// Page  -> 100000 maximum
+// Limit -> 100 maximum
+// Type  -> inbox, private, sent, news, notifications
+func (em *ExtraMessages) OptionsMessages() string {
+  p, _ := strconv.Atoi(em.Page)
+  l, _ := strconv.Atoi(em.Limit)
+
+  if p == 0 { em.Page = "1" }
+  if l == 0 { em.Limit = "1" }
+  for i := 100001; i <= p; i++ {
+    em.Page = "1"
+  }
+  for i := 101; i <= l; i++ {
+    em.Limit = "1"
+  }
+
+  target_map := map[string]int8{
+    "inbox": 1, "private": 2, "sent": 3,
+    "news": 4, "notifications": 5,
+  }
+  _, ok = target_map[em.Type]
+  if !ok { em.Type = "news" }
+
+  v := url.Values{}
+  v.Add("type", em.Type)
+  v.Add("page", em.Page)
+  v.Add("limit", em.Limit)
+
+  return v.Encode()
+}
+
+// Page        -> 100000 maximum
+// Limit       -> 100 maximum
+// FIXME       Target_id -> not supported
 // Target_type -> Anime, Manga
 func (ett *ExtraTargetType) OptionsUserHistory() string {
+  p, _ := strconv.Atoi(ett.Page)
   l, _ := strconv.Atoi(ett.Limit)
+
+  if p == 0 { ett.Page = "1" }
   if l == 0 { ett.Limit = "1" }
+  for i := 100001; i <= p; i++ {
+    ett.Page = "1"
+  }
   for i := 101; i <= l; i++ {
     ett.Limit = "1"
   }
@@ -101,35 +148,62 @@ func (ett *ExtraTargetType) OptionsUserHistory() string {
   if !ok { ett.Target_type = "Anime" }
 
   v := url.Values{}
+  v.Add("page", ett.Page)
   v.Add("limit", ett.Limit)
   v.Add("target_type", ett.Target_type)
 
   return v.Encode()
 }
 
-// Limit -> 100
+// Page  -> 100000 maximum
+// Limit -> 100 maximum
 func (el *ExtraLimit) OptionsUsers() string {
+  p, _ := strconv.Atoi(el.Page)
   l, _ := strconv.Atoi(el.Limit)
+
+  if p == 0 { el.Page = "1" }
   if l == 0 { el.Limit = "1" }
+  for i := 100001; i <= p; i++ {
+    el.Page = "1"
+  }
   for i := 101; i <= l; i++ {
     el.Limit = "1"
   }
 
   v := url.Values{}
+  v.Add("page", el.Page)
   v.Add("limit", el.Limit)
 
   return v.Encode()
 }
 
+// Page   -> 100000 maximum
 // Limit  -> 50 maximum
+// FIXME  Order -> not supported
+// Type   -> "Deprecated"
 // Kind   -> tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48
 // Status -> anons, ongoing, released
 // Season -> summer_2017, 2016, 2014_2016, 199x
 // Score  -> 9 maximum
+// FIXME  Duration -> not supported
 // Rating -> none, g, pg, pg_13, r, r_plus, rx
+// FIXME  Genre -> not supported
+// FIXME  Studio -> not supported
+// FIXME  Franchise -> not supported
+// FIXME  Censored -> not supported
+// FIXME  Mylist -> not supported
+// FIXME  Ids -> not supported
+// FIXME  Exclude_ids -> not supported
+// Search -> default search
 func (e *Extra) OptionsAnime() string {
+  p, _ := strconv.Atoi(e.Page)
   l, _ := strconv.Atoi(e.Limit)
+
+  if p == 0 { e.Page = "1" }
   if l == 0 { e.Limit = "1" }
+  for i := 100001; i <= p; i++ {
+    e.Page = "1"
+  }
   for i := 51; i <= l; i++ {
     e.Limit = "1"
   }
@@ -167,6 +241,7 @@ func (e *Extra) OptionsAnime() string {
   if !ok { e.Rating = "" }
 
   v := url.Values{}
+  v.Add("page", e.Page)
   v.Add("limit", e.Limit)
   v.Add("kind", e.Kind)
   v.Add("status", e.Status)
@@ -177,16 +252,33 @@ func (e *Extra) OptionsAnime() string {
   return v.Encode()
 }
 
+// Page   -> 100000 maximum
 // Limit  -> 50 maximum
+// FIXME  Order -> not supported
+// Type   -> "Deprecated"
 // Kind   -> manga, manhwa, manhua,
 //           light_novel, novel, one_shot, doujin
 // Status -> anons, ongoing, released, paused, discontinued
 // Season -> summer_2017, "spring_2016,fall_2016",
 //           "2016,!winter_2016", 2016, 2014_2016, 199x
 // Score  -> 9 maximum
+// FIXME  Genre -> not supported
+// FIXME  Publisher -> not supported
+// FIXME  Franchise -> not supported
+// FIXME  Censored -> not supported
+// FIXME  Mylist -> not supported
+// FIXME  Ids -> not supported
+// FIXME  Exclude_ids -> not supported
+// Search -> default search
 func (e *Extra) OptionsManga() string {
+  p, _ := strconv.Atoi(e.Page)
   l, _ := strconv.Atoi(e.Limit)
+
+  if p == 0 { e.Page = "1" }
   if l == 0 { e.Limit = "1" }
+  for i := 100001; i <= p; i++ {
+    e.Page = "1"
+  }
   for i := 51; i <= l; i++ {
     e.Limit = "1"
   }
@@ -220,6 +312,7 @@ func (e *Extra) OptionsManga() string {
   }
 
   v := url.Values{}
+  v.Add("page", e.Page)
   v.Add("limit", e.Limit)
   v.Add("kind", e.Kind)
   v.Add("status", e.Status)
@@ -229,15 +322,23 @@ func (e *Extra) OptionsManga() string {
   return v.Encode()
 }
 
+// Page  -> 100000 maximum
 // Limit -> 30 maximum
 func (el *ExtraLimit) OptionsClub() string {
+  p, _ := strconv.Atoi(el.Page)
   l, _ := strconv.Atoi(el.Limit)
+
+  if p == 0 { el.Page = "1" }
   if l == 0 { el.Limit = "1" }
+  for i := 100001; i <= p; i++ {
+    el.Page = "1"
+  }
   for i := 31; i <= l; i++ {
     el.Limit = "1"
   }
 
   v := url.Values{}
+  v.Add("page", el.Page)
   v.Add("limit", el.Limit)
 
   return v.Encode()
@@ -256,13 +357,20 @@ func (ec *ExtraCensored) OptionsCalendar() string {
   return v.Encode()
 }
 
+// Page     -> 100000 maximum
 // Limit    -> 5000 maximum
 // Status   -> planned, watching, rewatching, completed, on_hold, dropped
 // Censored -> true, false
 // Set to true to discard hentai, yaoi and yuri
 func (ar *ExtraAnimeRates) OptionsAnimeRates() string {
+  p, _ := strconv.Atoi(ar.Page)
   l, _ := strconv.Atoi(ar.Limit)
+
+  if p == 0 { ar.Page = "1" }
   if l == 0 { ar.Limit = "1" }
+  for i := 100001; i <= p; i++ {
+    ar.Page = "1"
+  }
   for i := 5001; i <= l; i++ {
     ar.Limit = "1"
   }
@@ -280,6 +388,7 @@ func (ar *ExtraAnimeRates) OptionsAnimeRates() string {
   if !ok { ar.Censored = "false" }
 
   v := url.Values{}
+  v.Add("page", ar.Page)
   v.Add("limit", ar.Limit)
   v.Add("status", ar.Status)
   v.Add("censored", ar.Censored)
@@ -287,12 +396,19 @@ func (ar *ExtraAnimeRates) OptionsAnimeRates() string {
   return v.Encode()
 }
 
+// Page     -> 100000 maximum
 // Limit    -> 5000 maximum
 // Censored -> true, false
 // Set to true to discard hentai, yaoi and yuri
 func (mr *ExtraMangaRates) OptionsMangaRates() string {
+  p, _ := strconv.Atoi(mr.Page)
   l, _ := strconv.Atoi(mr.Limit)
+
+  if p == 0 { mr.Page = "1" }
   if l == 0 { mr.Limit = "1" }
+  for i := 100001; i <= p; i++ {
+    mr.Page = "1"
+  }
   for i := 5001; i <= l; i++ {
     mr.Limit = "1"
   }
@@ -302,6 +418,7 @@ func (mr *ExtraMangaRates) OptionsMangaRates() string {
   if !ok { mr.Censored = "false" }
 
   v := url.Values{}
+  v.Add("page", mr.Page)
   v.Add("limit", mr.Limit)
   v.Add("censored", mr.Censored)
 
@@ -1119,4 +1236,46 @@ func (c *Configuration) RemoveFriend(id int) (api.FriendRequest, error) {
   }
 
   return f, nil
+}
+
+func (c *Configuration) UserUnreadMessages(id int) (api.UnreadMessages, error) {
+  var um api.UnreadMessages
+
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertUser(id, "unread_messages")))
+  if err != nil {
+    return um, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return um, err
+  }
+
+  if err := json.Unmarshal(data, &um); err != nil {
+    return um, err
+  }
+
+  return um, nil
+}
+
+func (c *Configuration) UserMessages(id int, r ResultMessages) ([]api.Messages, error) {
+  var m []api.Messages
+
+  resp, err := client.Do(c.NewGetRequest(transform.ConvertMessages(id, r.OptionsMessages())))
+  if err != nil {
+    return m, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return m, err
+  }
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    return nil, err
+  }
+
+  return m, nil
 }

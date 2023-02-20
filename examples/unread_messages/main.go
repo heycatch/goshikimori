@@ -14,17 +14,20 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  e := &g.ExtraLimit{Page: "1", Limit: "2"}
-  a, err := c.SearchClub("milf", e)
+  u, err := c.SearchUser("incarnati0n")
   if err != nil {
     fmt.Println(err)
     return
   }
-  if len(a) == 0 {
-    fmt.Println("Club not found")
+  if u.Id == 0 {
+    fmt.Println("user not found")
     return
   }
-  for _, v := range a {
-    fmt.Println(v.Id, v.Name, v.Is_censored)
+
+  um, err := c.UserUnreadMessages(u.Id)
+  if err != nil {
+    fmt.Println(err)
+    return
   }
+  fmt.Println(um.Messages, um.News, um.Notifications)
 }
