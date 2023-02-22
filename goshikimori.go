@@ -48,7 +48,7 @@ type ExtraMangaRates struct {
 }
 
 type ExtraTargetType struct {
-  Page, Limit, Target_type string
+  Page, Limit, Target_id, Target_type string
 }
 
 type ExtraMessages struct {
@@ -128,7 +128,7 @@ func (em *ExtraMessages) OptionsMessages() string {
 
 // Page        -> 100000 maximum
 // Limit       -> 100 maximum
-// FIXME       Target_id -> not supported
+// Target_id   -> id anime/manga in string format
 // Target_type -> Anime, Manga
 func (ett *ExtraTargetType) OptionsUserHistory() string {
   p, _ := strconv.Atoi(ett.Page)
@@ -150,6 +150,9 @@ func (ett *ExtraTargetType) OptionsUserHistory() string {
   v := url.Values{}
   v.Add("page", ett.Page)
   v.Add("limit", ett.Limit)
+  // NOTES: we get an error if we do not process the request in this way
+  // json: cannot unmarshal string into Go value of type api.UserHistory
+  if ett.Target_id != "" { v.Add("target_id", ett.Target_id) }
   v.Add("target_type", ett.Target_type)
 
   return v.Encode()
@@ -324,6 +327,7 @@ func (e *Extra) OptionsManga() string {
 
 // Page  -> 100000 maximum
 // Limit -> 30 maximum
+// Search -> default search
 func (el *ExtraLimit) OptionsClub() string {
   p, _ := strconv.Atoi(el.Page)
   l, _ := strconv.Atoi(el.Limit)

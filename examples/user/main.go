@@ -27,7 +27,7 @@ func main() {
     return
   }
   // user info
-  fmt.Println(u.Id, u.Sex, u.Last_online, u.Name)
+  fmt.Println(u.Id, u.Sex, u.Last_online, u.Name, u.Image.X160)
   fmt.Println()
   for _, v := range u.Stats.Statuses.Anime {
     fmt.Println(v.Id, v.Grouped_id, v.Name, v.Size, v.Type)
@@ -97,29 +97,30 @@ func main() {
   fmt.Println()
   // search favourites: anime, manga, characters, people,
   // mangakas, seyu and producers
-  uf, err := c.SearchUserFavourites(u.Id)
+  suf, err := c.SearchUserFavourites(u.Id)
   if err != nil {
     fmt.Println(err)
     return
   }
-  if len(uf.Animes) == 0 {
+  if len(suf.Animes) == 0 {
     fmt.Println("favourite animes not found")
     return
   }
-  for _, v := range uf.Animes {
+  for _, v := range suf.Animes {
     fmt.Println(v.Id, v.Name, v.Russian, v.Image)
   }
-  if len(uf.Mangas) == 0 {
+  if len(suf.Mangas) == 0 {
     fmt.Println("favourite mangas not found")
     return
   }
-  for _, v := range uf.Animes {
+  for _, v := range suf.Animes {
     fmt.Println(v.Id, v.Name, v.Russian, v.Image)
   }
   // user history
   time.Sleep(5 * time.Second)
   fmt.Println("too many requests, wait 5 seconds")
-  ett := &g.ExtraTargetType{Page: "1", Limit: "10", Target_type: "Anime"}
+  // NOTES: Target_id - Anime.id or Manga.id; convert to a string to search the history point-by-point.
+  ett := &g.ExtraTargetType{Page: "1", Limit: "10", Target_id: "", Target_type: "Anime"}
   uh, err := c.SearchUserHistory(u.Id, ett)
   if err != nil {
     fmt.Println(err)
