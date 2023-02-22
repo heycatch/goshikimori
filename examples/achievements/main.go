@@ -23,7 +23,11 @@ func main() {
     fmt.Println("User not found")
     return
   }
-  r := c.SearchAchievement(u.Id)
+  r, err := c.SearchAchievement(u.Id)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
   for _, v := range r {
     if v.Neko_id == g.NekoSearch("initial d") {
       fmt.Printf("level: %d - progress %d\n", v.Level, v.Progress)

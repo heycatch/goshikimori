@@ -2,13 +2,13 @@ package main
 
 import (
   "fmt"
-  g "github.com/vexilology/goshikimori/goshikimori"
+  g "github.com/vexilology/goshikimori"
 )
 
 func conf() *g.Configuration {
   return g.Add(
     "APPLICATION_NAME",
-    "APPLICATION_KEY",
+    "PRIVATE_KEY",
   )
 }
 
