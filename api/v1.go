@@ -432,3 +432,23 @@ type Messages struct {
   From        FromToMessages `json:"from"`
   To          FromToMessages `json:"to"`
 }
+
+type Constants struct {
+  Kind   []string `json:"kind"`
+  Status []string `json:"status"`
+}
+
+type ConstantsUserRate struct {
+  Status []string `json:"status"`
+}
+
+type ConstantsClub struct {
+  Join_policy         []string `json:"join_policy"`
+  Comment_policy      []string `json:"comment_policy"`
+  Image_upload_policy []string `json:"image_upload_policy"`
+}
+
+type ConstantsSmileys struct {
+  Bbcode string `json:"bbcode"`
+  Path   string `json:"path"`
+}

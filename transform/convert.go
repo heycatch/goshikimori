@@ -49,3 +49,7 @@ func ConvertFriend(id int) string {
 func ConvertMessages(id int, name string) string {
   return fmt.Sprintf("users/%d/messages?%s", id, name)
 }
+
+func ConvertConstants(name string) string {
+  return fmt.Sprintf("constants/%s", name)
+}

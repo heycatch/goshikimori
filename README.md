@@ -52,6 +52,11 @@ AddFriend(id int) // Add friend with friend id. Check AddFriend/RemoveFriend req
 RemoveFriend(id int) // Remove friend with friend id. Check AddFriend/RemoveFriend request.
 UserUnreadMessages(id int) // Overall message statistics with user id. Check UserUnreadMessages request.
 UserMessages(id int, ExtraMessages interface{}) // Read inbox with user id. Check UserMessages request.
+SearchConstantsAnime() // Anime constants. Check ConstantsAnimeManga request.
+SearchConstantsManga() // Manga constants. Check ConstantsAnimeManga request.
+SearchConstantsUserRate() // UserRate constants. Check ConstantsUserRate request.
+SearchConstantsClub() // Club constants. Check ConstantsClub request.
+SearchConstantsSmileys() // Smileys constants. Check ConstantsSmileys request.
 ```
 
 ### Available API
@@ -1083,6 +1088,34 @@ UserMessages(id int, ExtraMessages interface{}) // Read inbox with user id. Chec
             </ul>
           </details>
         </li>
+      </ul>
+  </details>
+  <details>
+    <summary>ConstantsAnimeManga request</summary>
+      <ul>
+        <li>[]Kind</li>
+        <li>[]Status</li>
+      </ul>
+  </details>
+  <details>
+    <summary>ConstantsUserRate request</summary>
+      <ul>
+        <li>[]Status</li>
+      </ul>
+  </details>
+  <details>
+    <summary>ConstantsClub request</summary>
+      <ul>
+        <li>[]Join_policy</li>
+        <li>[]Comment_policy</li>
+        <li>[]Image_upload_policy</li>
+      </ul>
+  </details>
+  <details>
+    <summary>ConstantsSmileys request</summary>
+      <ul>
+        <li>Bbcode</li>
+        <li>Path</li>
       </ul>
   </details>
 </details>

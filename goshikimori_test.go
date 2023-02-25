@@ -167,11 +167,55 @@ func TestAnimeVideos(t *testing.T) {
 }
 
 func TestUserUnreadMessages(t *testing.T) {
+  fmt.Println("Too many requests at once, waiting 10 seconds...")
+
+  var s StatusBar
+  s.NewOption(0, 10)
+  for i := 0; i <= 10; i++ {
+    s.Play(int(i))
+    time.Sleep(1 * time.Second)
+  }
+  s.Finish()
+
   c := conf()
   u, _ := c.SearchUser("incarnati0n")
   um, _ := c.UserUnreadMessages(u.Id)
 
   if um.News > 0 || um.News == 0 {
     t.Logf("Found: %d news", um.News)
+  } else {
+    t.Error("News not found")
+  }
+}
+
+func TestConstantsAnime(t *testing.T) {
+  c := conf()
+  ca, _ := c.SearchConstantsAnime()
+
+  if ca.Kind != nil {
+    t.Logf("Found: %s", ca.Kind)
+  } else {
+    t.Error("Constants not found")
+  }
+  if ca.Status != nil {
+    t.Logf("Found: %s", ca.Status)
+  } else {
+    t.Error("Constants not found")
+  }
+}
+
+func TestConstantsManga(t *testing.T) {
+  c := conf()
+  cm, _ := c.SearchConstantsManga()
+
+  if cm.Kind != nil {
+    t.Logf("Found: %s", cm.Kind)
+  } else {
+    t.Error("Constants not found")
+  }
+  if cm.Status != nil {
+    t.Logf("Found: %s", cm.Status)
+  } else {
+    t.Error("Constants not found")
   }
 }
