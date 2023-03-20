@@ -10,7 +10,7 @@ import (
   "strconv"
 
   "github.com/vexilology/goshikimori/api"
-  "github.com/vexilology/goshikimori/transform"
+  "github.com/vexilology/goshikimori/str"
 )
 
 const (
@@ -506,7 +506,7 @@ func (c *Configuration) SearchUsers(name string, r ResultLimit) ([]api.Users, er
 func (c *Configuration) SearchUserFriends(id int) ([]api.UserFriends, error) {
   var uf []api.UserFriends
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertUser(id, "friends")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertUser(id, "friends")))
   if err != nil {
     return nil, err
   }
@@ -527,7 +527,7 @@ func (c *Configuration) SearchUserFriends(id int) ([]api.UserFriends, error) {
 func (c *Configuration) SearchUserClubs(id int) ([]api.Clubs, error) {
   var uc []api.Clubs
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertUser(id, "clubs")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertUser(id, "clubs")))
   if err != nil {
     return nil, err
   }
@@ -549,7 +549,7 @@ func (c *Configuration) SearchUserAnimeRates(id int, r ResultAnimeRates) ([]api.
   var ar []api.UserAnimeRates
 
   resp, err := client.Do(c.NewGetRequest(
-    transform.ConvertUserRates(id, "anime_rates", r.OptionsAnimeRates()),
+    str.ConvertUserRates(id, "anime_rates", r.OptionsAnimeRates()),
   ))
   if err != nil {
     return nil, err
@@ -572,7 +572,7 @@ func (c *Configuration) SearchUserMangaRates(id int, r ResultMangaRates) ([]api.
   var mr []api.UserMangaRates
 
   resp, err := client.Do(c.NewGetRequest(
-    transform.ConvertUserRates(id, "manga_rates", r.OptionsMangaRates()),
+    str.ConvertUserRates(id, "manga_rates", r.OptionsMangaRates()),
   ))
   if err != nil {
     return nil, err
@@ -594,7 +594,7 @@ func (c *Configuration) SearchUserMangaRates(id int, r ResultMangaRates) ([]api.
 func (c *Configuration) SearchUserFavourites(id int) (api.UserFavourites, error) {
   var uf api.UserFavourites
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertUser(id, "favourites")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertUser(id, "favourites")))
   if err != nil {
     return uf, err
   }
@@ -616,7 +616,7 @@ func (c *Configuration) SearchUserHistory(id int, r ResultUserHistory) ([]api.Us
   var uh []api.UserHistory
 
   resp, err := client.Do(c.NewGetRequest(
-    transform.ConvertUserRates(id, "history", r.OptionsUserHistory()),
+    str.ConvertUserRates(id, "history", r.OptionsUserHistory()),
   ))
   if err != nil {
     return nil, err
@@ -638,7 +638,7 @@ func (c *Configuration) SearchUserHistory(id int, r ResultUserHistory) ([]api.Us
 func (c *Configuration) SearchUserBans(id int) ([]api.Bans, error) {
   var b []api.Bans
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertUser(id, "bans")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertUser(id, "bans")))
   if err != nil {
     return nil, err
   }
@@ -781,7 +781,7 @@ func (c *Configuration) FastIdManga(name string) (int, error) {
 func (c *Configuration) SearchAnimeScreenshots(id int) ([]api.AnimeScreenshots, error) {
   var s []api.AnimeScreenshots
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertAnime(id, "screenshots")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertAnime(id, "screenshots")))
   if err != nil {
     return nil, err
   }
@@ -802,7 +802,7 @@ func (c *Configuration) SearchAnimeScreenshots(id int) ([]api.AnimeScreenshots, 
 func (c *Configuration) SearchAnimeFranchise(id int) (api.Franchise, error) {
   var f api.Franchise
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertFranchise(id, "animes")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertFranchise(id, "animes")))
   if err != nil {
     return f, err
   }
@@ -822,7 +822,7 @@ func (c *Configuration) SearchAnimeFranchise(id int) (api.Franchise, error) {
 func (c *Configuration) SearchMangaFranchise(id int) (api.Franchise, error) {
   var f api.Franchise
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertFranchise(id, "mangas")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertFranchise(id, "mangas")))
   if err != nil {
     return f, err
   }
@@ -842,7 +842,7 @@ func (c *Configuration) SearchMangaFranchise(id int) (api.Franchise, error) {
 func (c *Configuration) SearchAnimeExternalLinks(id int) ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertExternalLinks(id, "animes")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertExternalLinks(id, "animes")))
   if err != nil {
     return nil, err
   }
@@ -862,7 +862,7 @@ func (c *Configuration) SearchAnimeExternalLinks(id int) ([]api.ExternalLinks, e
 func (c *Configuration) SearchMangaExternalLinks(id int) ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertExternalLinks(id, "mangas")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertExternalLinks(id, "mangas")))
   if err != nil {
     return nil, err
   }
@@ -882,7 +882,7 @@ func (c *Configuration) SearchMangaExternalLinks(id int) ([]api.ExternalLinks, e
 func (c *Configuration) SearchSimilarAnime(id int) ([]api.Animes, error) {
   var a []api.Animes
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertSimilar(id, "animes")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertSimilar(id, "animes")))
   if err != nil {
     return nil, err
   }
@@ -903,7 +903,7 @@ func (c *Configuration) SearchSimilarAnime(id int) ([]api.Animes, error) {
 func (c *Configuration) SearchSimilarManga(id int) ([]api.Mangas, error) {
   var m []api.Mangas
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertSimilar(id, "mangas")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertSimilar(id, "mangas")))
   if err != nil {
     return nil, err
   }
@@ -924,7 +924,7 @@ func (c *Configuration) SearchSimilarManga(id int) ([]api.Mangas, error) {
 func (c *Configuration) SearchRelatedAnime(id int) ([]api.RelatedAnimes, error) {
   var a []api.RelatedAnimes
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertRelated(id, "animes")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertRelated(id, "animes")))
   if err != nil {
     return nil, err
   }
@@ -945,7 +945,7 @@ func (c *Configuration) SearchRelatedAnime(id int) ([]api.RelatedAnimes, error) 
 func (c *Configuration) SearchRelatedManga(id int) ([]api.RelatedMangas, error) {
   var m []api.RelatedMangas
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertRelated(id, "mangas")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertRelated(id, "mangas")))
   if err != nil {
     return nil, err
   }
@@ -993,7 +993,7 @@ func (c *Configuration) SearchClub(name string, r ResultLimit) ([]api.Clubs, err
 func (c *Configuration) SearchAchievement(id int) ([]api.Achievements, error) {
   var a []api.Achievements
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertAchievements(id)))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertAchievements(id)))
   if err != nil {
     return nil, err
   }
@@ -1014,7 +1014,7 @@ func (c *Configuration) SearchAchievement(id int) ([]api.Achievements, error) {
 func (c *Configuration) SearchAnimeVideos(id int) ([]api.AnimeVideos, error) {
   var v []api.AnimeVideos
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertAnime(id, "videos")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertAnime(id, "videos")))
   if err != nil {
     return nil, err
   }
@@ -1035,7 +1035,7 @@ func (c *Configuration) SearchAnimeVideos(id int) ([]api.AnimeVideos, error) {
 func (c *Configuration) SearchAnimeRoles(id int) ([]api.Roles, error) {
   var r []api.Roles
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertRoles(id, "animes")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertRoles(id, "animes")))
   if err != nil {
     return nil, err
   }
@@ -1056,7 +1056,7 @@ func (c *Configuration) SearchAnimeRoles(id int) ([]api.Roles, error) {
 func (c *Configuration) SearchMangaRoles(id int) ([]api.Roles, error) {
   var r []api.Roles
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertRoles(id, "mangas")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertRoles(id, "mangas")))
   if err != nil {
     return nil, err
   }
@@ -1098,7 +1098,7 @@ func (c *Configuration) SearchBans() ([]api.Bans, error) {
 func (c *Configuration) SearchCalendar(r ResultCensored) ([]api.Calendar, error) {
   var ca []api.Calendar
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertCalendar(r.OptionsCalendar())))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertCalendar(r.OptionsCalendar())))
   if err != nil {
     return nil, err
   }
@@ -1203,7 +1203,7 @@ func (c *Configuration) SearchForums() ([]api.Forums, error) {
 func (c *Configuration) AddFriend(id int) (api.FriendRequest, error) {
   var f api.FriendRequest
 
-  resp, err := client.Do(c.NewPostRequest(transform.ConvertFriend(id)))
+  resp, err := client.Do(c.NewPostRequest(str.ConvertFriend(id)))
   if err != nil {
     return f, err
   }
@@ -1224,7 +1224,7 @@ func (c *Configuration) AddFriend(id int) (api.FriendRequest, error) {
 func (c *Configuration) RemoveFriend(id int) (api.FriendRequest, error) {
   var f api.FriendRequest
 
-  resp, err := client.Do(c.NewDeleteRequest(transform.ConvertFriend(id)))
+  resp, err := client.Do(c.NewDeleteRequest(str.ConvertFriend(id)))
   if err != nil {
     return f, err
   }
@@ -1245,7 +1245,7 @@ func (c *Configuration) RemoveFriend(id int) (api.FriendRequest, error) {
 func (c *Configuration) UserUnreadMessages(id int) (api.UnreadMessages, error) {
   var um api.UnreadMessages
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertUser(id, "unread_messages")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertUser(id, "unread_messages")))
   if err != nil {
     return um, err
   }
@@ -1266,7 +1266,7 @@ func (c *Configuration) UserUnreadMessages(id int) (api.UnreadMessages, error) {
 func (c *Configuration) UserMessages(id int, r ResultMessages) ([]api.Messages, error) {
   var m []api.Messages
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertMessages(id, r.OptionsMessages())))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertMessages(id, r.OptionsMessages())))
   if err != nil {
     return nil, err
   }
@@ -1287,7 +1287,7 @@ func (c *Configuration) UserMessages(id int, r ResultMessages) ([]api.Messages, 
 func (c *Configuration) SearchConstantsAnime() (api.Constants, error) {
   var ca api.Constants
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertConstants("anime")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertConstants("anime")))
   if err != nil {
     return ca, err
   }
@@ -1308,7 +1308,7 @@ func (c *Configuration) SearchConstantsAnime() (api.Constants, error) {
 func (c *Configuration) SearchConstantsManga() (api.Constants, error) {
   var cm api.Constants
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertConstants("manga")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertConstants("manga")))
   if err != nil {
     return cm, err
   }
@@ -1329,7 +1329,7 @@ func (c *Configuration) SearchConstantsManga() (api.Constants, error) {
 func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, error) {
   var ur api.ConstantsUserRate
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertConstants("user_rate")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertConstants("user_rate")))
   if err != nil {
     return ur, err
   }
@@ -1350,7 +1350,7 @@ func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, error)
 func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, error) {
   var cc api.ConstantsClub
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertConstants("club")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertConstants("club")))
   if err != nil {
     return cc, err
   }
@@ -1371,7 +1371,7 @@ func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, error) {
 func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, error) {
   var cs []api.ConstantsSmileys
 
-  resp, err := client.Do(c.NewGetRequest(transform.ConvertConstants("smileys")))
+  resp, err := client.Do(c.NewGetRequest(str.ConvertConstants("smileys")))
   if err != nil {
     return nil, err
   }
