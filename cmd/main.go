@@ -605,6 +605,7 @@ func main() {
   }
   */
 
+  /*
   ca, err := c.SearchConstantsAnime()
   if err != nil {
     fmt.Println(err)
@@ -641,4 +642,12 @@ func main() {
   for _, v := range cs {
     fmt.Println(v.Bbcode, v.Path)
   }
+  */
+
+  clcl, err := c.FastIdClub("shikimori api")
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  fmt.Println(clcl)
 }

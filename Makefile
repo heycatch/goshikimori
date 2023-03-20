@@ -1,9 +1,9 @@
-App :=
-Token :=
+App := 
+Token := 
 
-client_id :=
-client_secret :=
-refresh :=
+client_id := 
+client_secret := 
+refresh := 
 auth_code :=
 
 list:
@@ -12,11 +12,13 @@ list:
 test:
 	go test -v
 
+run:
+	go run cmd/main.go
+
 request:
-	curl -X GET https://shikimori.one/api/animes?search=initial+d \
+	curl -X GET https://shikimori.one/api/constants/anime \
 	-H "User-Agent: $(App)" \
-	-H "Authorization: Bearer $(Token)" \
-	-F limit=5
+	-H "Authorization: Bearer $(Token)"
 
 token:
 	curl -X POST "https://shikimori.one/oauth/token" \

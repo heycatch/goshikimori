@@ -778,6 +778,35 @@ func (c *Configuration) FastIdManga(name string) (int, error) {
   return mm.Id, nil
 }
 
+// FIXME: the output is always 2 results and
+// we write the last number, limit not working
+func (c *Configuration) FastIdClub(name string) (int, error) {
+  var cl []api.Clubs
+  var clcl api.Clubs
+
+  resp, err := client.Do(c.NewGetRequest(
+    "clubs?search=" + url.QueryEscape(name),
+  ))
+  if err != nil {
+    return 0, err
+  }
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return 0, err
+  }
+
+  if err := json.Unmarshal(data, &cl); err != nil {
+    return 0, err
+  }
+
+  for _, v := range cl {
+    clcl = v
+  }
+
+  return clcl.Id, nil
+}
+
 func (c *Configuration) SearchAnimeScreenshots(id int) ([]api.AnimeScreenshots, error) {
   var s []api.AnimeScreenshots
 

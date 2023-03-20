@@ -28,6 +28,7 @@ SearchManga(name string, Extra interface{}) // Find mangas. Check Mangas request
 SearchClub(name string, ExtraLimit interface{}) // Find clubs. Check Clubs request.
 FastIdAnime(name string) // Anime id search. Single result, search is case sensitive.
 FastIdManga(name string) // Manga id search. Single result, search is case sensitive.
+FastIdClub(name string) // Club id search. Single result, search is case sensitive.
 NekoSearch(name string) // Search by anime name in achievements.
 SearchAchievement(id int) // Find achievements with anime id. Check Achievements request.
 SearchAnimeScreenshots(id int) // Find anime-screenshots with anime id. Check AnimeScreenshots request.
