@@ -182,7 +182,7 @@ func (el *ExtraLimit) OptionsUsers() string {
 
 // Page   -> 100000 maximum
 // Limit  -> 50 maximum
-// FIXME  Order -> not supported
+// Order  -> check RandomAnime()
 // Type   -> "Deprecated"
 // Kind   -> tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48
 // Status -> anons, ongoing, released
@@ -257,7 +257,7 @@ func (e *Extra) OptionsAnime() string {
 
 // Page   -> 100000 maximum
 // Limit  -> 50 maximum
-// FIXME  Order -> not supported
+// Order  -> check RandomManga()
 // Type   -> "Deprecated"
 // Kind   -> manga, manhwa, manhua,
 //           light_novel, novel, one_shot, doujin
@@ -1416,4 +1416,46 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, error)
   }
 
   return cs, nil
+}
+
+func (c *Configuration) RandomAnime() ([]api.Animes, error) {
+  var a []api.Animes
+
+  resp, err := client.Do(c.NewGetRequest("animes?order=random"))
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &a); err != nil {
+    return nil, err
+  }
+
+  return a, nil
+}
+
+func (c *Configuration) RandomManga() ([]api.Mangas, error) {
+  var m []api.Mangas
+
+  resp, err := client.Do(c.NewGetRequest("mangas?order=random"))
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    return nil, err
+  }
+
+  return m, nil
 }

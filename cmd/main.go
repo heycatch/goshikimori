@@ -644,10 +644,26 @@ func main() {
   }
   */
 
+  /*
   clcl, err := c.FastIdClub("shikimori api")
   if err != nil {
     fmt.Println(err)
     return
   }
   fmt.Println(clcl)
+  */
+
+  a, err := c.RandomAnime()
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  fmt.Println(a)
+
+  m, err := c.RandomManga()
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  fmt.Println(m)
 }

@@ -58,6 +58,8 @@ SearchConstantsManga() // Manga constants. Check ConstantsAnimeManga request.
 SearchConstantsUserRate() // UserRate constants. Check ConstantsUserRate request.
 SearchConstantsClub() // Club constants. Check ConstantsClub request.
 SearchConstantsSmileys() // Smileys constants. Check ConstantsSmileys request.
+RandomAnime() // Find random anime. Check Animes request.
+RandomManga() // Find random manga. Check Mangas.request.
 ```
 
 ### Available API
