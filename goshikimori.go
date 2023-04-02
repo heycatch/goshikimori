@@ -8,6 +8,8 @@ import (
   "encoding/json"
   "net/url"
   "strconv"
+  "context"
+  "time"
 
   "github.com/vexilology/goshikimori/api"
   "github.com/vexilology/goshikimori/str"
@@ -429,9 +431,17 @@ func (mr *ExtraMangaRates) OptionsMangaRates() string {
   return v.Encode()
 }
 
+func ctx(number time.Duration) context.Context {
+  duration := number * time.Second
+  ctx, _ := context.WithTimeout(context.Background(), duration)
+  return ctx
+}
+
 func (c *Configuration) NewGetRequest(search string) *http.Request {
   custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
-  req, _ := http.NewRequest(http.MethodGet, custom_url, nil)
+  // NOTES: ctx(10) -> query time 10 seconds,
+  // in the future it will be possible to make the parameter dynamic
+  req, _ := http.NewRequestWithContext(ctx(10), http.MethodGet, custom_url, nil)
   req.Header.Add("User-Agent", c.Application)
   req.Header.Add("Authorization", bearer + c.AccessToken)
   return req
@@ -440,7 +450,11 @@ func (c *Configuration) NewGetRequest(search string) *http.Request {
 func (c *Configuration) NewPostRequest(search string) *http.Request {
   custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
   data := url.Values{} // empty data
-  req, _ := http.NewRequest(http.MethodPost, custom_url, strings.NewReader(data.Encode()))
+  // NOTES: ctx(10) -> query time 10 seconds,
+  // in the future it will be possible to make the parameter dynamic
+  req, _ := http.NewRequestWithContext(
+    ctx(10), http.MethodPost, custom_url, strings.NewReader(data.Encode()),
+  )
   req.Header.Add("User-Agent", c.Application)
   req.Header.Add("Authorization", bearer + c.AccessToken)
   return req
@@ -449,7 +463,11 @@ func (c *Configuration) NewPostRequest(search string) *http.Request {
 func (c *Configuration) NewDeleteRequest(search string) *http.Request {
   custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
   data := url.Values{} // empty data
-  req, _ := http.NewRequest(http.MethodDelete, custom_url, strings.NewReader(data.Encode()))
+  // NOTES: ctx(10) -> query time 10 seconds,
+  // in the future it will be possible to make the parameter dynamic
+  req, _ := http.NewRequestWithContext(
+    ctx(10), http.MethodDelete, custom_url, strings.NewReader(data.Encode()),
+  )
   req.Header.Add("User-Agent", c.Application)
   req.Header.Add("Authorization", bearer + c.AccessToken)
   return req
@@ -459,9 +477,7 @@ func (c *Configuration) NewDeleteRequest(search string) *http.Request {
 func (c *Configuration) SearchUser(name string) (api.Users, error) {
   var u api.Users
 
-  resp, err := client.Do(
-    c.NewGetRequest("users/" + url.QueryEscape(name)),
-  )
+  resp, err := client.Do(c.NewGetRequest("users/" + url.QueryEscape(name)))
   if err != nil {
     return u, err
   }
@@ -727,9 +743,7 @@ func (c *Configuration) FastIdAnime(name string) (int, error) {
   var a []api.Animes
   var aa api.Animes
 
-  resp, err := client.Do(c.NewGetRequest(
-    "animes?search=" + url.QueryEscape(name),
-  ))
+  resp, err := client.Do(c.NewGetRequest("animes?search=" + url.QueryEscape(name)))
   if err != nil {
     return 0, err
   }
@@ -755,9 +769,7 @@ func (c *Configuration) FastIdManga(name string) (int, error) {
   var m []api.Mangas
   var mm api.Mangas
 
-  resp, err := client.Do(c.NewGetRequest(
-    "mangas?search=" + url.QueryEscape(name),
-  ))
+  resp, err := client.Do(c.NewGetRequest("mangas?search=" + url.QueryEscape(name)))
   if err != nil {
     return 0, err
   }
