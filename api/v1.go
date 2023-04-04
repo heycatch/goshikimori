@@ -28,15 +28,23 @@ type StatusesManga struct {
   Type       string `json:"type"`
 }
 
-// ~Below I wrote that I deleted
-// Full_statuses -> no response after request.
-// Scores -> empty slice.
-// Types -> empty slice.
-// Ratings -> empty slice.
-// Has_anime? || Has_manga? -> always one boolean state: false.
-// Genres -> empty slice.
-// Publishers -> empty slice.
-// Activity -> no response after request.
+// **REMOVED**
+//
+// Full_statuses - no response after request.
+//
+// Scores - empty slice.
+//
+// Types - empty slice.
+//
+// Ratings - empty slice.
+//
+// Has_anime? || Has_manga? - always one boolean state: false.
+//
+// Genres - empty slice.
+//
+// Publishers - empty slice.
+//
+// Activity - no response after request.
 type StatusesInfo struct {
   Anime  []StatusesAnime `json:"anime"`
   Manga  []StatusesManga `json:"manga"`
@@ -77,9 +85,13 @@ type UserFriends struct {
   Last_online_at time.Time `json:"last_online_at"`
 }
 
-// removed Chapters -> nil
-// removed Volumes -> nil
-// removed Manga -> nil
+// **REMOVED**
+//
+// Chapters - nil.
+//
+// Volumes - nil.
+//
+// Manga - nil.
 type UserAnimeRates struct {
   Id         int         `json:"id"`
   Score      int         `json:"score"`
@@ -94,8 +106,11 @@ type UserAnimeRates struct {
   Anime      Animes      `json:"anime"`
 }
 
-// removed Episodes -> nil
-// removed Anime -> nil
+// **REMOVED**
+//
+// Episodes - nil.
+//
+// Anime - nil.
 type UserMangaRates struct {
   Id         int         `json:"id"`
   Score      int         `json:"score"`
@@ -111,7 +126,9 @@ type UserMangaRates struct {
   Manga      Mangas      `json:"manga"`
 }
 
-// removed Url -> nil
+// **REMOVED**
+//
+// Url - nil.
 type UserFavouritesInfo struct {
   Id      int    `json:"id"`
   Name    string `json:"name"`
@@ -129,8 +146,9 @@ type UserFavourites struct {
   Producers  []UserFavouritesInfo `json:"producers"`
 }
 
-// Episodes and Episodes_aired only for anime
-// Volumes and Chapters only for manga
+// Episodes and Episodes_aired only for anime.
+//
+// Volumes and Chapters only for manga.
 type TargetInfo struct {
   Id             int       `json:"id"`
   Name           string    `json:"name"`
@@ -232,14 +250,18 @@ type Achievements struct {
   Updated_at time.Time `json:"updated_at"`
 }
 
-// removed Manga -> bool
+// **REMOVED**
+//
+// Manga - bool.
 type RelatedAnimes struct {
   Relation         string `json:"relation"`
   Relation_Russian string `json:"relation_russian"`
   Anime            Animes `json:"anime"`
 }
 
-// removed Anime -> bool
+// **REMOVED**
+//
+// Anime - bool.
 type RelatedMangas struct {
   Relation         string `json:"relation"`
   Relation_Russian string `json:"relation_russian"`
@@ -269,7 +291,9 @@ type CharacterInfo struct {
   Url     string    `json:"url"`
 }
 
-// removed Person -> nil
+// **REMOVED**
+//
+// Person - nil.
 type Roles struct {
   Roles         []string      `json:"roles"`
   Roles_Russian []string      `json:"roles_russian"`
@@ -360,7 +384,9 @@ type Genres struct {
   Kind    string `json:"kind"`
 }
 
-// removed image -> nil
+// **REMOVED**
+//
+// Image - nil.
 type Studios struct {
   Id            int    `json:"id"`
   Name          string `json:"name"`
@@ -391,8 +417,11 @@ type UnreadMessages struct {
   Notifications int `json:"notifications"`
 }
 
-// removed Released_on -> nil
-// removed Aired_on -> nil
+// **REMOVED**
+//
+// Released_on - nil.
+//
+// Aired_on - nil.
 type LinkedMessages struct {
   Id             int       `json:"id"`
   Topic_url      string    `json:"topic_url"`
@@ -451,4 +480,62 @@ type ConstantsClub struct {
 type ConstantsSmileys struct {
   Bbcode string `json:"bbcode"`
   Path   string `json:"path"`
+}
+
+type Birth struct {
+  Day   int `json:"day"`
+  Year  int `json:"year"`
+  Month int `json:"month"`
+}
+
+type RolesPeople struct {
+  Characters []AllPeople `json:"characters"`
+  Animes     []Animes    `json:"animes"`
+}
+
+// **REMOVED**
+//
+// Manga - nil.
+type WorksPeople struct {
+  Anime Animes `json:"anime"`
+  Role  string `json:"role"`
+}
+
+type AllPeople struct {
+  Id      int       `json:"id"`
+  Name    string    `json:"name"`
+  Russian string    `json:"russian"`
+  Image   AnimeSize `json:"image"`
+  Url     string    `json:"url"`
+}
+
+// **REMOVED**
+//
+// Deceased_on - no response after request.
+//
+// Person_favoured - bool.
+//
+// Producer/Producer_favoured - bool.
+//
+// Mangaka/Mangaka_favoured - bool.
+//
+// Seyu/Seyu_favoured - bool.
+//
+// Birthday - same as the Birth_on.
+type People struct {
+  Id             int             `json:"id"`
+  Name           string          `json:"name"`
+  Russian        string          `json:"russian"`
+  Image          AnimeSize       `json:"image"`
+  Url            string          `json:"url"`
+  Japanese       string          `json:"japanese"`
+  Job_title      string          `json:"job_title"`
+  Birth_on       Birth           `json:"birth_on"`
+  Website        string          `json:"website"`
+  Groupped_roles [][]interface{} `json:"groupped_roles"`
+  Roles          []RolesPeople   `json:"roles"`
+  Works          []WorksPeople   `json:"works"`
+  Topic_id       int             `json:"topic_id"`
+  Updated_at     time.Time       `json:"updated_at"`
+  Thread_id      int             `json:"thread_id"`
 }

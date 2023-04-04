@@ -53,3 +53,7 @@ func ConvertMessages(id int, name string) string {
 func ConvertConstants(name string) string {
   return fmt.Sprintf("constants/%s", name)
 }
+
+func ConvertPeople(id int) string {
+  return fmt.Sprintf("people/%d", id)
+}

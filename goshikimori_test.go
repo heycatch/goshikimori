@@ -219,3 +219,15 @@ func TestConstantsManga(t *testing.T) {
     t.Error("Constants not found")
   }
 }
+
+func TestPeople(t *testing.T) {
+  c := conf()
+  fp, _ := c.FastIdPeople("Aya Hirano")
+  p, _ := c.People(fp)
+
+  if p.Id == 4 || p.Job_title == "Сэйю"  {
+    t.Logf("%s - found", p.Name)
+  } else {
+    t.Error("People not found")
+  }
+}

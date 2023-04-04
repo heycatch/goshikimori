@@ -57,6 +57,10 @@ type ExtraMessages struct {
   Page, Limit, Type string
 }
 
+type ExtraPeople struct {
+  Kind string
+}
+
 type Result interface {
   OptionsAnime() string
   OptionsManga() string
@@ -87,19 +91,28 @@ type ResultMessages interface {
   OptionsMessages() string
 }
 
+type ResultPeople interface {
+  OptionsPeople() string
+}
+
+// You need to enter the application name and the private key.
 func Add(app, tok string) *Configuration {
   return &Configuration{Application: app, AccessToken: tok}
 }
 
-// string formatting for achievements search
+// String formatting for achievements search.
+//
+// Check examples/achievements.
 func NekoSearch(name string) string {
   r := strings.Replace(strings.ToLower(name), " ", "_", -1)
   return fmt.Sprintf("%s", r)
 }
 
-// Page  -> 100000 maximum
-// Limit -> 100 maximum
-// Type  -> inbox, private, sent, news, notifications
+// Page - 100000 maximum.
+//
+// Limit - 100 maximum.
+//
+// Type - inbox, private, sent, news, notifications.
 func (em *ExtraMessages) OptionsMessages() string {
   p, _ := strconv.Atoi(em.Page)
   l, _ := strconv.Atoi(em.Limit)
@@ -128,10 +141,13 @@ func (em *ExtraMessages) OptionsMessages() string {
   return v.Encode()
 }
 
-// Page        -> 100000 maximum
-// Limit       -> 100 maximum
-// Target_id   -> id anime/manga in string format
-// Target_type -> Anime, Manga
+// Page - 100000 maximum.
+//
+// Limit - 100 maximum.
+//
+// Target_id - id anime/manga in string format.
+//
+// Target_type - Anime, Manga.
 func (ett *ExtraTargetType) OptionsUserHistory() string {
   p, _ := strconv.Atoi(ett.Page)
   l, _ := strconv.Atoi(ett.Limit)
@@ -152,7 +168,7 @@ func (ett *ExtraTargetType) OptionsUserHistory() string {
   v := url.Values{}
   v.Add("page", ett.Page)
   v.Add("limit", ett.Limit)
-  // NOTES: we get an error if we do not process the request in this way
+  // NOTES: We get an error if we do not process the request in this way.
   // json: cannot unmarshal string into Go value of type api.UserHistory
   if ett.Target_id != "" { v.Add("target_id", ett.Target_id) }
   v.Add("target_type", ett.Target_type)
@@ -160,8 +176,9 @@ func (ett *ExtraTargetType) OptionsUserHistory() string {
   return v.Encode()
 }
 
-// Page  -> 100000 maximum
-// Limit -> 100 maximum
+// Page - 100000 maximum.
+//
+// Limit - 100 maximum.
 func (el *ExtraLimit) OptionsUsers() string {
   p, _ := strconv.Atoi(el.Page)
   l, _ := strconv.Atoi(el.Limit)
@@ -182,24 +199,43 @@ func (el *ExtraLimit) OptionsUsers() string {
   return v.Encode()
 }
 
-// Page   -> 100000 maximum
-// Limit  -> 50 maximum
-// Order  -> check RandomAnime()
-// Type   -> "Deprecated"
-// Kind   -> tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48
-// Status -> anons, ongoing, released
-// Season -> summer_2017, 2016, 2014_2016, 199x
-// Score  -> 9 maximum
-// FIXME  Duration -> not supported
-// Rating -> none, g, pg, pg_13, r, r_plus, rx
-// FIXME  Genre -> not supported
-// FIXME  Studio -> not supported
-// FIXME  Franchise -> not supported
-// FIXME  Censored -> not supported
-// FIXME  Mylist -> not supported
-// FIXME  Ids -> not supported
-// FIXME  Exclude_ids -> not supported
-// Search -> default search
+// Page - 100000 maximum.
+//
+// Limit - 50 maximum.
+//
+// Order - check RandomAnime().
+//
+// Type - "Deprecated".
+//
+// Kind - tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48.
+//
+// Status - anons, ongoing, released.
+//
+// Season - summer_2017, 2016, 2014_2016, 199x.
+//
+// Score - 9 maximum.
+//
+// Rating - none, g, pg, pg_13, r, r_plus, rx.
+//
+// Search - default search.
+//
+// **FIXME SECTION**
+//
+// Duration - not supported.
+//
+// Genre - not supported.
+//
+// Studio - not supported.
+//
+// Franchise - not supported.
+//
+// Censored - not supported.
+//
+// Mylist - not supported.
+//
+// Ids - not supported.
+//
+// Exclude_ids - not supported.
 func (e *Extra) OptionsAnime() string {
   p, _ := strconv.Atoi(e.Page)
   l, _ := strconv.Atoi(e.Limit)
@@ -257,24 +293,39 @@ func (e *Extra) OptionsAnime() string {
   return v.Encode()
 }
 
-// Page   -> 100000 maximum
-// Limit  -> 50 maximum
-// Order  -> check RandomManga()
-// Type   -> "Deprecated"
-// Kind   -> manga, manhwa, manhua,
-//           light_novel, novel, one_shot, doujin
-// Status -> anons, ongoing, released, paused, discontinued
-// Season -> summer_2017, "spring_2016,fall_2016",
-//           "2016,!winter_2016", 2016, 2014_2016, 199x
-// Score  -> 9 maximum
-// FIXME  Genre -> not supported
-// FIXME  Publisher -> not supported
-// FIXME  Franchise -> not supported
-// FIXME  Censored -> not supported
-// FIXME  Mylist -> not supported
-// FIXME  Ids -> not supported
-// FIXME  Exclude_ids -> not supported
-// Search -> default search
+// Page - 100000 maximum.
+//
+// Limit - 50 maximum.
+//
+// Order - check RandomManga().
+//
+// Type - "Deprecated".
+//
+// Kind - manga, manhwa, manhua, light_novel, novel, one_shot, doujin.
+//
+// Status - anons, ongoing, released, paused, discontinued.
+//
+// Season - summer_2017, "spring_2016,fall_2016", "2016,!winter_2016", 2016, 2014_2016, 199x.
+//
+// Score - 9 maximum.
+//
+// Search - default search.
+//
+// **FIXME SECTION**
+//
+// Genre - not supported.
+//
+// Publisher - not supported.
+//
+// Franchise - not supported.
+//
+// Censored - not supported.
+//
+// Mylist - not supported.
+//
+// Ids - not supported.
+//
+// Exclude_ids - not supported.
 func (e *Extra) OptionsManga() string {
   p, _ := strconv.Atoi(e.Page)
   l, _ := strconv.Atoi(e.Limit)
@@ -327,9 +378,11 @@ func (e *Extra) OptionsManga() string {
   return v.Encode()
 }
 
-// Page  -> 100000 maximum
-// Limit -> 30 maximum
-// Search -> default search
+// Page - 100000 maximum.
+//
+// Limit - 30 maximum.
+//
+// Search - default search.
 func (el *ExtraLimit) OptionsClub() string {
   p, _ := strconv.Atoi(el.Page)
   l, _ := strconv.Atoi(el.Limit)
@@ -350,8 +403,9 @@ func (el *ExtraLimit) OptionsClub() string {
   return v.Encode()
 }
 
-// Censored -> true, false
-// Set to false to allow hentai, yaoi and yuri
+// Censored - true, false.
+//
+// Set to false to allow hentai, yaoi and yuri.
 func (ec *ExtraCensored) OptionsCalendar() string {
   censored_map := map[string]int8{"true": 1, "false": 2}
   _, ok = censored_map[ec.Censored]
@@ -363,11 +417,15 @@ func (ec *ExtraCensored) OptionsCalendar() string {
   return v.Encode()
 }
 
-// Page     -> 100000 maximum
-// Limit    -> 5000 maximum
-// Status   -> planned, watching, rewatching, completed, on_hold, dropped
-// Censored -> true, false
-// Set to true to discard hentai, yaoi and yuri
+// Page - 100000 maximum.
+//
+// Limit - 5000 maximum.
+//
+// Status - planned, watching, rewatching, completed, on_hold, dropped.
+//
+// Censored - true, false.
+//
+// Set to true to discard hentai, yaoi and yuri.
 func (ar *ExtraAnimeRates) OptionsAnimeRates() string {
   p, _ := strconv.Atoi(ar.Page)
   l, _ := strconv.Atoi(ar.Limit)
@@ -402,10 +460,13 @@ func (ar *ExtraAnimeRates) OptionsAnimeRates() string {
   return v.Encode()
 }
 
-// Page     -> 100000 maximum
-// Limit    -> 5000 maximum
-// Censored -> true, false
-// Set to true to discard hentai, yaoi and yuri
+// Page - 100000 maximum.
+//
+// Limit - 5000 maximum.
+//
+// Censored - true, false.
+//
+// Set to true to discard hentai, yaoi and yuri.
 func (mr *ExtraMangaRates) OptionsMangaRates() string {
   p, _ := strconv.Atoi(mr.Page)
   l, _ := strconv.Atoi(mr.Limit)
@@ -431,6 +492,24 @@ func (mr *ExtraMangaRates) OptionsMangaRates() string {
   return v.Encode()
 }
 
+// Page/Limit - not supported. idk why.
+//
+// Kind - seyu, mangaka, producer.
+//
+// Default empty/incorrect kind - seyu.
+func (ep *ExtraPeople) OptionsPeople() string {
+  kind_map := map[string]int8{
+    "seyu": 1, "mangaka": 2, "producer": 3,
+  }
+  _, ok = kind_map[ep.Kind]
+  if !ok { ep.Kind = "seyu" }
+
+  v := url.Values{}
+  v.Add("kind", ep.Kind)
+
+  return v.Encode()
+}
+
 func ctx(number time.Duration) context.Context {
   duration := number * time.Second
   ctx, _ := context.WithTimeout(context.Background(), duration)
@@ -440,7 +519,7 @@ func ctx(number time.Duration) context.Context {
 func (c *Configuration) NewGetRequest(search string) *http.Request {
   custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
   // NOTES: ctx(10) -> query time 10 seconds,
-  // in the future it will be possible to make the parameter dynamic
+  // in the future it will be possible to make the parameter dynamic.
   req, _ := http.NewRequestWithContext(ctx(10), http.MethodGet, custom_url, nil)
   req.Header.Add("User-Agent", c.Application)
   req.Header.Add("Authorization", bearer + c.AccessToken)
@@ -451,7 +530,7 @@ func (c *Configuration) NewPostRequest(search string) *http.Request {
   custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
   data := url.Values{} // empty data
   // NOTES: ctx(10) -> query time 10 seconds,
-  // in the future it will be possible to make the parameter dynamic
+  // in the future it will be possible to make the parameter dynamic.
   req, _ := http.NewRequestWithContext(
     ctx(10), http.MethodPost, custom_url, strings.NewReader(data.Encode()),
   )
@@ -464,7 +543,7 @@ func (c *Configuration) NewDeleteRequest(search string) *http.Request {
   custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
   data := url.Values{} // empty data
   // NOTES: ctx(10) -> query time 10 seconds,
-  // in the future it will be possible to make the parameter dynamic
+  // in the future it will be possible to make the parameter dynamic.
   req, _ := http.NewRequestWithContext(
     ctx(10), http.MethodDelete, custom_url, strings.NewReader(data.Encode()),
   )
@@ -473,7 +552,7 @@ func (c *Configuration) NewDeleteRequest(search string) *http.Request {
   return req
 }
 
-// NOTES: search by user is case sensitive
+// Search by user is case sensitive.
 func (c *Configuration) SearchUser(name string) (api.Users, error) {
   var u api.Users
 
@@ -495,7 +574,7 @@ func (c *Configuration) SearchUser(name string) (api.Users, error) {
   return u, nil
 }
 
-// don't use Stats.Statuses.Anime and Stats.Statuses.Manga: empty slice
+// Don't use Stats.Statuses.Anime and Stats.Statuses.Manga: empty slice.
 func (c *Configuration) SearchUsers(name string, r ResultLimit) ([]api.Users, error) {
   var u []api.Users
 
@@ -790,15 +869,14 @@ func (c *Configuration) FastIdManga(name string) (int, error) {
   return mm.Id, nil
 }
 
-// FIXME: the output is always 2 results and
-// we write the last number, limit not working
+// We always have 2 clubs.
+//
+// By default i made the first result(the most accurate) when searching for the 'Id'.
 func (c *Configuration) FastIdClub(name string) (int, error) {
   var cl []api.Clubs
   var clcl api.Clubs
 
-  resp, err := client.Do(c.NewGetRequest(
-    "clubs?search=" + url.QueryEscape(name),
-  ))
+  resp, err := client.Do(c.NewGetRequest("clubs?search=" + url.QueryEscape(name)))
   if err != nil {
     return 0, err
   }
@@ -812,11 +890,39 @@ func (c *Configuration) FastIdClub(name string) (int, error) {
     return 0, err
   }
 
-  for _, v := range cl {
-    clcl = v
+  for i := 0; i < 1; i++ {
+    clcl = cl[i]
   }
 
   return clcl.Id, nil
+}
+
+// We always have 16 names.
+//
+// By default i made the first result(the most accurate) when searching for the 'Id'.
+func (c *Configuration) FastIdPeople(name string) (int, error) {
+  var p []api.AllPeople
+  var pp api.AllPeople
+
+  resp, err := client.Do(c.NewGetRequest("people/search?search=" + url.QueryEscape(name)))
+  if err != nil {
+    return 0, err
+  }
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return 0, err
+  }
+
+  if err := json.Unmarshal(data, &p); err != nil {
+    return 0, err
+  }
+
+  for i := 0; i < 1; i++ {
+    pp = p[i]
+  }
+
+  return pp.Id, nil
 }
 
 func (c *Configuration) SearchAnimeScreenshots(id int) ([]api.AnimeScreenshots, error) {
@@ -1027,10 +1133,12 @@ func (c *Configuration) SearchClub(name string, r ResultLimit) ([]api.Clubs, err
   return cl, nil
 }
 
-// as a result, we return a complete list of all achievements.
-// next comes the filtering through "NekoSearch" and the error about obtaining
+// As a result, we return a complete list of all achievements.
+//
+// Next comes the filtering through "NekoSearch" and the error about obtaining
 // specific achievements is already being processed there.
-// see example in README.md
+//
+// Check examples/achievements.
 func (c *Configuration) SearchAchievement(id int) ([]api.Achievements, error) {
   var a []api.Achievements
 
@@ -1470,4 +1578,46 @@ func (c *Configuration) RandomManga() ([]api.Mangas, error) {
   }
 
   return m, nil
+}
+
+func (c *Configuration) SearchPeople(name string, r ResultPeople) ([]api.AllPeople, error) {
+  var ap []api.AllPeople
+
+  resp, err := client.Do(
+    c.NewGetRequest("people/search?search=" + url.QueryEscape(name) + "&" + r.OptionsPeople()),
+  )
+  if err != nil {
+    return nil, err
+  }
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &ap); err != nil {
+    return nil, err
+  }
+
+  return ap, nil
+}
+
+func (c *Configuration) People(id int) (api.People, error) {
+  var ap api.People
+
+  resp, err := client.Do(c.NewGetRequest(str.ConvertPeople(id)))
+  if err != nil {
+    return ap, err
+  }
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return ap, err
+  }
+
+  if err := json.Unmarshal(data, &ap); err != nil {
+    return ap, err
+  }
+
+  return ap, nil
 }

@@ -47,4 +47,15 @@ func main() {
     return
   }
   fmt.Println(cl)
+
+  fp, err := c.FastIdPeople("Aya Hirano")
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if fp == 0 {
+    fmt.Println("people not found")
+    return
+  }
+  fmt.Println(fp)
 }
