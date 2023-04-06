@@ -61,3 +61,11 @@ func ConvertPeople(id int) string {
 func ConvertClub(id int, name string) string {
   return fmt.Sprintf("clubs/%d/%s", id, name)
 }
+
+func ConvertFavorites(linked_type string, id int, kind string) string {
+  return fmt.Sprintf("favorites/%s/%d/%s", linked_type, id, kind)
+}
+
+func ConvertFavoritesReorder(id int) string {
+  return fmt.Sprintf("favorites/%d/reorder", id)
+}

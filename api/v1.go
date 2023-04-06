@@ -574,3 +574,8 @@ type ClubCollections struct {
   Linked_type    string         `json:"linked_type"`
   Viewed         bool           `json:"viewed"`
 }
+
+type Favorites struct {
+  Success bool   `json:"success"`
+  Notice  string `json:"notice"`
+}

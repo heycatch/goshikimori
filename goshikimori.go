@@ -10,6 +10,8 @@ import (
   "strconv"
   "context"
   "time"
+  "errors"
+  "bytes"
 
   "github.com/vexilology/goshikimori/api"
   "github.com/vexilology/goshikimori/str"
@@ -227,23 +229,10 @@ func (el *ExtraLimit) OptionsUsers() string {
 //
 // Search - default search.
 //
-// **FIXME SECTION**
-//
-// Duration - not supported.
-//
-// Genre - not supported.
-//
-// Studio - not supported.
-//
-// Franchise - not supported.
-//
-// Censored - not supported.
-//
-// Mylist - not supported.
-//
-// Ids - not supported.
-//
-// Exclude_ids - not supported.
+// FIXME: Duration - not supported. Genre - not supported.
+// Studio - not supported. Franchise - not supported.
+// Censored - not supported. Mylist - not supported.
+// Ids - not supported. Exclude_ids - not supported.
 func (e *Extra) OptionsAnime() string {
   p, _ := strconv.Atoi(e.Page)
   l, _ := strconv.Atoi(e.Limit)
@@ -319,21 +308,9 @@ func (e *Extra) OptionsAnime() string {
 //
 // Search - default search.
 //
-// **FIXME SECTION**
-//
-// Genre - not supported.
-//
-// Publisher - not supported.
-//
-// Franchise - not supported.
-//
-// Censored - not supported.
-//
-// Mylist - not supported.
-//
-// Ids - not supported.
-//
-// Exclude_ids - not supported.
+// FIXME: Genre - not supported. Publisher - not supported.
+// Franchise - not supported. Censored - not supported.
+// Mylist - not supported. Ids - not supported. Exclude_ids - not supported.
 func (e *Extra) OptionsManga() string {
   p, _ := strconv.Atoi(e.Page)
   l, _ := strconv.Atoi(e.Limit)
@@ -552,14 +529,29 @@ func (c *Configuration) NewGetRequest(search string) *http.Request {
 // make sure that your application has all the necessary permissions.
 func (c *Configuration) NewPostRequest(search string) *http.Request {
   custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
-  data := url.Values{} // empty data
+  // NOTES: ctx(10) -> query time 10 seconds,
+  // in the future it will be possible to make the parameter dynamic.
+  req, _ := http.NewRequestWithContext(ctx(10), http.MethodPost, custom_url, nil)
+  req.Header.Add("User-Agent", c.Application)
+  req.Header.Add("Authorization", bearer + c.AccessToken)
+  return req
+}
+
+// Custom POST request.
+//
+// To work correctly with the POST method,
+// make sure that your application has all the necessary permissions.
+func (c *Configuration) NewCustomPostRequest(search, first, second string) *http.Request {
+  custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
+  data := []byte(fmt.Sprintf(`"%s": "%s"`, first, second))
   // NOTES: ctx(10) -> query time 10 seconds,
   // in the future it will be possible to make the parameter dynamic.
   req, _ := http.NewRequestWithContext(
-    ctx(10), http.MethodPost, custom_url, strings.NewReader(data.Encode()),
+    ctx(10), http.MethodPost, custom_url, bytes.NewBuffer(data),
   )
   req.Header.Add("User-Agent", c.Application)
   req.Header.Add("Authorization", bearer + c.AccessToken)
+  req.Header.Set("Content-Type", "application/json")
   return req
 }
 
@@ -567,12 +559,9 @@ func (c *Configuration) NewPostRequest(search string) *http.Request {
 // make sure that your application has all the necessary permissions.
 func (c *Configuration) NewDeleteRequest(search string) *http.Request {
   custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
-  data := url.Values{} // empty data
   // NOTES: ctx(10) -> query time 10 seconds,
   // in the future it will be possible to make the parameter dynamic.
-  req, _ := http.NewRequestWithContext(
-    ctx(10), http.MethodDelete, custom_url, strings.NewReader(data.Encode()),
-  )
+  req, _ := http.NewRequestWithContext(ctx(10), http.MethodDelete, custom_url, nil)
   req.Header.Add("User-Agent", c.Application)
   req.Header.Add("Authorization", bearer + c.AccessToken)
   return req
@@ -1826,4 +1815,79 @@ func (c *Configuration) People(id int) (api.People, error) {
   }
 
   return ap, nil
+}
+
+// Linked_type: Anime, Manga, Ranobe, Person, Character.
+//
+// Kind(required when Linked_type is Person): common, seyu, mangaka, producer, person.
+func (c *Configuration) FavoritesCreate(linked_type string, id int, kind string) (api.Favorites, error) {
+  var f api.Favorites
+
+  type_map := map[string]int8{"Anime": 1, "Manga": 2, "Ranobe": 3, "Person": 4, "Character": 5}
+  _, ok = type_map[linked_type]
+  if !ok { return f, errors.New("Incorrect string, try again and watch the upper case.") }
+
+  kind_map := map[string]int8{"common": 1, "seyu": 2, "mangaka": 3, "producer": 4, "person": 5}
+  _, ok = kind_map[kind]
+  if !ok { kind = "" }
+
+  resp, err := client.Do(c.NewPostRequest(str.ConvertFavorites(linked_type, id, kind)))
+  if err != nil {
+    return f, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return f, err
+  }
+
+  if err := json.Unmarshal(data, &f); err != nil {
+    return f, err
+  }
+
+  return f, nil
+}
+
+// Linked_type: Anime, Manga, Ranobe, Person, Character.
+func (c *Configuration) FavoritesDelete(linked_type string, id int) (api.Favorites, error) {
+  var f api.Favorites
+
+  type_map := map[string]int8{"Anime": 1, "Manga": 2, "Ranobe": 3, "Person": 4, "Character": 5}
+  _, ok = type_map[linked_type]
+  if !ok { return f, errors.New("Incorrect string, try again and watch the upper case.") }
+
+  resp, err := client.Do(c.NewDeleteRequest(str.ConvertFavorites(linked_type, id, "")))
+  if err != nil {
+    return f, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return f, err
+  }
+
+  if err := json.Unmarshal(data, &f); err != nil {
+    return f, err
+  }
+
+  return f, nil
+}
+
+// FIXME: At the moment this function does not work. I get an error code - 422.
+//
+// You can only get a StatusCode.
+func (c *Configuration) FavoritesReorder(id, position int) (int, error) {
+  convert := strconv.Itoa(position)
+
+  resp, err := client.Do(
+    c.NewCustomPostRequest(str.ConvertFavoritesReorder(id), "new_index", convert),
+  )
+  if err != nil {
+    return 500, err
+  }
+  defer resp.Body.Close()
+
+  return resp.StatusCode, nil
 }

@@ -886,4 +886,22 @@ func main() {
     fmt.Println(v.Anime.Id, v.Anime.Name, v.Anime.Score)
   }
   */
+
+  fia, err := c.FastIdAnime("Naruto")
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if fia == 0 {
+    fmt.Println("anime not found.")
+    return
+  }
+
+  ff, err := c.FavoritesCreate("Anime", fia, "")
+  //ff, err := c.FavoritesDelete("Anime", fia)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  fmt.Println(ff.Success, ff.Notice)
 }
