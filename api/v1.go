@@ -83,6 +83,7 @@ type UserFriends struct {
   Avatar         string    `json:"avatar"`
   Image          UserSize  `json:"image"`
   Last_online_at time.Time `json:"last_online_at"`
+  Url            string    `json:"url"`
 }
 
 // **REMOVED**
@@ -538,4 +539,38 @@ type People struct {
   Topic_id       int             `json:"topic_id"`
   Updated_at     time.Time       `json:"updated_at"`
   Thread_id      int             `json:"thread_id"`
+}
+
+type ClubImages struct {
+  Id           int    `json:"id"`
+  Original_url string `json:"original_url"`
+  Main_url     string `json:"main_url"`
+  Preview_url  string `json:"preview_url"`
+  Can_destroy  bool   `json:"can_destroy"`
+  User_id      int    `json:"user_id"`
+}
+
+// **REMOVED**
+//
+// Linked - nil.
+//
+// Last_comment_viewed - nil.
+//
+// Event - nil.
+//
+// Episode - nil.
+type ClubCollections struct {
+  Id             int            `json:"id"`
+  Topic_title    string         `json:"topic_title"`
+  Body           string         `json:"body"`
+  HTMLBody       string         `json:"html_body"`
+  HTMLFooter     string         `json:"html_footer"`
+  Created_at     time.Time      `json:"created_at"`
+  Comments_count int            `json:"comments_count"`
+  Forum          Forums         `json:"forum"`
+  User           FromToMessages `json:"user"`
+  Type           string         `json:"type"`
+  Linked_id      int            `json:"linked_id"`
+  Linked_type    string         `json:"linked_type"`
+  Viewed         bool           `json:"viewed"`
 }

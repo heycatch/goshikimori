@@ -61,6 +61,10 @@ type ExtraPeople struct {
   Kind string
 }
 
+type ExtraClub struct {
+  Page string
+}
+
 type Result interface {
   OptionsAnime() string
   OptionsManga() string
@@ -93,6 +97,10 @@ type ResultMessages interface {
 
 type ResultPeople interface {
   OptionsPeople() string
+}
+
+type ResultClubInformation interface {
+  OptionsClubInformation() string
 }
 
 // You need to enter the application name and the private key.
@@ -510,6 +518,20 @@ func (ep *ExtraPeople) OptionsPeople() string {
   return v.Encode()
 }
 
+// Page - 100000 maximum.
+func (ec *ExtraClub) OptionsClubInformation() string {
+  p, _ := strconv.Atoi(ec.Page)
+  if p == 0 { ec.Page = "1" }
+  for i := 100001; i <= p; i++ {
+    ec.Page = "1"
+  }
+
+  v := url.Values{}
+  v.Add("page", ec.Page)
+
+  return v.Encode()
+}
+
 func ctx(number time.Duration) context.Context {
   duration := number * time.Second
   ctx, _ := context.WithTimeout(context.Background(), duration)
@@ -526,6 +548,8 @@ func (c *Configuration) NewGetRequest(search string) *http.Request {
   return req
 }
 
+// To work correctly with the POST method,
+// make sure that your application has all the necessary permissions.
 func (c *Configuration) NewPostRequest(search string) *http.Request {
   custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
   data := url.Values{} // empty data
@@ -539,6 +563,8 @@ func (c *Configuration) NewPostRequest(search string) *http.Request {
   return req
 }
 
+// To work correctly with the DELETE method,
+// make sure that your application has all the necessary permissions.
 func (c *Configuration) NewDeleteRequest(search string) *http.Request {
   custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
   data := url.Values{} // empty data
@@ -1110,6 +1136,7 @@ func (c *Configuration) SearchRelatedManga(id int) ([]api.RelatedMangas, error) 
   return m, nil
 }
 
+// If we set the limit=1, we will still have 2 results.
 func (c *Configuration) SearchClub(name string, r ResultLimit) ([]api.Clubs, error) {
   var cl []api.Clubs
 
@@ -1131,6 +1158,185 @@ func (c *Configuration) SearchClub(name string, r ResultLimit) ([]api.Clubs, err
   }
 
   return cl, nil
+}
+
+func (c *Configuration) SearchClubAnimes(id int, r ResultClubInformation) ([]api.Animes, error) {
+  var a []api.Animes
+
+  resp, err := client.Do(
+    c.NewGetRequest(str.ConvertClub(id, "animes") + "?" + r.OptionsClubInformation()),
+  )
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &a); err != nil {
+    return nil, err
+  }
+
+  return a, nil
+}
+
+func (c *Configuration) SearchClubMangas(id int, r ResultClubInformation) ([]api.Mangas, error) {
+  var m []api.Mangas
+
+  resp, err := client.Do(
+    c.NewGetRequest(str.ConvertClub(id, "mangas") + "?" + r.OptionsClubInformation()),
+  )
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    return nil, err
+  }
+
+  return m, nil
+}
+
+func (c *Configuration) SearchClubCharacters(id int, r ResultClubInformation) ([]api.CharacterInfo, error) {
+  var ci []api.CharacterInfo
+
+  resp, err := client.Do(
+    c.NewGetRequest(str.ConvertClub(id, "characters") + "?" + r.OptionsClubInformation()),
+  )
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &ci); err != nil {
+    return nil, err
+  }
+
+  return ci, nil
+}
+
+func (c *Configuration) SearchClubClubs(id int, r ResultClubInformation) ([]api.Clubs, error) {
+  var cc []api.Clubs
+
+  resp, err := client.Do(
+    c.NewGetRequest(str.ConvertClub(id, "clubs") + "?" + r.OptionsClubInformation()),
+  )
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &cc); err != nil {
+    return nil, err
+  }
+
+  return cc, nil
+}
+
+func (c *Configuration) SearchClubCollections(id int, r ResultClubInformation) ([]api.ClubCollections, error) {
+  var cc []api.ClubCollections
+
+  resp, err := client.Do(
+    c.NewGetRequest(str.ConvertClub(id, "collections") + "?" + r.OptionsClubInformation()),
+  )
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &cc); err != nil {
+    return nil, err
+  }
+
+  return cc, nil
+}
+
+func (c *Configuration) SearchClubMembers(id int) ([]api.UserFriends, error) {
+  var uf []api.UserFriends
+
+  resp, err := client.Do(c.NewGetRequest(str.ConvertClub(id, "members")))
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &uf); err != nil {
+    return nil, err
+  }
+
+  return uf, nil
+}
+
+func (c *Configuration) SearchClubImages(id int) ([]api.ClubImages, error) {
+  var cm []api.ClubImages
+
+  resp, err := client.Do(c.NewGetRequest(str.ConvertClub(id, "images")))
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &cm); err != nil {
+    return nil, err
+  }
+
+  return cm, nil
+}
+
+// You can only get a StatusCode.
+func (c *Configuration) ClubJoin(id int) (int, error) {
+  resp, err := client.Do(c.NewPostRequest(str.ConvertClub(id, "join")))
+  if err != nil {
+    return 500, err
+  }
+  defer resp.Body.Close()
+
+  return resp.StatusCode, nil
+}
+
+// You can only get a StatusCode.
+func (c *Configuration) ClubLeave(id int) (int, error) {
+  resp, err := client.Do(c.NewPostRequest(str.ConvertClub(id, "leave")))
+  if err != nil {
+    return 500, err
+  }
+  defer resp.Body.Close()
+
+  return resp.StatusCode, nil
 }
 
 // As a result, we return a complete list of all achievements.

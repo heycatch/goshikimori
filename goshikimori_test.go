@@ -25,14 +25,11 @@ func conf() *Configuration { return Add(app_test, tok_test) }
 func (s *StatusBar) NewOption(start, end int) {
   s.Cur = start
   s.Total = end
-
-  if s.Graph == "" {
-    s.Graph = "#"
-  }
-
   s.Percent = s.getPercent()
 
-  for i := 0; i < int(s.Percent); i += 2 {
+  if s.Graph == "" { s.Graph = "#" }
+
+  for i := 0; i < int(s.Percent); i += 1 {
     s.Rate += s.Graph
   }
 }
@@ -50,7 +47,8 @@ func (s *StatusBar) Play(cur int) {
     s.Rate += s.Graph
   }
 
-  fmt.Printf("\r[%-10s]%3d%% %8d/%d",
+  fmt.Printf(
+    "\r[%-5s]%3d%% %8d/%d",
     s.Rate, s.Percent, s.Cur, s.Total,
   )
 }
@@ -127,11 +125,11 @@ func TestClub(t *testing.T) {
 }
 
 func TestAchievements(t *testing.T) {
-  fmt.Println("Too many requests at once, waiting 10 seconds...")
+  fmt.Println("Too many requests at once, waiting 5 seconds...")
 
   var s StatusBar
-  s.NewOption(0, 10)
-  for i := 0; i <= 10; i++ {
+  s.NewOption(0, 5)
+  for i := 0; i <= 5; i++ {
     s.Play(int(i))
     time.Sleep(1 * time.Second)
   }
@@ -167,11 +165,11 @@ func TestAnimeVideos(t *testing.T) {
 }
 
 func TestUserUnreadMessages(t *testing.T) {
-  fmt.Println("Too many requests at once, waiting 10 seconds...")
+  fmt.Println("Too many requests at once, waiting 5 seconds...")
 
   var s StatusBar
-  s.NewOption(0, 10)
-  for i := 0; i <= 10; i++ {
+  s.NewOption(0, 5)
+  for i := 0; i <= 5; i++ {
     s.Play(int(i))
     time.Sleep(1 * time.Second)
   }
@@ -221,6 +219,16 @@ func TestConstantsManga(t *testing.T) {
 }
 
 func TestPeople(t *testing.T) {
+  fmt.Println("Too many requests at once, waiting 5 seconds...")
+
+  var s StatusBar
+  s.NewOption(0, 5)
+  for i := 0; i <= 5; i++ {
+    s.Play(int(i))
+    time.Sleep(1 * time.Second)
+  }
+  s.Finish()
+
   c := conf()
   fp, _ := c.FastIdPeople("Aya Hirano")
   p, _ := c.People(fp)

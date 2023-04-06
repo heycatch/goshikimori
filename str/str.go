@@ -57,3 +57,7 @@ func ConvertConstants(name string) string {
 func ConvertPeople(id int) string {
   return fmt.Sprintf("people/%d", id)
 }
+
+func ConvertClub(id int, name string) string {
+  return fmt.Sprintf("clubs/%d/%s", id, name)
+}
