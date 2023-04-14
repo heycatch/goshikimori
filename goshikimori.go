@@ -20,7 +20,7 @@ import (
 const (
   bearer   = "Bearer "
   protocol = "https"
-  urlshiki = "shikimori.one/api"
+  urlshiki = "shikimori.me/api"
 )
 
 var ok bool

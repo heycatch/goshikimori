@@ -16,12 +16,12 @@ run:
 	go run cmd/main.go
 
 request:
-	curl -X GET https://shikimori.one/api/constants/anime \
+	curl -X GET https://shikimori.me/api/constants/anime \
 	-H "User-Agent: $(App)" \
 	-H "Authorization: Bearer $(Token)"
 
 token:
-	curl -X POST "https://shikimori.one/oauth/token" \
+	curl -X POST "https://shikimori.me/oauth/token" \
 	-H "User-Agent: $(App)" \
 	-F grant_type="refresh_token" \
 	-F client_id="$(client_id)" \
@@ -29,7 +29,7 @@ token:
 	-F refresh_token="$(refresh)"
 
 auth:
-	curl -X POST "https://shikimori.one/oauth/token" \
+	curl -X POST "https://shikimori.me/oauth/token" \
 	-H "User-Agent: $(App)" \
 	-F grant_type="authorization_code" \
 	-F client_id="$(client_id)" \

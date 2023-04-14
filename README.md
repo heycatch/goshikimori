@@ -31,6 +31,6 @@ http://localhost:1337/pkg/github.com/vexilology/goshikimori/
 ```
 
 ### Shikimori documentation
-* [API v1](https://shikimori.one/api/doc/1.0)
-* [API v2](https://shikimori.one/api/doc/2.0)
-* [OAuth2](https://shikimori.one/oauth)
+* [API v1](https://shikimori.me/api/doc/1.0)
+* [API v2](https://shikimori.me/api/doc/2.0)
+* [OAuth2](https://shikimori.me/oauth)
