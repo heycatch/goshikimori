@@ -69,3 +69,7 @@ func ConvertFavorites(linked_type string, id int, kind string) string {
 func ConvertFavoritesReorder(id int) string {
   return fmt.Sprintf("favorites/%d/reorder", id)
 }
+
+func ConvertIgnoreUser(id int) string {
+  return fmt.Sprintf("v2/users/%d/ignore", id)
+}

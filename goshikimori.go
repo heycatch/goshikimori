@@ -1891,3 +1891,45 @@ func (c *Configuration) FavoritesReorder(id, position int) (int, error) {
 
   return resp.StatusCode, nil
 }
+
+func (c *Configuration) AddIgnoreUser(id int) (int, api.Ignore, error) {
+  var i api.Ignore
+
+  resp, err := client.Do(c.NewPostRequest(str.ConvertIgnoreUser(id)))
+  if err != nil {
+    return 500, i, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return 500, i, err
+  }
+
+  if err := json.Unmarshal(data, &i); err != nil {
+    return 500, i, err
+  }
+
+  return resp.StatusCode, i, nil
+}
+
+func (c *Configuration) RemoveIgnoreUser(id int) (int, api.Ignore, error) {
+  var i api.Ignore
+
+  resp, err := client.Do(c.NewDeleteRequest(str.ConvertIgnoreUser(id)))
+  if err != nil {
+    return 500, i, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return 500, i, err
+  }
+
+  if err := json.Unmarshal(data, &i); err != nil {
+    return 500, i, err
+  }
+
+  return resp.StatusCode, i, nil
+}
