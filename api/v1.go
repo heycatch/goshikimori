@@ -30,14 +30,14 @@ type StatusesManga struct {
 
 /*
 # Removed:
-  Full_statuses - no response after request;
-  Scores - empty slice;
-  Types - empty slice;
-  Ratings - empty slice;
-  Has_anime? || Has_manga? - always one boolean state: false;
-  Genres - empty slice;
-  Publishers - empty slice;
-  Activity - no response after request;
+  Full_statuses: no response after request;
+  Scores: empty slice;
+  Types: empty slice;
+  Ratings: empty slice;
+  Has_anime? || Has_manga?: always one boolean state: false;
+  Genres: empty slice;
+  Publishers: empty slice;
+  Activity: no response after request;
 */
 type StatusesInfo struct {
   Anime  []StatusesAnime `json:"anime"`
@@ -80,10 +80,13 @@ type UserFriends struct {
   Url            string    `json:"url"`
 }
 
-// # Removed:
-//   Chapters: nil;
-//   Volumes: nil;
-//   Manga: nil;
+
+/*
+# Removed:
+  Chapters: nil;
+  Volumes: nil;
+  Manga: nil;
+*/
 type UserAnimeRates struct {
   Id         int         `json:"id"`
   Score      int         `json:"score"`
