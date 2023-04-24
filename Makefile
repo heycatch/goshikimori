@@ -9,6 +9,9 @@ auth_code :=
 list:
 	@grep '^[^#[:space:]].*:' Makefile
 
+doc:
+	godoc -http=:1337 -goroot=.
+
 test:
 	go test -v
 

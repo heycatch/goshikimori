@@ -23,11 +23,12 @@ go install -v golang.org/x/tools/cmd/godoc@latest
 ```bash
 # After install.
 git clone git@github.com:vexilology/goshikimori.git && cd goshikimori
-godoc -http=:1337
+make doc
 ```
 ```bash
 # Open in browser.
 http://localhost:1337/pkg/github.com/vexilology/goshikimori/
+http://localhost:1337/pkg/github.com/vexilology/goshikimori/api/
 ```
 
 ### Shikimori documentation
