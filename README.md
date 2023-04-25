@@ -24,6 +24,10 @@ go install -v golang.org/x/tools/cmd/godoc@latest
 # After install.
 git clone git@github.com:vexilology/goshikimori.git && cd goshikimori
 make doc
+
+# Or use docker.
+make docker-build
+make docker-start
 ```
 ```bash
 # Open in browser.
