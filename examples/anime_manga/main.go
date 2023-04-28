@@ -14,11 +14,11 @@ func conf() *g.Configuration {
 
 func foundAnime() {
   c := conf()
-  e := &g.Extra{
+  o := &g.Options{
     Page: "1", Limit: "2", Kind: "", Status: "released",
     Season: "199x", Score: "", Rating: "",
   }
-  a, err := c.SearchAnime("initial d", e)
+  a, err := c.SearchAnime("initial d", o)
   if err != nil {
     fmt.Println(err)
     return
@@ -34,11 +34,11 @@ func foundAnime() {
 
 func foundManga() {
   c := conf()
-  e := &g.Extra{
+  o := &g.Options{
     Page: "1", Limit: "1", Kind: "", Status: "released",
     Season: "199x", Score: "8",
   }
-  m, err := c.SearchManga("initial d", e)
+  m, err := c.SearchManga("initial d", o)
   if err != nil {
     fmt.Println(err)
     return

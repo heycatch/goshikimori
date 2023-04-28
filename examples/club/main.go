@@ -12,16 +12,16 @@ func conf() *g.Configuration {
   )
 }
 
-// ПРИМЕРЫ ЛУЧШЕ БРАТЬ ПО ОЧЕРЕДИ,
-// СЛИШКОМ МНОГО ЗАПРОСОВ В СЕКУНДУ.
+// Too many examples, take turns using.
 func main() {
   c := conf()
-  // ExtraLimit относится только к SearchClub().
-  e := &g.ExtraLimit{Page: "1", Limit: "2"}
-  // ExtraClub относится ко всем другим функциям.
-  ec := &g.ExtraClub{Page: "1"}
-  // Можно вести более широкий поиск клубов через Page/Limit.
-  a, err := c.SearchClub("milf", e)
+  // First *Options->SearchClub().
+  o := &g.Options{Page: "1", Limit: "2"}
+  // Second *Options->SearchClub...().
+  oo := &g.Options{Page: "1"}
+
+  // PART 1
+  a, err := c.SearchClub("milf", o)
   if err != nil {
     fmt.Println(err)
     return
@@ -34,19 +34,20 @@ func main() {
     fmt.Println(v.Id, v.Name, v.Is_censored)
   }
 
-  // Находим по названию айди клуба.
-  fid, err := c.FastIdClub("Спокойные деньки")
+  // PART 2
+  // Find the Id by club-name.
+  id_den, err := c.FastIdClub("Спокойные деньки")
   if err != nil {
     fmt.Println(err)
     return
   }
-  if fid == 0 {
+  if id_den == 0 {
     fmt.Println("Club not found")
     return
   }
 
-  // Аниме добавленная в клубе
-  sca, err := c.SearchClubAnimes(fid, ec)
+  // Finding anime titles in the club.
+  sca, err := c.SearchClubAnimes(id_den, oo)
   if err != nil {
     fmt.Println(err)
     return
@@ -55,8 +56,8 @@ func main() {
     fmt.Println(v.Id, v.Name, v.Score)
   }
 
-  // Манга добавленная в клубе.
-  scm, err := c.SearchClubMangas(fid, ec)
+  // Finding manga titles in the club.
+  scm, err := c.SearchClubMangas(id_den, oo)
   if err != nil {
     fmt.Println(err)
     return
@@ -65,30 +66,30 @@ func main() {
     fmt.Println(v.Id, v.Name, v.Score)
   }
 
-  // Участники клуба.
-  scmem, err := c.SearchClubMembers(fid)
+  // Club members.
+  scmem, err := c.SearchClubMembers(id_den)
   if err != nil {
     fmt.Println(err)
     return
   }
-
   for _, v := range scmem {
     fmt.Println(v.Id, v.Nickname, v.Last_online_at)
   }
 
-  // Находим по названию айди клуба.
-  fid, err := c.FastIdClub("Самые прекрасные персонажи")
+  // PART 3
+  // Find the Id by club-name.
+  id_per, err := c.FastIdClub("Самые прекрасные персонажи")
   if err != nil {
     fmt.Println(err)
     return
   }
-  if fid == 0 {
+  if id_per == 0 {
     fmt.Println("Club not found")
     return
   }
 
-  // Персонажи добавленные в клубе.
-  scc, err := c.SearchClubCharacters(fid, ec)
+  // Added characters in the club.
+  scc, err := c.SearchClubCharacters(id_per, oo)
   if err != nil {
     fmt.Println(err)
     return
@@ -97,19 +98,20 @@ func main() {
     fmt.Println(v.Id, v.Name, v.Russian)
   }
 
-  // Находим по названию айди клуба.
-  fid, err := c.FastIdClub("Yuritopia")
+  // PART 4
+  // Find the Id by club-name.
+  id_yur, err := c.FastIdClub("Yuritopia")
   if err != nil {
     fmt.Println(err)
     return
   }
-  if fid == 0 {
+  if id_yur == 0 {
     fmt.Println("Club not found")
     return
   }
 
-  // Другие клубы добавленные в клубе.
-  scl, err := c.SearchClubClubs(fid, ec)
+  // Third-party added clubs.
+  scl, err := c.SearchClubClubs(id_yur, oo)
   if err != nil {
     fmt.Println(err)
     return
@@ -118,30 +120,30 @@ func main() {
     fmt.Println(v.Id, v.Name, v.Is_censored)
   }
 
-  // Картинки добавленные в клубе.
-  sci, err := c.SearchClubImages(fid)
+  // Added pictures in the club.
+  sci, err := c.SearchClubImages(id_yur)
   if err != nil {
     fmt.Println(err)
     return
   }
-
   for _, v := range sci {
     fmt.Println(v.Id, v.Original_url, v.Can_destroy, v.User_id)
   }
 
-  // Находим по названию айди клуба.
-  fid, err := c.FastIdClub("Интерактивы от DaHanka")
+  // PART 5
+  // Find the Id by club-name.
+  id_dah, err := c.FastIdClub("Интерактивы от DaHanka")
   if err != nil {
     fmt.Println(err)
     return
   }
-  if fid == 0 {
+  if id_dah == 0 {
     fmt.Println("Club not found")
     return
   }
 
-  // Обсуждение в клубе.
-  sccl, err := c.SearchClubCollections(fid, ec)
+  // Discussion at the club.
+  sccl, err := c.SearchClubCollections(id_dah, oo)
   if err != nil {
     fmt.Println(err)
     return
@@ -150,9 +152,10 @@ func main() {
     fmt.Println(v)
   }
 
-  // Присоединиться или ливнуть с клуба.
-  cc, err := c.ClubJoin(fid)
-  //cc, err := c.ClubLeave(fid)
+  // PART 6
+  // Join/leave from club.
+  cc, err := c.ClubJoin(id_dah)
+  //cc, err := c.ClubLeave(id_dah)
   if err != nil {
     fmt.Println(err)
     return

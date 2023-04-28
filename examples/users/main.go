@@ -14,8 +14,8 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  e := &g.ExtraLimit{Page: "1", Limit: "10"}
-  u, err := c.SearchUsers("angel", e)
+  o := &g.Options{Page: "1", Limit: "10"}
+  u, err := c.SearchUsers("angel", o)
   if err != nil {
     fmt.Println(err)
     return

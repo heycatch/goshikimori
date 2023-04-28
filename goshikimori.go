@@ -23,11 +23,7 @@ import (
   "github.com/vexilology/goshikimori/str"
 )
 
-const (
-  bearer   = "Bearer "
-  protocol = "https"
-  urlshiki = "shikimori.me/api"
-)
+const site = "shikimori.me/api"
 
 var ok bool
 
@@ -37,77 +33,21 @@ type Configuration struct {
   Application, AccessToken string
 }
 
-type Extra struct {
-  Page, Limit, Kind, Status, Season, Score, Rating string
-}
-
-type ExtraLimit struct {
-  Page, Limit string
-}
-
-type ExtraCensored struct {
-  Censored string
-}
-
-type ExtraAnimeRates struct {
-  Page, Limit, Status, Censored string
-}
-
-type ExtraMangaRates struct {
-  Page, Limit, Censored string
-}
-
-type ExtraTargetType struct {
-  Page, Limit, Target_id, Target_type string
-}
-
-type ExtraMessages struct {
-  Page, Limit, Type string
-}
-
-type ExtraPeople struct {
-  Kind string
-}
-
-type ExtraClub struct {
-  Page string
+type Options struct {
+  Page, Limit, Kind, Status, Season, Score, Rating, Censored, Type, Target_id, Target_type string
 }
 
 type Result interface {
-  OptionsAnime() string
-  OptionsManga() string
-}
-
-type ResultLimit interface {
-  OptionsUsers() string
-  OptionsClub()  string
-}
-
-type ResultCensored interface {
-  OptionsCalendar() string
-}
-
-type ResultAnimeRates interface {
-  OptionsAnimeRates() string
-}
-
-type ResultMangaRates interface {
-  OptionsMangaRates() string
-}
-
-type ResultUserHistory interface {
-  OptionsUserHistory() string
-}
-
-type ResultMessages interface {
-  OptionsMessages() string
-}
-
-type ResultPeople interface {
-  OptionsPeople() string
-}
-
-type ResultClubInformation interface {
+  OptionsAnime()           string
+  OptionsManga()           string
+  OptionsUsers()           string
+  OptionsClub()            string
+  OptionsCalendar()        string
+  OptionsAnimeRates()      string
+  OptionsMangaRates()      string
+  OptionsUserHistory()     string
+  OptionsMessages()        string
+  OptionsPeople()          string
   OptionsClubInformation() string
 }
 
@@ -128,403 +68,265 @@ func NekoSearch(name string) string {
   return fmt.Sprintf("%s", r)
 }
 
-// If empty fields
-// 	- Type: news;
-// 	- Page: 1;
-// 	- Limit: 1;
-//
-// Settings
-// 	- Page: 100000 maximum;
-// 	- Limit: 100 maximum;
-//  - Type: inbox, private, sent, news, notifications;
-func (em *ExtraMessages) OptionsMessages() string {
-  p, _ := strconv.Atoi(em.Page)
-  l, _ := strconv.Atoi(em.Limit)
+func (o *Options) OptionsMessages() string {
+  p, _ := strconv.Atoi(o.Page)
+  l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { em.Page = "1" }
-  if l == 0 { em.Limit = "1" }
-  for i := 100001; i <= p; i++ { em.Page = "1" }
-  for i := 101; i <= l; i++ { em.Limit = "1" }
+  if p == 0 { o.Page = "1" }
+  if l == 0 { o.Limit = "1" }
+  for i := 100001; i <= p; i++ { o.Page = "1" }
+  for i := 101; i <= l; i++ { o.Limit = "1" }
 
   target_map := map[string]int8{
     "inbox": 1, "private": 2, "sent": 3,
     "news": 4, "notifications": 5,
   }
-  _, ok = target_map[em.Type]
-  if !ok { em.Type = "news" }
+  _, ok = target_map[o.Type]
+  if !ok { o.Type = "news" }
 
   v := url.Values{}
-  v.Add("type", em.Type)
-  v.Add("page", em.Page)
-  v.Add("limit", em.Limit)
+  v.Add("type", o.Type)
+  v.Add("page", o.Page)
+  v.Add("limit", o.Limit)
 
   return v.Encode()
 }
 
-// If empty fields
-// 	- Page: 1;
-// 	- Limit: 1;
-//	- Target_type: Anime;
-//	- Target_id: option is hidden if empty;
-//
-// Settings
-// 	- Page: 100000 maximum.
-// 	- Limit: 100 maximum.
-// 	- Target_id: id anime/manga in string format.
-// 	- Target_type: Anime, Manga.
-func (ett *ExtraTargetType) OptionsUserHistory() string {
-  p, _ := strconv.Atoi(ett.Page)
-  l, _ := strconv.Atoi(ett.Limit)
+func (o *Options) OptionsUserHistory() string {
+  p, _ := strconv.Atoi(o.Page)
+  l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { ett.Page = "1" }
-  if l == 0 { ett.Limit = "1" }
-  for i := 100001; i <= p; i++ { ett.Page = "1" }
-  for i := 101; i <= l; i++ { ett.Limit = "1" }
+  if p == 0 { o.Page = "1" }
+  if l == 0 { o.Limit = "1" }
+  for i := 100001; i <= p; i++ { o.Page = "1" }
+  for i := 101; i <= l; i++ { o.Limit = "1" }
 
   target_map := map[string]int8{"Anime": 1, "Manga": 2}
-  _, ok = target_map[ett.Target_type]
-  if !ok { ett.Target_type = "Anime" }
+  _, ok = target_map[o.Target_type]
+  if !ok { o.Target_type = "Anime" }
 
   v := url.Values{}
-  v.Add("page", ett.Page)
-  v.Add("limit", ett.Limit)
+  v.Add("page", o.Page)
+  v.Add("limit", o.Limit)
   // We get an error if we do not process the request in this way.
   // json: cannot unmarshal string into Go value of type api.UserHistory
-  if ett.Target_id != "" { v.Add("target_id", ett.Target_id) }
-  v.Add("target_type", ett.Target_type)
+  if o.Target_id != "" { v.Add("target_id", o.Target_id) }
+  v.Add("target_type", o.Target_type)
 
   return v.Encode()
 }
 
-// If empty fields
-// 	- Page: 1;
-// 	- Limit: 1;
-//
-// Settings
-// 	- Page: 100000 maximum;
-// 	- Limit: 100 maximum;
-func (el *ExtraLimit) OptionsUsers() string {
-  p, _ := strconv.Atoi(el.Page)
-  l, _ := strconv.Atoi(el.Limit)
+func (o *Options) OptionsUsers() string {
+  p, _ := strconv.Atoi(o.Page)
+  l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { el.Page = "1" }
-  if l == 0 { el.Limit = "1" }
-  for i := 100001; i <= p; i++ { el.Page = "1" }
-  for i := 101; i <= l; i++ { el.Limit = "1" }
+  if p == 0 { o.Page = "1" }
+  if l == 0 { o.Limit = "1" }
+  for i := 100001; i <= p; i++ { o.Page = "1" }
+  for i := 101; i <= l; i++ { o.Limit = "1" }
 
   v := url.Values{}
-  v.Add("page", el.Page)
-  v.Add("limit", el.Limit)
+  v.Add("page", o.Page)
+  v.Add("limit", o.Limit)
 
   return v.Encode()
 }
 
-// If empty fields
-// 	- Page: 1;
-// 	- Limit: 1;
-//	- Kind: empty field;
-//	- Status: empty field;
-//	- Season: empty field;
-//	- Score: empty field;
-//	- Rating: empty field;
-//
-// Settings
-//	- Page: 100000 maximum;
-//	- Limit: 50 maximum;
-//	- Order: check [RandomAnime];
-//	- Type: "Deprecated";
-//	- Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48;
-//	- Status: anons, ongoing, released;
-//	- Season: summer_2017, 2016, 2014_2016, 199x;
-//	- Score: 9 maximum;
-//	- Rating: none, g, pg, pg_13, r, r_plus, rx;
-//	- Search: default search;
-//
-// [RandomAnime]: https://github.com/vexilology/goshikimori/blob/main/examples/random/main.go
-//
-// FIXME
-//	- Duration: not supported;
-//	- Genre: not supported;
-//	- Studio: not supported;
-//	- Franchise: not supported;
-//	- Censored: not supported;
-//	- Mylist: not supported;
-//	- Ids: not supported;
-//	- Exclude_ids: not supported;
-func (e *Extra) OptionsAnime() string {
-  p, _ := strconv.Atoi(e.Page)
-  l, _ := strconv.Atoi(e.Limit)
+func (o *Options) OptionsAnime() string {
+  p, _ := strconv.Atoi(o.Page)
+  l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { e.Page = "1" }
-  if l == 0 { e.Limit = "1" }
-  for i := 100001; i <= p; i++ { e.Page = "1" }
-  for i := 51; i <= l; i++ { e.Limit = "1" }
+  if p == 0 { o.Page = "1" }
+  if l == 0 { o.Limit = "1" }
+  for i := 100001; i <= p; i++ { o.Page = "1" }
+  for i := 51; i <= l; i++ { o.Limit = "1" }
 
   kind_map := map[string]int8{
     "tv": 1, "movie": 2, "ova": 3, "ona": 4,
     "special": 5, "music": 6,
     "tv_13": 7, "tv_24": 8, "tv_48": 9,
   }
-  _, ok = kind_map[e.Kind]
-  if !ok { e.Kind = "" }
+  _, ok = kind_map[o.Kind]
+  if !ok { o.Kind = "" }
 
   status_map := map[string]int8{
     "anons": 1, "ongoing": 2, "released": 3,
   }
-  _, ok = status_map[e.Status]
-  if !ok { e.Status = "" }
+  _, ok = status_map[o.Status]
+  if !ok { o.Status = "" }
 
   season_map := map[string]int8{
     "summer_2017": 1, "2016": 2, "2014_2016": 3, "199x": 4,
   }
-  _, ok = season_map[e.Season]
-  if !ok { e.Season = "" }
+  _, ok = season_map[o.Season]
+  if !ok { o.Season = "" }
 
-  s, _ := strconv.Atoi(e.Score)
-  for i := 10; i <= s; i++ { e.Score = "" }
+  s, _ := strconv.Atoi(o.Score)
+  for i := 10; i <= s; i++ { o.Score = "" }
 
   rating_map := map[string]int8{
     "none": 1, "g": 2, "pg": 3, "pg_13": 4,
     "r": 5, "r_plus": 6, "rx": 7,
   }
-  _, ok = rating_map[e.Rating]
-  if !ok { e.Rating = "" }
+  _, ok = rating_map[o.Rating]
+  if !ok { o.Rating = "" }
 
   v := url.Values{}
-  v.Add("page", e.Page)
-  v.Add("limit", e.Limit)
-  v.Add("kind", e.Kind)
-  v.Add("status", e.Status)
-  v.Add("season", e.Season)
-  v.Add("score", e.Score)
-  v.Add("rating", e.Rating)
+  v.Add("page", o.Page)
+  v.Add("limit", o.Limit)
+  v.Add("kind", o.Kind)
+  v.Add("status", o.Status)
+  v.Add("season", o.Season)
+  v.Add("score", o.Score)
+  v.Add("rating", o.Rating)
 
   return v.Encode()
 }
 
-// If empty fields
-// 	- Page: 1;
-// 	- Limit: 1;
-//	- Kind: empty field;
-//	- Status: empty field;
-//	- Season: empty field;
-//	- Score: empty field;
-//
-// Settings
-//	- Page: 100000 maximum;
-//	- Limit: 50 maximum;
-//	- Order: check [RandomManga];
-//	- Type: "Deprecated";
-//	- Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin;
-//	- Status: anons, ongoing, released, paused, discontinued;
-//	- Season: summer_2017, "spring_2016,fall_2016", "2016,!winter_2016", 2016, 2014_2016, 199x;
-//	- Score: 9 maximum;
-//	- Search: default search;
-//
-// [RandomManga]: https://github.com/vexilology/goshikimori/blob/main/examples/random/main.go
-//
-// FIXME
-//	- Genre: not supported;
-//	- Publisher: not supported;
-//	- Franchise: not supported;
-//	- Censored: not supported;
-//	- Mylist: not supported;
-//	- Ids: not supported;
-//	- Exclude_ids: not supported;
-func (e *Extra) OptionsManga() string {
-  p, _ := strconv.Atoi(e.Page)
-  l, _ := strconv.Atoi(e.Limit)
+func (o *Options) OptionsManga() string {
+  p, _ := strconv.Atoi(o.Page)
+  l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { e.Page = "1" }
-  if l == 0 { e.Limit = "1" }
-  for i := 100001; i <= p; i++ { e.Page = "1" }
-  for i := 51; i <= l; i++ { e.Limit = "1" }
+  if p == 0 { o.Page = "1" }
+  if l == 0 { o.Limit = "1" }
+  for i := 100001; i <= p; i++ { o.Page = "1" }
+  for i := 51; i <= l; i++ { o.Limit = "1" }
 
   kind_map := map[string]int8{
     "manga": 1, "manhwa": 2, "manhua": 3,
     "light_novel": 5, "novel": 6,
     "one_shot": 7, "doujin": 8,
   }
-  _, ok = kind_map[e.Kind]
-  if !ok { e.Kind = "" }
+  _, ok = kind_map[o.Kind]
+  if !ok { o.Kind = "" }
 
   status_map := map[string]int8{
     "anons": 1, "ongoing": 2, "released": 3,
     "paused": 4, "discontinued": 5,
   }
-  _, ok = status_map[e.Status]
-  if !ok { e.Status = "" }
+  _, ok = status_map[o.Status]
+  if !ok { o.Status = "" }
 
   season_map := map[string]int8{
     "summer_2017": 1, "spring_2016,fall_2016": 2,
     "2016,!winter_2016": 3, "2016": 4,
     "2014_2016": 5, "199x": 6,
   }
-  _, ok = season_map[e.Season]
-  if !ok { e.Season = "" }
+  _, ok = season_map[o.Season]
+  if !ok { o.Season = "" }
 
-  s, _ := strconv.Atoi(e.Score)
-  for i := 10; i <= s; i++ { e.Score = "" }
+  s, _ := strconv.Atoi(o.Score)
+  for i := 10; i <= s; i++ { o.Score = "" }
 
   v := url.Values{}
-  v.Add("page", e.Page)
-  v.Add("limit", e.Limit)
-  v.Add("kind", e.Kind)
-  v.Add("status", e.Status)
-  v.Add("season", e.Season)
-  v.Add("score", e.Score)
+  v.Add("page", o.Page)
+  v.Add("limit", o.Limit)
+  v.Add("kind", o.Kind)
+  v.Add("status", o.Status)
+  v.Add("season", o.Season)
+  v.Add("score", o.Score)
 
   return v.Encode()
 }
 
-// If empty fields
-// 	- Page: 1;
-// 	- Limit: 1;
-//
-// Settings
-//	- Page: 100000 maximum;
-//	- Limit: 30 maximum;
-//	- Search: default search;
-func (el *ExtraLimit) OptionsClub() string {
-  p, _ := strconv.Atoi(el.Page)
-  l, _ := strconv.Atoi(el.Limit)
+func (o *Options) OptionsClub() string {
+  p, _ := strconv.Atoi(o.Page)
+  l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { el.Page = "1" }
-  if l == 0 { el.Limit = "1" }
-  for i := 100001; i <= p; i++ { el.Page = "1" }
-  for i := 31; i <= l; i++ { el.Limit = "1" }
+  if p == 0 { o.Page = "1" }
+  if l == 0 { o.Limit = "1" }
+  for i := 100001; i <= p; i++ { o.Page = "1" }
+  for i := 31; i <= l; i++ { o.Limit = "1" }
 
   v := url.Values{}
-  v.Add("page", el.Page)
-  v.Add("limit", el.Limit)
+  v.Add("page", o.Page)
+  v.Add("limit", o.Limit)
 
   return v.Encode()
 }
 
-// If empty fields
-// 	- Censored: false;
-//
-// Settings
-//	- Censored: true, false;
-//
-// Set to false to allow hentai, yaoi and yuri.
-func (ec *ExtraCensored) OptionsCalendar() string {
+func (o *Options) OptionsCalendar() string {
   censored_map := map[string]int8{"true": 1, "false": 2}
-  _, ok = censored_map[ec.Censored]
-  if !ok { ec.Censored = "false" }
+  _, ok = censored_map[o.Censored]
+  if !ok { o.Censored = "false" }
 
   v := url.Values{}
-  v.Add("censored", ec.Censored)
+  v.Add("censored", o.Censored)
 
   return v.Encode()
 }
 
-// If empty fields
-// 	- Page: 1;
-// 	- Limit: 1;
-//	- Status: watching;
-//	- Censored: false;
-//
-// Settings
-//	- Page: 100000 maximum;
-//	- Limit: 5000 maximum;
-//	- Status: planned, watching, rewatching, completed, on_hold, dropped;
-//	- Censored: true, false;
-//
-// Set to true to discard hentai, yaoi and yuri.
-func (ar *ExtraAnimeRates) OptionsAnimeRates() string {
-  p, _ := strconv.Atoi(ar.Page)
-  l, _ := strconv.Atoi(ar.Limit)
+func (o *Options) OptionsAnimeRates() string {
+  p, _ := strconv.Atoi(o.Page)
+  l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { ar.Page = "1" }
-  if l == 0 { ar.Limit = "1" }
-  for i := 100001; i <= p; i++ { ar.Page = "1" }
-  for i := 5001; i <= l; i++ { ar.Limit = "1" }
+  if p == 0 { o.Page = "1" }
+  if l == 0 { o.Limit = "1" }
+  for i := 100001; i <= p; i++ { o.Page = "1" }
+  for i := 5001; i <= l; i++ { o.Limit = "1" }
 
   status_map := map[string]int8{
     "planned": 1, "watching": 2,
     "rewatching": 3, "completed": 4,
     "on_hold": 5, "dropped": 6,
   }
-  _, ok = status_map[ar.Status]
-  if !ok { ar.Status = "watching" }
+  _, ok = status_map[o.Status]
+  if !ok { o.Status = "watching" }
 
   censored_map := map[string]int8{"true": 1, "false": 2}
-  _, ok = censored_map[ar.Censored]
-  if !ok { ar.Censored = "false" }
+  _, ok = censored_map[o.Censored]
+  if !ok { o.Censored = "false" }
 
   v := url.Values{}
-  v.Add("page", ar.Page)
-  v.Add("limit", ar.Limit)
-  v.Add("status", ar.Status)
-  v.Add("censored", ar.Censored)
+  v.Add("page", o.Page)
+  v.Add("limit", o.Limit)
+  v.Add("status", o.Status)
+  v.Add("censored", o.Censored)
 
   return v.Encode()
 }
 
-// If empty fields
-// 	- Page: 1;
-// 	- Limit: 1;
-//	- Censored: false;
-//
-// Settings
-//	- Page: 100000 maximum;
-//	- Limit: 5000 maximum;
-//	- Censored: true, false;
-//
-// Set to true to discard hentai, yaoi and yuri.
-func (mr *ExtraMangaRates) OptionsMangaRates() string {
-  p, _ := strconv.Atoi(mr.Page)
-  l, _ := strconv.Atoi(mr.Limit)
+func (o *Options) OptionsMangaRates() string {
+  p, _ := strconv.Atoi(o.Page)
+  l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { mr.Page = "1" }
-  if l == 0 { mr.Limit = "1" }
-  for i := 100001; i <= p; i++ { mr.Page = "1" }
-  for i := 5001; i <= l; i++ { mr.Limit = "1" }
+  if p == 0 { o.Page = "1" }
+  if l == 0 { o.Limit = "1" }
+  for i := 100001; i <= p; i++ { o.Page = "1" }
+  for i := 5001; i <= l; i++ { o.Limit = "1" }
 
   censored_map := map[string]int8{"true": 1, "false": 2}
-  _, ok = censored_map[mr.Censored]
-  if !ok { mr.Censored = "false" }
+  _, ok = censored_map[o.Censored]
+  if !ok { o.Censored = "false" }
 
   v := url.Values{}
-  v.Add("page", mr.Page)
-  v.Add("limit", mr.Limit)
-  v.Add("censored", mr.Censored)
+  v.Add("page", o.Page)
+  v.Add("limit", o.Limit)
+  v.Add("censored", o.Censored)
 
   return v.Encode()
 }
 
-// If empty fields
-//	- Kind: seyu;
-//
-// Settings
-//	- Page/Limit: not supported, idk why;
-//	- Kind: seyu, mangaka, producer;
-func (ep *ExtraPeople) OptionsPeople() string {
+func (o *Options) OptionsPeople() string {
   kind_map := map[string]int8{
     "seyu": 1, "mangaka": 2, "producer": 3,
   }
-  _, ok = kind_map[ep.Kind]
-  if !ok { ep.Kind = "seyu" }
+  _, ok = kind_map[o.Kind]
+  if !ok { o.Kind = "seyu" }
 
   v := url.Values{}
-  v.Add("kind", ep.Kind)
+  v.Add("kind", o.Kind)
 
   return v.Encode()
 }
 
-// If empty fields
-//	- Page: 1;
-//
-// Settings
-//	- Page: 100000 maximum;
-func (ec *ExtraClub) OptionsClubInformation() string {
-  p, _ := strconv.Atoi(ec.Page)
-  if p == 0 { ec.Page = "1" }
-  for i := 100001; i <= p; i++ { ec.Page = "1" }
+func (o *Options) OptionsClubInformation() string {
+  p, _ := strconv.Atoi(o.Page)
+  if p == 0 { o.Page = "1" }
+  for i := 100001; i <= p; i++ { o.Page = "1" }
 
   v := url.Values{}
-  v.Add("page", ec.Page)
+  v.Add("page", o.Page)
 
   return v.Encode()
 }
@@ -536,31 +338,31 @@ func ctx(number time.Duration) context.Context {
 }
 
 func (c *Configuration) NewGetRequest(search string) *http.Request {
-  custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
+  custom_url := fmt.Sprintf("https://%s/%s", site, search)
   // ctx(10) -> query time 10 seconds,
   // in the future it will be possible to make the parameter dynamic.
   req, _ := http.NewRequestWithContext(ctx(10), http.MethodGet, custom_url, nil)
   req.Header.Add("User-Agent", c.Application)
-  req.Header.Add("Authorization", bearer + c.AccessToken)
+  req.Header.Add("Authorization", "Bearer " + c.AccessToken)
   return req
 }
 
 // To work correctly with the POST method,
 // make sure that your application has all the necessary permissions.
 func (c *Configuration) NewPostRequest(search string) *http.Request {
-  custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
+  custom_url := fmt.Sprintf("https://%s/%s", site, search)
   // ctx(10) -> query time 10 seconds,
   // in the future it will be possible to make the parameter dynamic.
   req, _ := http.NewRequestWithContext(ctx(10), http.MethodPost, custom_url, nil)
   req.Header.Add("User-Agent", c.Application)
-  req.Header.Add("Authorization", bearer + c.AccessToken)
+  req.Header.Add("Authorization", "Bearer " + c.AccessToken)
   return req
 }
 
 // Custom POST request. To work correctly with the POST method,
 // make sure that your application has all the necessary permissions.
 func (c *Configuration) NewCustomPostRequest(search, first, second string) *http.Request {
-  custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
+  custom_url := fmt.Sprintf("https://%s/%s", site, search)
   data := []byte(fmt.Sprintf(`"%s": "%s"`, first, second))
   // ctx(10) -> query time 10 seconds,
   // in the future it will be possible to make the parameter dynamic.
@@ -568,7 +370,7 @@ func (c *Configuration) NewCustomPostRequest(search, first, second string) *http
     ctx(10), http.MethodPost, custom_url, bytes.NewBuffer(data),
   )
   req.Header.Add("User-Agent", c.Application)
-  req.Header.Add("Authorization", bearer + c.AccessToken)
+  req.Header.Add("Authorization", "Bearer " + c.AccessToken)
   req.Header.Set("Content-Type", "application/json")
   return req
 }
@@ -576,12 +378,12 @@ func (c *Configuration) NewCustomPostRequest(search, first, second string) *http
 // To work correctly with the DELETE method,
 // make sure that your application has all the necessary permissions.
 func (c *Configuration) NewDeleteRequest(search string) *http.Request {
-  custom_url := fmt.Sprintf("%s://%s/%s", protocol, urlshiki, search)
+  custom_url := fmt.Sprintf("https://%s/%s", site, search)
   // ctx(10) -> query time 10 seconds,
   // in the future it will be possible to make the parameter dynamic.
   req, _ := http.NewRequestWithContext(ctx(10), http.MethodDelete, custom_url, nil)
   req.Header.Add("User-Agent", c.Application)
-  req.Header.Add("Authorization", bearer + c.AccessToken)
+  req.Header.Add("Authorization", "Bearer " + c.AccessToken)
   return req
 }
 
@@ -607,8 +409,16 @@ func (c *Configuration) SearchUser(name string) (api.Users, error) {
   return u, nil
 }
 
+// If 'Options' empty fields
+// 	- Page: 1;
+// 	- Limit: 1;
+//
+// 'Options' settings
+// 	- Page: 100000 maximum;
+// 	- Limit: 100 maximum;
+//
 // Don't use Stats.Statuses.Anime and Stats.Statuses.Manga: empty slice.
-func (c *Configuration) SearchUsers(name string, r ResultLimit) ([]api.Users, error) {
+func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, error) {
   var u []api.Users
 
   resp, err := client.Do(
@@ -673,7 +483,20 @@ func (c *Configuration) SearchUserClubs(id int) ([]api.Clubs, error) {
   return uc, nil
 }
 
-func (c *Configuration) SearchUserAnimeRates(id int, r ResultAnimeRates) ([]api.UserAnimeRates, error) {
+// If 'Options' empty fields
+// 	- Page: 1;
+// 	- Limit: 1;
+//	- Status: watching;
+//	- Censored: false;
+//
+// 'Options' settings
+//	- Page: 100000 maximum;
+//	- Limit: 5000 maximum;
+//	- Status: planned, watching, rewatching, completed, on_hold, dropped;
+//	- Censored: true, false;
+//
+// Set to true to discard hentai, yaoi and yuri.
+func (c *Configuration) SearchUserAnimeRates(id int, r Result) ([]api.UserAnimeRates, error) {
   var ar []api.UserAnimeRates
 
   resp, err := client.Do(c.NewGetRequest(
@@ -696,7 +519,18 @@ func (c *Configuration) SearchUserAnimeRates(id int, r ResultAnimeRates) ([]api.
   return ar, nil
 }
 
-func (c *Configuration) SearchUserMangaRates(id int, r ResultMangaRates) ([]api.UserMangaRates, error) {
+// If 'Options' empty fields
+// 	- Page: 1;
+// 	- Limit: 1;
+//	- Censored: false;
+//
+// 'Options' Settings
+//	- Page: 100000 maximum;
+//	- Limit: 5000 maximum;
+//	- Censored: true, false;
+//
+// Set to true to discard hentai, yaoi and yuri.
+func (c *Configuration) SearchUserMangaRates(id int, r Result) ([]api.UserMangaRates, error) {
   var mr []api.UserMangaRates
 
   resp, err := client.Do(c.NewGetRequest(
@@ -740,7 +574,18 @@ func (c *Configuration) SearchUserFavourites(id int) (api.UserFavourites, error)
   return uf, nil
 }
 
-func (c *Configuration) SearchUserHistory(id int, r ResultUserHistory) ([]api.UserHistory, error) {
+// If 'Options' empty fields
+// 	- Page: 1;
+// 	- Limit: 1;
+//	- Target_type: Anime;
+//	- Target_id: option is hidden if empty;
+//
+// 'Options' settings
+// 	- Page: 100000 maximum.
+// 	- Limit: 100 maximum.
+// 	- Target_id: id anime/manga in string format.
+// 	- Target_type: Anime, Manga.
+func (c *Configuration) SearchUserHistory(id int, r Result) ([]api.UserHistory, error) {
   var uh []api.UserHistory
 
   resp, err := client.Do(c.NewGetRequest(
@@ -805,6 +650,38 @@ func (c *Configuration) WhoAmi() (api.Who, error) {
   return w, nil
 }
 
+// If 'Options' empty fields
+// 	- Page: 1;
+// 	- Limit: 1;
+//	- Kind: empty field;
+//	- Status: empty field;
+//	- Season: empty field;
+//	- Score: empty field;
+//	- Rating: empty field;
+//
+// 'Options' settings
+//	- Page: 100000 maximum;
+//	- Limit: 50 maximum;
+//	- Order: check [RandomAnime];
+//	- Type: "Deprecated";
+//	- Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48;
+//	- Status: anons, ongoing, released;
+//	- Season: summer_2017, 2016, 2014_2016, 199x;
+//	- Score: 9 maximum;
+//	- Rating: none, g, pg, pg_13, r, r_plus, rx;
+//	- Search: default search;
+//
+// [RandomAnime]: https://github.com/vexilology/goshikimori/blob/main/examples/random/main.go
+//
+// FIXME
+//	- Duration: not supported;
+//	- Genre: not supported;
+//	- Studio: not supported;
+//	- Franchise: not supported;
+//	- Censored: not supported;
+//	- Mylist: not supported;
+//	- Ids: not supported;
+//	- Exclude_ids: not supported;
 func (c *Configuration) SearchAnime(name string, r Result) ([]api.Animes, error) {
   var a []api.Animes
 
@@ -828,6 +705,35 @@ func (c *Configuration) SearchAnime(name string, r Result) ([]api.Animes, error)
   return a, nil
 }
 
+// If 'Options' empty fields
+// 	- Page: 1;
+// 	- Limit: 1;
+//	- Kind: empty field;
+//	- Status: empty field;
+//	- Season: empty field;
+//	- Score: empty field;
+//
+// 'Options' settings
+//	- Page: 100000 maximum;
+//	- Limit: 50 maximum;
+//	- Order: check [RandomManga];
+//	- Type: "Deprecated";
+//	- Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin;
+//	- Status: anons, ongoing, released, paused, discontinued;
+//	- Season: summer_2017, "spring_2016,fall_2016", "2016,!winter_2016", 2016, 2014_2016, 199x;
+//	- Score: 9 maximum;
+//	- Search: default search;
+//
+// [RandomManga]: https://github.com/vexilology/goshikimori/blob/main/examples/random/main.go
+//
+// FIXME
+//	- Genre: not supported;
+//	- Publisher: not supported;
+//	- Franchise: not supported;
+//	- Censored: not supported;
+//	- Mylist: not supported;
+//	- Ids: not supported;
+//	- Exclude_ids: not supported;
 func (c *Configuration) SearchManga(name string, r Result) ([]api.Mangas, error) {
   var m []api.Mangas
 
@@ -1143,8 +1049,17 @@ func (c *Configuration) SearchRelatedManga(id int) ([]api.RelatedMangas, error) 
   return m, nil
 }
 
+// If 'Options' empty fields
+// 	- Page: 1;
+// 	- Limit: 1;
+//
+// 'Options' settings
+//	- Page: 100000 maximum;
+//	- Limit: 30 maximum;
+//	- Search: default search;
+//
 // If we set the limit=1, we will still have 2 results.
-func (c *Configuration) SearchClub(name string, r ResultLimit) ([]api.Clubs, error) {
+func (c *Configuration) SearchClub(name string, r Result) ([]api.Clubs, error) {
   var cl []api.Clubs
 
   resp, err := client.Do(
@@ -1167,7 +1082,12 @@ func (c *Configuration) SearchClub(name string, r ResultLimit) ([]api.Clubs, err
   return cl, nil
 }
 
-func (c *Configuration) SearchClubAnimes(id int, r ResultClubInformation) ([]api.Animes, error) {
+// If 'Options' empty fields
+//	- Page: 1;
+//
+// 'Options' settings
+//	- Page: 100000 maximum;
+func (c *Configuration) SearchClubAnimes(id int, r Result) ([]api.Animes, error) {
   var a []api.Animes
 
   resp, err := client.Do(
@@ -1190,7 +1110,12 @@ func (c *Configuration) SearchClubAnimes(id int, r ResultClubInformation) ([]api
   return a, nil
 }
 
-func (c *Configuration) SearchClubMangas(id int, r ResultClubInformation) ([]api.Mangas, error) {
+// If 'Options' empty fields
+//	- Page: 1;
+//
+// 'Options' settings
+//	- Page: 100000 maximum;
+func (c *Configuration) SearchClubMangas(id int, r Result) ([]api.Mangas, error) {
   var m []api.Mangas
 
   resp, err := client.Do(
@@ -1213,7 +1138,12 @@ func (c *Configuration) SearchClubMangas(id int, r ResultClubInformation) ([]api
   return m, nil
 }
 
-func (c *Configuration) SearchClubCharacters(id int, r ResultClubInformation) ([]api.CharacterInfo, error) {
+// If 'Options' empty fields
+//	- Page: 1;
+//
+// 'Options' settings
+//	- Page: 100000 maximum;
+func (c *Configuration) SearchClubCharacters(id int, r Result) ([]api.CharacterInfo, error) {
   var ci []api.CharacterInfo
 
   resp, err := client.Do(
@@ -1236,7 +1166,12 @@ func (c *Configuration) SearchClubCharacters(id int, r ResultClubInformation) ([
   return ci, nil
 }
 
-func (c *Configuration) SearchClubClubs(id int, r ResultClubInformation) ([]api.Clubs, error) {
+// If 'Options' empty fields
+//	- Page: 1;
+//
+// 'Options' settings
+//	- Page: 100000 maximum;
+func (c *Configuration) SearchClubClubs(id int, r Result) ([]api.Clubs, error) {
   var cc []api.Clubs
 
   resp, err := client.Do(
@@ -1259,7 +1194,12 @@ func (c *Configuration) SearchClubClubs(id int, r ResultClubInformation) ([]api.
   return cc, nil
 }
 
-func (c *Configuration) SearchClubCollections(id int, r ResultClubInformation) ([]api.ClubCollections, error) {
+// If 'Options' empty fields
+//	- Page: 1;
+//
+// 'Options' settings
+//	- Page: 100000 maximum;
+func (c *Configuration) SearchClubCollections(id int, r Result) ([]api.ClubCollections, error) {
   var cc []api.ClubCollections
 
   resp, err := client.Do(
@@ -1459,7 +1399,14 @@ func (c *Configuration) SearchBans() ([]api.Bans, error) {
   return b, nil
 }
 
-func (c *Configuration) SearchCalendar(r ResultCensored) ([]api.Calendar, error) {
+// If 'Options' empty fields
+// 	- Censored: false;
+//
+// 'Options' settings
+//	- Censored: true, false;
+//
+// Set to false to allow hentai, yaoi and yuri.
+func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, error) {
   var ca []api.Calendar
 
   resp, err := client.Do(c.NewGetRequest(str.ConvertCalendar(r.OptionsCalendar())))
@@ -1627,7 +1574,16 @@ func (c *Configuration) UserUnreadMessages(id int) (api.UnreadMessages, error) {
   return um, nil
 }
 
-func (c *Configuration) UserMessages(id int, r ResultMessages) ([]api.Messages, error) {
+// If 'Options' empty fields
+// 	- Type: news;
+// 	- Page: 1;
+// 	- Limit: 1;
+//
+// 'Options' settings
+// 	- Page: 100000 maximum;
+// 	- Limit: 100 maximum;
+//  - Type: inbox, private, sent, news, notifications;
+func (c *Configuration) UserMessages(id int, r Result) ([]api.Messages, error) {
   var m []api.Messages
 
   resp, err := client.Do(c.NewGetRequest(str.ConvertMessages(id, r.OptionsMessages())))
@@ -1795,7 +1751,13 @@ func (c *Configuration) RandomManga() ([]api.Mangas, error) {
   return m, nil
 }
 
-func (c *Configuration) SearchPeople(name string, r ResultPeople) ([]api.AllPeople, error) {
+// If 'Options' empty fields
+//	- Kind: seyu;
+//
+// 'Options' settings
+//	- Page/Limit: not supported, idk why;
+//	- Kind: seyu, mangaka, producer;
+func (c *Configuration) SearchPeople(name string, r Result) ([]api.AllPeople, error) {
   var ap []api.AllPeople
 
   resp, err := client.Do(

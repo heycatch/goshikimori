@@ -67,8 +67,8 @@ func main() {
   // search anime and manga rates
   time.Sleep(5 * time.Second)
   fmt.Println("too many requests, wait 5 seconds")
-  gar := &g.ExtraAnimeRates{Page: "1", Limit: "5", Status: "completed", Censored: ""}
-  ar, err := c.SearchUserAnimeRates(u.Id, gar)
+  oar := &g.Options{Page: "1", Limit: "5", Status: "completed", Censored: ""}
+  ar, err := c.SearchUserAnimeRates(u.Id, oar)
   if err != nil {
     fmt.Println(err)
     return
@@ -81,8 +81,8 @@ func main() {
     fmt.Println(v.Status, v.Anime.Name, v.Episodes, v.Score)
   }
   fmt.Println()
-  gmr := &g.ExtraMangaRates{Page: "1", Limit: "5", Censored: ""}
-  mr, err := c.SearchUserMangaRates(u.Id, gmr)
+  omr := &g.Options{Page: "1", Limit: "5", Censored: ""}
+  mr, err := c.SearchUserMangaRates(u.Id, omr)
   if err != nil {
     fmt.Println(err)
     return
@@ -120,8 +120,8 @@ func main() {
   time.Sleep(5 * time.Second)
   fmt.Println("too many requests, wait 5 seconds")
   // NOTES: Target_id - Anime.id or Manga.id; convert to a string to search the history point-by-point.
-  ett := &g.ExtraTargetType{Page: "1", Limit: "10", Target_id: "", Target_type: "Anime"}
-  uh, err := c.SearchUserHistory(u.Id, ett)
+  ouh := &g.Options{Page: "1", Limit: "10", Target_id: "", Target_type: "Anime"}
+  uh, err := c.SearchUserHistory(u.Id, ouh)
   if err != nil {
     fmt.Println(err)
     return

@@ -78,11 +78,11 @@ func TestUser(t *testing.T) {
 
 func TestAnimes(t *testing.T) {
   c := conf()
-  e := &Extra{
+  o := &Options{
     Page: "1", Limit: "1", Kind: "", Status: "",
     Season: "", Score: "", Rating: "",
   }
-  s, _ := c.SearchAnime("Initial D", e)
+  s, _ := c.SearchAnime("Initial D", o)
 
   for _, v := range s {
     if v.Id == 12725 && v.Status == "released" {
@@ -95,11 +95,11 @@ func TestAnimes(t *testing.T) {
 
 func TestMangas(t *testing.T) {
   c := conf()
-  e := &Extra{
+  o := &Options{
     Page: "1", Limit: "1", Kind: "", Status: "",
     Season: "", Score: "", Rating: "",
   }
-  r, _ := c.SearchManga("Initial D", e)
+  r, _ := c.SearchManga("Initial D", o)
 
   for _, v := range r {
     if v.Volumes == 48 && v.Chapters == 724 {
@@ -112,8 +112,8 @@ func TestMangas(t *testing.T) {
 
 func TestClub(t *testing.T) {
   c := conf()
-  e := &ExtraLimit{Page: "1", Limit: "1"}
-  r, _ := c.SearchClub("milf thred", e)
+  o := &Options{Page: "1", Limit: "1"}
+  r, _ := c.SearchClub("milf thred", o)
 
   for _, v := range r {
     if v.Is_censored == true {

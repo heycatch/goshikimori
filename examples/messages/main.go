@@ -24,13 +24,13 @@ func main() {
     return
   }
 
-  e := &g.ExtraMessages{Type: "news", Page: "1", Limit: "1"}
-  m, err := c.UserMessages(u.Id, e)
+  o := &g.Options{Type: "news", Page: "1", Limit: "1"}
+  m, err := c.UserMessages(u.Id, o)
   if err != nil {
     fmt.Println(err)
     return
   }
   for _, v := range m {
-    fmt.Println(v.Id, v.Kind, v.HTMLBody. v.Created_at)
+    fmt.Println(v.Id, v.Kind, v.HTMLBody, v.Created_at)
   }
 }

@@ -15,8 +15,8 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
 
-  e := &g.ExtraPeople{Kind: "seyu"}
-  sp, err := c.SearchPeople("Aya Hirano", e)
+  o := &g.Options{Kind: "seyu"}
+  sp, err := c.SearchPeople("Aya Hirano", o)
   if err != nil {
     fmt.Println(err)
     return
