@@ -13,7 +13,7 @@ doc:
 	godoc -http=:1337 -goroot=.
 
 docker-build:
-	docker build --no-cache -t shikimori-docs .
+	docker build --no-cache -t shikimori-docs -f docker/Dockerfile .
 
 docker-start:
 	docker run -d -p 1337:1337 shikimori-docs
