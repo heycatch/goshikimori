@@ -2,6 +2,10 @@ package main
 
 import (
   "fmt"
+  "text/tabwriter"
+  "os"
+  "net/http/httputil"
+
   g "github.com/vexilology/goshikimori"
 )
 
@@ -19,5 +23,18 @@ func main() {
     fmt.Println(err)
     return
   }
-  fmt.Println(w.Nickname, w.Avatar, w.Locale, w.Last_online_at)
+
+  dump, err := httputil.DumpRequestOut(c.NewGetRequest("whoami"), true)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  fmt.Println(string(dump))
+
+  t := tabwriter.NewWriter(os.Stdout, 0, 0, 0, ' ', tabwriter.Debug)
+  fmt.Fprintf(t, "%d\t", w.Id)
+  fmt.Fprintf(t, "%s\t", w.Nickname)
+  fmt.Fprintf(t, "%s\t", w.Locale)
+  fmt.Fprintf(t, "%s\t\n", w.Last_online_at)
+  t.Flush()
 }
