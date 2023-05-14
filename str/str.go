@@ -70,6 +70,10 @@ func ConvertFavoritesReorder(id int) string {
   return fmt.Sprintf("favorites/%d/reorder", id)
 }
 
+func ConvertDialogs(id int) string {
+  return fmt.Sprintf("dialogs/%d", id)
+}
+
 func ConvertIgnoreUser(id int) string {
   return fmt.Sprintf("v2/users/%d/ignore", id)
 }

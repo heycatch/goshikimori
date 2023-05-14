@@ -496,12 +496,12 @@ type AllPeople struct {
 
 /*
 # Removed:
-  Deceased_on - no response after request.
-  Person_favoured - bool.
-  Producer/Producer_favoured - bool.
-  Mangaka/Mangaka_favoured - bool.
-  Seyu/Seyu_favoured - bool.
-  Birthday - same as the Birth_on.
+  Deceased_on: no response after request;
+  Person_favoured: bool;
+  Producer/Producer_favoured: bool;
+  Mangaka/Mangaka_favoured: bool;
+  Seyu/Seyu_favoured: bool;
+  Birthday: same as the Birth_on;
 */
 type People struct {
   Id             int             `json:"id"`
@@ -532,10 +532,10 @@ type ClubImages struct {
 
 /*
 # Removed:
-  Linked - nil.
-  Last_comment_viewed - nil.
-  Event - nil.
-  Episode - nil.
+  Linked: nil;
+  Last_comment_viewed: nil;
+  Event: nil;
+  Episode: nil;
 */
 type ClubCollections struct {
   Id             int            `json:"id"`
@@ -556,4 +556,37 @@ type ClubCollections struct {
 type Favorites struct {
   Success bool   `json:"success"`
   Notice  string `json:"notice"`
+}
+
+// # Removed:
+//   Linked_type: nil;
+//   Linked: nil;
+type Target_message struct {
+  Id         int       `json:"id"`
+  Kind       string    `json:"kind"`
+  Read       bool      `json:"read"`
+  Body       string    `json:"body"`
+  HTMLBody   string    `json:"html_body"`
+  Created_at time.Time `json:"created_at"`
+  Linked_id  int       `json:"linked_id"`
+}
+
+type Dialogs struct {
+  Target_user UserFriends    `json:"target_user"`
+  Message     Target_message `json:"message"`
+}
+
+// # Removed:
+//   Linked_type: nil;
+//   Linked: nil;
+type SearchDialogs struct {
+  Id         int         `json:"id"`
+  Kind       string      `json:"kind"`
+  Read       bool        `json:"read"`
+  Body       string      `json:"body"`
+  HTMLBody   string      `json:"html_body"`
+  Created_at time.Time   `json:"created_at"`
+  Linked_id  int         `json:"linked_id"`
+  From       UserFriends `json:"from"`
+  To         UserFriends `json:"to"`
 }

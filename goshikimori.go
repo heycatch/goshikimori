@@ -1915,3 +1915,65 @@ func (c *Configuration) RemoveIgnoreUser(id int) (int, api.Ignore, error) {
 
   return resp.StatusCode, i, nil
 }
+
+func (c *Configuration) Dialogs() ([]api.Dialogs, error) {
+  var d []api.Dialogs
+
+  resp, err := client.Do(c.NewGetRequest("dialogs"))
+  if err != nil {
+    return nil, err
+  }
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &d); err != nil {
+    return nil, err
+  }
+
+  return d, nil
+}
+
+func (c *Configuration) SearchDialogs(id int) ([]api.SearchDialogs, error) {
+  var sd []api.SearchDialogs
+
+  resp, err := client.Do(c.NewGetRequest(str.ConvertDialogs(id)))
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &sd); err != nil {
+    return nil, err
+  }
+
+  return sd, nil
+}
+
+func (c *Configuration) DeleteDialogs(id int) (int, api.FriendRequest, error) {
+  var fr api.FriendRequest
+
+  resp, err := client.Do(c.NewDeleteRequest(str.ConvertDialogs(id)))
+  if err != nil {
+    return 500, fr, err
+  }
+  defer resp.Body.Close()
+
+  data, err := ioutil.ReadAll(resp.Body)
+  if err != nil {
+    return 500, fr, err
+  }
+
+  if err := json.Unmarshal(data, &fr); err != nil {
+    return resp.StatusCode, fr, errors.New("Не найдено ни одного сообщения для удаления")
+  }
+
+  return resp.StatusCode, fr, nil
+}
