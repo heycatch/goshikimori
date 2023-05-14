@@ -4,6 +4,10 @@
 // license that can be found in the LICENSE file.
 //
 // Comments are made in the style of "godoc" syntax support.
+//
+// More information can be found in the [examples] folder.
+//
+// [examples]: https://github.com/vexilology/goshikimori/blob/main/examples/
 package goshikimori
 
 import (
@@ -361,9 +365,9 @@ func (c *Configuration) NewPostRequest(search string) *http.Request {
 
 // Custom POST request. To work correctly with the POST method,
 // make sure that your application has all the necessary permissions.
-func (c *Configuration) NewCustomPostRequest(search, first, second string) *http.Request {
+func (c *Configuration) NewCustomPostRequest(search string, position int) *http.Request {
   custom_url := fmt.Sprintf("https://%s/%s", site, search)
-  data := []byte(fmt.Sprintf(`"%s": "%s"`, first, second))
+  data := []byte(fmt.Sprintf(`"new_index": "%d"`, position))
   // ctx(10) -> query time 10 seconds,
   // in the future it will be possible to make the parameter dynamic.
   req, _ := http.NewRequestWithContext(
@@ -387,6 +391,8 @@ func (c *Configuration) NewDeleteRequest(search string) *http.Request {
   return req
 }
 
+// Name: user name.
+//
 // Search by user is case sensitive.
 func (c *Configuration) SearchUser(name string) (api.Users, error) {
   var u api.Users
@@ -409,6 +415,8 @@ func (c *Configuration) SearchUser(name string) (api.Users, error) {
   return u, nil
 }
 
+// Name: user name.
+//
 // If 'Options' empty fields
 // 	- Page: 1;
 // 	- Limit: 1;
@@ -441,6 +449,7 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, error) 
   return u, nil
 }
 
+// Id: user id.
 func (c *Configuration) SearchUserFriends(id int) ([]api.UserFriends, error) {
   var uf []api.UserFriends
 
@@ -462,6 +471,7 @@ func (c *Configuration) SearchUserFriends(id int) ([]api.UserFriends, error) {
   return uf, nil
 }
 
+// Id: user id.
 func (c *Configuration) SearchUserClubs(id int) ([]api.Clubs, error) {
   var uc []api.Clubs
 
@@ -483,6 +493,8 @@ func (c *Configuration) SearchUserClubs(id int) ([]api.Clubs, error) {
   return uc, nil
 }
 
+// Id: user id.
+//
 // If 'Options' empty fields
 // 	- Page: 1;
 // 	- Limit: 1;
@@ -519,6 +531,8 @@ func (c *Configuration) SearchUserAnimeRates(id int, r Result) ([]api.UserAnimeR
   return ar, nil
 }
 
+// Id: user id.
+//
 // If 'Options' empty fields
 // 	- Page: 1;
 // 	- Limit: 1;
@@ -553,6 +567,7 @@ func (c *Configuration) SearchUserMangaRates(id int, r Result) ([]api.UserMangaR
   return mr, nil
 }
 
+// Id: user id.
 func (c *Configuration) SearchUserFavourites(id int) (api.UserFavourites, error) {
   var uf api.UserFavourites
 
@@ -574,6 +589,8 @@ func (c *Configuration) SearchUserFavourites(id int) (api.UserFavourites, error)
   return uf, nil
 }
 
+// Id: user id.
+//
 // If 'Options' empty fields
 // 	- Page: 1;
 // 	- Limit: 1;
@@ -608,6 +625,7 @@ func (c *Configuration) SearchUserHistory(id int, r Result) ([]api.UserHistory, 
   return uh, nil
 }
 
+// Id: user id.
 func (c *Configuration) SearchUserBans(id int) ([]api.Bans, error) {
   var b []api.Bans
 
@@ -650,6 +668,8 @@ func (c *Configuration) WhoAmi() (api.Who, error) {
   return w, nil
 }
 
+// Name: anime name.
+//
 // If 'Options' empty fields
 // 	- Page: 1;
 // 	- Limit: 1;
@@ -705,6 +725,8 @@ func (c *Configuration) SearchAnime(name string, r Result) ([]api.Animes, error)
   return a, nil
 }
 
+// Name: manga name.
+//
 // If 'Options' empty fields
 // 	- Page: 1;
 // 	- Limit: 1;
@@ -757,6 +779,7 @@ func (c *Configuration) SearchManga(name string, r Result) ([]api.Mangas, error)
   return m, nil
 }
 
+// Name: anime name.
 func (c *Configuration) FastIdAnime(name string) (int, error) {
   var a []api.Animes
   var aa api.Animes
@@ -783,6 +806,7 @@ func (c *Configuration) FastIdAnime(name string) (int, error) {
   return aa.Id, nil
 }
 
+// Name: manga name.
 func (c *Configuration) FastIdManga(name string) (int, error) {
   var m []api.Mangas
   var mm api.Mangas
@@ -808,6 +832,8 @@ func (c *Configuration) FastIdManga(name string) (int, error) {
   return mm.Id, nil
 }
 
+// Name: club name.
+//
 // We always have 2 clubs.
 //
 // By default i made the first result(the most accurate) when searching for the 'Id'.
@@ -836,6 +862,8 @@ func (c *Configuration) FastIdClub(name string) (int, error) {
   return clcl.Id, nil
 }
 
+// Name: people name.
+//
 // We always have 16 names.
 //
 // By default i made the first result(the most accurate) when searching for the 'Id'.
@@ -864,6 +892,7 @@ func (c *Configuration) FastIdPeople(name string) (int, error) {
   return pp.Id, nil
 }
 
+// Id: anime id.
 func (c *Configuration) SearchAnimeScreenshots(id int) ([]api.AnimeScreenshots, error) {
   var s []api.AnimeScreenshots
 
@@ -885,6 +914,7 @@ func (c *Configuration) SearchAnimeScreenshots(id int) ([]api.AnimeScreenshots, 
   return s, nil
 }
 
+// Id: anime id.
 func (c *Configuration) SearchAnimeFranchise(id int) (api.Franchise, error) {
   var f api.Franchise
 
@@ -905,6 +935,7 @@ func (c *Configuration) SearchAnimeFranchise(id int) (api.Franchise, error) {
   return f, nil
 }
 
+// Id: manga id.
 func (c *Configuration) SearchMangaFranchise(id int) (api.Franchise, error) {
   var f api.Franchise
 
@@ -925,6 +956,7 @@ func (c *Configuration) SearchMangaFranchise(id int) (api.Franchise, error) {
   return f, nil
 }
 
+// Id: anime id.
 func (c *Configuration) SearchAnimeExternalLinks(id int) ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
 
@@ -945,6 +977,7 @@ func (c *Configuration) SearchAnimeExternalLinks(id int) ([]api.ExternalLinks, e
   return el, nil
 }
 
+// Id: manga id.
 func (c *Configuration) SearchMangaExternalLinks(id int) ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
 
@@ -965,6 +998,7 @@ func (c *Configuration) SearchMangaExternalLinks(id int) ([]api.ExternalLinks, e
   return el, nil
 }
 
+// Id: anime id.
 func (c *Configuration) SearchSimilarAnime(id int) ([]api.Animes, error) {
   var a []api.Animes
 
@@ -986,6 +1020,7 @@ func (c *Configuration) SearchSimilarAnime(id int) ([]api.Animes, error) {
   return a, nil
 }
 
+// Id: manga id.
 func (c *Configuration) SearchSimilarManga(id int) ([]api.Mangas, error) {
   var m []api.Mangas
 
@@ -1007,6 +1042,7 @@ func (c *Configuration) SearchSimilarManga(id int) ([]api.Mangas, error) {
   return m, nil
 }
 
+// Id: anime id.
 func (c *Configuration) SearchRelatedAnime(id int) ([]api.RelatedAnimes, error) {
   var a []api.RelatedAnimes
 
@@ -1028,6 +1064,7 @@ func (c *Configuration) SearchRelatedAnime(id int) ([]api.RelatedAnimes, error) 
   return a, nil
 }
 
+// Id: manga id.
 func (c *Configuration) SearchRelatedManga(id int) ([]api.RelatedMangas, error) {
   var m []api.RelatedMangas
 
@@ -1049,6 +1086,8 @@ func (c *Configuration) SearchRelatedManga(id int) ([]api.RelatedMangas, error) 
   return m, nil
 }
 
+// Name: club name.
+//
 // If 'Options' empty fields
 // 	- Page: 1;
 // 	- Limit: 1;
@@ -1082,6 +1121,8 @@ func (c *Configuration) SearchClub(name string, r Result) ([]api.Clubs, error) {
   return cl, nil
 }
 
+// Id: club id.
+//
 // If 'Options' empty fields
 //	- Page: 1;
 //
@@ -1110,6 +1151,8 @@ func (c *Configuration) SearchClubAnimes(id int, r Result) ([]api.Animes, error)
   return a, nil
 }
 
+// Id: club id.
+//
 // If 'Options' empty fields
 //	- Page: 1;
 //
@@ -1138,6 +1181,8 @@ func (c *Configuration) SearchClubMangas(id int, r Result) ([]api.Mangas, error)
   return m, nil
 }
 
+// Id: club id.
+//
 // If 'Options' empty fields
 //	- Page: 1;
 //
@@ -1166,6 +1211,8 @@ func (c *Configuration) SearchClubCharacters(id int, r Result) ([]api.CharacterI
   return ci, nil
 }
 
+// Id: club id.
+//
 // If 'Options' empty fields
 //	- Page: 1;
 //
@@ -1194,6 +1241,8 @@ func (c *Configuration) SearchClubClubs(id int, r Result) ([]api.Clubs, error) {
   return cc, nil
 }
 
+// Id: club id.
+//
 // If 'Options' empty fields
 //	- Page: 1;
 //
@@ -1222,6 +1271,7 @@ func (c *Configuration) SearchClubCollections(id int, r Result) ([]api.ClubColle
   return cc, nil
 }
 
+// Id: club id.
 func (c *Configuration) SearchClubMembers(id int) ([]api.UserFriends, error) {
   var uf []api.UserFriends
 
@@ -1243,6 +1293,7 @@ func (c *Configuration) SearchClubMembers(id int) ([]api.UserFriends, error) {
   return uf, nil
 }
 
+// Id: club id.
 func (c *Configuration) SearchClubImages(id int) ([]api.ClubImages, error) {
   var cm []api.ClubImages
 
@@ -1264,6 +1315,8 @@ func (c *Configuration) SearchClubImages(id int) ([]api.ClubImages, error) {
   return cm, nil
 }
 
+// Id: club id.
+//
 // You can only get a StatusCode.
 func (c *Configuration) ClubJoin(id int) (int, error) {
   resp, err := client.Do(c.NewPostRequest(str.ConvertClub(id, "join")))
@@ -1275,6 +1328,8 @@ func (c *Configuration) ClubJoin(id int) (int, error) {
   return resp.StatusCode, nil
 }
 
+// Id: club id.
+//
 // You can only get a StatusCode.
 func (c *Configuration) ClubLeave(id int) (int, error) {
   resp, err := client.Do(c.NewPostRequest(str.ConvertClub(id, "leave")))
@@ -1286,6 +1341,8 @@ func (c *Configuration) ClubLeave(id int) (int, error) {
   return resp.StatusCode, nil
 }
 
+// Id: user id.
+//
 // As a result, we return a complete list of all achievements.
 //
 // Next comes the filtering through "NekoSearch" and the error about obtaining
@@ -1315,6 +1372,7 @@ func (c *Configuration) SearchAchievement(id int) ([]api.Achievements, error) {
   return a, nil
 }
 
+// Id: anime id.
 func (c *Configuration) SearchAnimeVideos(id int) ([]api.AnimeVideos, error) {
   var v []api.AnimeVideos
 
@@ -1336,6 +1394,7 @@ func (c *Configuration) SearchAnimeVideos(id int) ([]api.AnimeVideos, error) {
   return v, nil
 }
 
+// Id: anime id.
 func (c *Configuration) SearchAnimeRoles(id int) ([]api.Roles, error) {
   var r []api.Roles
 
@@ -1357,6 +1416,7 @@ func (c *Configuration) SearchAnimeRoles(id int) ([]api.Roles, error) {
   return r, nil
 }
 
+// Id: manga id.
 func (c *Configuration) SearchMangaRoles(id int) ([]api.Roles, error) {
   var r []api.Roles
 
@@ -1511,6 +1571,7 @@ func (c *Configuration) SearchForums() ([]api.Forums, error) {
   return f, nil
 }
 
+// Id: user id.
 func (c *Configuration) AddFriend(id int) (api.FriendRequest, error) {
   var f api.FriendRequest
 
@@ -1532,6 +1593,7 @@ func (c *Configuration) AddFriend(id int) (api.FriendRequest, error) {
   return f, nil
 }
 
+// Id: user id.
 func (c *Configuration) RemoveFriend(id int) (api.FriendRequest, error) {
   var f api.FriendRequest
 
@@ -1553,6 +1615,7 @@ func (c *Configuration) RemoveFriend(id int) (api.FriendRequest, error) {
   return f, nil
 }
 
+// Id: user id.
 func (c *Configuration) UserUnreadMessages(id int) (api.UnreadMessages, error) {
   var um api.UnreadMessages
 
@@ -1574,6 +1637,8 @@ func (c *Configuration) UserUnreadMessages(id int) (api.UnreadMessages, error) {
   return um, nil
 }
 
+// Id: user id.
+//
 // If 'Options' empty fields
 // 	- Type: news;
 // 	- Page: 1;
@@ -1751,6 +1816,8 @@ func (c *Configuration) RandomManga() ([]api.Mangas, error) {
   return m, nil
 }
 
+// Name: people name.
+//
 // If 'Options' empty fields
 //	- Kind: seyu;
 //
@@ -1779,6 +1846,7 @@ func (c *Configuration) SearchPeople(name string, r Result) ([]api.AllPeople, er
   return ap, nil
 }
 
+// Id: people id.
 func (c *Configuration) People(id int) (api.People, error) {
   var ap api.People
 
@@ -1800,6 +1868,8 @@ func (c *Configuration) People(id int) (api.People, error) {
 }
 
 // Linked_type: Anime, Manga, Ranobe, Person, Character.
+//
+// Id: anime/manga/ranobe/person/character id.
 //
 // Kind(required when Linked_type is Person): common, seyu, mangaka, producer, person.
 func (c *Configuration) FavoritesCreate(linked_type string, id int, kind string) (api.Favorites, error) {
@@ -1832,6 +1902,8 @@ func (c *Configuration) FavoritesCreate(linked_type string, id int, kind string)
 }
 
 // Linked_type: Anime, Manga, Ranobe, Person, Character.
+//
+// Id: anime/manga/ranobe/person/character id.
 func (c *Configuration) FavoritesDelete(linked_type string, id int) (api.Favorites, error) {
   var f api.Favorites
 
@@ -1859,12 +1931,14 @@ func (c *Configuration) FavoritesDelete(linked_type string, id int) (api.Favorit
 
 // FIXME: At the moment this function does not work. I get an error code - 422.
 //
+// Id: anime/manga/ranobe/person/character id.
+//
+// Position: a new position on the list, it starts from 0.
+//
 // You can only get a StatusCode.
 func (c *Configuration) FavoritesReorder(id, position int) (int, error) {
-  convert := strconv.Itoa(position)
-
   resp, err := client.Do(
-    c.NewCustomPostRequest(str.ConvertFavoritesReorder(id), "new_index", convert),
+    c.NewCustomPostRequest(str.ConvertFavoritesReorder(id), position),
   )
   if err != nil {
     return 500, err
@@ -1874,6 +1948,7 @@ func (c *Configuration) FavoritesReorder(id, position int) (int, error) {
   return resp.StatusCode, nil
 }
 
+// Id: user id.
 func (c *Configuration) AddIgnoreUser(id int) (int, api.Ignore, error) {
   var i api.Ignore
 
@@ -1895,6 +1970,7 @@ func (c *Configuration) AddIgnoreUser(id int) (int, api.Ignore, error) {
   return resp.StatusCode, i, nil
 }
 
+// Id: user id.
 func (c *Configuration) RemoveIgnoreUser(id int) (int, api.Ignore, error) {
   var i api.Ignore
 
@@ -1936,6 +2012,7 @@ func (c *Configuration) Dialogs() ([]api.Dialogs, error) {
   return d, nil
 }
 
+// Id: user id.
 func (c *Configuration) SearchDialogs(id int) ([]api.SearchDialogs, error) {
   var sd []api.SearchDialogs
 
@@ -1957,6 +2034,7 @@ func (c *Configuration) SearchDialogs(id int) ([]api.SearchDialogs, error) {
   return sd, nil
 }
 
+// Id: user id.
 func (c *Configuration) DeleteDialogs(id int) (int, api.FriendRequest, error) {
   var fr api.FriendRequest
 
