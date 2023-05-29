@@ -57,16 +57,7 @@ func main() {
       v.To.Id, v.To.Nickname, v.To.Image.X160,
     )
   }
-  // delete a special dialogs
-  su, err := c.SearchUser("morr")
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  if su.Id == 0 {
-    fmt.Println("user not found")
-    return
-  }
+  // delete a special dialogs, su.Id from SearchUser()
   status, dd, err := c.DeleteDialogs(su.Id)
   if err != nil {
     fmt.Println(status, err)

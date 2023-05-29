@@ -388,7 +388,7 @@ type Publishers struct {
 }
 
 type Forums struct {
-  Id        int    `json:id"`
+  Id        int    `json:"id"`
   Position  int    `json:"position"`
   Name      string `json:"name"`
   Permalink string `json:"permalink"`

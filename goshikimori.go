@@ -13,7 +13,7 @@ package goshikimori
 import (
   "fmt"
   "net/http"
-  "io/ioutil"
+  "io"
   "strings"
   "encoding/json"
   "net/url"
@@ -68,8 +68,7 @@ func Add(app, tok string) *Configuration {
 //
 // [example]: https://github.com/vexilology/goshikimori/blob/main/examples/achievements/main.go
 func NekoSearch(name string) string {
-  r := strings.Replace(strings.ToLower(name), " ", "_", -1)
-  return fmt.Sprintf("%s", r)
+  return strings.Replace(strings.ToLower(name), " ", "_", -1)
 }
 
 func (o *Options) OptionsMessages() string {
@@ -335,6 +334,8 @@ func (o *Options) OptionsClubInformation() string {
   return v.Encode()
 }
 
+// FIXME cancel does not work. the context is canceled at once.
+// Duration works. When the time expires, the request is cancelled.
 func ctx(number time.Duration) context.Context {
   duration := number * time.Second
   ctx, _ := context.WithTimeout(context.Background(), duration)
@@ -403,7 +404,7 @@ func (c *Configuration) SearchUser(name string) (api.Users, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return u, err
   }
@@ -437,7 +438,7 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, error) 
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -459,7 +460,7 @@ func (c *Configuration) SearchUserFriends(id int) ([]api.UserFriends, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -481,7 +482,7 @@ func (c *Configuration) SearchUserClubs(id int) ([]api.Clubs, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -519,7 +520,7 @@ func (c *Configuration) SearchUserAnimeRates(id int, r Result) ([]api.UserAnimeR
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -555,7 +556,7 @@ func (c *Configuration) SearchUserMangaRates(id int, r Result) ([]api.UserMangaR
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -577,7 +578,7 @@ func (c *Configuration) SearchUserFavourites(id int) (api.UserFavourites, error)
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return uf, err
   }
@@ -613,7 +614,7 @@ func (c *Configuration) SearchUserHistory(id int, r Result) ([]api.UserHistory, 
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -635,7 +636,7 @@ func (c *Configuration) SearchUserBans(id int) ([]api.Bans, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -656,7 +657,7 @@ func (c *Configuration) WhoAmi() (api.Who, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return w, err
   }
@@ -713,7 +714,7 @@ func (c *Configuration) SearchAnime(name string, r Result) ([]api.Animes, error)
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -767,7 +768,7 @@ func (c *Configuration) SearchManga(name string, r Result) ([]api.Mangas, error)
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -790,7 +791,7 @@ func (c *Configuration) FastIdAnime(name string) (int, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return 0, err
   }
@@ -816,7 +817,7 @@ func (c *Configuration) FastIdManga(name string) (int, error) {
     return 0, err
   }
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return 0, err
   }
@@ -846,7 +847,7 @@ func (c *Configuration) FastIdClub(name string) (int, error) {
     return 0, err
   }
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return 0, err
   }
@@ -876,7 +877,7 @@ func (c *Configuration) FastIdPeople(name string) (int, error) {
     return 0, err
   }
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return 0, err
   }
@@ -902,7 +903,7 @@ func (c *Configuration) SearchAnimeScreenshots(id int) ([]api.AnimeScreenshots, 
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -923,7 +924,7 @@ func (c *Configuration) SearchAnimeFranchise(id int) (api.Franchise, error) {
     return f, err
   }
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return f, err
   }
@@ -944,7 +945,7 @@ func (c *Configuration) SearchMangaFranchise(id int) (api.Franchise, error) {
     return f, err
   }
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return f, err
   }
@@ -965,7 +966,7 @@ func (c *Configuration) SearchAnimeExternalLinks(id int) ([]api.ExternalLinks, e
     return nil, err
   }
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -986,7 +987,7 @@ func (c *Configuration) SearchMangaExternalLinks(id int) ([]api.ExternalLinks, e
     return nil, err
   }
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1008,7 +1009,7 @@ func (c *Configuration) SearchSimilarAnime(id int) ([]api.Animes, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1030,7 +1031,7 @@ func (c *Configuration) SearchSimilarManga(id int) ([]api.Mangas, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1052,7 +1053,7 @@ func (c *Configuration) SearchRelatedAnime(id int) ([]api.RelatedAnimes, error) 
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1074,7 +1075,7 @@ func (c *Configuration) SearchRelatedManga(id int) ([]api.RelatedMangas, error) 
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1109,7 +1110,7 @@ func (c *Configuration) SearchClub(name string, r Result) ([]api.Clubs, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1139,7 +1140,7 @@ func (c *Configuration) SearchClubAnimes(id int, r Result) ([]api.Animes, error)
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1169,7 +1170,7 @@ func (c *Configuration) SearchClubMangas(id int, r Result) ([]api.Mangas, error)
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1199,7 +1200,7 @@ func (c *Configuration) SearchClubCharacters(id int, r Result) ([]api.CharacterI
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1229,7 +1230,7 @@ func (c *Configuration) SearchClubClubs(id int, r Result) ([]api.Clubs, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1259,7 +1260,7 @@ func (c *Configuration) SearchClubCollections(id int, r Result) ([]api.ClubColle
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1281,7 +1282,7 @@ func (c *Configuration) SearchClubMembers(id int) ([]api.UserFriends, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1303,7 +1304,7 @@ func (c *Configuration) SearchClubImages(id int) ([]api.ClubImages, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1360,7 +1361,7 @@ func (c *Configuration) SearchAchievement(id int) ([]api.Achievements, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1382,7 +1383,7 @@ func (c *Configuration) SearchAnimeVideos(id int) ([]api.AnimeVideos, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1404,7 +1405,7 @@ func (c *Configuration) SearchAnimeRoles(id int) ([]api.Roles, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1426,7 +1427,7 @@ func (c *Configuration) SearchMangaRoles(id int) ([]api.Roles, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1447,7 +1448,7 @@ func (c *Configuration) SearchBans() ([]api.Bans, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1475,7 +1476,7 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1496,7 +1497,7 @@ func (c *Configuration) SearchGenres() ([]api.Genres, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1517,7 +1518,7 @@ func (c *Configuration) SearchStudios() ([]api.Studios, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1538,7 +1539,7 @@ func (c *Configuration) SearchPublishers() ([]api.Publishers, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1559,7 +1560,7 @@ func (c *Configuration) SearchForums() ([]api.Forums, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1581,7 +1582,7 @@ func (c *Configuration) AddFriend(id int) (api.FriendRequest, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return f, err
   }
@@ -1603,7 +1604,7 @@ func (c *Configuration) RemoveFriend(id int) (api.FriendRequest, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return f, err
   }
@@ -1625,7 +1626,7 @@ func (c *Configuration) UserUnreadMessages(id int) (api.UnreadMessages, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return um, err
   }
@@ -1657,7 +1658,7 @@ func (c *Configuration) UserMessages(id int, r Result) ([]api.Messages, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1678,7 +1679,7 @@ func (c *Configuration) SearchConstantsAnime() (api.Constants, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return ca, err
   }
@@ -1699,7 +1700,7 @@ func (c *Configuration) SearchConstantsManga() (api.Constants, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return cm, err
   }
@@ -1720,7 +1721,7 @@ func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, error)
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return ur, err
   }
@@ -1741,7 +1742,7 @@ func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return cc, err
   }
@@ -1762,7 +1763,7 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, error)
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1783,7 +1784,7 @@ func (c *Configuration) RandomAnime() ([]api.Animes, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1804,7 +1805,7 @@ func (c *Configuration) RandomManga() ([]api.Mangas, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1834,7 +1835,7 @@ func (c *Configuration) SearchPeople(name string, r Result) ([]api.AllPeople, er
     return nil, err
   }
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -1855,7 +1856,7 @@ func (c *Configuration) People(id int) (api.People, error) {
     return ap, err
   }
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return ap, err
   }
@@ -1877,7 +1878,7 @@ func (c *Configuration) FavoritesCreate(linked_type string, id int, kind string)
 
   type_map := map[string]int8{"Anime": 1, "Manga": 2, "Ranobe": 3, "Person": 4, "Character": 5}
   _, ok = type_map[linked_type]
-  if !ok { return f, errors.New("Incorrect string, try again and watch the upper case.") }
+  if !ok { return f, errors.New("incorrect string, try again and watch the upper case") }
 
   kind_map := map[string]int8{"common": 1, "seyu": 2, "mangaka": 3, "producer": 4, "person": 5}
   _, ok = kind_map[kind]
@@ -1889,7 +1890,7 @@ func (c *Configuration) FavoritesCreate(linked_type string, id int, kind string)
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return f, err
   }
@@ -1909,7 +1910,7 @@ func (c *Configuration) FavoritesDelete(linked_type string, id int) (api.Favorit
 
   type_map := map[string]int8{"Anime": 1, "Manga": 2, "Ranobe": 3, "Person": 4, "Character": 5}
   _, ok = type_map[linked_type]
-  if !ok { return f, errors.New("Incorrect string, try again and watch the upper case.") }
+  if !ok { return f, errors.New("incorrect string, try again and watch the upper case") }
 
   resp, err := client.Do(c.NewDeleteRequest(str.ConvertFavorites(linked_type, id, "")))
   if err != nil {
@@ -1917,7 +1918,7 @@ func (c *Configuration) FavoritesDelete(linked_type string, id int) (api.Favorit
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return f, err
   }
@@ -1958,7 +1959,7 @@ func (c *Configuration) AddIgnoreUser(id int) (int, api.Ignore, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return 500, i, err
   }
@@ -1980,7 +1981,7 @@ func (c *Configuration) RemoveIgnoreUser(id int) (int, api.Ignore, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return 500, i, err
   }
@@ -2000,7 +2001,7 @@ func (c *Configuration) Dialogs() ([]api.Dialogs, error) {
     return nil, err
   }
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -2022,7 +2023,7 @@ func (c *Configuration) SearchDialogs(id int) ([]api.SearchDialogs, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
@@ -2044,13 +2045,13 @@ func (c *Configuration) DeleteDialogs(id int) (int, api.FriendRequest, error) {
   }
   defer resp.Body.Close()
 
-  data, err := ioutil.ReadAll(resp.Body)
+  data, err := io.ReadAll(resp.Body)
   if err != nil {
     return 500, fr, err
   }
 
   if err := json.Unmarshal(data, &fr); err != nil {
-    return resp.StatusCode, fr, errors.New("Не найдено ни одного сообщения для удаления")
+    return resp.StatusCode, fr, errors.New("не найдено ни одного сообщения для удаления")
   }
 
   return resp.StatusCode, fr, nil
