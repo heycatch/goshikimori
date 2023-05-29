@@ -783,7 +783,6 @@ func (c *Configuration) SearchManga(name string, r Result) ([]api.Mangas, error)
 // Name: anime name.
 func (c *Configuration) FastIdAnime(name string) (int, error) {
   var a []api.Animes
-  var aa api.Animes
 
   resp, err := client.Do(c.NewGetRequest("animes?search=" + url.QueryEscape(name)))
   if err != nil {
@@ -800,17 +799,12 @@ func (c *Configuration) FastIdAnime(name string) (int, error) {
     return 0, err
   }
 
-  for _, v := range a {
-    aa = v
-  }
-
-  return aa.Id, nil
+  return a[0].Id, nil
 }
 
 // Name: manga name.
 func (c *Configuration) FastIdManga(name string) (int, error) {
   var m []api.Mangas
-  var mm api.Mangas
 
   resp, err := client.Do(c.NewGetRequest("mangas?search=" + url.QueryEscape(name)))
   if err != nil {
@@ -826,11 +820,7 @@ func (c *Configuration) FastIdManga(name string) (int, error) {
     return 0, err
   }
 
-  for _, v := range m {
-    mm = v
-  }
-
-  return mm.Id, nil
+  return m[0].Id, nil
 }
 
 // Name: club name.
@@ -840,7 +830,6 @@ func (c *Configuration) FastIdManga(name string) (int, error) {
 // By default i made the first result(the most accurate) when searching for the 'Id'.
 func (c *Configuration) FastIdClub(name string) (int, error) {
   var cl []api.Clubs
-  var clcl api.Clubs
 
   resp, err := client.Do(c.NewGetRequest("clubs?search=" + url.QueryEscape(name)))
   if err != nil {
@@ -856,11 +845,7 @@ func (c *Configuration) FastIdClub(name string) (int, error) {
     return 0, err
   }
 
-  for i := 0; i < 1; i++ {
-    clcl = cl[i]
-  }
-
-  return clcl.Id, nil
+  return cl[0].Id, nil
 }
 
 // Name: people name.
@@ -870,7 +855,6 @@ func (c *Configuration) FastIdClub(name string) (int, error) {
 // By default i made the first result(the most accurate) when searching for the 'Id'.
 func (c *Configuration) FastIdPeople(name string) (int, error) {
   var p []api.AllPeople
-  var pp api.AllPeople
 
   resp, err := client.Do(c.NewGetRequest("people/search?search=" + url.QueryEscape(name)))
   if err != nil {
@@ -886,11 +870,7 @@ func (c *Configuration) FastIdPeople(name string) (int, error) {
     return 0, err
   }
 
-  for i := 0; i < 1; i++ {
-    pp = p[i]
-  }
-
-  return pp.Id, nil
+  return p[0].Id, nil
 }
 
 // Id: anime id.
