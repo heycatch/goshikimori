@@ -14,17 +14,9 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  u, err := c.SearchUser("morr")
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  if u.Id == 0 {
-    fmt.Println("user not found")
-    return
-  }
 
-  fr, err := c.AddFriend(u.Id)
+  fr, err := c.FastIdUser("morr").AddFriend()
+  //fr, err := c.FastIdUser("morr").RemoveFriend()
   if err != nil {
     fmt.Println(err)
     return

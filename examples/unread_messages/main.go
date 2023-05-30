@@ -14,17 +14,8 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  u, err := c.SearchUser("incarnati0n")
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  if u.Id == 0 {
-    fmt.Println("user not found")
-    return
-  }
 
-  um, err := c.UserUnreadMessages(u.Id)
+  um, err := c.FastIdUser("incarnati0n").UserUnreadMessages()
   if err != nil {
     fmt.Println(err)
     return

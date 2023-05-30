@@ -136,10 +136,9 @@ func TestAchievements(t *testing.T) {
   s.Finish()
 
   c := conf()
-  u, _ := c.SearchUser("incarnati0n")
-  r, _ := c.SearchAchievement(u.Id)
+  u, _ := c.FastIdUser("incarnati0n").SearchAchievement()
 
-  for _, v := range r {
+  for _, v := range u {
     if v.Neko_id == NekoSearch("Initial D") {
       if v.Progress == 100 {
         t.Logf("Found: %d progress", v.Progress)
@@ -175,8 +174,7 @@ func TestUserUnreadMessages(t *testing.T) {
   s.Finish()
 
   c := conf()
-  u, _ := c.SearchUser("incarnati0n")
-  um, _ := c.UserUnreadMessages(u.Id)
+  um, _ := c.FastIdUser("incarnati0n").UserUnreadMessages()
 
   if um.News > 0 || um.News == 0 {
     t.Logf("Found: %d news", um.News)

@@ -15,30 +15,32 @@ func conf() *g.Configuration {
 }
 
 func main() {
-  user := "incarnati0n"
   c := conf()
-  u, err := c.SearchUser(user)
+
+  u, err := c.SearchUser("incarnati0n")
   if err != nil {
     fmt.Println(err)
     return
   }
   if u.Id == 0 {
-    fmt.Printf("Not found %s\n", user)
+    fmt.Println("user not found")
     return
   }
   // user info
   fmt.Println(u.Id, u.Sex, u.Last_online, u.Name, u.Image.X160)
   fmt.Println()
+  // plan to watch anime
   for _, v := range u.Stats.Statuses.Anime {
     fmt.Println(v.Id, v.Grouped_id, v.Name, v.Size, v.Type)
   }
   fmt.Println()
+  // plan to read manga
   for _, v := range u.Stats.Statuses.Manga {
     fmt.Println(v.Id, v.Grouped_id, v.Name, v.Size, v.Type)
   }
   fmt.Println()
   // user clubs
-  uc, err := c.SearchUserClubs(u.Id)
+  uc, err := c.FastIdUser("incarnati0n").SearchUserClubs()
   if err != nil {
     fmt.Println(err)
     return
@@ -52,7 +54,7 @@ func main() {
   }
   fmt.Println()
   // user friends
-  uf, err := c.SearchUserFriends(u.Id)
+  uf, err := c.FastIdUser("incarnati0n").SearchUserFriends()
   if err != nil {
     fmt.Println(err)
     return
@@ -68,7 +70,7 @@ func main() {
   time.Sleep(5 * time.Second)
   fmt.Println("too many requests, wait 5 seconds")
   oar := &g.Options{Page: "1", Limit: "5", Status: "completed", Censored: ""}
-  ar, err := c.SearchUserAnimeRates(u.Id, oar)
+  ar, err := c.FastIdUser("incarnati0n").SearchUserAnimeRates(oar)
   if err != nil {
     fmt.Println(err)
     return
@@ -82,7 +84,7 @@ func main() {
   }
   fmt.Println()
   omr := &g.Options{Page: "1", Limit: "5", Censored: ""}
-  mr, err := c.SearchUserMangaRates(u.Id, omr)
+  mr, err := c.FastIdUser("incarnati0n").SearchUserMangaRates(omr)
   if err != nil {
     fmt.Println(err)
     return
@@ -95,9 +97,8 @@ func main() {
     fmt.Println(v.Status, v.Manga.Name, v.Chapters, v.Volumes, v.Score)
   }
   fmt.Println()
-  // search favourites: anime, manga, characters, people,
-  // mangakas, seyu and producers
-  suf, err := c.SearchUserFavourites(u.Id)
+  // search favourites: anime, manga, characters, people, mangakas, seyu and producers
+  suf, err := c.FastIdUser("incarnati0n").SearchUserFavourites()
   if err != nil {
     fmt.Println(err)
     return
@@ -121,7 +122,7 @@ func main() {
   fmt.Println("too many requests, wait 5 seconds")
   // NOTES: Target_id - Anime.id or Manga.id; convert to a string to search the history point-by-point.
   ouh := &g.Options{Page: "1", Limit: "10", Target_id: "", Target_type: "Anime"}
-  uh, err := c.SearchUserHistory(u.Id, ouh)
+  uh, err := c.FastIdUser("incarnati0n").SearchUserHistory(ouh)
   if err != nil {
     fmt.Println(err)
     return
@@ -135,7 +136,7 @@ func main() {
   }
   fmt.Println()
   // user bans
-  ub, err := c.SearchUserBans(u.Id)
+  ub, err := c.FastIdUser("incarnati0n").SearchUserBans()
   if err != nil {
     fmt.Println(err)
     return

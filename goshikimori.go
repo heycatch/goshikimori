@@ -452,11 +452,13 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, error) 
   return u, nil
 }
 
-// Id: user id.
-func (c *Configuration) SearchUserFriends(id int) ([]api.UserFriends, error) {
+// *Configuraiton.FastIdUser(name string).SearchUserFriends()
+func (f *FastId) SearchUserFriends() ([]api.UserFriends, error) {
   var uf []api.UserFriends
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertUser(id, "friends")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertUser(f.Id, "friends")),
+  )
   if err != nil {
     return nil, err
   }
@@ -474,11 +476,13 @@ func (c *Configuration) SearchUserFriends(id int) ([]api.UserFriends, error) {
   return uf, nil
 }
 
-// Id: user id.
-func (c *Configuration) SearchUserClubs(id int) ([]api.Clubs, error) {
+// *Configuraiton.FastIdUser(name string).SearchUserClubs()
+func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
   var uc []api.Clubs
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertUser(id, "clubs")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertUser(f.Id, "clubs")),
+  )
   if err != nil {
     return nil, err
   }
@@ -496,8 +500,6 @@ func (c *Configuration) SearchUserClubs(id int) ([]api.Clubs, error) {
   return uc, nil
 }
 
-// Id: user id.
-//
 // If 'Options' empty fields
 // 	- Page: 1;
 // 	- Limit: 1;
@@ -511,11 +513,13 @@ func (c *Configuration) SearchUserClubs(id int) ([]api.Clubs, error) {
 //	- Censored: true, false;
 //
 // Set to true to discard hentai, yaoi and yuri.
-func (c *Configuration) SearchUserAnimeRates(id int, r Result) ([]api.UserAnimeRates, error) {
+//
+// *Configuraiton.FastIdUser(name string).SearchUserAnimeRates(r Result)
+func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
   var ar []api.UserAnimeRates
 
-  resp, err := client.Do(c.NewGetRequest(
-    str.ConvertUserRates(id, "anime_rates", r.OptionsAnimeRates()),
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertUserRates(f.Id, "anime_rates", r.OptionsAnimeRates()),
   ))
   if err != nil {
     return nil, err
@@ -534,8 +538,6 @@ func (c *Configuration) SearchUserAnimeRates(id int, r Result) ([]api.UserAnimeR
   return ar, nil
 }
 
-// Id: user id.
-//
 // If 'Options' empty fields
 // 	- Page: 1;
 // 	- Limit: 1;
@@ -547,11 +549,13 @@ func (c *Configuration) SearchUserAnimeRates(id int, r Result) ([]api.UserAnimeR
 //	- Censored: true, false;
 //
 // Set to true to discard hentai, yaoi and yuri.
-func (c *Configuration) SearchUserMangaRates(id int, r Result) ([]api.UserMangaRates, error) {
+//
+// *Configuraiton.FastIdUser(name string).SearchUserMangaRates(r Result)
+func (f *FastId) SearchUserMangaRates(r Result) ([]api.UserMangaRates, error) {
   var mr []api.UserMangaRates
 
-  resp, err := client.Do(c.NewGetRequest(
-    str.ConvertUserRates(id, "manga_rates", r.OptionsMangaRates()),
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertUserRates(f.Id, "manga_rates", r.OptionsMangaRates()),
   ))
   if err != nil {
     return nil, err
@@ -570,11 +574,13 @@ func (c *Configuration) SearchUserMangaRates(id int, r Result) ([]api.UserMangaR
   return mr, nil
 }
 
-// Id: user id.
-func (c *Configuration) SearchUserFavourites(id int) (api.UserFavourites, error) {
+// *Configuraiton.FastIdUser(name string).SearchUserFavourites()
+func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
   var uf api.UserFavourites
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertUser(id, "favourites")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertUser(f.Id, "favourites")),
+  )
   if err != nil {
     return uf, err
   }
@@ -592,8 +598,6 @@ func (c *Configuration) SearchUserFavourites(id int) (api.UserFavourites, error)
   return uf, nil
 }
 
-// Id: user id.
-//
 // If 'Options' empty fields
 // 	- Page: 1;
 // 	- Limit: 1;
@@ -605,11 +609,13 @@ func (c *Configuration) SearchUserFavourites(id int) (api.UserFavourites, error)
 // 	- Limit: 100 maximum.
 // 	- Target_id: id anime/manga in string format.
 // 	- Target_type: Anime, Manga.
-func (c *Configuration) SearchUserHistory(id int, r Result) ([]api.UserHistory, error) {
+//
+// *Configuraiton.FastIdUser(name string).SearchUserHistory(r Result)
+func (f *FastId) SearchUserHistory(r Result) ([]api.UserHistory, error) {
   var uh []api.UserHistory
 
-  resp, err := client.Do(c.NewGetRequest(
-    str.ConvertUserRates(id, "history", r.OptionsUserHistory()),
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertUserRates(f.Id, "history", r.OptionsUserHistory()),
   ))
   if err != nil {
     return nil, err
@@ -628,11 +634,13 @@ func (c *Configuration) SearchUserHistory(id int, r Result) ([]api.UserHistory, 
   return uh, nil
 }
 
-// Id: user id.
-func (c *Configuration) SearchUserBans(id int) ([]api.Bans, error) {
+// *Configuraiton.FastIdUser(name string).SearchUserBans()
+func (f *FastId) SearchUserBans() ([]api.Bans, error) {
   var b []api.Bans
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertUser(id, "bans")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertUser(f.Id, "bans")),
+  )
   if err != nil {
     return nil, err
   }
@@ -782,11 +790,42 @@ func (c *Configuration) SearchManga(name string, r Result) ([]api.Mangas, error)
   return m, nil
 }
 
+// Name: user name.
+//
+// FIXME with an invalid name we can get "id: 0".
+// This is an existing user, we need a workaround
+// so we don't need to redirect to a nil user.
+// P.S. changing the value from 0 to -1 will not help, this user also exists.
+func (c *Configuration) FastIdUser(name string) *FastId {
+  var u api.Users
+
+  resp, err := client.Do(
+    c.NewGetRequest("users/" + url.QueryEscape(name)),
+  )
+  if err != nil {
+    return &FastId{Id: 0, Conf: *c, Err: err}
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return &FastId{Id: 0, Conf: *c, Err: err}
+  }
+
+  if err := json.Unmarshal(data, &u); err != nil {
+    return &FastId{Id: 0, Conf: *c, Err: err}
+  }
+
+  return &FastId{Id: u.Id, Conf: *c, Err: err}
+}
+
 // Name: anime name.
 func (c *Configuration) FastIdAnime(name string) *FastId {
   var a []api.Animes
 
-  resp, err := client.Do(c.NewGetRequest("animes?search=" + url.QueryEscape(name)))
+  resp, err := client.Do(
+    c.NewGetRequest("animes?search=" + url.QueryEscape(name)),
+  )
   if err != nil {
     return &FastId{Id: 0, Conf: *c, Err: err}
   }
@@ -814,7 +853,9 @@ func (c *Configuration) FastIdAnime(name string) *FastId {
 func (c *Configuration) FastIdManga(name string) *FastId {
   var m []api.Mangas
 
-  resp, err := client.Do(c.NewGetRequest("mangas?search=" + url.QueryEscape(name)))
+  resp, err := client.Do(
+    c.NewGetRequest("mangas?search=" + url.QueryEscape(name)),
+  )
   if err != nil {
     return &FastId{Id: 0, Conf: *c, Err: err}
   }
@@ -841,7 +882,9 @@ func (c *Configuration) FastIdManga(name string) *FastId {
 func (c *Configuration) FastIdClub(name string) *FastId {
   var cl []api.Clubs
 
-  resp, err := client.Do(c.NewGetRequest("clubs?search=" + url.QueryEscape(name)))
+  resp, err := client.Do(
+    c.NewGetRequest("clubs?search=" + url.QueryEscape(name)),
+  )
   if err != nil {
     return &FastId{Id: 0, Conf: *c, Err: err}
   }
@@ -868,7 +911,9 @@ func (c *Configuration) FastIdClub(name string) *FastId {
 func (c *Configuration) FastIdPeople(name string) *FastId {
   var ap []api.AllPeople
 
-  resp, err := client.Do(c.NewGetRequest("people/search?search=" + url.QueryEscape(name)))
+  resp, err := client.Do(
+    c.NewGetRequest("people/search?search=" + url.QueryEscape(name)),
+  )
   if err != nil {
     return &FastId{Id: 0, Conf: *c, Err: err}
   }
@@ -895,7 +940,9 @@ func (c *Configuration) FastIdPeople(name string) *FastId {
 func (f *FastId) SearchAnimeScreenshots() ([]api.AnimeScreenshots, error) {
   var s []api.AnimeScreenshots
 
-  resp, err := client.Do(f.Conf.NewGetRequest(str.ConvertAnime(f.Id, "screenshots")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertAnime(f.Id, "screenshots")),
+  )
   if err != nil {
     return nil, err
   }
@@ -1290,7 +1337,9 @@ func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, error) 
 func (f *FastId) SearchClubMembers() ([]api.UserFriends, error) {
   var uf []api.UserFriends
 
-  resp, err := client.Do(f.Conf.NewGetRequest(str.ConvertClub(f.Id, "members")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertClub(f.Id, "members")),
+  )
   if err != nil {
     return nil, err
   }
@@ -1312,7 +1361,9 @@ func (f *FastId) SearchClubMembers() ([]api.UserFriends, error) {
 func (f *FastId) SearchClubImages() ([]api.ClubImages, error) {
   var cm []api.ClubImages
 
-  resp, err := client.Do(f.Conf.NewGetRequest(str.ConvertClub(f.Id, "images")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertClub(f.Id, "images")),
+  )
   if err != nil {
     return nil, err
   }
@@ -1360,8 +1411,6 @@ func (f *FastId) ClubLeave() (int, error) {
   return resp.StatusCode, nil
 }
 
-// Id: user id.
-//
 // As a result, we return a complete list of all achievements.
 //
 // Next comes the filtering through "NekoSearch" and the error about obtaining
@@ -1370,10 +1419,14 @@ func (f *FastId) ClubLeave() (int, error) {
 // Check [example].
 //
 // [example]: https://github.com/vexilology/goshikimori/blob/main/examples/achievements/main.go
-func (c *Configuration) SearchAchievement(id int) ([]api.Achievements, error) {
+//
+// *Configuration.FastIdUser(name string).SearchAchievement()
+func (f *FastId) SearchAchievement() ([]api.Achievements, error) {
   var a []api.Achievements
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertAchievements(id)))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertAchievements(f.Id)),
+  )
   if err != nil {
     return nil, err
   }
@@ -1395,7 +1448,9 @@ func (c *Configuration) SearchAchievement(id int) ([]api.Achievements, error) {
 func (f *FastId) SearchAnimeVideos() ([]api.AnimeVideos, error) {
   var v []api.AnimeVideos
 
-  resp, err := client.Do(f.Conf.NewGetRequest(str.ConvertAnime(f.Id, "videos")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertAnime(f.Id, "videos")),
+  )
   if err != nil {
     return nil, err
   }
@@ -1492,7 +1547,9 @@ func (c *Configuration) SearchBans() ([]api.Bans, error) {
 func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, error) {
   var ca []api.Calendar
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertCalendar(r.OptionsCalendar())))
+  resp, err := client.Do(
+    c.NewGetRequest(str.ConvertCalendar(r.OptionsCalendar())),
+  )
   if err != nil {
     return nil, err
   }
@@ -1594,55 +1651,61 @@ func (c *Configuration) SearchForums() ([]api.Forums, error) {
   return f, nil
 }
 
-// Id: user id.
-func (c *Configuration) AddFriend(id int) (api.FriendRequest, error) {
-  var f api.FriendRequest
+// *Configuration.FastIdUser(name string).AddFriend()
+func (f *FastId) AddFriend() (api.FriendRequest, error) {
+  var ff api.FriendRequest
 
-  resp, err := client.Do(c.NewPostRequest(str.ConvertFriend(id)))
+  resp, err := client.Do(
+    f.Conf.NewPostRequest(str.ConvertFriend(f.Id)),
+  )
   if err != nil {
-    return f, err
+    return ff, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return f, err
+    return ff, err
   }
 
-  if err := json.Unmarshal(data, &f); err != nil {
-    return f, err
+  if err := json.Unmarshal(data, &ff); err != nil {
+    return ff, err
   }
 
-  return f, nil
+  return ff, nil
 }
 
-// Id: user id.
-func (c *Configuration) RemoveFriend(id int) (api.FriendRequest, error) {
-  var f api.FriendRequest
+// *Configuration.FastIdUser(name string).RemoveFriend()
+func (f *FastId) RemoveFriend() (api.FriendRequest, error) {
+  var ff api.FriendRequest
 
-  resp, err := client.Do(c.NewDeleteRequest(str.ConvertFriend(id)))
+  resp, err := client.Do(
+    f.Conf.NewDeleteRequest(str.ConvertFriend(f.Id)),
+  )
   if err != nil {
-    return f, err
+    return ff, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return f, err
+    return ff, err
   }
 
-  if err := json.Unmarshal(data, &f); err != nil {
-    return f, err
+  if err := json.Unmarshal(data, &ff); err != nil {
+    return ff, err
   }
 
-  return f, nil
+  return ff, nil
 }
 
-// Id: user id.
-func (c *Configuration) UserUnreadMessages(id int) (api.UnreadMessages, error) {
+// *Configuration.FastIdUser(name string).UserUnreadMessages()
+func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
   var um api.UnreadMessages
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertUser(id, "unread_messages")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertUser(f.Id, "unread_messages")),
+  )
   if err != nil {
     return um, err
   }
@@ -1660,8 +1723,6 @@ func (c *Configuration) UserUnreadMessages(id int) (api.UnreadMessages, error) {
   return um, nil
 }
 
-// Id: user id.
-//
 // If 'Options' empty fields
 // 	- Type: news;
 // 	- Page: 1;
@@ -1671,10 +1732,14 @@ func (c *Configuration) UserUnreadMessages(id int) (api.UnreadMessages, error) {
 // 	- Page: 100000 maximum;
 // 	- Limit: 100 maximum;
 //  - Type: inbox, private, sent, news, notifications;
-func (c *Configuration) UserMessages(id int, r Result) ([]api.Messages, error) {
+//
+// *Configuration.FastIdUser(name string).UserMessages(r Result)
+func (f *FastId) UserMessages(r Result) ([]api.Messages, error) {
   var m []api.Messages
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertMessages(id, r.OptionsMessages())))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertMessages(f.Id, r.OptionsMessages())),
+  )
   if err != nil {
     return nil, err
   }
@@ -1873,7 +1938,9 @@ func (c *Configuration) SearchPeople(name string, r Result) ([]api.AllPeople, er
 func (f *FastId) People() (api.People, error) {
   var p api.People
 
-  resp, err := client.Do(f.Conf.NewGetRequest(str.ConvertPeople(f.Id)))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertPeople(f.Id)),
+  )
   if err != nil {
     return p, err
   }
@@ -1973,11 +2040,13 @@ func (f *FastId) FavoritesReorder(position int) (int, error) {
   return resp.StatusCode, nil
 }
 
-// Id: user id.
-func (c *Configuration) AddIgnoreUser(id int) (int, api.Ignore, error) {
+// *Configuration.FastIdUser(name string).AddIgnoreUser()
+func (f *FastId) AddIgnoreUser() (int, api.Ignore, error) {
   var i api.Ignore
 
-  resp, err := client.Do(c.NewPostRequest(str.ConvertIgnoreUser(id)))
+  resp, err := client.Do(
+    f.Conf.NewPostRequest(str.ConvertIgnoreUser(f.Id)),
+  )
   if err != nil {
     return 500, i, err
   }
@@ -1995,11 +2064,13 @@ func (c *Configuration) AddIgnoreUser(id int) (int, api.Ignore, error) {
   return resp.StatusCode, i, nil
 }
 
-// Id: user id.
-func (c *Configuration) RemoveIgnoreUser(id int) (int, api.Ignore, error) {
+// *Configuration.FastIdUser(name string).RemoveIgnoreUser()
+func (f *FastId) RemoveIgnoreUser() (int, api.Ignore, error) {
   var i api.Ignore
 
-  resp, err := client.Do(c.NewDeleteRequest(str.ConvertIgnoreUser(id)))
+  resp, err := client.Do(
+    f.Conf.NewDeleteRequest(str.ConvertIgnoreUser(f.Id)),
+  )
   if err != nil {
     return 500, i, err
   }
@@ -2037,11 +2108,13 @@ func (c *Configuration) Dialogs() ([]api.Dialogs, error) {
   return d, nil
 }
 
-// Id: user id.
-func (c *Configuration) SearchDialogs(id int) ([]api.SearchDialogs, error) {
+// *Configuration.FastIdUser(name string).SearchDialogs()
+func (f *FastId) SearchDialogs() ([]api.SearchDialogs, error) {
   var sd []api.SearchDialogs
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertDialogs(id)))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertDialogs(f.Id)),
+  )
   if err != nil {
     return nil, err
   }
@@ -2059,11 +2132,13 @@ func (c *Configuration) SearchDialogs(id int) ([]api.SearchDialogs, error) {
   return sd, nil
 }
 
-// Id: user id.
-func (c *Configuration) DeleteDialogs(id int) (int, api.FriendRequest, error) {
+// *Configuration.FastIdUser(name string).DeleteDialogs()
+func (f *FastId) DeleteDialogs() (int, api.FriendRequest, error) {
   var fr api.FriendRequest
 
-  resp, err := client.Do(c.NewDeleteRequest(str.ConvertDialogs(id)))
+  resp, err := client.Do(
+    f.Conf.NewDeleteRequest(str.ConvertDialogs(f.Id)),
+  )
   if err != nil {
     return 500, fr, err
   }
@@ -2075,7 +2150,7 @@ func (c *Configuration) DeleteDialogs(id int) (int, api.FriendRequest, error) {
   }
 
   if err := json.Unmarshal(data, &fr); err != nil {
-    return resp.StatusCode, fr, errors.New("не найдено ни одного сообщения для удаления")
+    return resp.StatusCode, fr, errors.New("не найдено ни одного сообщения для удаления") // original error message from api/v1
   }
 
   return resp.StatusCode, fr, nil

@@ -15,6 +15,7 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
+
   // search all dialogs
   d, err := c.Dialogs()
   if err != nil {
@@ -33,16 +34,7 @@ func main() {
     )
   }
   // search a special dialogs
-  su, err := c.SearchUser("morr")
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  if su.Id == 0 {
-    fmt.Println("user not found")
-    return
-  }
-  sd, err := c.SearchDialogs(su.Id)
+  sd, err := c.FastIdUser("morr").SearchDialogs()
   if err != nil {
     fmt.Println(err)
     return
@@ -57,8 +49,8 @@ func main() {
       v.To.Id, v.To.Nickname, v.To.Image.X160,
     )
   }
-  // delete a special dialogs, su.Id from SearchUser()
-  status, dd, err := c.DeleteDialogs(su.Id)
+  // delete a special dialogs
+  status, dd, err := c.FastIdUser("morr").DeleteDialogs()
   if err != nil {
     fmt.Println(status, err)
     return
