@@ -55,7 +55,7 @@ func (s *StatusBar) Play(cur int) {
 
 func (s *StatusBar) Finish() { fmt.Println() }
 
-func TestStart(t *testing.T) {
+func TestConfiguration(t *testing.T) {
   if app_test != "" && tok_test != "" {
     t.Logf("Found: %s and %s", app_test, tok_test)
   } else {
@@ -152,8 +152,7 @@ func TestAchievements(t *testing.T) {
 
 func TestAnimeVideos(t *testing.T) {
   c := conf()
-  f, _ := c.FastIdAnime("initial d first stage")
-  a, _ := c.SearchAnimeVideos(f)
+  a, _ := c.FastIdAnime("initial d first stage").SearchAnimeVideos()
 
   for _, v := range a {
     if v.Id == 24085 {
@@ -230,8 +229,7 @@ func TestPeople(t *testing.T) {
   s.Finish()
 
   c := conf()
-  fp, _ := c.FastIdPeople("Aya Hirano")
-  p, _ := c.People(fp)
+  p, _ := c.FastIdPeople("Aya Hirano").People()
 
   if p.Id == 4 || p.Job_title == "Сэйю"  {
     t.Logf("%s - found", p.Name)

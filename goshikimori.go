@@ -29,12 +29,16 @@ import (
 
 const site = "shikimori.me/api"
 
-var ok bool
-
 var client = &http.Client{}
 
 type Configuration struct {
   Application, AccessToken string
+}
+
+type FastId struct {
+  Id   int
+  Conf Configuration
+  Err  error
 }
 
 type Options struct {
@@ -75,17 +79,16 @@ func (o *Options) OptionsMessages() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { o.Page = "1" }
-  if l == 0 { o.Limit = "1" }
-  for i := 100001; i <= p; i++ { o.Page = "1" }
-  for i := 101; i <= l; i++ { o.Limit = "1" }
+  if p == 0 || p >= 100001 { o.Page = "1" }
+  if l == 0 || l >= 101 { o.Limit = "1" }
 
   target_map := map[string]int8{
     "inbox": 1, "private": 2, "sent": 3,
     "news": 4, "notifications": 5,
   }
-  _, ok = target_map[o.Type]
-  if !ok { o.Type = "news" }
+  _, ok := target_map[o.Type]; if !ok {
+    o.Type = "news"
+  }
 
   v := url.Values{}
   v.Add("type", o.Type)
@@ -99,14 +102,13 @@ func (o *Options) OptionsUserHistory() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { o.Page = "1" }
-  if l == 0 { o.Limit = "1" }
-  for i := 100001; i <= p; i++ { o.Page = "1" }
-  for i := 101; i <= l; i++ { o.Limit = "1" }
+  if p == 0 || p >= 100001 { o.Page = "1" }
+  if l == 0 || l >= 101 { o.Limit = "1" }
 
   target_map := map[string]int8{"Anime": 1, "Manga": 2}
-  _, ok = target_map[o.Target_type]
-  if !ok { o.Target_type = "Anime" }
+  _, ok := target_map[o.Target_type]; if !ok {
+    o.Target_type = "Anime"
+  }
 
   v := url.Values{}
   v.Add("page", o.Page)
@@ -123,10 +125,8 @@ func (o *Options) OptionsUsers() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { o.Page = "1" }
-  if l == 0 { o.Limit = "1" }
-  for i := 100001; i <= p; i++ { o.Page = "1" }
-  for i := 101; i <= l; i++ { o.Limit = "1" }
+  if p == 0 || p >= 100001 { o.Page = "1" }
+  if l == 0 || l >= 101 { o.Limit = "1" }
 
   v := url.Values{}
   v.Add("page", o.Page)
@@ -139,40 +139,42 @@ func (o *Options) OptionsAnime() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { o.Page = "1" }
-  if l == 0 { o.Limit = "1" }
-  for i := 100001; i <= p; i++ { o.Page = "1" }
-  for i := 51; i <= l; i++ { o.Limit = "1" }
+  if p == 0 || p >= 100001 { o.Page = "1" }
+  if l == 0 || l >= 51 { o.Limit = "1" }
 
   kind_map := map[string]int8{
     "tv": 1, "movie": 2, "ova": 3, "ona": 4,
     "special": 5, "music": 6,
     "tv_13": 7, "tv_24": 8, "tv_48": 9,
   }
-  _, ok = kind_map[o.Kind]
-  if !ok { o.Kind = "" }
+  _, ok_kind := kind_map[o.Kind]; if !ok_kind {
+    o.Kind = ""
+  }
 
   status_map := map[string]int8{
     "anons": 1, "ongoing": 2, "released": 3,
   }
-  _, ok = status_map[o.Status]
-  if !ok { o.Status = "" }
+  _, ok_status := status_map[o.Status]; if !ok_status {
+    o.Status = ""
+  }
 
   season_map := map[string]int8{
     "summer_2017": 1, "2016": 2, "2014_2016": 3, "199x": 4,
   }
-  _, ok = season_map[o.Season]
-  if !ok { o.Season = "" }
+  _, ok_season := season_map[o.Season]; if !ok_season {
+    o.Season = ""
+  }
 
   s, _ := strconv.Atoi(o.Score)
-  for i := 10; i <= s; i++ { o.Score = "" }
+  if s >= 10 { o.Score = "" }
 
   rating_map := map[string]int8{
     "none": 1, "g": 2, "pg": 3, "pg_13": 4,
     "r": 5, "r_plus": 6, "rx": 7,
   }
-  _, ok = rating_map[o.Rating]
-  if !ok { o.Rating = "" }
+  _, ok_rating := rating_map[o.Rating]; if !ok_rating {
+    o.Rating = ""
+  }
 
   v := url.Values{}
   v.Add("page", o.Page)
@@ -190,36 +192,37 @@ func (o *Options) OptionsManga() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { o.Page = "1" }
-  if l == 0 { o.Limit = "1" }
-  for i := 100001; i <= p; i++ { o.Page = "1" }
-  for i := 51; i <= l; i++ { o.Limit = "1" }
+  if p == 0 || p >= 100001 { o.Page = "1" }
+  if l == 0 || l >= 51 { o.Limit = "1" }
 
   kind_map := map[string]int8{
     "manga": 1, "manhwa": 2, "manhua": 3,
     "light_novel": 5, "novel": 6,
     "one_shot": 7, "doujin": 8,
   }
-  _, ok = kind_map[o.Kind]
-  if !ok { o.Kind = "" }
+  _, ok_kind := kind_map[o.Kind]; if !ok_kind {
+    o.Kind = ""
+  }
 
   status_map := map[string]int8{
     "anons": 1, "ongoing": 2, "released": 3,
     "paused": 4, "discontinued": 5,
   }
-  _, ok = status_map[o.Status]
-  if !ok { o.Status = "" }
+  _, ok_status := status_map[o.Status]; if !ok_status {
+    o.Status = ""
+  }
 
   season_map := map[string]int8{
     "summer_2017": 1, "spring_2016,fall_2016": 2,
     "2016,!winter_2016": 3, "2016": 4,
     "2014_2016": 5, "199x": 6,
   }
-  _, ok = season_map[o.Season]
-  if !ok { o.Season = "" }
+  _, ok_season := season_map[o.Season]; if !ok_season {
+    o.Season = ""
+  }
 
   s, _ := strconv.Atoi(o.Score)
-  for i := 10; i <= s; i++ { o.Score = "" }
+  if s >= 10 { o.Score = "" }
 
   v := url.Values{}
   v.Add("page", o.Page)
@@ -236,10 +239,8 @@ func (o *Options) OptionsClub() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { o.Page = "1" }
-  if l == 0 { o.Limit = "1" }
-  for i := 100001; i <= p; i++ { o.Page = "1" }
-  for i := 31; i <= l; i++ { o.Limit = "1" }
+  if p == 0 || p >= 100001 { o.Page = "1" }
+  if l == 0 || l >= 31 { o.Limit = "1" }
 
   v := url.Values{}
   v.Add("page", o.Page)
@@ -250,8 +251,9 @@ func (o *Options) OptionsClub() string {
 
 func (o *Options) OptionsCalendar() string {
   censored_map := map[string]int8{"true": 1, "false": 2}
-  _, ok = censored_map[o.Censored]
-  if !ok { o.Censored = "false" }
+  _, ok := censored_map[o.Censored]; if !ok {
+    o.Censored = "false"
+  }
 
   v := url.Values{}
   v.Add("censored", o.Censored)
@@ -263,22 +265,22 @@ func (o *Options) OptionsAnimeRates() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { o.Page = "1" }
-  if l == 0 { o.Limit = "1" }
-  for i := 100001; i <= p; i++ { o.Page = "1" }
-  for i := 5001; i <= l; i++ { o.Limit = "1" }
+  if p == 0 || p >= 100001 { o.Page = "1" }
+  if l == 0 || l >= 5001 { o.Limit = "1" }
 
   status_map := map[string]int8{
     "planned": 1, "watching": 2,
     "rewatching": 3, "completed": 4,
     "on_hold": 5, "dropped": 6,
   }
-  _, ok = status_map[o.Status]
-  if !ok { o.Status = "watching" }
+  _, ok_status := status_map[o.Status]; if !ok_status {
+    o.Status = "watching"
+  }
 
   censored_map := map[string]int8{"true": 1, "false": 2}
-  _, ok = censored_map[o.Censored]
-  if !ok { o.Censored = "false" }
+  _, ok_censored := censored_map[o.Censored]; if !ok_censored {
+    o.Censored = "false"
+  }
 
   v := url.Values{}
   v.Add("page", o.Page)
@@ -293,14 +295,13 @@ func (o *Options) OptionsMangaRates() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 { o.Page = "1" }
-  if l == 0 { o.Limit = "1" }
-  for i := 100001; i <= p; i++ { o.Page = "1" }
-  for i := 5001; i <= l; i++ { o.Limit = "1" }
+  if p == 0 || p >= 100001 { o.Page = "1" }
+  if l == 0 || l >= 5001 { o.Limit = "1" }
 
   censored_map := map[string]int8{"true": 1, "false": 2}
-  _, ok = censored_map[o.Censored]
-  if !ok { o.Censored = "false" }
+  _, ok := censored_map[o.Censored]; if !ok {
+    o.Censored = "false"
+  }
 
   v := url.Values{}
   v.Add("page", o.Page)
@@ -314,8 +315,9 @@ func (o *Options) OptionsPeople() string {
   kind_map := map[string]int8{
     "seyu": 1, "mangaka": 2, "producer": 3,
   }
-  _, ok = kind_map[o.Kind]
-  if !ok { o.Kind = "seyu" }
+  _, ok := kind_map[o.Kind]; if !ok {
+    o.Kind = "seyu"
+  }
 
   v := url.Values{}
   v.Add("kind", o.Kind)
@@ -325,8 +327,8 @@ func (o *Options) OptionsPeople() string {
 
 func (o *Options) OptionsClubInformation() string {
   p, _ := strconv.Atoi(o.Page)
-  if p == 0 { o.Page = "1" }
-  for i := 100001; i <= p; i++ { o.Page = "1" }
+
+  if p == 0 || p >= 100001 { o.Page = "1" }
 
   v := url.Values{}
   v.Add("page", o.Page)
@@ -781,103 +783,119 @@ func (c *Configuration) SearchManga(name string, r Result) ([]api.Mangas, error)
 }
 
 // Name: anime name.
-func (c *Configuration) FastIdAnime(name string) (int, error) {
+func (c *Configuration) FastIdAnime(name string) *FastId {
   var a []api.Animes
 
   resp, err := client.Do(c.NewGetRequest("animes?search=" + url.QueryEscape(name)))
   if err != nil {
-    return 0, err
+    return &FastId{Id: 0, Conf: *c, Err: err}
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return 0, err
+    return &FastId{Id: 0, Conf: *c, Err: err}
   }
 
   if err := json.Unmarshal(data, &a); err != nil {
-    return 0, err
+    return &FastId{Id: 0, Conf: *c, Err: err}
   }
 
-  return a[0].Id, nil
+  // if len == 0; we get panic: runtime error.
+  // To avoid a crash, process the error here.
+  //
+  // There is no point in processing the error. there is no place to catch it.
+  if len(a) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil} }
+
+  return &FastId{Id: a[0].Id, Conf: *c, Err: nil}
 }
 
 // Name: manga name.
-func (c *Configuration) FastIdManga(name string) (int, error) {
+func (c *Configuration) FastIdManga(name string) *FastId {
   var m []api.Mangas
 
   resp, err := client.Do(c.NewGetRequest("mangas?search=" + url.QueryEscape(name)))
   if err != nil {
-    return 0, err
+    return &FastId{Id: 0, Conf: *c, Err: err}
   }
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return 0, err
+    return &FastId{Id: 0, Conf: *c, Err: err}
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return 0, err
+    return &FastId{Id: 0, Conf: *c, Err: err}
   }
 
-  return m[0].Id, nil
+  // if len == 0; we get panic: runtime error.
+  // To avoid a crash, process the error here.
+  //
+  // There is no point in processing the error. there is no place to catch it.
+  if len(m) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil} }
+
+  return &FastId{Id: m[0].Id, Conf: *c, Err: nil}
 }
 
 // Name: club name.
-//
-// We always have 2 clubs.
-//
-// By default i made the first result(the most accurate) when searching for the 'Id'.
-func (c *Configuration) FastIdClub(name string) (int, error) {
+func (c *Configuration) FastIdClub(name string) *FastId {
   var cl []api.Clubs
 
   resp, err := client.Do(c.NewGetRequest("clubs?search=" + url.QueryEscape(name)))
   if err != nil {
-    return 0, err
+    return &FastId{Id: 0, Conf: *c, Err: err}
   }
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return 0, err
+    return &FastId{Id: 0, Conf: *c, Err: err}
   }
 
   if err := json.Unmarshal(data, &cl); err != nil {
-    return 0, err
+    return &FastId{Id: 0, Conf: *c, Err: err}
   }
 
-  return cl[0].Id, nil
+  // if len == 0; we get panic: runtime error.
+  // To avoid a crash, process the error here.
+  //
+  // There is no point in processing the error. there is no place to catch it.
+  if len(cl) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil} }
+
+  return &FastId{Id: cl[0].Id, Conf: *c, Err: nil}
 }
 
 // Name: people name.
-//
-// We always have 16 names.
-//
-// By default i made the first result(the most accurate) when searching for the 'Id'.
-func (c *Configuration) FastIdPeople(name string) (int, error) {
-  var p []api.AllPeople
+func (c *Configuration) FastIdPeople(name string) *FastId {
+  var ap []api.AllPeople
 
   resp, err := client.Do(c.NewGetRequest("people/search?search=" + url.QueryEscape(name)))
   if err != nil {
-    return 0, err
+    return &FastId{Id: 0, Conf: *c, Err: err}
   }
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return 0, err
+    return &FastId{Id: 0, Conf: *c, Err: err}
   }
 
-  if err := json.Unmarshal(data, &p); err != nil {
-    return 0, err
+  if err := json.Unmarshal(data, &ap); err != nil {
+    return &FastId{Id: 0, Conf: *c, Err: err}
   }
 
-  return p[0].Id, nil
+  // if len == 0; we get panic: runtime error.
+  // To avoid a crash, process the error here.
+  //
+  // There is no point in processing the error. there is no place to catch it.
+  if len(ap) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil} }
+
+  return &FastId{Id: ap[0].Id, Conf: *c, Err: nil}
 }
 
-// Id: anime id.
-func (c *Configuration) SearchAnimeScreenshots(id int) ([]api.AnimeScreenshots, error) {
+// *Configuration.FastIdAnime(name string).SearchAnimeScreenshots()
+func (f *FastId) SearchAnimeScreenshots() ([]api.AnimeScreenshots, error) {
   var s []api.AnimeScreenshots
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertAnime(id, "screenshots")))
+  resp, err := client.Do(f.Conf.NewGetRequest(str.ConvertAnime(f.Id, "screenshots")))
   if err != nil {
     return nil, err
   }
@@ -895,53 +913,59 @@ func (c *Configuration) SearchAnimeScreenshots(id int) ([]api.AnimeScreenshots, 
   return s, nil
 }
 
-// Id: anime id.
-func (c *Configuration) SearchAnimeFranchise(id int) (api.Franchise, error) {
-  var f api.Franchise
+// *Configuration.FastIdAnime(name string).SearchAnimeFranchise()
+func (f *FastId) SearchAnimeFranchise() (api.Franchise, error) {
+  var ff api.Franchise
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertFranchise(id, "animes")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertFranchise(f.Id, "animes")),
+  )
   if err != nil {
-    return f, err
+    return ff, err
   }
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return f, err
+    return ff, err
   }
 
-  if err := json.Unmarshal(data, &f); err != nil {
-    return f, err
+  if err := json.Unmarshal(data, &ff); err != nil {
+    return ff, err
   }
 
-  return f, nil
+  return ff, nil
 }
 
-// Id: manga id.
-func (c *Configuration) SearchMangaFranchise(id int) (api.Franchise, error) {
-  var f api.Franchise
+// *Configuration.FastIdManga(name string).SearchMangaFranchise()
+func (f *FastId) SearchMangaFranchise() (api.Franchise, error) {
+  var ff api.Franchise
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertFranchise(id, "mangas")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertFranchise(f.Id, "mangas")),
+  )
   if err != nil {
-    return f, err
+    return ff, err
   }
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return f, err
+    return ff, err
   }
 
-  if err := json.Unmarshal(data, &f); err != nil {
-    return f, err
+  if err := json.Unmarshal(data, &ff); err != nil {
+    return ff, err
   }
 
-  return f, nil
+  return ff, nil
 }
 
-// Id: anime id.
-func (c *Configuration) SearchAnimeExternalLinks(id int) ([]api.ExternalLinks, error) {
+// *Configuraiton.FastIdAnime(name string).SearchAnimeExternalLinks()
+func (f *FastId) SearchAnimeExternalLinks() ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertExternalLinks(id, "animes")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertExternalLinks(f.Id, "animes")),
+  )
   if err != nil {
     return nil, err
   }
@@ -958,11 +982,13 @@ func (c *Configuration) SearchAnimeExternalLinks(id int) ([]api.ExternalLinks, e
   return el, nil
 }
 
-// Id: manga id.
-func (c *Configuration) SearchMangaExternalLinks(id int) ([]api.ExternalLinks, error) {
+// *Configuraiton.FastIdManga(name string).SearchMangaExternalLinks()
+func (f *FastId) SearchMangaExternalLinks() ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertExternalLinks(id, "mangas")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertExternalLinks(f.Id, "mangas")),
+  )
   if err != nil {
     return nil, err
   }
@@ -979,11 +1005,13 @@ func (c *Configuration) SearchMangaExternalLinks(id int) ([]api.ExternalLinks, e
   return el, nil
 }
 
-// Id: anime id.
-func (c *Configuration) SearchSimilarAnime(id int) ([]api.Animes, error) {
+// *Configuraiton.FastIdAnime(name string).SearchSimilarAnime()
+func (f *FastId) SearchSimilarAnime() ([]api.Animes, error) {
   var a []api.Animes
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertSimilar(id, "animes")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertSimilar(f.Id, "animes")),
+  )
   if err != nil {
     return nil, err
   }
@@ -1001,11 +1029,13 @@ func (c *Configuration) SearchSimilarAnime(id int) ([]api.Animes, error) {
   return a, nil
 }
 
-// Id: manga id.
-func (c *Configuration) SearchSimilarManga(id int) ([]api.Mangas, error) {
+// *Configuraiton.FastIdManga(name string).SearchSimilarManga()
+func (f *FastId) SearchSimilarManga() ([]api.Mangas, error) {
   var m []api.Mangas
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertSimilar(id, "mangas")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertSimilar(f.Id, "mangas")),
+  )
   if err != nil {
     return nil, err
   }
@@ -1023,11 +1053,13 @@ func (c *Configuration) SearchSimilarManga(id int) ([]api.Mangas, error) {
   return m, nil
 }
 
-// Id: anime id.
-func (c *Configuration) SearchRelatedAnime(id int) ([]api.RelatedAnimes, error) {
+// *Configuraiton.FastIdAnime(name string).SearchRelatedAnime()
+func (f *FastId) SearchRelatedAnime() ([]api.RelatedAnimes, error) {
   var a []api.RelatedAnimes
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertRelated(id, "animes")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertRelated(f.Id, "animes")),
+  )
   if err != nil {
     return nil, err
   }
@@ -1045,11 +1077,13 @@ func (c *Configuration) SearchRelatedAnime(id int) ([]api.RelatedAnimes, error) 
   return a, nil
 }
 
-// Id: manga id.
-func (c *Configuration) SearchRelatedManga(id int) ([]api.RelatedMangas, error) {
+// *Configuraiton.FastIdManga(name string).SearchRelatedManga()
+func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, error) {
   var m []api.RelatedMangas
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertRelated(id, "mangas")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertRelated(f.Id, "mangas")),
+  )
   if err != nil {
     return nil, err
   }
@@ -1102,18 +1136,18 @@ func (c *Configuration) SearchClub(name string, r Result) ([]api.Clubs, error) {
   return cl, nil
 }
 
-// Id: club id.
-//
 // If 'Options' empty fields
 //	- Page: 1;
 //
 // 'Options' settings
 //	- Page: 100000 maximum;
-func (c *Configuration) SearchClubAnimes(id int, r Result) ([]api.Animes, error) {
+//
+// *Configuration.FastIdClub(name string).SearchClubAnimes(r Result)
+func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
   var a []api.Animes
 
   resp, err := client.Do(
-    c.NewGetRequest(str.ConvertClub(id, "animes") + "?" + r.OptionsClubInformation()),
+    f.Conf.NewGetRequest(str.ConvertClub(f.Id, "animes") + "?" + r.OptionsClubInformation()),
   )
   if err != nil {
     return nil, err
@@ -1132,18 +1166,18 @@ func (c *Configuration) SearchClubAnimes(id int, r Result) ([]api.Animes, error)
   return a, nil
 }
 
-// Id: club id.
-//
 // If 'Options' empty fields
 //	- Page: 1;
 //
 // 'Options' settings
 //	- Page: 100000 maximum;
-func (c *Configuration) SearchClubMangas(id int, r Result) ([]api.Mangas, error) {
+//
+// *Configuration.FastIdClub(name string).SearchClubMangas(r Result)
+func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
   var m []api.Mangas
 
   resp, err := client.Do(
-    c.NewGetRequest(str.ConvertClub(id, "mangas") + "?" + r.OptionsClubInformation()),
+    f.Conf.NewGetRequest(str.ConvertClub(f.Id, "mangas") + "?" + r.OptionsClubInformation()),
   )
   if err != nil {
     return nil, err
@@ -1162,18 +1196,18 @@ func (c *Configuration) SearchClubMangas(id int, r Result) ([]api.Mangas, error)
   return m, nil
 }
 
-// Id: club id.
-//
 // If 'Options' empty fields
 //	- Page: 1;
 //
 // 'Options' settings
 //	- Page: 100000 maximum;
-func (c *Configuration) SearchClubCharacters(id int, r Result) ([]api.CharacterInfo, error) {
+//
+// *Configuration.FastIdClub(name string).SearchClubCharacters(r Result)
+func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
   var ci []api.CharacterInfo
 
   resp, err := client.Do(
-    c.NewGetRequest(str.ConvertClub(id, "characters") + "?" + r.OptionsClubInformation()),
+    f.Conf.NewGetRequest(str.ConvertClub(f.Id, "characters") + "?" + r.OptionsClubInformation()),
   )
   if err != nil {
     return nil, err
@@ -1192,18 +1226,18 @@ func (c *Configuration) SearchClubCharacters(id int, r Result) ([]api.CharacterI
   return ci, nil
 }
 
-// Id: club id.
-//
 // If 'Options' empty fields
 //	- Page: 1;
 //
 // 'Options' settings
 //	- Page: 100000 maximum;
-func (c *Configuration) SearchClubClubs(id int, r Result) ([]api.Clubs, error) {
+//
+// *Configuration.FastIdClub(name string).SearchClubClubs(r Result)
+func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
   var cc []api.Clubs
 
   resp, err := client.Do(
-    c.NewGetRequest(str.ConvertClub(id, "clubs") + "?" + r.OptionsClubInformation()),
+    f.Conf.NewGetRequest(str.ConvertClub(f.Id, "clubs") + "?" + r.OptionsClubInformation()),
   )
   if err != nil {
     return nil, err
@@ -1222,18 +1256,18 @@ func (c *Configuration) SearchClubClubs(id int, r Result) ([]api.Clubs, error) {
   return cc, nil
 }
 
-// Id: club id.
-//
 // If 'Options' empty fields
 //	- Page: 1;
 //
 // 'Options' settings
 //	- Page: 100000 maximum;
-func (c *Configuration) SearchClubCollections(id int, r Result) ([]api.ClubCollections, error) {
+//
+// *Configuration.FastIdClub(name string).SearchClubCollections(r Result)
+func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, error) {
   var cc []api.ClubCollections
 
   resp, err := client.Do(
-    c.NewGetRequest(str.ConvertClub(id, "collections") + "?" + r.OptionsClubInformation()),
+    f.Conf.NewGetRequest(str.ConvertClub(f.Id, "collections") + "?" + r.OptionsClubInformation()),
   )
   if err != nil {
     return nil, err
@@ -1252,11 +1286,11 @@ func (c *Configuration) SearchClubCollections(id int, r Result) ([]api.ClubColle
   return cc, nil
 }
 
-// Id: club id.
-func (c *Configuration) SearchClubMembers(id int) ([]api.UserFriends, error) {
+// *Configuration.FastIdClub(name string).SearchClubMembers()
+func (f *FastId) SearchClubMembers() ([]api.UserFriends, error) {
   var uf []api.UserFriends
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertClub(id, "members")))
+  resp, err := client.Do(f.Conf.NewGetRequest(str.ConvertClub(f.Id, "members")))
   if err != nil {
     return nil, err
   }
@@ -1274,11 +1308,11 @@ func (c *Configuration) SearchClubMembers(id int) ([]api.UserFriends, error) {
   return uf, nil
 }
 
-// Id: club id.
-func (c *Configuration) SearchClubImages(id int) ([]api.ClubImages, error) {
+// *Configuration.FastIdClub(name string).SearchClubImages()
+func (f *FastId) SearchClubImages() ([]api.ClubImages, error) {
   var cm []api.ClubImages
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertClub(id, "images")))
+  resp, err := client.Do(f.Conf.NewGetRequest(str.ConvertClub(f.Id, "images")))
   if err != nil {
     return nil, err
   }
@@ -1296,11 +1330,13 @@ func (c *Configuration) SearchClubImages(id int) ([]api.ClubImages, error) {
   return cm, nil
 }
 
-// Id: club id.
-//
 // You can only get a StatusCode.
-func (c *Configuration) ClubJoin(id int) (int, error) {
-  resp, err := client.Do(c.NewPostRequest(str.ConvertClub(id, "join")))
+//
+// *Configuration.FastIdClub(name string).ClubJoin()
+func (f *FastId) ClubJoin() (int, error) {
+  resp, err := client.Do(
+    f.Conf.NewPostRequest(str.ConvertClub(f.Id, "join")),
+  )
   if err != nil {
     return 500, err
   }
@@ -1309,11 +1345,13 @@ func (c *Configuration) ClubJoin(id int) (int, error) {
   return resp.StatusCode, nil
 }
 
-// Id: club id.
-//
 // You can only get a StatusCode.
-func (c *Configuration) ClubLeave(id int) (int, error) {
-  resp, err := client.Do(c.NewPostRequest(str.ConvertClub(id, "leave")))
+//
+// *Configuration.FastIdClub(name string).ClubLeave()
+func (f *FastId) ClubLeave() (int, error) {
+  resp, err := client.Do(
+    f.Conf.NewPostRequest(str.ConvertClub(f.Id, "leave")),
+  )
   if err != nil {
     return 500, err
   }
@@ -1353,11 +1391,11 @@ func (c *Configuration) SearchAchievement(id int) ([]api.Achievements, error) {
   return a, nil
 }
 
-// Id: anime id.
-func (c *Configuration) SearchAnimeVideos(id int) ([]api.AnimeVideos, error) {
+// *Configuration.FastIdAnime(name string).SearchAnimeVideos()
+func (f *FastId) SearchAnimeVideos() ([]api.AnimeVideos, error) {
   var v []api.AnimeVideos
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertAnime(id, "videos")))
+  resp, err := client.Do(f.Conf.NewGetRequest(str.ConvertAnime(f.Id, "videos")))
   if err != nil {
     return nil, err
   }
@@ -1375,11 +1413,13 @@ func (c *Configuration) SearchAnimeVideos(id int) ([]api.AnimeVideos, error) {
   return v, nil
 }
 
-// Id: anime id.
-func (c *Configuration) SearchAnimeRoles(id int) ([]api.Roles, error) {
+// *Configuraiton.FastIdAnime(name string).SearchAnimeRoles()
+func (f *FastId) SearchAnimeRoles() ([]api.Roles, error) {
   var r []api.Roles
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertRoles(id, "animes")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertRoles(f.Id, "animes")),
+  )
   if err != nil {
     return nil, err
   }
@@ -1397,11 +1437,13 @@ func (c *Configuration) SearchAnimeRoles(id int) ([]api.Roles, error) {
   return r, nil
 }
 
-// Id: manga id.
-func (c *Configuration) SearchMangaRoles(id int) ([]api.Roles, error) {
+// *Configuraiton.FastIdManga(name string).SearchMangaRoles()
+func (f *FastId) SearchMangaRoles() ([]api.Roles, error) {
   var r []api.Roles
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertRoles(id, "mangas")))
+  resp, err := client.Do(
+    f.Conf.NewGetRequest(str.ConvertRoles(f.Id, "mangas")),
+  )
   if err != nil {
     return nil, err
   }
@@ -1827,99 +1869,101 @@ func (c *Configuration) SearchPeople(name string, r Result) ([]api.AllPeople, er
   return ap, nil
 }
 
-// Id: people id.
-func (c *Configuration) People(id int) (api.People, error) {
-  var ap api.People
+// *Configuraiton.FastIdPeople(name string).People()
+func (f *FastId) People() (api.People, error) {
+  var p api.People
 
-  resp, err := client.Do(c.NewGetRequest(str.ConvertPeople(id)))
+  resp, err := client.Do(f.Conf.NewGetRequest(str.ConvertPeople(f.Id)))
   if err != nil {
-    return ap, err
+    return p, err
   }
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return ap, err
+    return p, err
   }
 
-  if err := json.Unmarshal(data, &ap); err != nil {
-    return ap, err
+  if err := json.Unmarshal(data, &p); err != nil {
+    return p, err
   }
 
-  return ap, nil
+  return p, nil
 }
 
 // Linked_type: Anime, Manga, Ranobe, Person, Character.
-//
-// Id: anime/manga/ranobe/person/character id.
 //
 // Kind(required when Linked_type is Person): common, seyu, mangaka, producer, person.
-func (c *Configuration) FavoritesCreate(linked_type string, id int, kind string) (api.Favorites, error) {
-  var f api.Favorites
+//
+// *Configuraiton.FastIdAnime/FastIdManga(name string).FavoritesCreate(linked_type string, kind string)
+func (f *FastId) FavoritesCreate(linked_type string, kind string) (api.Favorites, error) {
+  var fa api.Favorites
 
   type_map := map[string]int8{"Anime": 1, "Manga": 2, "Ranobe": 3, "Person": 4, "Character": 5}
-  _, ok = type_map[linked_type]
-  if !ok { return f, errors.New("incorrect string, try again and watch the upper case") }
+  _, ok_type := type_map[linked_type]
+  if !ok_type { return fa, errors.New("incorrect string, try again and watch the upper case") }
 
   kind_map := map[string]int8{"common": 1, "seyu": 2, "mangaka": 3, "producer": 4, "person": 5}
-  _, ok = kind_map[kind]
-  if !ok { kind = "" }
+  _, ok_kind := kind_map[kind]
+  if !ok_kind { kind = "" }
 
-  resp, err := client.Do(c.NewPostRequest(str.ConvertFavorites(linked_type, id, kind)))
+  resp, err := client.Do(f.Conf.NewPostRequest(str.ConvertFavorites(linked_type, f.Id, kind)))
   if err != nil {
-    return f, err
+    return fa, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return f, err
+    return fa, err
   }
 
-  if err := json.Unmarshal(data, &f); err != nil {
-    return f, err
+  if err := json.Unmarshal(data, &fa); err != nil {
+    return fa, err
   }
 
-  return f, nil
+  return fa, nil
 }
 
 // Linked_type: Anime, Manga, Ranobe, Person, Character.
 //
-// Id: anime/manga/ranobe/person/character id.
-func (c *Configuration) FavoritesDelete(linked_type string, id int) (api.Favorites, error) {
-  var f api.Favorites
+// *Configuraiton.FastIdAnime/FastIdManga(name string).FavoritesDelete(linked_type string)
+func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
+  var ff api.Favorites
 
   type_map := map[string]int8{"Anime": 1, "Manga": 2, "Ranobe": 3, "Person": 4, "Character": 5}
-  _, ok = type_map[linked_type]
-  if !ok { return f, errors.New("incorrect string, try again and watch the upper case") }
+  _, ok_type := type_map[linked_type]
+  if !ok_type { return ff, errors.New("incorrect string, try again and watch the upper case") }
 
-  resp, err := client.Do(c.NewDeleteRequest(str.ConvertFavorites(linked_type, id, "")))
+  resp, err := client.Do(f.Conf.NewDeleteRequest(str.ConvertFavorites(linked_type, f.Id, "")))
   if err != nil {
-    return f, err
+    return ff, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return f, err
+    return ff, err
   }
 
-  if err := json.Unmarshal(data, &f); err != nil {
-    return f, err
+  if err := json.Unmarshal(data, &ff); err != nil {
+    return ff, err
   }
 
-  return f, nil
+  return ff, nil
 }
 
-// FIXME: At the moment this function does not work. I get an error code - 422.
+// FIXME At the moment this function does not work. I get an error code - 422.
 //
 // Id: anime/manga/ranobe/person/character id.
 //
 // Position: a new position on the list, it starts from 0.
 //
 // You can only get a StatusCode.
-func (c *Configuration) FavoritesReorder(id, position int) (int, error) {
+//
+// *Configuraiton.FastIdAnime/FastIdManga(name string).FavoritesReorder(position int)
+func (f *FastId) FavoritesReorder(position int) (int, error) {
   resp, err := client.Do(
-    c.NewCustomPostRequest(str.ConvertFavoritesReorder(id), position),
+    f.Conf.NewCustomPostRequest(str.ConvertFavoritesReorder(f.Id), position),
   )
   if err != nil {
     return 500, err

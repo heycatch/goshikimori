@@ -15,47 +15,31 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
 
-  fa, err := c.FastIdAnime("initial d")
+  fa, err := c.FastIdAnime("initial d").SearchAnimeFranchise()
   if err != nil {
     fmt.Println(err)
     return
   }
-  if fa == 0 {
-    fmt.Println("anime not found")
+  if len(fa.Nodes) == 0 {
+    fmt.Println("anime franchise not found")
     return
   }
-  fr, err := c.SearchAnimeFranchise(fa)
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  if len(fr.Nodes) == 0 {
-    fmt.Println("franchise not found")
-    return
-  }
-  for _, v := range fr.Nodes {
+  for _, v := range fa.Nodes {
     fmt.Println(v.Id, v.Name, v.Kind)
   }
+
   fmt.Println()
-  fm, err := c.FastIdManga("initial d")
+
+  fm, err := c.FastIdManga("naruto").SearchMangaFranchise()
   if err != nil {
     fmt.Println(err)
     return
   }
-  if fm == 0 {
-    fmt.Println("manga not found")
+  if len(fm.Nodes) == 0 {
+    fmt.Println("manga franchise not found")
     return
   }
-  frr, err := c.SearchMangaFranchise(fm)
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  if len(frr.Nodes) == 0 {
-    fmt.Println("franchise not found")
-    return
-  }
-  for _, v := range frr.Nodes {
+  for _, v := range fm.Nodes {
     fmt.Println(v.Id, v.Name, v.Kind)
   }
 }

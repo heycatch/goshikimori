@@ -14,16 +14,7 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  f, err := c.FastIdAnime("initial d first stage")
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  if f == 0 {
-    fmt.Println("Id not found")
-    return
-  }
-  w, err := c.SearchAnimeVideos(f)
+  w, err := c.FastIdAnime("initial d first stage").SearchAnimeVideos()
   if err != nil {
     fmt.Println(err)
     return

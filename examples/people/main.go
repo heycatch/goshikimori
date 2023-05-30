@@ -23,22 +23,16 @@ func main() {
   }
 
   for _, v := range sp {
-    fmt.Println(v)
+    fmt.Println(v.Id, v.Name, v.Russian, v.Image.Original)
   }
 
-  fp, err := c.FastIdPeople("Aya Hirano")
+  p, err := c.FastIdPeople("Aya Hirano").People()
   if err != nil {
     fmt.Println(err)
     return
   }
-  if fp == 0 {
+  if p.Id == 0 {
     fmt.Println("people not found")
-    return
-  }
-
-  p, err := c.People(fp)
-  if err != nil {
-    fmt.Println(err)
     return
   }
 

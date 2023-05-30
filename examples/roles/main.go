@@ -12,63 +12,38 @@ func conf() *g.Configuration {
   )
 }
 
-func rolesAnime() {
+func main() {
   c := conf()
-  f, err := c.FastIdAnime("naruto")
+
+  a, err := c.FastIdAnime("naruto").SearchAnimeRoles()
   if err != nil {
     fmt.Println(err)
     return
   }
-  if f == 0 {
+  if len(a) == 0 {
     fmt.Println("Anime not found")
     return
   }
-  r, err := c.SearchMangaRoles(f)
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  if len(r) == 0 {
-    fmt.Println("Roles not found")
-    return
-  }
-  for _, v := range r {
+  for _, v := range a {
     fmt.Println(
       v.Roles, v.Roles_Russian,
       v.Character.Id, v.Character.Name,
     )
   }
-}
 
-func rolesManga() {
-  c := conf()
-  f, err := c.FastIdManga("naruto")
+  m, err := c.FastIdManga("naruto").SearchMangaRoles()
   if err != nil {
     fmt.Println(err)
     return
   }
-  if f == 0 {
+  if len(m) == 0 {
     fmt.Println("Manga not found")
     return
   }
-  r, err := c.SearchMangaRoles(f)
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  if len(r) == 0 {
-    fmt.Println("Roles not found")
-    return
-  }
-  for _, v := range r {
+  for _, v := range m {
     fmt.Println(
       v.Roles, v.Roles_Russian,
       v.Character.Id, v.Character.Name,
     )
   }
-}
-
-func main() {
-  rolesAnime()
-  rolesManga()
 }

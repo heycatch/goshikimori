@@ -15,16 +15,7 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
 
-  fa, err := c.FastIdAnime("initial d")
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  if fa == 0 {
-    fmt.Println("anime not found")
-    return
-  }
-  fra, err := c.SearchAnimeExternalLinks(fa)
+  fra, err := c.FastIdAnime("initial d").SearchAnimeExternalLinks()
   if err != nil {
     fmt.Println(err)
     return
@@ -36,17 +27,10 @@ func main() {
   for _, v := range fra {
     fmt.Println(v.Id, v.Kind, v.Url, v.Source, v.Entry_type)
   }
+
   fmt.Println()
-  fm, err := c.FastIdManga("initial d")
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  if fm == 0 {
-    fmt.Println("manga not found")
-    return
-  }
-  frm, err := c.SearchMangaExternalLinks(fm)
+
+  frm, err := c.FastIdManga("initial d").SearchMangaExternalLinks()
   if err != nil {
     fmt.Println(err)
     return

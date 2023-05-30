@@ -14,16 +14,7 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  a, err := c.FastIdAnime("initial d")
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  if a == 0 {
-    fmt.Println("Anime not found")
-    return
-  }
-  s, err := c.SearchAnimeScreenshots(a)
+  s, err := c.FastIdAnime("initial d").SearchAnimeScreenshots()
   if err != nil {
     fmt.Println(err)
     return

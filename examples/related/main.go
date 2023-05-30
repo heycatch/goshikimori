@@ -12,52 +12,35 @@ func conf() *g.Configuration {
   )
 }
 
-func relatedAnime() {
+func main() {
   c := conf()
-  a, err := c.FastIdAnime("initial d second stage")
+
+  a, err := c.FastIdAnime("initial d second stage").SearchRelatedAnime()
   if err != nil {
     fmt.Println(err)
     return
   }
-  if a == 0 {
-    fmt.Println("Anime not found")
+  if len(a) == 0 {
+    fmt.Println("anime not found")
     return
   }
-  r, err := c.SearchRelatedAnime(a)
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  for _, v := range r {
+  for _, v := range a {
     fmt.Println(v.Relation, v.Relation_Russian, v.Anime.Score)
   }
-}
 
-func relatedManga() {
-  c := conf()
-  m, err := c.FastIdManga("vampire knight")
+  m, err := c.FastIdManga("vampire knight").SearchRelatedManga()
   if err != nil {
     fmt.Println(err)
     return
   }
-  if m == 0 {
+  if len(m) == 0 {
     fmt.Println("Manga not found")
     return
   }
-  r, err := c.SearchRelatedManga(m)
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  for _, v := range r {
+  for _, v := range m {
     fmt.Println(
       v.Relation, v.Relation_Russian,
       v.Manga.Score, v.Manga.Status,
     )
   }
-}
-
-func main() {
-  relatedAnime()
-  relatedManga()
 }
