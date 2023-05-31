@@ -42,7 +42,7 @@ type FastId struct {
 }
 
 type Options struct {
-  Page, Limit, Kind, Status, Season, Score, Rating, Censored, Type, Target_id, Target_type string
+  Page, Limit, Kind, Status, Season, Score, Rating, Censored, Type, Target_id, Target_type, Duration, Mylist string
 }
 
 type Result interface {
@@ -176,6 +176,25 @@ func (o *Options) OptionsAnime() string {
     o.Rating = ""
   }
 
+  duration_map := map[string]int8{"S": 1, "D": 2, "F": 3}
+  _, ok_dur := duration_map[o.Duration]; if !ok_dur {
+    o.Duration = ""
+  }
+
+  mylist_map := map[string]int8{
+    "planned": 1, "watching": 2,
+    "rewatching": 3, "completed": 4,
+    "on_hold": 5, "dropped": 6,
+  }
+  _, ok_mylist := mylist_map[o.Mylist]; if !ok_mylist {
+    o.Mylist = ""
+  }
+
+  censored_map := map[string]int8{"true": 1, "false": 2}
+  _, ok_censored := censored_map[o.Censored]; if !ok_censored {
+    o.Censored = "false"
+  }
+
   v := url.Values{}
   v.Add("page", o.Page)
   v.Add("limit", o.Limit)
@@ -184,6 +203,9 @@ func (o *Options) OptionsAnime() string {
   v.Add("season", o.Season)
   v.Add("score", o.Score)
   v.Add("rating", o.Rating)
+  v.Add("duration", o.Duration)
+  v.Add("censored", o.Censored)
+  v.Add("mylist", o.Mylist)
 
   return v.Encode()
 }
@@ -224,6 +246,20 @@ func (o *Options) OptionsManga() string {
   s, _ := strconv.Atoi(o.Score)
   if s >= 10 { o.Score = "" }
 
+  censored_map := map[string]int8{"true": 1, "false": 2}
+  _, ok_censored := censored_map[o.Censored]; if !ok_censored {
+    o.Censored = "false"
+  }
+
+  mylist_map := map[string]int8{
+    "planned": 1, "watching": 2,
+    "rewatching": 3, "completed": 4,
+    "on_hold": 5, "dropped": 6,
+  }
+  _, ok_mylist := mylist_map[o.Mylist]; if !ok_mylist {
+    o.Mylist = ""
+  }
+
   v := url.Values{}
   v.Add("page", o.Page)
   v.Add("limit", o.Limit)
@@ -231,6 +267,8 @@ func (o *Options) OptionsManga() string {
   v.Add("status", o.Status)
   v.Add("season", o.Season)
   v.Add("score", o.Score)
+  v.Add("censored", o.Censored)
+  v.Add("mylist", o.Mylist)
 
   return v.Encode()
 }
@@ -699,18 +737,19 @@ func (c *Configuration) WhoAmi() (api.Who, error) {
 //	- Status: anons, ongoing, released;
 //	- Season: summer_2017, 2016, 2014_2016, 199x;
 //	- Score: 9 maximum;
+//  - Duration: S, D, F;
 //	- Rating: none, g, pg, pg_13, r, r_plus, rx;
+//	- Censored: true, false;
+//	- Mylist: planned, watching, rewatching, completed, on_hold, dropped;
 //	- Search: default search;
 //
 // [RandomAnime]: https://github.com/vexilology/goshikimori/blob/main/examples/random/main.go
 //
-// FIXME
-//	- Duration: not supported;
+// Set to true to discard hentai, yaoi and yuri.
+//
 //	- Genre: not supported;
 //	- Studio: not supported;
 //	- Franchise: not supported;
-//	- Censored: not supported;
-//	- Mylist: not supported;
 //	- Ids: not supported;
 //	- Exclude_ids: not supported;
 func (c *Configuration) SearchAnime(name string, r Result) ([]api.Animes, error) {
@@ -755,16 +794,17 @@ func (c *Configuration) SearchAnime(name string, r Result) ([]api.Animes, error)
 //	- Status: anons, ongoing, released, paused, discontinued;
 //	- Season: summer_2017, "spring_2016,fall_2016", "2016,!winter_2016", 2016, 2014_2016, 199x;
 //	- Score: 9 maximum;
+//	- Censored: true, false;
+//	- Mylist: planned, watching, rewatching, completed, on_hold, dropped;
 //	- Search: default search;
 //
 // [RandomManga]: https://github.com/vexilology/goshikimori/blob/main/examples/random/main.go
 //
-// FIXME
+// Set to true to discard hentai, yaoi and yuri.
+//
 //	- Genre: not supported;
 //	- Publisher: not supported;
 //	- Franchise: not supported;
-//	- Censored: not supported;
-//	- Mylist: not supported;
 //	- Ids: not supported;
 //	- Exclude_ids: not supported;
 func (c *Configuration) SearchManga(name string, r Result) ([]api.Mangas, error) {
@@ -791,11 +831,6 @@ func (c *Configuration) SearchManga(name string, r Result) ([]api.Mangas, error)
 }
 
 // Name: user name.
-//
-// FIXME with an invalid name we can get "id: 0".
-// This is an existing user, we need a workaround
-// so we don't need to redirect to a nil user.
-// P.S. changing the value from 0 to -1 will not help, this user also exists.
 func (c *Configuration) FastIdUser(name string) *FastId {
   var u api.Users
 

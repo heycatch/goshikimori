@@ -157,9 +157,10 @@ func TestOptionsUsers(t *testing.T) {
 func TestOptionsAnime(t *testing.T) {
   empty := Options{
     Page: "", Limit: "", Kind: "", Status: "",
-    Season: "", Score: "", Rating: "",
+    Season: "", Score: "", Rating: "", Duration: "",
+    Censored: "", Mylist: "",
   }
-  if empty.OptionsAnime() == "kind=&limit=1&page=1&rating=&score=&season=&status=" {
+  if empty.OptionsAnime() == "censored=false&duration=&kind=&limit=1&mylist=&page=1&rating=&score=&season=&status=" {
     t.Log("Empty OptionsAnime passed")
   } else {
     t.Error("Empty OptionsAnime failed")
@@ -168,8 +169,9 @@ func TestOptionsAnime(t *testing.T) {
   big := Options{
     Page: "100002", Limit: "52", Kind: "11111111", Status: "111111111",
     Season: "1111111111", Score: "111111111111", Rating: "10",
+    Duration: "11111111111111", Censored: "111111111111111", Mylist: "1111111111111111",
   }
-  if big.OptionsAnime() == "kind=&limit=1&page=1&rating=&score=&season=&status=" {
+  if big.OptionsAnime() == "censored=false&duration=&kind=&limit=1&mylist=&page=1&rating=&score=&season=&status=" {
     t.Log("Big OptionsAnime passed")
   } else {
     t.Error("Big OptionsAnime failed")
@@ -177,9 +179,10 @@ func TestOptionsAnime(t *testing.T) {
 
   zero := Options{
     Page: "0", Limit: "0", Kind: "0", Status: "0",
-    Season: "0", Score: "0", Rating: "0",
+    Season: "0", Score: "0", Rating: "0", Duration: "0",
+    Censored: "0", Mylist: "0",
   }
-  if zero.OptionsAnime() == "kind=&limit=1&page=1&rating=&score=0&season=&status=" {
+  if zero.OptionsAnime() == "censored=false&duration=&kind=&limit=1&mylist=&page=1&rating=&score=0&season=&status=" {
     t.Log("Zero OptionsAnime passed")
   } else {
     t.Error("Zero OptionsAnime failed")
@@ -187,9 +190,10 @@ func TestOptionsAnime(t *testing.T) {
 
   normal := Options{
     Page: "2", Limit: "12", Kind: "tv", Status: "released",
-    Season: "199x", Score: "8", Rating: "r",
+    Season: "199x", Score: "8", Rating: "r", Duration: "D",
+    Censored: "true", Mylist: "watching",
   }
-  if normal.OptionsAnime() == "kind=tv&limit=12&page=2&rating=r&score=8&season=199x&status=released" {
+  if normal.OptionsAnime() == "censored=true&duration=D&kind=tv&limit=12&mylist=watching&page=2&rating=r&score=8&season=199x&status=released" {
     t.Log("Normal OptionsAnime passed")
   } else {
     t.Error("Normal OptionsAnime failed")
@@ -199,9 +203,9 @@ func TestOptionsAnime(t *testing.T) {
 func TestOptionsManga(t *testing.T) {
   empty := Options{
     Page: "", Limit: "", Kind: "", Status: "",
-    Season: "", Score: "",
+    Season: "", Score: "", Censored: "", Mylist: "",
   }
-  if empty.OptionsManga() == "kind=&limit=1&page=1&score=&season=&status=" {
+  if empty.OptionsManga() == "censored=false&kind=&limit=1&mylist=&page=1&score=&season=&status=" {
     t.Log("Empty OptionsManga passed")
   } else {
     t.Error("Empty OptionsManga failed")
@@ -210,8 +214,9 @@ func TestOptionsManga(t *testing.T) {
   big := Options{
     Page: "100002", Limit: "52", Kind: "11111111", Status: "111111111",
     Season: "1111111111", Score: "1111111111",
+    Censored: "11111111111", Mylist: "11111111111111",
   }
-  if big.OptionsManga() == "kind=&limit=1&page=1&score=&season=&status=" {
+  if big.OptionsManga() == "censored=false&kind=&limit=1&mylist=&page=1&score=&season=&status=" {
     t.Log("Big OptionsManga passed")
   } else {
     t.Error("Big OptionsManga failed")
@@ -219,9 +224,9 @@ func TestOptionsManga(t *testing.T) {
 
   zero := Options{
     Page: "0", Limit: "0", Kind: "0", Status: "0",
-    Season: "0", Score: "0",
+    Season: "0", Score: "0", Censored: "0", Mylist: "0",
   }
-  if zero.OptionsManga() == "kind=&limit=1&page=1&score=0&season=&status=" {
+  if zero.OptionsManga() == "censored=false&kind=&limit=1&mylist=&page=1&score=0&season=&status=" {
     t.Log("Zero OptionsManga passed")
   } else {
     t.Error("Zero OptionsManga failed")
@@ -229,9 +234,9 @@ func TestOptionsManga(t *testing.T) {
 
   normal := Options{
     Page: "4", Limit: "5", Kind: "manga", Status: "anons",
-    Season: "summer_2017", Score: "7",
+    Season: "summer_2017", Score: "7", Censored: "false", Mylist: "planned",
   }
-  if normal.OptionsManga() == "kind=manga&limit=5&page=4&score=7&season=summer_2017&status=anons" {
+  if normal.OptionsManga() == "censored=false&kind=manga&limit=5&mylist=planned&page=4&score=7&season=summer_2017&status=anons" {
     t.Log("Normal OptionsManga passed")
   } else {
     t.Error("Normal OptionsManga failed")
@@ -434,7 +439,8 @@ func TestAnimes(t *testing.T) {
   c := conf()
   o := &Options{
     Page: "1", Limit: "1", Kind: "", Status: "",
-    Season: "", Score: "", Rating: "",
+    Season: "", Score: "", Rating: "", Duration: "",
+    Censored: "", Mylist: "",
   }
   s, _ := c.SearchAnime("Initial D", o)
 
@@ -452,6 +458,7 @@ func TestMangas(t *testing.T) {
   o := &Options{
     Page: "1", Limit: "1", Kind: "", Status: "",
     Season: "", Score: "", Rating: "",
+    Censored: "", Mylist: "",
   }
   r, _ := c.SearchManga("Initial D", o)
 

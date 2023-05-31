@@ -16,7 +16,8 @@ func foundAnime() {
   c := conf()
   o := &g.Options{
     Page: "1", Limit: "2", Kind: "", Status: "released",
-    Season: "199x", Score: "", Rating: "",
+    Season: "199x", Score: "", Rating: "", Duration: "",
+    Censored: "", Mylist: "",
   }
   a, err := c.SearchAnime("initial d", o)
   if err != nil {
@@ -36,7 +37,7 @@ func foundManga() {
   c := conf()
   o := &g.Options{
     Page: "1", Limit: "1", Kind: "", Status: "released",
-    Season: "199x", Score: "8",
+    Season: "199x", Score: "8", Censored: "", Mylist: "",
   }
   m, err := c.SearchManga("initial d", o)
   if err != nil {
