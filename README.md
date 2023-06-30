@@ -5,23 +5,22 @@ A small library for interacting with shikimori, written in golang.
 
 ### Install
 ```bash
-go get github.com/vexilology/goshikimori
+go get github.com/heycatch/goshikimori
 ```
 
 ### Examples
-* [Click her](https://github.com/vexilology/goshikimori/tree/main/examples)
+* [Click her](https://github.com/heycatch/goshikimori/tree/main/examples)
 
 ### Documentation
 A large number of functions are now available. For convenience, it is better to use **godoc**.
 ```bash
 # Method #1: Use docker.
-git clone git@github.com:vexilology/goshikimori.git && cd goshikimori
+git clone git@github.com:heycatch/goshikimori.git && cd goshikimori
 make docker-build
 make docker-start
 
 # Open in browser.
-http://localhost:1337/pkg/github.com/vexilology/goshikimori/
-http://localhost:1337/pkg/github.com/vexilology/goshikimori/api/
+http://localhost:1337/pkg/github.com/heycatch/goshikimori/
 ```
 ```bash
 # Method #2: Install godoc.
@@ -33,12 +32,11 @@ export PATH=$PATH:$GOPATH/bin
 godoc --help
 
 # After install.
-git clone git@github.com:vexilology/goshikimori.git && cd goshikimori
+git clone git@github.com:heycatch/goshikimori.git && cd goshikimori
 make doc
 
 # Open in browser.
-http://localhost:1337/pkg/github.com/vexilology/goshikimori/
-http://localhost:1337/pkg/github.com/vexilology/goshikimori/api/
+http://localhost:1337/pkg/github.com/heycatch/goshikimori/
 ```
 
 ### Shikimori documentation

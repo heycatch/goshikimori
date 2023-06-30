@@ -6,7 +6,7 @@ import (
   "os"
   "net/http/httputil"
 
-  g "github.com/vexilology/goshikimori"
+  g "github.com/heycatch/goshikimori"
 )
 
 func conf() *g.Configuration {

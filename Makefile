@@ -1,10 +1,10 @@
-App := 
-Token := 
+App := Api Test
+Token := XadcAlKJ32gF-Dpjuk4mSdcciPRqaxYEhxAo4-pFvoU
 
-client_id := 
-client_secret := 
-refresh := 
-auth_code :=
+client_id := bce7ad35b631293ff006be882496b29171792c8839b5094115268da7a97ca34c
+client_secret := 811459eada36b14ff0cf0cc353f8162e72a7d6e6c7930b647a5c587d1beffe68
+refresh := P-HMUgXHWcrf-L6e2IZ531KxwXRGaFsJZc1bSPf-UKw
+auth_code := QwtuhrfZblfamTauRQaigfK4ofbAVhbKccocumQmd4A
 
 list:
 	@grep '^[^#[:space:]].*:' Makefile

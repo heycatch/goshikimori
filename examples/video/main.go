@@ -2,7 +2,7 @@ package main
 
 import (
   "fmt"
-  g "github.com/vexilology/goshikimori"
+  g "github.com/heycatch/goshikimori"
 )
 
 func conf() *g.Configuration {

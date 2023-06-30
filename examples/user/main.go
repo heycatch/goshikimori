@@ -4,7 +4,7 @@ import (
   "fmt"
   "time"
 
-  g "github.com/vexilology/goshikimori"
+  g "github.com/heycatch/goshikimori"
 )
 
 func conf() *g.Configuration {

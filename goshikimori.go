@@ -1,4 +1,4 @@
-// Copyright (C) 2023 vexilology <hey_h0n3y@protonmail.com>.
+// Copyright (C) 2023 heycatch <hey_h0n3y@protonmail.com>.
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file.
@@ -7,7 +7,7 @@
 //
 // More information can be found in the [examples] folder.
 //
-// [examples]: https://github.com/vexilology/goshikimori/blob/main/examples/
+// [examples]: https://github.com/heycatch/goshikimori/blob/main/examples/
 package goshikimori
 
 import (
@@ -23,8 +23,8 @@ import (
   "errors"
   "bytes"
 
-  "github.com/vexilology/goshikimori/api"
-  "github.com/vexilology/goshikimori/str"
+  "github.com/heycatch/goshikimori/api"
+  "github.com/heycatch/goshikimori/str"
 )
 
 const site = "shikimori.me/api"
@@ -63,14 +63,14 @@ type Result interface {
 //
 // To register the application, follow the link from [OAuth].
 //
-// [OAuth]: https://github.com/vexilology/goshikimori#shikimori-documentation
+// [OAuth]: https://github.com/heycatch/goshikimori#shikimori-documentation
 func Add(app, tok string) *Configuration {
   return &Configuration{Application: app, AccessToken: tok}
 }
 
 // String formatting for achievements search. Check [example].
 //
-// [example]: https://github.com/vexilology/goshikimori/blob/main/examples/achievements/main.go
+// [example]: https://github.com/heycatch/goshikimori/blob/main/examples/achievements/main.go
 func NekoSearch(name string) string {
   return strings.Replace(strings.ToLower(name), " ", "_", -1)
 }
@@ -743,7 +743,7 @@ func (c *Configuration) WhoAmi() (api.Who, error) {
 //	- Mylist: planned, watching, rewatching, completed, on_hold, dropped;
 //	- Search: default search;
 //
-// [RandomAnime]: https://github.com/vexilology/goshikimori/blob/main/examples/random/main.go
+// [RandomAnime]: https://github.com/heycatch/goshikimori/blob/main/examples/random/main.go
 //
 // Set to true to discard hentai, yaoi and yuri.
 //
@@ -798,7 +798,7 @@ func (c *Configuration) SearchAnime(name string, r Result) ([]api.Animes, error)
 //	- Mylist: planned, watching, rewatching, completed, on_hold, dropped;
 //	- Search: default search;
 //
-// [RandomManga]: https://github.com/vexilology/goshikimori/blob/main/examples/random/main.go
+// [RandomManga]: https://github.com/heycatch/goshikimori/blob/main/examples/random/main.go
 //
 // Set to true to discard hentai, yaoi and yuri.
 //
@@ -1453,7 +1453,7 @@ func (f *FastId) ClubLeave() (int, error) {
 //
 // Check [example].
 //
-// [example]: https://github.com/vexilology/goshikimori/blob/main/examples/achievements/main.go
+// [example]: https://github.com/heycatch/goshikimori/blob/main/examples/achievements/main.go
 //
 // *Configuration.FastIdUser(name string).SearchAchievement()
 func (f *FastId) SearchAchievement() ([]api.Achievements, error) {
