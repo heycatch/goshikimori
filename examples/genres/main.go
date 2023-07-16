@@ -24,6 +24,6 @@ func main() {
     return
   }
   for _, v := range g {
-    fmt.Println(v.Id, v.Name, v.Russian, v.Kind)
+    fmt.Println(v.Id, v.Name, v.Russian, v.Kind, v.Entry_type)
   }
 }

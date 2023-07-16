@@ -367,10 +367,11 @@ type ExternalLinks struct {
 }
 
 type Genres struct {
-  Id      int    `json:"id"`
-  Name    string `json:"name"`
-  Russian string `json:"russian"`
-  Kind    string `json:"kind"`
+  Id         int    `json:"id"`
+  Name       string `json:"name"`
+  Russian    string `json:"russian"`
+  Kind       string `json:"kind"`
+  Entry_type string `json:"entry_type"`
 }
 
 // # Removed:
