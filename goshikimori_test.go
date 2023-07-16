@@ -86,6 +86,13 @@ func TestOptionsMessages(t *testing.T) {
     t.Error("Zero OptionsMessages failed")
   }
 
+  negative := Options{Type: "-1", Page: "-1", Limit: "-1"}
+  if negative.OptionsMessages() == "limit=1&page=1&type=news" {
+    t.Log("Negative OptionsMessages passed")
+  } else {
+    t.Error("Negative OptionsMessages failed")
+  }
+
   normal := Options{Type: "private", Page: "2", Limit: "10"}
   if normal.OptionsMessages() == "limit=10&page=2&type=private" {
     t.Log("Normal OptionsMessages passed")
@@ -116,6 +123,13 @@ func TestOptionsUserHistory(t *testing.T) {
     t.Error("Zero OptionsUserHistory failed")
   }
 
+  negative := Options{Page: "-1", Limit: "-1", Target_id: "", Target_type: "-1"}
+  if negative.OptionsUserHistory() == "limit=1&page=1&target_type=Anime" {
+    t.Log("Negative OptionsUserHistory passed")
+  } else {
+    t.Error("Negative OptionsUserHistory failed")
+  }
+
   normal := Options{Page: "3", Limit: "20", Target_id: "1337", Target_type: "Manga"}
   if normal.OptionsUserHistory() == "limit=20&page=3&target_id=1337&target_type=Manga" {
     t.Log("Zero OptionsUserHistory passed")
@@ -144,6 +158,13 @@ func TestOptionsUsers(t *testing.T) {
     t.Log("Zero OptionsUsers passed")
   } else {
     t.Error("Zero OptionsUsers failed")
+  }
+
+  negative := Options{Page: "-1", Limit: "-1"}
+  if negative.OptionsUsers() == "limit=1&page=1" {
+    t.Log("Negative OptionsUsers passed")
+  } else {
+    t.Error("Negative OptionsUsers failed")
   }
 
   normal := Options{Page: "7", Limit: "37"}
@@ -182,10 +203,21 @@ func TestOptionsAnime(t *testing.T) {
     Season: "0", Score: "0", Rating: "0", Duration: "0",
     Censored: "0", Mylist: "0",
   }
-  if zero.OptionsAnime() == "censored=false&duration=&kind=&limit=1&mylist=&page=1&rating=&score=0&season=&status=" {
+  if zero.OptionsAnime() == "censored=false&duration=&kind=&limit=1&mylist=&page=1&rating=&score=&season=&status=" {
     t.Log("Zero OptionsAnime passed")
   } else {
     t.Error("Zero OptionsAnime failed")
+  }
+
+  negative := Options{
+    Page: "-1", Limit: "-1", Kind: "-1", Status: "-1",
+    Season: "-1", Score: "-1", Rating: "-1", Duration: "-1",
+    Censored: "-1", Mylist: "-1",
+  }
+  if negative.OptionsAnime() == "censored=false&duration=&kind=&limit=1&mylist=&page=1&rating=&score=&season=&status=" {
+    t.Log("Negative OptionsAnime passed")
+  } else {
+    t.Error("Negative OptionsAnime failed")
   }
 
   normal := Options{
@@ -226,10 +258,20 @@ func TestOptionsManga(t *testing.T) {
     Page: "0", Limit: "0", Kind: "0", Status: "0",
     Season: "0", Score: "0", Censored: "0", Mylist: "0",
   }
-  if zero.OptionsManga() == "censored=false&kind=&limit=1&mylist=&page=1&score=0&season=&status=" {
+  if zero.OptionsManga() == "censored=false&kind=&limit=1&mylist=&page=1&score=&season=&status=" {
     t.Log("Zero OptionsManga passed")
   } else {
     t.Error("Zero OptionsManga failed")
+  }
+
+  negative := Options{
+    Page: "-1", Limit: "-1", Kind: "-1", Status: "-1",
+    Season: "-1", Score: "-1", Censored: "-1", Mylist: "-1",
+  }
+  if negative.OptionsManga() == "censored=false&kind=&limit=1&mylist=&page=1&score=&season=&status=" {
+    t.Log("Negative OptionsManga passed")
+  } else {
+    t.Error("Negative OptionsManga failed")
   }
 
   normal := Options{
@@ -265,6 +307,13 @@ func TestOptionsClub(t *testing.T) {
     t.Error("Zero OptionsClub failed")
   }
 
+  negative := Options{Page: "-1", Limit: "-1"}
+  if negative.OptionsClub() == "limit=1&page=1" {
+    t.Log("Negative OptionsClub passed")
+  } else {
+    t.Error("Negative OptionsClub failed")
+  }
+
   normal := Options{Page: "2", Limit: "22"}
   if normal.OptionsClub() == "limit=22&page=2" {
     t.Log("Normal OptionsClub passed")
@@ -293,6 +342,13 @@ func TestOptionsCalendar(t *testing.T) {
     t.Log("Zero OptionsCalendar passed")
   } else {
     t.Error("Zero OptionsCalendar failed")
+  }
+
+  negative := Options{Censored: "-1"}
+  if negative.OptionsCalendar() == "censored=false" {
+    t.Log("Negative OptionsCalendar passed")
+  } else {
+    t.Error("Negative OptionsCalendar failed")
   }
 
   normal := Options{Censored: "true"}
@@ -325,6 +381,13 @@ func TestOptionsAnimeRates(t *testing.T) {
     t.Error("Zero OptionsAnimeRates failed")
   }
 
+  negative := Options{Page:"-1", Limit: "-1", Status: "-1", Censored: "-1"}
+  if negative.OptionsAnimeRates() == "censored=false&limit=1&page=1&status=watching" {
+    t.Log("Negative OptionsAnimeRates passed")
+  } else {
+    t.Error("Negative OptionsAnimeRates failed")
+  }
+
   normal := Options{Page:"15", Limit: "405", Status: "dropped", Censored: "true"}
   if normal.OptionsAnimeRates() == "censored=true&limit=405&page=15&status=dropped" {
     t.Log("Normal OptionsAnimeRates passed")
@@ -353,6 +416,13 @@ func TestOptionsMangaRates(t *testing.T) {
     t.Log("Zero OptionsMangaRates passed")
   } else {
     t.Error("Zero OptionsMangaRates failed")
+  }
+
+  negative := Options{Page: "-1", Limit: "-1", Censored: "-1"}
+  if negative.OptionsMangaRates() == "censored=false&limit=1&page=1" {
+    t.Log("Negative OptionsMangaRates passed")
+  } else {
+    t.Error("Negative OptionsMangaRates failed")
   }
 
   normal := Options{Page: "33", Limit: "25", Censored: "true"}
@@ -385,6 +455,13 @@ func TestOptionsPeople(t *testing.T) {
     t.Error("Zero OptionsPeople failed")
   }
 
+  negative := Options{Kind: "-1"}
+  if negative.OptionsPeople() == "kind=seyu" {
+    t.Log("Negative OptionsPeople passed")
+  } else {
+    t.Error("Negative OptionsPeople failed")
+  }
+
   normal := Options{Kind: "mangaka"}
   if normal.OptionsPeople() == "kind=mangaka" {
     t.Log("Normal OptionsPeople passed")
@@ -413,6 +490,13 @@ func TestOptionsClubInformation(t *testing.T) {
     t.Log("Zero OptionsClubInformation passed")
   } else {
     t.Error("Zero OptionsClubInformation failed")
+  }
+
+  negative := Options{Page: "-1"}
+  if negative.OptionsClubInformation() == "page=1" {
+    t.Log("Negative OptionsClubInformation passed")
+  } else {
+    t.Error("Negative OptionsClubInformation failed")
   }
 
   normal := Options{Page: "1337"}
@@ -596,3 +680,4 @@ func TestPeople(t *testing.T) {
     t.Error("People not found")
   }
 }
+

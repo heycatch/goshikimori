@@ -79,8 +79,8 @@ func (o *Options) OptionsMessages() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 || p >= 100001 { o.Page = "1" }
-  if l == 0 || l >= 101 { o.Limit = "1" }
+  if p <= 0 || p >= 100001 { o.Page = "1" }
+  if l <= 0 || l >= 101 { o.Limit = "1" }
 
   target_map := map[string]int8{
     "inbox": 1, "private": 2, "sent": 3,
@@ -102,8 +102,8 @@ func (o *Options) OptionsUserHistory() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 || p >= 100001 { o.Page = "1" }
-  if l == 0 || l >= 101 { o.Limit = "1" }
+  if p <= 0 || p >= 100001 { o.Page = "1" }
+  if l <= 0 || l >= 101 { o.Limit = "1" }
 
   target_map := map[string]int8{"Anime": 1, "Manga": 2}
   _, ok := target_map[o.Target_type]; if !ok {
@@ -125,8 +125,8 @@ func (o *Options) OptionsUsers() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 || p >= 100001 { o.Page = "1" }
-  if l == 0 || l >= 101 { o.Limit = "1" }
+  if p <= 0 || p >= 100001 { o.Page = "1" }
+  if l <= 0 || l >= 101 { o.Limit = "1" }
 
   v := url.Values{}
   v.Add("page", o.Page)
@@ -139,8 +139,8 @@ func (o *Options) OptionsAnime() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 || p >= 100001 { o.Page = "1" }
-  if l == 0 || l >= 51 { o.Limit = "1" }
+  if p <= 0 || p >= 100001 { o.Page = "1" }
+  if l <= 0 || l >= 51 { o.Limit = "1" }
 
   kind_map := map[string]int8{
     "tv": 1, "movie": 2, "ova": 3, "ona": 4,
@@ -166,7 +166,7 @@ func (o *Options) OptionsAnime() string {
   }
 
   s, _ := strconv.Atoi(o.Score)
-  if s >= 10 { o.Score = "" }
+  if s <= 0 || s >= 10 { o.Score = "" }
 
   rating_map := map[string]int8{
     "none": 1, "g": 2, "pg": 3, "pg_13": 4,
@@ -214,8 +214,8 @@ func (o *Options) OptionsManga() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 || p >= 100001 { o.Page = "1" }
-  if l == 0 || l >= 51 { o.Limit = "1" }
+  if p <= 0 || p >= 100001 { o.Page = "1" }
+  if l <= 0 || l >= 51 { o.Limit = "1" }
 
   kind_map := map[string]int8{
     "manga": 1, "manhwa": 2, "manhua": 3,
@@ -244,7 +244,7 @@ func (o *Options) OptionsManga() string {
   }
 
   s, _ := strconv.Atoi(o.Score)
-  if s >= 10 { o.Score = "" }
+  if s <= 0 || s >= 10 { o.Score = "" }
 
   censored_map := map[string]int8{"true": 1, "false": 2}
   _, ok_censored := censored_map[o.Censored]; if !ok_censored {
@@ -277,8 +277,8 @@ func (o *Options) OptionsClub() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 || p >= 100001 { o.Page = "1" }
-  if l == 0 || l >= 31 { o.Limit = "1" }
+  if p <= 0 || p >= 100001 { o.Page = "1" }
+  if l <= 0 || l >= 31 { o.Limit = "1" }
 
   v := url.Values{}
   v.Add("page", o.Page)
@@ -303,8 +303,8 @@ func (o *Options) OptionsAnimeRates() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 || p >= 100001 { o.Page = "1" }
-  if l == 0 || l >= 5001 { o.Limit = "1" }
+  if p <= 0 || p >= 100001 { o.Page = "1" }
+  if l <= 0 || l >= 5001 { o.Limit = "1" }
 
   status_map := map[string]int8{
     "planned": 1, "watching": 2,
@@ -333,8 +333,8 @@ func (o *Options) OptionsMangaRates() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
 
-  if p == 0 || p >= 100001 { o.Page = "1" }
-  if l == 0 || l >= 5001 { o.Limit = "1" }
+  if p <= 0 || p >= 100001 { o.Page = "1" }
+  if l <= 0 || l >= 5001 { o.Limit = "1" }
 
   censored_map := map[string]int8{"true": 1, "false": 2}
   _, ok := censored_map[o.Censored]; if !ok {
@@ -366,7 +366,7 @@ func (o *Options) OptionsPeople() string {
 func (o *Options) OptionsClubInformation() string {
   p, _ := strconv.Atoi(o.Page)
 
-  if p == 0 || p >= 100001 { o.Page = "1" }
+  if p <= 0 || p >= 100001 { o.Page = "1" }
 
   v := url.Values{}
   v.Add("page", o.Page)
