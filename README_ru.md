@@ -1,3 +1,5 @@
+[EN](https://github.com/heycatch/goshikimori/blob/main/README.md) | RU
+
 ### О проекте
 Небольшая библиотека для взаимодействия с шикимори, написанная на языке golang.
 * Работа с API происходит только через OAuth2.
