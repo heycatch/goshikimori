@@ -20,6 +20,7 @@ docker-start:
 
 test:
 	go test -v
+	go test -v ./str
 
 run:
 	go run cmd/main.go
