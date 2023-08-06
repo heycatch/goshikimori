@@ -2321,7 +2321,7 @@ func (f *FastId) FavoritesReorder(position int) (int, error) {
 
   resp, err := client.Do(post)
   if err != nil {
-    return 500, err
+    return resp.StatusCode, err
   }
   defer resp.Body.Close()
 
@@ -2340,17 +2340,17 @@ func (f *FastId) AddIgnoreUser() (int, api.Ignore, error) {
 
   resp, err := client.Do(post)
   if err != nil {
-    return 500, i, err
+    return resp.StatusCode, i, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return 500, i, err
+    return resp.StatusCode, i, err
   }
 
   if err := json.Unmarshal(data, &i); err != nil {
-    return 500, i, err
+    return resp.StatusCode, i, err
   }
 
   return resp.StatusCode, i, nil
@@ -2368,17 +2368,17 @@ func (f *FastId) RemoveIgnoreUser() (int, api.Ignore, error) {
 
   resp, err := client.Do(remove)
   if err != nil {
-    return 500, i, err
+    return resp.StatusCode, i, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return 500, i, err
+    return resp.StatusCode, i, err
   }
 
   if err := json.Unmarshal(data, &i); err != nil {
-    return 500, i, err
+    return resp.StatusCode, i, err
   }
 
   return resp.StatusCode, i, nil
@@ -2448,13 +2448,13 @@ func (f *FastId) DeleteDialogs() (int, api.FriendRequest, error) {
 
   resp, err := client.Do(remove)
   if err != nil {
-    return 500, fr, err
+    return resp.StatusCode, fr, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return 500, fr, err
+    return resp.StatusCode, fr, err
   }
 
   if err := json.Unmarshal(data, &fr); err != nil {
@@ -2462,4 +2462,52 @@ func (f *FastId) DeleteDialogs() (int, api.FriendRequest, error) {
   }
 
   return resp.StatusCode, fr, nil
+}
+
+// *Configuration.FastIdUser(name string).UserBriefInfo()
+func (f *FastId) UserBriefInfo() (api.Info, error) {
+  var i api.Info
+  var client = &http.Client{}
+
+  get, cancel := f.Conf.NewGetRequestWithCancel(
+    str.ConvertUserBriefInfo(f.Id), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return i, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return i, err
+  }
+
+  if err := json.Unmarshal(data, &i); err != nil {
+    return i, err
+  }
+
+  return i, nil
+}
+
+// FIXME At the moment this function does not work. I get a response of 200 but no change.
+//
+// *Configuration.SignOut()
+func (c *Configuration) SignOut() (int, error) {
+  var client = &http.Client{}
+
+  get, cancel := c.NewGetRequestWithCancel(
+    "users/sign_out", 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  return resp.StatusCode, nil
 }

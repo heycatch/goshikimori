@@ -77,3 +77,7 @@ func ConvertDialogs(id int) string {
 func ConvertIgnoreUser(id int) string {
   return fmt.Sprintf("v2/users/%d/ignore", id)
 }
+
+func ConvertUserBriefInfo(id int) string {
+  return fmt.Sprintf("users/%d/info", id)
+}

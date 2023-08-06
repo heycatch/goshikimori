@@ -591,3 +591,17 @@ type SearchDialogs struct {
   From       UserFriends `json:"from"`
   To         UserFriends `json:"to"`
 }
+
+type Info struct {
+  Id             int       `json:"id"`
+  Nickname       string    `json:"nickname"`
+  Avatar         string    `json:"avatar"`
+  Image          UserSize  `json:"image"`
+  Last_online_at time.Time `json:"last_online_at"`
+  Name           string    `json:"name"`
+  Sex            string    `json:"sex"`
+  Website        string    `json:"website"`
+  Birth_on       int       `json:"birst_on"`
+  Full_years     int       `json:"full_years"`
+  Locale         string    `json:"locale"`
+}

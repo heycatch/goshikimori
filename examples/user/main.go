@@ -150,4 +150,17 @@ func main() {
       v.Moderator.Id, v.Moderator.Nickname,
     )
   }
+  time.Sleep(5 * time.Second)
+  fmt.Println("too many requests, wait 5 seconds")
+  // Brief user information
+  fi, err := c.FastIdUser("incarnati0n").UserBriefInfo()
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if fi.Id == 0 {
+    fmt.Println("user not found")
+    return
+  }
+  fmt.Println(fi.Id, fi.Name, fi.Last_online_at, fi.Full_years, fi.Birth_on)
 }
