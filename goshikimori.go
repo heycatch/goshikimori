@@ -2495,7 +2495,7 @@ func (f *FastId) UserBriefInfo() (api.Info, error) {
 // FIXME At the moment this function does not work. I get a response of 200 but no change.
 //
 // *Configuration.SignOut()
-func (c *Configuration) SignOut() (int, error) {
+func (c *Configuration) SignOut() (string, int, error) {
   var client = &http.Client{}
 
   get, cancel := c.NewGetRequestWithCancel(
@@ -2505,9 +2505,46 @@ func (c *Configuration) SignOut() (int, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return resp.StatusCode, err
+    return "", resp.StatusCode, err
   }
   defer resp.Body.Close()
 
-  return resp.StatusCode, nil
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return "", resp.StatusCode, err
+  }
+
+  return string(data), resp.StatusCode, nil
+}
+
+// Users having at least 1 completed animes and active during last month.
+//
+// Time to complete request increased to 40 seconds. Too big request.
+//
+// *Configuraiton.ActiveUsers()
+func (c *Configuration) ActiveUsers() ([]int, int, error) {
+  var ids []int
+  var client = &http.Client{}
+
+  get, cancel := c.NewGetRequestWithCancel(
+    "stats/active_users", 40,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return ids, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return ids, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &ids); err != nil {
+    return ids, resp.StatusCode, err
+  }
+
+  return ids, resp.StatusCode, nil
 }
