@@ -1549,7 +1549,7 @@ func (f *FastId) ClubJoin() (int, error) {
 
   resp, err := client.Do(post)
   if err != nil {
-    return 500, err
+    return resp.StatusCode, err
   }
   defer resp.Body.Close()
 
@@ -1569,7 +1569,7 @@ func (f *FastId) ClubLeave() (int, error) {
 
   resp, err := client.Do(post)
   if err != nil {
-    return 500, err
+    return resp.StatusCode, err
   }
   defer resp.Body.Close()
 
@@ -2329,7 +2329,7 @@ func (f *FastId) FavoritesReorder(position int) (int, error) {
 }
 
 // *Configuration.FastIdUser(name string).AddIgnoreUser()
-func (f *FastId) AddIgnoreUser() (int, api.Ignore, error) {
+func (f *FastId) AddIgnoreUser() (api.Ignore, int, error) {
   var i api.Ignore
   var client = &http.Client{}
 
@@ -2340,24 +2340,24 @@ func (f *FastId) AddIgnoreUser() (int, api.Ignore, error) {
 
   resp, err := client.Do(post)
   if err != nil {
-    return resp.StatusCode, i, err
+    return i, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return resp.StatusCode, i, err
+    return i, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &i); err != nil {
-    return resp.StatusCode, i, err
+    return i, resp.StatusCode, err
   }
 
-  return resp.StatusCode, i, nil
+  return i, resp.StatusCode, nil
 }
 
 // *Configuration.FastIdUser(name string).RemoveIgnoreUser()
-func (f *FastId) RemoveIgnoreUser() (int, api.Ignore, error) {
+func (f *FastId) RemoveIgnoreUser() (api.Ignore, int, error) {
   var i api.Ignore
   var client = &http.Client{}
 
@@ -2368,20 +2368,20 @@ func (f *FastId) RemoveIgnoreUser() (int, api.Ignore, error) {
 
   resp, err := client.Do(remove)
   if err != nil {
-    return resp.StatusCode, i, err
+    return i, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return resp.StatusCode, i, err
+    return i, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &i); err != nil {
-    return resp.StatusCode, i, err
+    return i, resp.StatusCode, err
   }
 
-  return resp.StatusCode, i, nil
+  return i, resp.StatusCode, nil
 }
 
 func (c *Configuration) Dialogs() ([]api.Dialogs, error) {
