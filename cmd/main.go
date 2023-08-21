@@ -24,7 +24,9 @@ func main() {
     return
   }
 
-  dump, err := httputil.DumpRequestOut(c.NewGetRequest("whoami"), true)
+  req, cancel := c.NewGetRequestWithCancel("whoami", 10)
+  defer cancel()
+  dump, err := httputil.DumpRequestOut(req, true)
   if err != nil {
     fmt.Println(err)
     return
