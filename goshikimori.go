@@ -40,7 +40,7 @@ type FastId struct {
 }
 
 type Options struct {
-  Page, Limit, Kind, Status, Season, Score, Rating, Censored, Type, Target_id, Target_type, Duration, Mylist string
+  Page, Limit, Kind, Status, Season, Score, Rating, Censored, Type, Target_id, Target_type, Duration, Mylist, Forum, Linked_id, Linked_type string
 }
 
 type Result interface {
@@ -55,6 +55,8 @@ type Result interface {
   OptionsMessages()        string
   OptionsPeople()          string
   OptionsClubInformation() string
+  OptionsTopics()          string
+  OptionsTopicsHot()       string
 }
 
 // You need to enter the application and the private key.
@@ -73,6 +75,49 @@ func NekoSearch(name string) string {
   return strings.Replace(strings.ToLower(name), " ", "_", -1)
 }
 
+func (o *Options) OptionsTopics() string {
+  p, _ := strconv.Atoi(o.Page)
+  l, _ := strconv.Atoi(o.Limit)
+
+  if p <= 0 || p >= 100001 { o.Page = "1" }
+  if l <= 0 || l >= 31 { o.Limit = "1" }
+
+  forum_map := map[string]int8{
+    "cosplay": 1, "animanga": 2, "site": 3,
+    "games": 4, "vn": 5, "contests": 6,
+    "offtopic": 7, "clubs": 8, "my_clubs": 9,
+    "critiques": 10, "news": 11,
+    "collections": 12, "articles": 13,
+  }
+  _, ok_forum := forum_map[o.Forum]; if !ok_forum {
+    o.Forum = "all"
+  }
+
+  li, _ := strconv.Atoi(o.Linked_id)
+  if li <= 0 { o.Linked_id = "" }
+
+  linked_type_map := map[string]int8{
+    "Anime": 1, "Manga": 2, "Ranobe": 3,
+    "Character": 4, "Person": 5, "Club": 6,
+    "ClubPage": 7, "Critique": 8, "Review": 9,
+    "Contest": 10, "CosplayGallery": 11,
+    "Collection": 12, "Article": 13,
+  }
+  _, ok_linked_type := linked_type_map[o.Linked_type]; if !ok_linked_type {
+    o.Linked_type = ""
+  }
+
+  v := url.Values{}
+  v.Add("page", o.Page)
+  v.Add("limit", o.Limit)
+  v.Add("forum", o.Forum)
+  // linked_id and linked_type are only used together
+  if o.Linked_id != "" && o.Linked_type != "" { v.Add("linked_id", o.Linked_id) }
+  if o.Linked_id != "" && o.Linked_type != "" { v.Add("linked_type", o.Linked_type) }
+
+  return v.Encode()
+}
+
 func (o *Options) OptionsMessages() string {
   p, _ := strconv.Atoi(o.Page)
   l, _ := strconv.Atoi(o.Limit)
@@ -80,11 +125,11 @@ func (o *Options) OptionsMessages() string {
   if p <= 0 || p >= 100001 { o.Page = "1" }
   if l <= 0 || l >= 101 { o.Limit = "1" }
 
-  target_map := map[string]int8{
+  type_map := map[string]int8{
     "inbox": 1, "private": 2, "sent": 3,
     "news": 4, "notifications": 5,
   }
-  _, ok := target_map[o.Type]; if !ok {
+  _, ok_type := type_map[o.Type]; if !ok_type {
     o.Type = "news"
   }
 
@@ -368,6 +413,17 @@ func (o *Options) OptionsClubInformation() string {
 
   v := url.Values{}
   v.Add("page", o.Page)
+
+  return v.Encode()
+}
+
+func (o *Options) OptionsTopicsHot() string {
+  l, _ := strconv.Atoi(o.Limit)
+
+  if l <= 0 || l >= 11 { o.Limit = "1" }
+
+  v := url.Values{}
+  v.Add("limit", o.Limit)
 
   return v.Encode()
 }
@@ -2329,8 +2385,8 @@ func (f *FastId) FavoritesReorder(position int) (int, error) {
 }
 
 // *Configuration.FastIdUser(name string).AddIgnoreUser()
-func (f *FastId) AddIgnoreUser() (api.Ignore, int, error) {
-  var i api.Ignore
+func (f *FastId) AddIgnoreUser() (api.IgnoreUser, int, error) {
+  var i api.IgnoreUser
   var client = &http.Client{}
 
   post, cancel := f.Conf.NewPostRequestWithCancel(
@@ -2357,8 +2413,8 @@ func (f *FastId) AddIgnoreUser() (api.Ignore, int, error) {
 }
 
 // *Configuration.FastIdUser(name string).RemoveIgnoreUser()
-func (f *FastId) RemoveIgnoreUser() (api.Ignore, int, error) {
-  var i api.Ignore
+func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, int, error) {
+  var i api.IgnoreUser
   var client = &http.Client{}
 
   remove, cancel := f.Conf.NewDeleteRequestWithCancel(
@@ -2547,4 +2603,182 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
   }
 
   return ids, resp.StatusCode, nil
+}
+
+// If 'Options' empty fields
+// 	- Page: 1;
+// 	- Limit: 1;
+//	- Forum: all;
+//	- Linked_id: empty field;
+//  - Linked_type: empty field;
+//
+// 'Options' settings
+//	- Page: 100000 maximum;
+//	- Limit: 30 maximum;
+//	- Forum: cosplay, animanga, site, games, vn, contests, offtopic,
+//           clubs, my_clubs, critiques, news, collections, articles;
+//  - Linked_id: number without limit;
+//  - Linked_type: Anime, Manga, Ranobe, Character, Person, Club, ClubPage,
+//                 Critique, Review, Contest, CosplayGallery, Collection, Article;
+//
+//  REMARK: linked_id and linked_type are only used together.
+//
+//	- Type: not supported;
+//
+//  TODO Add implementation of creating/updating/deleting a topic. This is not needed at this stage.
+func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
+  var t []api.Topics
+  var client = &http.Client{}
+
+  get, cancel := c.NewGetRequestWithCancel("topics?" + r.OptionsTopics(), 10)
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &t); err != nil {
+    return nil, resp.StatusCode, err
+  }
+
+  return t, resp.StatusCode, nil
+}
+
+func (c *Configuration) SearchTopicsUpdates(r Result) ([]api.TopicsUpdates, int, error) {
+  var t []api.TopicsUpdates
+  var client = &http.Client{}
+
+  get, cancel := c.NewGetRequestWithCancel("topics/updates?" + r.OptionsClub(), 10)
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &t); err != nil {
+    return nil, resp.StatusCode, err
+  }
+
+  return t, resp.StatusCode, nil
+}
+
+func (c *Configuration) SearchTopicsHot(r Result) ([]api.Topics, int, error) {
+  var t []api.Topics
+  var client = &http.Client{}
+
+  get, cancel := c.NewGetRequestWithCancel("topics/hot?" + r.OptionsTopicsHot(), 10)
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &t); err != nil {
+    return nil, resp.StatusCode, err
+  }
+
+  return t, resp.StatusCode, nil
+}
+
+// You can find the ID in functions such as: SearchTopics(), SearchTopicsUpdates(), SearchTopicsHot()
+func (c *Configuration) SearchTopicsId(id int) (api.TopicsId, int, error) {
+  var t api.TopicsId
+  var client = &http.Client{}
+
+  get, cancel := c.NewGetRequestWithCancel(str.ConvertTopicsId(id), 10)
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return t, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return t, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &t); err != nil {
+    return t, resp.StatusCode, err
+  }
+
+  return t, resp.StatusCode, nil
+}
+
+// You can find the ID in functions such as: SearchTopics(), SearchTopicsUpdates(), SearchTopicsHot()
+func (c *Configuration) AddIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
+  var i api.IgnoreTopic
+  var client = &http.Client{}
+
+  post, cancel := c.NewPostRequestWithCancel(
+    str.ConvertIgnoreTopic(id), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(post)
+  if err != nil {
+    return i, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return i, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &i); err != nil {
+    return i, resp.StatusCode, err
+  }
+
+  return i, resp.StatusCode, nil
+}
+
+// You can find the ID in functions such as: SearchTopics(), SearchTopicsUpdates(), SearchTopicsHot()
+func (c *Configuration) RemoveIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
+  var i api.IgnoreTopic
+  var client = &http.Client{}
+
+  remove, cancel := c.NewDeleteRequestWithCancel(
+    str.ConvertIgnoreTopic(id), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(remove)
+  if err != nil {
+    return i, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return i, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &i); err != nil {
+    return i, resp.StatusCode, err
+  }
+
+  return i, resp.StatusCode, nil
 }

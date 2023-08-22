@@ -81,3 +81,11 @@ func ConvertIgnoreUser(id int) string {
 func ConvertUserBriefInfo(id int) string {
   return fmt.Sprintf("users/%d/info", id)
 }
+
+func ConvertTopicsId(id int) string {
+  return fmt.Sprintf("topics/%d", id)
+}
+
+func ConvertIgnoreTopic(id int) string {
+  return fmt.Sprintf("v2/topics/%d/ignore", id)
+}

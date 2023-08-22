@@ -64,6 +64,68 @@ func TestConfiguration(t *testing.T) {
   }
 }
 
+func TestOptionsTopics(t *testing.T) {
+  empty := Options{
+    Page: "", Limit: "", Forum: "",
+    Linked_id: "", Linked_type: "",
+  }
+  if empty.OptionsTopics() == "forum=all&limit=1&page=1" {
+    t.Log("Empty OptionsTopics passed")
+  } else {
+    t.Error("Empty OptionsTopics failed")
+  }
+
+  big := Options{
+    Page: "100002", Limit: "32", Forum: "1111111111",
+    Linked_id: "222222222", Linked_type: "1111111111111111",
+  }
+  if big.OptionsTopics() == "forum=all&limit=1&page=1" {
+    t.Log("Big OptionsTopics passed")
+  } else {
+    t.Error("Big OptionsTopics failed")
+  }
+
+  zero := Options{
+    Page: "0", Limit: "0", Forum: "0",
+    Linked_id: "0", Linked_type: "0",
+  }
+  if zero.OptionsTopics() == "forum=all&limit=1&page=1" {
+    t.Log("Big OptionsTopics passed")
+  } else {
+    t.Error("Big OptionsTopics failed")
+  }
+
+  negative := Options{
+    Page: "-1", Limit: "-1", Forum: "-1",
+    Linked_id: "-1", Linked_type: "-1",
+  }
+  if negative.OptionsTopics() == "forum=all&limit=1&page=1" {
+    t.Log("Big OptionsTopics passed")
+  } else {
+    t.Error("Big OptionsTopics failed")
+  }
+
+  normal_one := Options{
+    Page: "5", Limit: "10", Forum: "animanga",
+    Linked_id: "342908", Linked_type: "Anime",
+  }
+  if normal_one.OptionsTopics() == "forum=animanga&limit=10&linked_id=342908&linked_type=Anime&page=5" {
+    t.Log("Normal-one OptionsTopics passed")
+  } else {
+    t.Error("Normal-one OptionsTopics failed")
+  }
+
+  normal_two := Options{
+    Page: "3", Limit: "8", Forum: "animanga",
+    Linked_id: "2323", Linked_type: "Manga",
+  }
+  if normal_two.OptionsTopics() == "forum=animanga&limit=8&linked_id=2323&linked_type=Manga&page=3" {
+    t.Log("Normal-two OptionsTopics passed")
+  } else {
+    t.Error("Normal-two OptionsTopics failed")
+  }
+}
+
 func TestOptionsMessages(t *testing.T) {
   empty := Options{Type: "", Page: "", Limit: ""}
   if empty.OptionsMessages() == "limit=1&page=1&type=news" {
@@ -680,4 +742,3 @@ func TestPeople(t *testing.T) {
     t.Error("People not found")
   }
 }
-

@@ -161,3 +161,19 @@ func TestConvertUserBriefInfo(t *testing.T) {
     t.Error("ConvertUserBriefInfo failed")
   }
 }
+
+func TestConvertTopicsId(t *testing.T) {
+  if ConvertTopicsId(1337) == "topics/1337" {
+    t.Log("ConvertTopicsId passed")
+  } else {
+    t.Error("ConvertTopicsId failed")
+  }
+}
+
+func TestConvertIgnoreTopic(t *testing.T) {
+  if ConvertIgnoreTopic(1337) == "v2/topics/1337/ignore" {
+    t.Log("ConvertIgnoreTopic passed")
+  } else {
+    t.Error("ConvertIgnoreTopic failed")
+  }
+}

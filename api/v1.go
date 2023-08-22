@@ -605,3 +605,101 @@ type Info struct {
   Full_years     int       `json:"full_years"`
   Locale         string    `json:"locale"`
 }
+
+// Topics solution. In this struct there are both anime and manga fields.
+type Animanga struct {
+  Id             int       `json:"id"`
+  Name           string    `json:"name"`
+  Russian        string    `json:"russian"`
+  Image          AnimeSize `json:"image"`
+  Url            string    `json:"url"`
+  Kind           string    `json:"kind"`
+  Score          string    `json:"score"`
+  Status         string    `json:"status"`
+  Episodes       int       `json:"episodes"`
+  Episodes_aired int       `json:"episodes_aired"`
+  Volumes        int       `json:"volumes"`
+  Chapters       int       `json:"chapters"`
+  Aired_on       string    `json:"aired_on"`
+  Released_on    string    `json:"released_on"`
+}
+
+// # Removed:
+//   Event: nil;
+//   Episode: nil;
+type Topics struct {
+  Id                  int         `json:"id"`
+  Topic_title         string      `json:"topic_title"`
+  Body                string      `json:"body"`
+  HTMLBody            string      `json:"html_body"`
+  HTMLFooter          string      `json:"html_footer"`
+  Created_at          time.Time   `json:"created_at"`
+  Comments_count      int         `json:"comments_count"`
+  Forum               Forums      `json:"forum"`
+  User                UserFriends `json:"user"`
+  Type                string      `json:"type"`
+  Linked_id           int         `json:"linked_id"`
+  Linked_type         string      `json:"linked_type"`
+  Linked              Animanga    `json:"linked"`
+  Viewed              bool        `json:"viewed"`
+  Last_comment_viewed bool        `json:"last_comment_viewed"`
+}
+
+type TopicsUpdates struct {
+  Id         int       `json:"id"`
+  Linked     Animanga  `json:"linked"`
+  Event      string    `json:"event"`
+  Episode    int       `json:"episode"`
+  Created_at time.Time `json:"created_at"`
+  Url        string    `json:"url"`
+}
+
+// TopicsId solution. In this struct there are both anime and manga fields.
+type AnimangaId struct {
+  Id             int         `json:"id"`
+  Name           string      `json:"name"`
+  Russian        string      `json:"russian"`
+  Image          AnimeSize   `json:"image"`
+  Url            string      `json:"url"`
+  Kind           string      `json:"kind"`
+  Score          string      `json:"score"`
+  Status         string      `json:"status"`
+  Episodes       int         `json:"episodes"`
+  Episodes_aired int         `json:"episodes_aired"`
+  Volumes        int         `json:"volumes"`
+  Chapters       int         `json:"chapters"`
+  Aired_on       string      `json:"aired_on"`
+  Released_on    string      `json:"released_on"`
+  User           UserFriends `json:"user"`
+  Votes_count    int         `json:"votes_count"`
+  Votes_for      int         `json:"votes_for"`
+  Body           string      `json:"body"`
+  HTMLBody       string      `json:"html_body"`
+  Overall        int         `json:"overall"`
+  Storyline      int         `json:"storyline"`
+  Music          int         `json:"musc"`
+  Characters     int         `json:"characters"`
+  Animation      int         `json:"animation"`
+  Created_at     time.Time   `json:"created_at"`
+}
+
+// # Removed:
+//   Event: nil;
+//   Episode: nil;
+type TopicsId struct {
+  Id                  int         `json:"id"`
+  Topic_title         string      `json:"topic_title"`
+  Body                string      `json:"body"`
+  HTMLBody            string      `json:"html_body"`
+  HTMLFooter          string      `json:"html_footer"`
+  Created_at          time.Time   `json:"created_at"`
+  Comments_count      int         `json:"comments_count"`
+  Forum               Forums      `json:"forum"`
+  User                UserFriends `json:"user"`
+  Type                string      `json:"type"`
+  Linked_id           int         `json:"linked_id"`
+  Linked_type         string      `json:"linked_type"`
+  Linked              AnimangaId  `json:"linked"`
+  Viewed              bool        `json:"viewed"`
+  Last_comment_viewed bool        `json:"last_comment_viewed"`
+}
