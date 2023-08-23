@@ -14,12 +14,16 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  b, err := c.SearchBans()
+  b, status, err := c.SearchBans()
   if err != nil {
     fmt.Println(err)
     return
   }
-  for _, v := range b {
-    fmt.Println(v.Id, v.User.Id, v.User.Nickname)
+  if status == 200 {
+    for _, v := range b {
+      fmt.Println(v.Id, v.User.Id, v.User.Nickname)
+    }
+  } else {
+    fmt.Println(status)
   }
 }

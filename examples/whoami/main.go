@@ -14,10 +14,10 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  w, err := c.WhoAmi()
+  w, status, err := c.WhoAmi()
   if err != nil {
     fmt.Println(err)
     return
   }
-  fmt.Println(w.Nickname, w.Avatar, w.Locale, w.Last_online_at)
+  if status == 200 { fmt.Println(w.Nickname, w.Avatar, w.Locale, w.Last_online_at) }
 }

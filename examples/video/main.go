@@ -14,16 +14,25 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  w, err := c.FastIdAnime("initial d first stage").SearchAnimeVideos()
+  fast, status, err := c.FastIdAnime("initial d first stage")
   if err != nil {
     fmt.Println(err)
     return
   }
-  if len(w) == 0 {
-    fmt.Println("Video not found")
-    return
-  }
-  for _, v := range w {
-    fmt.Println(v.Id, v.Url, v.Image_url, v.Player_url, v.Name, v.Kind, v.Hosting)
+  if status == 200 {
+    w, err := fast.SearchAnimeVideos()
+    if err != nil {
+      fmt.Println(err)
+      return
+    }
+    if len(w) == 0 {
+      fmt.Println("Video not found")
+      return
+    }
+    for _, v := range w {
+      fmt.Println(v.Id, v.Url, v.Image_url, v.Player_url, v.Name, v.Kind, v.Hosting)
+    }
+  } else {
+    fmt.Println(status)
   }
 }

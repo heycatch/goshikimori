@@ -572,7 +572,7 @@ func TestOptionsClubInformation(t *testing.T) {
 func TestUser(t *testing.T) {
   name := "incarnati0n"
   c := conf()
-  s, _ := c.SearchUser(name)
+  s, _, _:= c.SearchUser(name)
 
   if s.Id == 181833 && s.Sex == "male" {
     t.Logf("User: %s, Id: %d - found", s.Nickname, s.Id)
@@ -588,7 +588,7 @@ func TestAnimes(t *testing.T) {
     Season: "", Score: "", Rating: "", Duration: "",
     Censored: "", Mylist: "",
   }
-  s, _ := c.SearchAnime("Initial D", o)
+  s, _, _ := c.SearchAnime("Initial D", o)
 
   for _, v := range s {
     if v.Id == 12725 && v.Status == "released" {
@@ -606,7 +606,7 @@ func TestMangas(t *testing.T) {
     Season: "", Score: "", Rating: "",
     Censored: "", Mylist: "",
   }
-  r, _ := c.SearchManga("Initial D", o)
+  r, _, _ := c.SearchManga("Initial D", o)
 
   for _, v := range r {
     if v.Volumes == 48 && v.Chapters == 724 {
@@ -620,7 +620,7 @@ func TestMangas(t *testing.T) {
 func TestClub(t *testing.T) {
   c := conf()
   o := &Options{Page: "1", Limit: "1"}
-  r, _ := c.SearchClub("milf thred", o)
+  r, _, _ := c.SearchClub("milf thred", o)
 
   for _, v := range r {
     if v.Is_censored == true {
@@ -643,7 +643,8 @@ func TestAchievements(t *testing.T) {
   s.Finish()
 
   c := conf()
-  u, _ := c.FastIdUser("incarnati0n").SearchAchievement()
+  fast, _, _ := c.FastIdUser("incarnati0n")
+  u, _ := fast.SearchAchievement()
 
   for _, v := range u {
     if v.Neko_id == NekoSearch("Initial D") {
@@ -658,7 +659,8 @@ func TestAchievements(t *testing.T) {
 
 func TestAnimeVideos(t *testing.T) {
   c := conf()
-  a, _ := c.FastIdAnime("initial d first stage").SearchAnimeVideos()
+  fast, _, _ := c.FastIdAnime("initial d first stage")
+  a, _ := fast.SearchAnimeVideos()
 
   for _, v := range a {
     if v.Id == 24085 {
@@ -681,7 +683,8 @@ func TestUserUnreadMessages(t *testing.T) {
   s.Finish()
 
   c := conf()
-  um, _ := c.FastIdUser("incarnati0n").UserUnreadMessages()
+  fast, _, _ := c.FastIdUser("incarnati0n")
+  um, _ := fast.UserUnreadMessages()
 
   if um.News > 0 || um.News == 0 {
     t.Logf("Found: %d news", um.News)
@@ -692,7 +695,7 @@ func TestUserUnreadMessages(t *testing.T) {
 
 func TestConstantsAnime(t *testing.T) {
   c := conf()
-  ca, _ := c.SearchConstantsAnime()
+  ca, _, _ := c.SearchConstantsAnime()
 
   if ca.Kind != nil {
     t.Logf("Found: %s", ca.Kind)
@@ -708,7 +711,7 @@ func TestConstantsAnime(t *testing.T) {
 
 func TestConstantsManga(t *testing.T) {
   c := conf()
-  cm, _ := c.SearchConstantsManga()
+  cm, _, _ := c.SearchConstantsManga()
 
   if cm.Kind != nil {
     t.Logf("Found: %s", cm.Kind)
@@ -734,7 +737,8 @@ func TestPeople(t *testing.T) {
   s.Finish()
 
   c := conf()
-  p, _ := c.FastIdPeople("Aya Hirano").People()
+  fast, _, _ := c.FastIdPeople("Aya Hirano")
+  p, _ := fast.People()
 
   if p.Id == 4 || p.Job_title == "Сэйю"  {
     t.Logf("%s - found", p.Name)

@@ -18,7 +18,7 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  w, err := c.WhoAmi()
+  w, _, err := c.WhoAmi()
   if err != nil {
     fmt.Println(err)
     return

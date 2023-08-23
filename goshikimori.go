@@ -112,8 +112,10 @@ func (o *Options) OptionsTopics() string {
   v.Add("limit", o.Limit)
   v.Add("forum", o.Forum)
   // linked_id and linked_type are only used together
-  if o.Linked_id != "" && o.Linked_type != "" { v.Add("linked_id", o.Linked_id) }
-  if o.Linked_id != "" && o.Linked_type != "" { v.Add("linked_type", o.Linked_type) }
+  if o.Linked_id != "" && o.Linked_type != "" {
+    v.Add("linked_id", o.Linked_id)
+    v.Add("linked_type", o.Linked_type)
+  }
 
   return v.Encode()
 }
@@ -475,7 +477,7 @@ func (c *Configuration) NewDeleteRequestWithCancel(search string, number time.Du
 // Name: user name.
 //
 // Search by user is case sensitive.
-func (c *Configuration) SearchUser(name string) (api.Users, error) {
+func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
   var u api.Users
   var client = &http.Client{}
 
@@ -484,20 +486,20 @@ func (c *Configuration) SearchUser(name string) (api.Users, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return u, err
+    return u, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return u, err
+    return u, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &u); err != nil {
-    return u, err
+    return u, resp.StatusCode, err
   }
 
-  return u, nil
+  return u, resp.StatusCode, nil
 }
 
 // Name: user name.
@@ -511,7 +513,7 @@ func (c *Configuration) SearchUser(name string) (api.Users, error) {
 // 	- Limit: 100 maximum;
 //
 // Don't use Stats.Statuses.Anime and Stats.Statuses.Manga: empty slice.
-func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, error) {
+func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, error) {
   var u []api.Users
   var client = &http.Client{}
 
@@ -522,20 +524,20 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, error) 
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &u); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return u, nil
+  return u, resp.StatusCode, nil
 }
 
 // *Configuraiton.FastIdUser(name string).SearchUserFriends()
@@ -772,7 +774,7 @@ func (f *FastId) SearchUserBans() ([]api.Bans, error) {
   return b, nil
 }
 
-func (c *Configuration) WhoAmi() (api.Who, error) {
+func (c *Configuration) WhoAmi() (api.Who, int, error) {
   var w api.Who
   var client = &http.Client{}
 
@@ -781,20 +783,20 @@ func (c *Configuration) WhoAmi() (api.Who, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return w, err
+    return w, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return w, err
+    return w, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &w); err != nil {
-    return w, err
+    return w, resp.StatusCode, err
   }
 
-  return w, nil
+  return w, resp.StatusCode, nil
 }
 
 // Name: anime name.
@@ -832,7 +834,7 @@ func (c *Configuration) WhoAmi() (api.Who, error) {
 //	- Franchise: not supported;
 //	- Ids: not supported;
 //	- Exclude_ids: not supported;
-func (c *Configuration) SearchAnime(name string, r Result) ([]api.Animes, error) {
+func (c *Configuration) SearchAnime(name string, r Result) ([]api.Animes, int, error) {
   var a []api.Animes
   var client = &http.Client{}
 
@@ -843,20 +845,20 @@ func (c *Configuration) SearchAnime(name string, r Result) ([]api.Animes, error)
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &a); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return a, nil
+  return a, resp.StatusCode, nil
 }
 
 // Name: manga name.
@@ -891,7 +893,7 @@ func (c *Configuration) SearchAnime(name string, r Result) ([]api.Animes, error)
 //	- Franchise: not supported;
 //	- Ids: not supported;
 //	- Exclude_ids: not supported;
-func (c *Configuration) SearchManga(name string, r Result) ([]api.Mangas, error) {
+func (c *Configuration) SearchManga(name string, r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
@@ -902,24 +904,24 @@ func (c *Configuration) SearchManga(name string, r Result) ([]api.Mangas, error)
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return m, nil
+  return m, resp.StatusCode, nil
 }
 
 // Name: user name.
-func (c *Configuration) FastIdUser(name string) *FastId {
+func (c *Configuration) FastIdUser(name string) (*FastId, int, error) {
   var u api.Users
   var client = &http.Client{}
 
@@ -930,24 +932,24 @@ func (c *Configuration) FastIdUser(name string) *FastId {
 
   resp, err := client.Do(get)
   if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &u); err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
 
-  return &FastId{Id: u.Id, Conf: *c, Err: err}
+  return &FastId{Id: u.Id, Conf: *c, Err: err}, resp.StatusCode, nil
 }
 
 // Name: anime name.
-func (c *Configuration) FastIdAnime(name string) *FastId {
+func (c *Configuration) FastIdAnime(name string) (*FastId, int, error) {
   var a []api.Animes
   var client = &http.Client{}
 
@@ -958,30 +960,30 @@ func (c *Configuration) FastIdAnime(name string) *FastId {
 
   resp, err := client.Do(get)
   if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &a); err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
 
   // if len == 0; we get panic: runtime error.
   // To avoid a crash, process the error here.
   //
   // There is no point in processing the error. there is no place to catch it.
-  if len(a) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil} }
+  if len(a) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, resp.StatusCode, nil }
 
-  return &FastId{Id: a[0].Id, Conf: *c, Err: nil}
+  return &FastId{Id: a[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
 }
 
 // Name: manga name.
-func (c *Configuration) FastIdManga(name string) *FastId {
+func (c *Configuration) FastIdManga(name string) (*FastId, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
@@ -992,29 +994,29 @@ func (c *Configuration) FastIdManga(name string) *FastId {
 
   resp, err := client.Do(get)
   if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
 
   // if len == 0; we get panic: runtime error.
   // To avoid a crash, process the error here.
   //
   // There is no point in processing the error. there is no place to catch it.
-  if len(m) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil} }
+  if len(m) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, resp.StatusCode, nil }
 
-  return &FastId{Id: m[0].Id, Conf: *c, Err: nil}
+  return &FastId{Id: m[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
 }
 
 // Name: club name.
-func (c *Configuration) FastIdClub(name string) *FastId {
+func (c *Configuration) FastIdClub(name string) (*FastId, int, error) {
   var cl []api.Clubs
   var client = &http.Client{}
 
@@ -1025,29 +1027,29 @@ func (c *Configuration) FastIdClub(name string) *FastId {
 
   resp, err := client.Do(get)
   if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &cl); err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
 
   // if len == 0; we get panic: runtime error.
   // To avoid a crash, process the error here.
   //
   // There is no point in processing the error. there is no place to catch it.
-  if len(cl) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil} }
+  if len(cl) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, resp.StatusCode, nil }
 
-  return &FastId{Id: cl[0].Id, Conf: *c, Err: nil}
+  return &FastId{Id: cl[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
 }
 
 // Name: people name.
-func (c *Configuration) FastIdPeople(name string) *FastId {
+func (c *Configuration) FastIdPeople(name string) (*FastId, int, error) {
   var ap []api.AllPeople
   var client = &http.Client{}
 
@@ -1058,25 +1060,25 @@ func (c *Configuration) FastIdPeople(name string) *FastId {
 
   resp, err := client.Do(get)
   if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &ap); err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
   }
 
   // if len == 0; we get panic: runtime error.
   // To avoid a crash, process the error here.
   //
   // There is no point in processing the error. there is no place to catch it.
-  if len(ap) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil} }
+  if len(ap) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, resp.StatusCode, nil }
 
-  return &FastId{Id: ap[0].Id, Conf: *c, Err: nil}
+  return &FastId{Id: ap[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
 }
 
 // *Configuration.FastIdAnime(name string).SearchAnimeScreenshots()
@@ -1339,7 +1341,7 @@ func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, error) {
 //	- Search: default search;
 //
 // If we set the limit=1, we will still have 2 results.
-func (c *Configuration) SearchClub(name string, r Result) ([]api.Clubs, error) {
+func (c *Configuration) SearchClub(name string, r Result) ([]api.Clubs, int, error) {
   var cl []api.Clubs
   var client = &http.Client{}
 
@@ -1350,20 +1352,20 @@ func (c *Configuration) SearchClub(name string, r Result) ([]api.Clubs, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &cl); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return cl, nil
+  return cl, resp.StatusCode, nil
 }
 
 // If 'Options' empty fields
@@ -1753,7 +1755,7 @@ func (f *FastId) SearchMangaRoles() ([]api.Roles, error) {
   return r, nil
 }
 
-func (c *Configuration) SearchBans() ([]api.Bans, error) {
+func (c *Configuration) SearchBans() ([]api.Bans, int, error) {
   var b []api.Bans
   var client = &http.Client{}
 
@@ -1762,20 +1764,20 @@ func (c *Configuration) SearchBans() ([]api.Bans, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &b); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return b, nil
+  return b, resp.StatusCode, nil
 }
 
 // If 'Options' empty fields
@@ -1785,7 +1787,7 @@ func (c *Configuration) SearchBans() ([]api.Bans, error) {
 //	- Censored: true, false;
 //
 // Set to false to allow hentai, yaoi and yuri.
-func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, error) {
+func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
   var ca []api.Calendar
   var client = &http.Client{}
 
@@ -1796,23 +1798,23 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &ca); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return ca, nil
+  return ca, resp.StatusCode, nil
 }
 
-func (c *Configuration) SearchGenres() ([]api.Genres, error) {
+func (c *Configuration) SearchGenres() ([]api.Genres, int, error) {
   var g []api.Genres
   var client = &http.Client{}
 
@@ -1821,23 +1823,23 @@ func (c *Configuration) SearchGenres() ([]api.Genres, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &g); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return g, nil
+  return g, resp.StatusCode, nil
 }
 
-func (c *Configuration) SearchStudios() ([]api.Studios, error) {
+func (c *Configuration) SearchStudios() ([]api.Studios, int, error) {
   var s []api.Studios
   var client = &http.Client{}
 
@@ -1846,23 +1848,23 @@ func (c *Configuration) SearchStudios() ([]api.Studios, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &s); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return s, nil
+  return s, resp.StatusCode, nil
 }
 
-func (c *Configuration) SearchPublishers() ([]api.Publishers, error) {
+func (c *Configuration) SearchPublishers() ([]api.Publishers, int, error) {
   var p []api.Publishers
   var client = &http.Client{}
 
@@ -1871,23 +1873,23 @@ func (c *Configuration) SearchPublishers() ([]api.Publishers, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &p); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return p, nil
+  return p, resp.StatusCode, nil
 }
 
-func (c *Configuration) SearchForums() ([]api.Forums, error) {
+func (c *Configuration) SearchForums() ([]api.Forums, int, error) {
   var f []api.Forums
   var client = &http.Client{}
 
@@ -1896,20 +1898,20 @@ func (c *Configuration) SearchForums() ([]api.Forums, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &f); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return f, nil
+  return f, resp.StatusCode, nil
 }
 
 // *Configuration.FastIdUser(name string).AddFriend()
@@ -2034,7 +2036,7 @@ func (f *FastId) UserMessages(r Result) ([]api.Messages, error) {
   return m, nil
 }
 
-func (c *Configuration) SearchConstantsAnime() (api.Constants, error) {
+func (c *Configuration) SearchConstantsAnime() (api.Constants, int, error) {
   var ca api.Constants
   var client = &http.Client{}
 
@@ -2045,23 +2047,23 @@ func (c *Configuration) SearchConstantsAnime() (api.Constants, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return ca, err
+    return ca, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return ca, err
+    return ca, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &ca); err != nil {
-    return ca, err
+    return ca, resp.StatusCode, err
   }
 
-  return ca, nil
+  return ca, resp.StatusCode, nil
 }
 
-func (c *Configuration) SearchConstantsManga() (api.Constants, error) {
+func (c *Configuration) SearchConstantsManga() (api.Constants, int, error) {
   var cm api.Constants
   var client = &http.Client{}
 
@@ -2072,23 +2074,23 @@ func (c *Configuration) SearchConstantsManga() (api.Constants, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return cm, err
+    return cm, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return cm, err
+    return cm, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &cm); err != nil {
-    return cm, err
+    return cm, resp.StatusCode, err
   }
 
-  return cm, nil
+  return cm, resp.StatusCode, nil
 }
 
-func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, error) {
+func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, int, error) {
   var ur api.ConstantsUserRate
   var client = &http.Client{}
 
@@ -2099,23 +2101,23 @@ func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, error)
 
   resp, err := client.Do(get)
   if err != nil {
-    return ur, err
+    return ur, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return ur, err
+    return ur, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &ur); err != nil {
-    return ur, err
+    return ur, resp.StatusCode, err
   }
 
-  return ur, nil
+  return ur, resp.StatusCode, nil
 }
 
-func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, error) {
+func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, int, error) {
   var cc api.ConstantsClub
   var client = &http.Client{}
 
@@ -2126,23 +2128,23 @@ func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return cc, err
+    return cc, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return cc, err
+    return cc, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &cc); err != nil {
-    return cc, err
+    return cc, resp.StatusCode, err
   }
 
-  return cc, nil
+  return cc, resp.StatusCode, nil
 }
 
-func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, error) {
+func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, error) {
   var cs []api.ConstantsSmileys
   var client = &http.Client{}
 
@@ -2153,23 +2155,23 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, error)
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &cs); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return cs, nil
+  return cs, resp.StatusCode, nil
 }
 
-func (c *Configuration) RandomAnime() ([]api.Animes, error) {
+func (c *Configuration) RandomAnime() ([]api.Animes, int, error) {
   var a []api.Animes
   var client = &http.Client{}
 
@@ -2180,23 +2182,23 @@ func (c *Configuration) RandomAnime() ([]api.Animes, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &a); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return a, nil
+  return a, resp.StatusCode, nil
 }
 
-func (c *Configuration) RandomManga() ([]api.Mangas, error) {
+func (c *Configuration) RandomManga() ([]api.Mangas, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
@@ -2207,20 +2209,20 @@ func (c *Configuration) RandomManga() ([]api.Mangas, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return m, nil
+  return m, resp.StatusCode, nil
 }
 
 // Name: people name.
@@ -2231,7 +2233,7 @@ func (c *Configuration) RandomManga() ([]api.Mangas, error) {
 // 'Options' settings
 //	- Page/Limit: not supported, idk why;
 //	- Kind: seyu, mangaka, producer;
-func (c *Configuration) SearchPeople(name string, r Result) ([]api.AllPeople, error) {
+func (c *Configuration) SearchPeople(name string, r Result) ([]api.AllPeople, int, error) {
   var ap []api.AllPeople
   var client = &http.Client{}
 
@@ -2242,19 +2244,19 @@ func (c *Configuration) SearchPeople(name string, r Result) ([]api.AllPeople, er
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &ap); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return ap, nil
+  return ap, resp.StatusCode, nil
 }
 
 // *Configuraiton.FastIdPeople(name string).People()
@@ -2385,7 +2387,7 @@ func (f *FastId) FavoritesReorder(position int) (int, error) {
 }
 
 // *Configuration.FastIdUser(name string).AddIgnoreUser()
-func (f *FastId) AddIgnoreUser() (api.IgnoreUser, int, error) {
+func (f *FastId) AddIgnoreUser() (api.IgnoreUser, error) {
   var i api.IgnoreUser
   var client = &http.Client{}
 
@@ -2396,24 +2398,24 @@ func (f *FastId) AddIgnoreUser() (api.IgnoreUser, int, error) {
 
   resp, err := client.Do(post)
   if err != nil {
-    return i, resp.StatusCode, err
+    return i, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return i, resp.StatusCode, err
+    return i, err
   }
 
   if err := json.Unmarshal(data, &i); err != nil {
-    return i, resp.StatusCode, err
+    return i, err
   }
 
-  return i, resp.StatusCode, nil
+  return i, nil
 }
 
 // *Configuration.FastIdUser(name string).RemoveIgnoreUser()
-func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, int, error) {
+func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, error) {
   var i api.IgnoreUser
   var client = &http.Client{}
 
@@ -2424,23 +2426,23 @@ func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, int, error) {
 
   resp, err := client.Do(remove)
   if err != nil {
-    return i, resp.StatusCode, err
+    return i, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return i, resp.StatusCode, err
+    return i, err
   }
 
   if err := json.Unmarshal(data, &i); err != nil {
-    return i, resp.StatusCode, err
+    return i, err
   }
 
-  return i, resp.StatusCode, nil
+  return i, nil
 }
 
-func (c *Configuration) Dialogs() ([]api.Dialogs, error) {
+func (c *Configuration) Dialogs() ([]api.Dialogs, int, error) {
   var d []api.Dialogs
   var client = &http.Client{}
 
@@ -2449,19 +2451,19 @@ func (c *Configuration) Dialogs() ([]api.Dialogs, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &d); err != nil {
-    return nil, err
+    return nil, resp.StatusCode, err
   }
 
-  return d, nil
+  return d, resp.StatusCode, nil
 }
 
 // *Configuration.FastIdUser(name string).SearchDialogs()
@@ -2493,7 +2495,7 @@ func (f *FastId) SearchDialogs() ([]api.SearchDialogs, error) {
 }
 
 // *Configuration.FastIdUser(name string).DeleteDialogs()
-func (f *FastId) DeleteDialogs() (int, api.FriendRequest, error) {
+func (f *FastId) DeleteDialogs() (api.FriendRequest, error) {
   var fr api.FriendRequest
   var client = &http.Client{}
 
@@ -2504,20 +2506,21 @@ func (f *FastId) DeleteDialogs() (int, api.FriendRequest, error) {
 
   resp, err := client.Do(remove)
   if err != nil {
-    return resp.StatusCode, fr, err
+    return fr, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return resp.StatusCode, fr, err
+    return fr, err
   }
 
+  // errors.New(...) original error message from api/v1.
   if err := json.Unmarshal(data, &fr); err != nil {
-    return resp.StatusCode, fr, errors.New("не найдено ни одного сообщения для удаления") // original error message from api/v1
+    return fr, errors.New("не найдено ни одного сообщения для удаления")
   }
 
-  return resp.StatusCode, fr, nil
+  return fr, nil
 }
 
 // *Configuration.FastIdUser(name string).UserBriefInfo()

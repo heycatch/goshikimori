@@ -14,17 +14,25 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-
-  // add/remove favorites anime
-  f, err := c.FastIdAnime("Naruto").FavoritesCreate("Anime", "")
-  //f, err := c.FastIdAnime("Naruto").FavoritesDelete("Anime")
-
-  // add/remove favorites manga
-  //f, err := c.FastIdManga("Naruto").FavoritesCreate("Manga", "")
-  //f, err := c.FastIdManga("Naruto").FavoritesDelete("Manga")
+  fast, status, err := c.FastIdAnime("Naruto")
   if err != nil {
     fmt.Println(err)
     return
   }
-  fmt.Println(f.Success, f.Notice)
+  if status == 200 {
+    // add/remove favorites anime
+    f, err := fast.FavoritesCreate("Anime", "")
+    //f, err := fast.FavoritesDelete("Anime")
+
+    // add/remove favorites manga
+    //f, err := fast.FavoritesCreate("Manga", "")
+    //f, err := fast.FavoritesDelete("Manga")
+    if err != nil {
+      fmt.Println(err)
+      return
+    }
+    fmt.Println(f.Success, f.Notice)
+  } else {
+    fmt.Println(status)
+  }
 }

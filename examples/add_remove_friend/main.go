@@ -14,12 +14,20 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-
-  fr, err := c.FastIdUser("morr").AddFriend()
-  //fr, err := c.FastIdUser("morr").RemoveFriend()
+  fast, status, err := c.FastIdUser("morr")
   if err != nil {
     fmt.Println(err)
     return
   }
-  fmt.Println(fr.Notice)
+  if status == 200 {
+    fr, err := fast.AddFriend()
+    //fr, err := fast.RemoveFriend()
+    if err != nil {
+      fmt.Println(err)
+      return
+    }
+    fmt.Println(fr.Notice)
+  } else {
+    fmt.Println(status)
+  }
 }

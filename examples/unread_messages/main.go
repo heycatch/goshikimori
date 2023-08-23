@@ -14,11 +14,19 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-
-  um, err := c.FastIdUser("incarnati0n").UserUnreadMessages()
+  fast, status, err := c.FastIdUser("incarnati0n")
   if err != nil {
     fmt.Println(err)
     return
   }
-  fmt.Println(um.Messages, um.News, um.Notifications)
+  if status == 200 {
+    um, err := fast.UserUnreadMessages()
+    if err != nil {
+      fmt.Println(err)
+      return
+    }
+    fmt.Println(um.Messages, um.News, um.Notifications)
+  } else {
+    fmt.Println(status)
+  }
 }

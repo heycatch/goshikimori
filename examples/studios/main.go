@@ -14,16 +14,20 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  s, err := c.SearchStudios()
+  s, status, err := c.SearchStudios()
   if err != nil {
     fmt.Println(err)
     return
   }
-  if len(s) == 0 {
-    fmt.Println("not found studios")
-    return
-  }
-  for _, v := range s {
-    fmt.Println(v.Id, v.Name, v.Filtered_name, v.Real)
+  if status == 200 {
+    if len(s) == 0 {
+      fmt.Println("not found studios")
+      return
+    }
+    for _, v := range s {
+      fmt.Println(v.Id, v.Name, v.Filtered_name, v.Real)
+    }
+  } else {
+    fmt.Println(status)
   }
 }

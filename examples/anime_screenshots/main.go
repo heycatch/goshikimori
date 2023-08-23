@@ -14,16 +14,25 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  s, err := c.FastIdAnime("initial d").SearchAnimeScreenshots()
+  fast, status, err := c.FastIdAnime("initial d")
   if err != nil {
     fmt.Println(err)
     return
   }
-  if len(s) == 0 {
-    fmt.Println("Screenshots not found")
-    return
-  }
-  for _, v := range s {
-    fmt.Println(v.Original, v.Preview)
+  if status == 200 {
+    s, err := fast.SearchAnimeScreenshots()
+    if err != nil {
+      fmt.Println(err)
+      return
+    }
+    if len(s) == 0 {
+      fmt.Println("Screenshots not found")
+      return
+    }
+    for _, v := range s {
+      fmt.Println(v.Original, v.Preview)
+    }
+  } else {
+    fmt.Println(status)
   }
 }

@@ -15,15 +15,19 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
   o := &g.Options{Censored: "false"}
-  ca, err := c.SearchCalendar(o)
+  ca, status, err := c.SearchCalendar(o)
   if err != nil {
     fmt.Println(err)
     return
   }
-  for _, v := range ca {
-    fmt.Println(
-      v.Next_episode, v.Next_episode_at, v.Duration,
-      v.Anime.Id, v.Anime.Name, v.Anime.Score,
-    )
+  if status == 200 {
+    for _, v := range ca {
+      fmt.Println(
+        v.Next_episode, v.Next_episode_at, v.Duration,
+        v.Anime.Id, v.Anime.Name, v.Anime.Score,
+      )
+    }
+  } else {
+    fmt.Println(status)
   }
 }
