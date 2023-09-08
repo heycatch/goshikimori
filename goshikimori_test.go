@@ -29,9 +29,7 @@ func (s *StatusBar) NewOption(start, end int) {
 
   if s.Graph == "" { s.Graph = "#" }
 
-  for i := 0; i < int(s.Percent); i += 1 {
-    s.Rate += s.Graph
-  }
+  for i := 0; i < s.Percent; i += 1 { s.Rate += s.Graph }
 }
 
 func (s *StatusBar) getPercent() int {
@@ -43,17 +41,10 @@ func (s *StatusBar) Play(cur int) {
   last := s.Percent
   s.Percent = s.getPercent()
 
-  if s.Percent != last && s.Percent%2 == 0 {
-    s.Rate += s.Graph
-  }
+  if s.Percent != last && s.Percent%2 == 0 { s.Rate += s.Graph }
 
-  fmt.Printf(
-    "\r[%-5s]%3d%% %8d/%d",
-    s.Rate, s.Percent, s.Cur, s.Total,
-  )
+  fmt.Printf("\r[%-5s]%3d%% %8d/%d", s.Rate, s.Percent, s.Cur, s.Total)
 }
-
-func (s *StatusBar) Finish() { fmt.Println() }
 
 func TestConfiguration(t *testing.T) {
   if app_test != "" && tok_test != "" {
@@ -637,10 +628,9 @@ func TestAchievements(t *testing.T) {
   var s StatusBar
   s.NewOption(0, 5)
   for i := 0; i <= 5; i++ {
-    s.Play(int(i))
+    s.Play(i)
     time.Sleep(1 * time.Second)
   }
-  s.Finish()
 
   c := conf()
   fast, _, _ := c.FastIdUser("incarnati0n")
@@ -677,10 +667,9 @@ func TestUserUnreadMessages(t *testing.T) {
   var s StatusBar
   s.NewOption(0, 5)
   for i := 0; i <= 5; i++ {
-    s.Play(int(i))
+    s.Play(i)
     time.Sleep(1 * time.Second)
   }
-  s.Finish()
 
   c := conf()
   fast, _, _ := c.FastIdUser("incarnati0n")
@@ -731,10 +720,9 @@ func TestPeople(t *testing.T) {
   var s StatusBar
   s.NewOption(0, 5)
   for i := 0; i <= 5; i++ {
-    s.Play(int(i))
+    s.Play(i)
     time.Sleep(1 * time.Second)
   }
-  s.Finish()
 
   c := conf()
   fast, _, _ := c.FastIdPeople("Aya Hirano")

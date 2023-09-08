@@ -1,3 +1,3 @@
 module github.com/heycatch/goshikimori
 
-go 1.20
+go 1.21.1
