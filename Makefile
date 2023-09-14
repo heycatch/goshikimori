@@ -21,6 +21,7 @@ docker-start:
 test:
 	go test -v
 	go test -v ./str
+	go test -v ./graphql
 
 run:
 	go run cmd/main.go
@@ -33,7 +34,7 @@ graphql-request:
 	-d '{"query": "{ animes(search: \"initial d first stage\", limit: 1) { id name russian english japanese score status episodes description } }"}'
 
 request:
-	curl -X GET https://shikimori.me/api/genres \
+	curl -X GET https://shikimori.me/api/users/whoami \
 	-H "User-Agent: $(App)" \
 	-H "Authorization: Bearer $(Token)"
 

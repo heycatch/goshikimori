@@ -15,7 +15,7 @@ func conf() *g.Configuration {
 func foundAnime() {
   c := conf()
   o := &g.Options{
-    Page: "1", Limit: "2", Kind: "", Status: "released",
+    Page: "1", Limit: "2", Order: "", Kind: "", Status: "released",
     Season: "199x", Score: "", Rating: "", Duration: "",
     Censored: "", Mylist: "",
   }
@@ -40,7 +40,7 @@ func foundAnime() {
 func foundManga() {
   c := conf()
   o := &g.Options{
-    Page: "1", Limit: "1", Kind: "", Status: "released",
+    Page: "1", Limit: "1", Order: "", Kind: "", Status: "released",
     Season: "199x", Score: "8", Censored: "", Mylist: "",
   }
   m, status, err := c.SearchManga("initial d", o)

@@ -1,4 +1,4 @@
-[EN](https://github.com/heycatch/goshikimori/blob/main/README.md) | RU
+### [EN](https://github.com/heycatch/goshikimori/blob/master/README.md) | RU
 
 ### О проекте
 Небольшая библиотека для взаимодействия с шикимори, написанная на языке golang.
@@ -11,7 +11,7 @@ go get github.com/heycatch/goshikimori
 ```
 
 ### Готовые примеры
-* [Нажать сюда](https://github.com/heycatch/goshikimori/tree/main/examples)
+* [Нажать сюда](https://github.com/heycatch/goshikimori/tree/master/examples)
 
 ### Документация
 В настоящее время доступно большое количество функций.
@@ -43,6 +43,7 @@ http://localhost:1337/pkg/github.com/heycatch/goshikimori/
 ```
 
 ### Документация шикимори
+* [GraphQL](https://shikimori.me/api/doc/graphql)
 * [API v1](https://shikimori.me/api/doc/1.0)
 * [API v2](https://shikimori.me/api/doc/2.0)
 * [OAuth2](https://shikimori.me/oauth)

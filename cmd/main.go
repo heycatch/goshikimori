@@ -7,6 +7,7 @@ import (
   "net/http/httputil"
 
   g "github.com/heycatch/goshikimori"
+  "github.com/heycatch/goshikimori/req"
 )
 
 func conf() *g.Configuration {
@@ -24,7 +25,7 @@ func main() {
     return
   }
 
-  req, cancel := c.NewGetRequestWithCancel("whoami", 10)
+  req, cancel := req.NewGetRequestWithCancel(c.Application, c.AccessToken, "whoami", 10)
   defer cancel()
   dump, err := httputil.DumpRequestOut(req, true)
   if err != nil {

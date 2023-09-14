@@ -1,5 +1,5 @@
 FROM ubuntu:latest
-LABEL maintainer="hey_h0n3y@protonmail.com"
+LABEL maintainer="andreyisback@yandex.ru"
 
 WORKDIR /root/docs
 COPY . .
