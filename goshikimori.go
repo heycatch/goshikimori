@@ -850,7 +850,6 @@ func (c *Configuration) SearchAnime(name string, r Result) ([]api.Animes, int, e
 //	- Score: empty field;
 //  - Censored: false;
 //  - Mylist: empty field;
-
 //
 // 'Options' settings
 //	- Page: 100000 maximum;
