@@ -14,13 +14,13 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  a, status, err := c.RandomAnime()
+  a, status, err := c.RandomAnime(5)
   if err != nil {
     fmt.Println(err)
     return
   }
   if status == 200 { fmt.Println(a) }
-  m, status, err := c.RandomManga()
+  m, status, err := c.RandomManga(5)
   if err != nil {
     fmt.Println(err)
     return

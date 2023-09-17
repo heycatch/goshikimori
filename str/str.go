@@ -74,6 +74,10 @@ func ConvertDialogs(id int) string {
   return fmt.Sprintf("dialogs/%d", id)
 }
 
+func ConvertRandom(name string, limit int) string {
+  return fmt.Sprintf("%s?order=random&limit=%d", name, limit)
+}
+
 func ConvertIgnoreUser(id int) string {
   return fmt.Sprintf("v2/users/%d/ignore", id)
 }

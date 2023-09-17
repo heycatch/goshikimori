@@ -765,9 +765,9 @@ func (c *Configuration) WhoAmi() (api.Who, int, error) {
 
 // Name: anime name.
 //
-// Order: it's not working at the moment.
-//
 // Exclamation mark(!) indicates ignore.
+//
+// If you use the 'order' parameter, you don't need to enter the name of the anime.
 //
 // If 'Options' empty fields
 // 	- Page: 1;
@@ -785,7 +785,7 @@ func (c *Configuration) WhoAmi() (api.Who, int, error) {
 // 'Options' settings
 //	- Page: 100000 maximum;
 //	- Limit: 50 maximum;
-//	- Order: id, ranked, kind, popularity, name, aired_on, episodes, statust; random has been moved to a separate function, check [RandomAnime];
+//	- Order: id, ranked, kind, popularity, name, aired_on, episodes, status; random has been moved to a separate function, check [RandomAnime];
 //	- Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48, !tv, !movie, !ova, !ona, !special, !music, !tv_13, !tv_24, !tv_48;
 //	- Status: anons, ongoing, released, !anons, !ongoing, !released;
 //	- Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
@@ -836,9 +836,9 @@ func (c *Configuration) SearchAnime(name string, r Result) ([]api.Animes, int, e
 
 // Name: manga name.
 //
-// Order: it's not working at the moment.
-//
 // Exclamation mark(!) indicates ignore.
+//
+// If you use the 'order' parameter, you don't need to enter the name of the manga.
 //
 // If 'Options' empty fields
 // 	- Page: 1;
@@ -2200,13 +2200,17 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, e
   return cs, resp.StatusCode, nil
 }
 
-func (c *Configuration) RandomAnime() ([]api.Animes, int, error) {
+// Limit: number of results obtained;
+//
+// Maximum: 50;
+func (c *Configuration) RandomAnime(limit int) ([]api.Animes, int, error) {
   var a []api.Animes
   var client = &http.Client{}
 
+  if limit < 1 || limit > 50 { limit = 1 }
+
   get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    "animes?order=random", 10,
+    c.Application, c.AccessToken, str.ConvertRandom("animes", limit), 10,
   )
   defer cancel()
 
@@ -2228,13 +2232,17 @@ func (c *Configuration) RandomAnime() ([]api.Animes, int, error) {
   return a, resp.StatusCode, nil
 }
 
-func (c *Configuration) RandomManga() ([]api.Mangas, int, error) {
+// Limit: number of results obtained;
+//
+// Maximum: 50;
+func (c *Configuration) RandomManga(limit int) ([]api.Mangas, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
+  if limit < 1 || limit > 50 { limit = 1 }
+
   get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    "mangas?order=random", 10,
+    c.Application, c.AccessToken, str.ConvertRandom("mangas", limit), 10,
   )
   defer cancel()
 

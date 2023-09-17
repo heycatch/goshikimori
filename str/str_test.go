@@ -146,6 +146,14 @@ func TestConvertDialogs(t *testing.T) {
   }
 }
 
+func TestRandom(t *testing.T) {
+  if ConvertRandom("animes", 10) == "animes?order=random&limit=10" {
+    t.Log("ConvertRandom passed")
+  } else {
+    t.Error("ConvertRandom failed")
+  }
+}
+
 func TestConvertIgnoreUser(t *testing.T) {
   if ConvertIgnoreUser(1337) == "v2/users/1337/ignore" {
     t.Log("ConvertIgnoreUser passed")
