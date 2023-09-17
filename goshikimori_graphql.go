@@ -1,9 +1,9 @@
 package goshikimori
 
 import (
-	"encoding/json"
-	"io"
-	"net/http"
+  "encoding/json"
+  "io"
+  "net/http"
 
   "github.com/heycatch/goshikimori/api"
   "github.com/heycatch/goshikimori/req"
@@ -44,35 +44,35 @@ import (
 //
 // [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
 func (c *Configuration) SearchAnimeGraphql(name string, options ...interface{}) (api.GraphQL, int, error) {
-	var client = &http.Client{}
-	var g api.GraphQL
+  var client = &http.Client{}
+  var g api.GraphQL
 
-	schema, err := graphql.AnimeSchema(name, options...)
-	if err != nil {
-		return g, 0, err
-	}
+  schema, err := graphql.AnimeSchema(name, options...)
+  if err != nil {
+    return g, 0, err
+  }
 
-	post, cancel := req.NewPostRequestWithCancel(
-		c.Application, c.AccessToken, schema, 10,
-	)
-	defer cancel()
+  post, cancel := req.NewPostRequestWithCancel(
+    c.Application, c.AccessToken, schema, 10,
+  )
+  defer cancel()
 
-	resp, err := client.Do(post)
-	if err != nil {
-		return g, resp.StatusCode, err
-	}
-	defer resp.Body.Close()
+  resp, err := client.Do(post)
+  if err != nil {
+    return g, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
 
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return g, resp.StatusCode, err
-	}
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return g, resp.StatusCode, err
+  }
 
-	if err := json.Unmarshal(data, &g); err != nil {
-		return g, resp.StatusCode, err
-	}
+  if err := json.Unmarshal(data, &g); err != nil {
+    return g, resp.StatusCode, err
+  }
 
-	return g, resp.StatusCode, nil
+  return g, resp.StatusCode, nil
 }
 
 // Name: manga name.
@@ -80,8 +80,6 @@ func (c *Configuration) SearchAnimeGraphql(name string, options ...interface{}) 
 // Order: it's not working at the moment.
 //
 // Exclamation mark(!) indicates ignore.
-//
-// 'Season' is not working at the moment. To skip this parameter for now.
 //
 // If 'Options' empty fields
 // 	- Limit: 1;
@@ -107,33 +105,33 @@ func (c *Configuration) SearchAnimeGraphql(name string, options ...interface{}) 
 //
 // [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
 func (c *Configuration) SearchMangaGraphql(name string, options ...interface{}) (api.GraphQL, int, error) {
-	var client = &http.Client{}
-	var g api.GraphQL
+  var client = &http.Client{}
+  var g api.GraphQL
 
-	schema, err := graphql.MangaSchema(name, options...)
-	if err != nil {
-		return g, 0, err
-	}
+  schema, err := graphql.MangaSchema(name, options...)
+  if err != nil {
+    return g, 0, err
+  }
 
-	post, cancel := req.NewPostRequestWithCancel(
-		c.Application, c.AccessToken, schema, 10,
-	)
-	defer cancel()
+  post, cancel := req.NewPostRequestWithCancel(
+    c.Application, c.AccessToken, schema, 10,
+  )
+  defer cancel()
 
-	resp, err := client.Do(post)
-	if err != nil {
-		return g, resp.StatusCode, err
-	}
-	defer resp.Body.Close()
+  resp, err := client.Do(post)
+  if err != nil {
+    return g, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
 
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return g, resp.StatusCode, err
-	}
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return g, resp.StatusCode, err
+  }
 
-	if err := json.Unmarshal(data, &g); err != nil {
-		return g, resp.StatusCode, err
-	}
+  if err := json.Unmarshal(data, &g); err != nil {
+    return g, resp.StatusCode, err
+  }
 
-	return g, resp.StatusCode, nil
+  return g, resp.StatusCode, nil
 }

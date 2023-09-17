@@ -744,3 +744,16 @@ func TestAnimeGraphql(t *testing.T) {
     }
   }
 }
+
+func TestMangaGraphQL(t *testing.T) {
+  c := conf()
+  m, _, _ := c.SearchMangaGraphql("initial d", 1, 1, "", "", "", "", "", false)
+
+  for _, v := range m.Data.Mangas {
+    if v.Id == "375" && v.MalId == "375" && v.Kind == "manga" && v.Status == "released" && v.Volumes == 48 {
+      t.Logf("%s - found", v.Name)
+    } else {
+      t.Error("MangaGraphql not found")
+    }
+  }
+}

@@ -1,11 +1,11 @@
 package req
 
 import (
-	"fmt"
-	"net/http"
-	"context"
-	"time"
-	"bytes"
+  "fmt"
+  "net/http"
+  "context"
+  "time"
+  "bytes"
 )
 
 const site string = "shikimori.me/api"
