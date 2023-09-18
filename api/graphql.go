@@ -32,7 +32,7 @@ type AnimesGraphQL struct {
   Synonyms        []string                `json:"synonyms"`
   Kind            string                  `json:"kind"`
   Rating          string                  `json:"rating"`
-  Score           string                  `json:"score"`
+  Score           float32                 `json:"score"`
   Status          string                  `json:"status"`
   Episodes        int                     `json:"episodes"`
   EpisodesAired   int                     `json:"episodesAired"`
@@ -75,7 +75,7 @@ type MangasGraphQL struct {
   Japanese        string                  `json:"japanese"`
   Synonyms        []string                `json:"synonyms"`
   Kind            string                  `json:"kind"`
-  Score           string                  `json:"score"`
+  Score           float32                 `json:"score"`
   Status          string                  `json:"status"`
   Volumes         int                     `json:"volumes"`
   Chapters        int                     `json:"chapters"`
