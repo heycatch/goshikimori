@@ -576,7 +576,7 @@ func TestAnimes(t *testing.T) {
     Season: "", Score: "", Rating: "", Duration: "",
     Censored: "", Mylist: "",
   }
-  s, _, _ := c.SearchAnime("Initial D", o)
+  s, _, _ := c.SearchAnimes("Initial D", o)
 
   for _, v := range s {
     if v.Id == 12725 && v.Status == "released" {
@@ -594,7 +594,7 @@ func TestMangas(t *testing.T) {
     Season: "", Score: "", Rating: "",
     Censored: "", Mylist: "",
   }
-  r, _, _ := c.SearchManga("Initial D", o)
+  r, _, _ := c.SearchMangas("Initial D", o)
 
   for _, v := range r {
     if v.Volumes == 48 && v.Chapters == 724 {
@@ -608,7 +608,7 @@ func TestMangas(t *testing.T) {
 func TestClub(t *testing.T) {
   c := conf()
   o := &Options{Page: "1", Limit: "1"}
-  r, _, _ := c.SearchClub("milf thred", o)
+  r, _, _ := c.SearchClubs("milf thred", o)
 
   for _, v := range r {
     if v.Is_censored == true {
@@ -723,7 +723,7 @@ func TestPeople(t *testing.T) {
 
   c := conf()
   fast, _, _ := c.FastIdPeople("Aya Hirano")
-  p, _ := fast.People()
+  p, _ := fast.SearchPeople()
 
   if p.Id == 4 || p.Job_title == "Сэйю"  {
     t.Logf("%s - found", p.Name)

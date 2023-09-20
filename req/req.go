@@ -31,11 +31,11 @@ func NewPostRequestWithCancel(application, accessToken, search string, number ti
   return req, cancel
 }
 
-// Custom POST request. To work correctly with the POST method,
+// Reorder POST request. To work correctly with the POST method,
 // make sure that your application has all the necessary permissions.
-func NewCustomPostRequestWithCancel(application, accessToken, search string, position int, number time.Duration) (*http.Request, context.CancelFunc) {
+func NewReorderPostRequestWithCancel(application, accessToken, search string, position int, number time.Duration) (*http.Request, context.CancelFunc) {
   custom_url := fmt.Sprintf("https://%s/%s", site, search)
-  data := []byte(fmt.Sprintf(`"new_index": "%d"`, position))
+  data := []byte(fmt.Sprintf(`{"new_index": "%d"}`, position))
   ctx, cancel := context.WithTimeout(context.Background(), number * time.Second) // number->10seconds
   req, _ := http.NewRequestWithContext(ctx, http.MethodPost, custom_url, bytes.NewBuffer(data))
   req.Header.Add("User-Agent", application)

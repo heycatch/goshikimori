@@ -10,6 +10,14 @@ func TestConvertAchievements(t *testing.T) {
   }
 }
 
+func TestConvertSearchByID(t *testing.T) {
+  if ConvertSearchById("animes", 1337) == "animes/1337" {
+    t.Log("ConvertSearchById passed")
+  } else {
+    t.Error("ConvertSearchById failed")
+  }
+}
+
 func TestConvertAnime(t *testing.T) {
   if ConvertAnime(1337, "test") == "animes/1337/test" {
     t.Log("ConvertAnime passed")

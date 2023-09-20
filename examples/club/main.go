@@ -21,7 +21,7 @@ func main() {
   oo := &g.Options{Page: "1"}
 
   // PART 1
-  a, status, err := c.SearchClub("milf", o)
+  a, status, err := c.SearchClubs("milf", o)
   if err != nil {
     fmt.Println(err)
     return

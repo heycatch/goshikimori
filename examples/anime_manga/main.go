@@ -14,12 +14,26 @@ func conf() *g.Configuration {
 
 func foundAnime() {
   c := conf()
+  fast, status, err := c.FastIdAnime("initial d first stage")
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+  res, err := fast.SearchAnime()
+  if err != nil {
+    fmt.Println(err)
+  }
+  fmt.Println(res.Id, res.Name, res.Description, res.Released_on, res.Score)
+}
+
+func foundAnimes() {
+  c := conf()
   o := &g.Options{
     Page: "1", Limit: "2", Order: "", Kind: "", Status: "released",
     Season: "199x", Score: "", Rating: "", Duration: "",
     Censored: "", Mylist: "",
   }
-  a, status, err := c.SearchAnime("initial d", o)
+  a, status, err := c.SearchAnimes("initial d", o)
   if err != nil {
     fmt.Println(err)
     return
@@ -39,11 +53,26 @@ func foundAnime() {
 
 func foundManga() {
   c := conf()
+  fast, status, err := c.FastIdManga("initial d")
+  if status != 200 || err != nil {
+    fmt.Println(err)
+    return
+  }
+  res, err := fast.SearchManga()
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  fmt.Println(res.Id, res.Name, res.Description, res.Released_on, res.Volumes, res.Chapters)
+}
+
+func foundMangas() {
+  c := conf()
   o := &g.Options{
     Page: "1", Limit: "1", Order: "", Kind: "", Status: "released",
     Season: "199x", Score: "8", Censored: "", Mylist: "",
   }
-  m, status, err := c.SearchManga("initial d", o)
+  m, status, err := c.SearchMangas("initial d", o)
   if err != nil {
     fmt.Println(err)
     return
@@ -63,5 +92,8 @@ func foundManga() {
 
 func main() {
   foundAnime()
+  foundAnimes()
+
   foundManga()
+  foundMangas()
 }

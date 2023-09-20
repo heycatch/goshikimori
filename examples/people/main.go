@@ -15,7 +15,7 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
   o := &g.Options{Kind: "seyu"}
-  sp, status, err := c.SearchPeople("Aya Hirano", o)
+  sp, status, err := c.SearchPeoples("Aya Hirano", o)
   if err != nil {
     fmt.Println(err)
     return
@@ -33,7 +33,7 @@ func main() {
     return
   }
   if status == 200 {
-    p, err := fast.People()
+    p, err := fast.SearchPeople()
     if err != nil {
       fmt.Println(err)
       return

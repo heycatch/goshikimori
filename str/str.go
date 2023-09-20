@@ -6,6 +6,10 @@ func ConvertAchievements(id int) string {
   return fmt.Sprintf("achievements?user_id=%d", id)
 }
 
+func ConvertSearchById(name string, id int) string {
+  return fmt.Sprintf("%s/%d", name, id)
+}
+
 func ConvertAnime(id int, name string) string {
   return fmt.Sprintf("animes/%d/%s", id, name)
 }

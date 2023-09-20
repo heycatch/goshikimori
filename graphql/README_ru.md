@@ -42,7 +42,7 @@ func main() {
   //    10) censored: false;
   //
   // Про доступные параметры интерфейса можно почитать в описании функции: SearchAnimeGraphql();
-  a, status, err := c.SearchAnimeGraphql(
+  a, status, err := c.SearchAnimesGraphql(
     "initial d", 5, 8, "", "tv", "released", "", "", "pg_13", "", false,
   )
   if status != 200 || err != nil {
@@ -88,7 +88,7 @@ func main() {
   //    8) censored: false;
   //
   // Про доступные параметры интерфейса можно почитать в описании функции: SearchMangaGraphql();
-  m, status, err := c.SearchMangaGraphql(
+  m, status, err := c.SearchMangasGraphql(
     "initial d", 1, 8, "", "manga", "released", "", "", false,
   )
   if status != 200 || err != nil {
