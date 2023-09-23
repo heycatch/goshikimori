@@ -56,11 +56,11 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
 
 // Name: user name.
 //
-// If 'Options' empty fields
+// If 'Options' empty fields:
 // 	- Page: 1;
 // 	- Limit: 1;
 //
-// 'Options' settings
+// 'Options' settings:
 // 	- Page: 100000 maximum;
 // 	- Limit: 100 maximum;
 //
@@ -151,13 +151,13 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
   return uc, nil
 }
 
-// If 'Options' empty fields
+// If 'Options' empty fields:
 // 	- Page: 1;
 // 	- Limit: 1;
 //	- Status: watching;
 //	- Censored: false;
 //
-// 'Options' settings
+// 'Options' settings:
 //	- Page: 100000 maximum;
 //	- Limit: 5000 maximum;
 //	- Status: planned, watching, rewatching, completed, on_hold, dropped;
@@ -194,12 +194,12 @@ func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
   return ar, nil
 }
 
-// If 'Options' empty fields
+// If 'Options' empty fields:
 // 	- Page: 1;
 // 	- Limit: 1;
 //	- Censored: false;
 //
-// 'Options' Settings
+// 'Options' Settings:
 //	- Page: 100000 maximum;
 //	- Limit: 5000 maximum;
 //	- Censored: true, false;
@@ -264,13 +264,13 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
   return uf, nil
 }
 
-// If 'Options' empty fields
+// If 'Options' empty fields:
 // 	- Page: 1;
 // 	- Limit: 1;
 //	- Target_type: Anime;
 //	- Target_id: option is hidden if empty;
 //
-// 'Options' settings
+// 'Options' settings:
 // 	- Page: 100000 maximum.
 // 	- Limit: 100 maximum.
 // 	- Target_id: id anime/manga in string format.
@@ -397,7 +397,7 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 //
 // If you use the 'order' parameter, you don't need to enter the name of the anime.
 //
-// If 'Options' empty fields
+// If 'Options' empty fields:
 // 	- Page: 1;
 // 	- Limit: 1;
 //  - Order: empty field;
@@ -410,7 +410,7 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 //  - Censored: false;
 //  - Mylist: empty field;
 //
-// 'Options' settings
+// 'Options' settings:
 //	- Page: 100000 maximum;
 //	- Limit: 50 maximum;
 //	- Order: id, ranked, kind, popularity, name, aired_on, episodes, status; random has been moved to a separate function, check [RandomAnime];
@@ -497,7 +497,7 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 //
 // If you use the 'order' parameter, you don't need to enter the name of the manga.
 //
-// If 'Options' empty fields
+// If 'Options' empty fields:
 // 	- Page: 1;
 // 	- Limit: 1;
 //  - Order: empty field;
@@ -508,7 +508,7 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 //  - Censored: false;
 //  - Mylist: empty field;
 //
-// 'Options' settings
+// 'Options' settings:
 //	- Page: 100000 maximum;
 //	- Limit: 50 maximum;
 //	- Order: id, ranked, kind, popularity, name, aired_on, volumes, chapters, status; random has been moved to a separate function, check [RandomManga];
@@ -983,11 +983,11 @@ func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, error) {
 
 // Name: club name.
 //
-// If 'Options' empty fields
+// If 'Options' empty fields:
 // 	- Page: 1;
 // 	- Limit: 1;
 //
-// 'Options' settings
+// 'Options' settings:
 //	- Page: 100000 maximum;
 //	- Limit: 30 maximum;
 //	- Search: default search;
@@ -1021,10 +1021,10 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
   return cl, resp.StatusCode, nil
 }
 
-// If 'Options' empty fields
+// If 'Options' empty fields:
 //	- Page: 1;
 //
-// 'Options' settings
+// 'Options' settings:
 //	- Page: 100000 maximum;
 //
 // *Configuration.FastIdClub(name string).SearchClubAnimes(r Result)
@@ -1056,10 +1056,10 @@ func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
   return a, nil
 }
 
-// If 'Options' empty fields
+// If 'Options' empty fields:
 //	- Page: 1;
 //
-// 'Options' settings
+// 'Options' settings:
 //	- Page: 100000 maximum;
 //
 // *Configuration.FastIdClub(name string).SearchClubMangas(r Result)
@@ -1091,10 +1091,10 @@ func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
   return m, nil
 }
 
-// If 'Options' empty fields
+// If 'Options' empty fields:
 //	- Page: 1;
 //
-// 'Options' settings
+// 'Options' settings:
 //	- Page: 100000 maximum;
 //
 // *Configuration.FastIdClub(name string).SearchClubCharacters(r Result)
@@ -1126,10 +1126,10 @@ func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
   return ci, nil
 }
 
-// If 'Options' empty fields
+// If 'Options' empty fields:
 //	- Page: 1;
 //
-// 'Options' settings
+// 'Options' settings:
 //	- Page: 100000 maximum;
 //
 // *Configuration.FastIdClub(name string).SearchClubClubs(r Result)
@@ -1161,10 +1161,10 @@ func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
   return cc, nil
 }
 
-// If 'Options' empty fields
+// If 'Options' empty fields:
 //	- Page: 1;
 //
-// 'Options' settings
+// 'Options' settings:
 //	- Page: 100000 maximum;
 //
 // *Configuration.FastIdClub(name string).SearchClubCollections(r Result)
@@ -1448,10 +1448,10 @@ func (c *Configuration) SearchBans() ([]api.Bans, int, error) {
   return b, resp.StatusCode, nil
 }
 
-// If 'Options' empty fields
+// If 'Options' empty fields:
 // 	- Censored: false;
 //
-// 'Options' settings
+// 'Options' settings:
 //	- Censored: true, false;
 //
 // Set to false to allow hentai, yaoi and yuri.
@@ -1678,12 +1678,12 @@ func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
   return um, nil
 }
 
-// If 'Options' empty fields
+// If 'Options' empty fields:
 // 	- Type: news;
 // 	- Page: 1;
 // 	- Limit: 1;
 //
-// 'Options' settings
+// 'Options' settings:
 // 	- Page: 100000 maximum;
 // 	- Limit: 100 maximum;
 //  - Type: inbox, private, sent, news, notifications;
@@ -1859,7 +1859,7 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, e
 
 // Limit: number of results obtained;
 //
-// Maximum: 50;
+// Minimum: 1; Maximum: 50;
 func (c *Configuration) RandomAnimes(limit int) ([]api.Animes, int, error) {
   var a []api.Animes
   var client = &http.Client{}
@@ -1891,7 +1891,7 @@ func (c *Configuration) RandomAnimes(limit int) ([]api.Animes, int, error) {
 
 // Limit: number of results obtained;
 //
-// Maximum: 50;
+// Minimum: 1; Maximum: 50;
 func (c *Configuration) RandomMangas(limit int) ([]api.Mangas, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
@@ -1951,10 +1951,10 @@ func (f *FastId) SearchPeople() (api.People, error) {
 
 // Name: people name.
 //
-// If 'Options' empty fields
+// If 'Options' empty fields:
 //	- Kind: seyu;
 //
-// 'Options' settings
+// 'Options' settings:
 //	- Page/Limit: not supported, idk why;
 //	- Kind: seyu, mangaka, producer;
 func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, int, error) {
@@ -2325,11 +2325,11 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
 //  - Linked_id: number without limit;
 //  - Linked_type: Anime, Manga, Ranobe, Character, Person, Club, ClubPage, Critique, Review, Contest, CosplayGallery, Collection, Article;
 //
-//  REMARK: linked_id and linked_type are only used together.
+// REMARK: linked_id and linked_type are only used together.
 //
 //	- Type: not supported;
 //
-//  TODO: Add implementation of creating/updating/deleting a topic. This is not needed at this stage.
+// TODO: Add implementation of creating/updating/deleting a topic. This is not needed at this stage.
 func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
   var client = &http.Client{}
@@ -2507,7 +2507,7 @@ func (c *Configuration) RemoveIgnoreTopic(id int) (api.IgnoreTopic, int, error) 
 //
 // Exclamation mark(!) indicates ignore.
 //
-// If 'Options' empty fields
+// If 'Options' empty fields:
 // 	- Limit: 1;
 //	- Score: 1;
 //  - Order: empty field;
@@ -2519,7 +2519,7 @@ func (c *Configuration) RemoveIgnoreTopic(id int) (api.IgnoreTopic, int, error) 
 //	- Mylist: empty field;
 //	- Censored: false;
 //
-// 'Options' settings
+// 'Options' settings:
 //	- Limit: 50 maximum;
 //	- Order: id, ranked, kind, popularity, name, aired_on, episodes, statust; random has been moved to a separate function, check [RandomAnime];
 //	- Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48, !tv, !movie, !ova, !ona, !special, !music, !tv_13, !tv_24, !tv_48;
@@ -2572,7 +2572,7 @@ func (c *Configuration) SearchAnimeGraphql(name string, options ...interface{}) 
 //
 // Exclamation mark(!) indicates ignore.
 //
-// If 'Options' empty fields
+// If 'Options' empty fields:
 // 	- Limit: 1;
 //  - Order: empty field;
 //	- Kind: empty field;
@@ -2582,7 +2582,7 @@ func (c *Configuration) SearchAnimeGraphql(name string, options ...interface{}) 
 //  - Censored: false;
 //  - Mylist: empty field;
 //
-// 'Options' settings
+// 'Options' settings:
 //	- Limit: 50 maximum;
 //	- Order: id, ranked, kind, popularity, name, aired_on, volumes, chapters, status; random has been moved to a separate function, check [RandomManga];
 //	- Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin, !manga, !manhwa, !manhua, !light_novel, !novel, !one_shot, !doujin;

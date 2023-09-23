@@ -6,7 +6,7 @@ import (
 )
 
 func AnimeSchema(name string, options ...interface{}) (string, error) {
-  var parameterOptions, paramterRequests string
+  var parameterOptions, parameterRequests string
 
   values := []string{
     "id malId name russian licenseNameRu english japanese synonyms kind rating score status episodes episodesAired duration airedOn{year month day date} releasedOn{year month day date} url ",
@@ -98,13 +98,13 @@ func AnimeSchema(name string, options ...interface{}) (string, error) {
     }
   }
 
-  for i := 0; i < len(values); i++ { paramterRequests += values[i] }
+  for i := 0; i < len(values); i++ { parameterRequests += values[i] }
 
-  return fmt.Sprintf(`graphql?query={animes(search: "%s"%s){%s}}`, name, parameterOptions, paramterRequests), nil
+  return fmt.Sprintf(`graphql?query={animes(search: "%s"%s){%s}}`, name, parameterOptions, parameterRequests), nil
 }
 
 func MangaSchema(name string, options ...interface{}) (string, error) {
-  var parameterOptions, paramterRequests string
+  var parameterOptions, parameterRequests string
 
   values := []string{
     "id malId name russian licenseNameRu english japanese synonyms kind score status volumes chapters airedOn{year month day date} releasedOn{year month day date} url ",
@@ -180,7 +180,7 @@ func MangaSchema(name string, options ...interface{}) (string, error) {
     }
   }
 
-  for i := 0; i < len(values); i++ { paramterRequests += values[i] }
+  for i := 0; i < len(values); i++ { parameterRequests += values[i] }
 
-  return fmt.Sprintf(`graphql?query={mangas(search: "%s"%s){%s}}`, name, parameterOptions, paramterRequests), nil
+  return fmt.Sprintf(`graphql?query={mangas(search: "%s"%s){%s}}`, name, parameterOptions, parameterRequests), nil
 }
