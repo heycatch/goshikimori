@@ -14,16 +14,22 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
+
   a, status, err := c.RandomAnimes(5)
-  if err != nil {
-    fmt.Println(err)
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
-  if status == 200 { fmt.Println(a) }
+  for _, v := range a {
+    fmt.Println(v.Id, v.Name, v.Score, v.Status)
+  }
+
   m, status, err := c.RandomMangas(5)
-  if err != nil {
-    fmt.Println(err)
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
-  if status == 200 { fmt.Println(m) }
+  for _, v := range m {
+    fmt.Println(v.Id, v.Name, v.Score, v.Chapters, v.Volumes)
+  }
 }

@@ -26,6 +26,10 @@ import (
 // Name: user name.
 //
 // Search by user is case sensitive.
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
 func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
   var u api.Users
   var client = &http.Client{}
@@ -65,6 +69,10 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
 // 	- Limit: 100 maximum;
 //
 // Don't use Stats.Statuses.Anime and Stats.Statuses.Manga: empty slice.
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/users
 func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, error) {
   var u []api.Users
   var client = &http.Client{}
@@ -93,7 +101,9 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, er
   return u, resp.StatusCode, nil
 }
 
-// *Configuraiton.FastIdUser(name string).SearchUserFriends()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
 func (f *FastId) SearchUserFriends() ([]api.UserFriends, error) {
   var uf []api.UserFriends
   var client = &http.Client{}
@@ -122,7 +132,9 @@ func (f *FastId) SearchUserFriends() ([]api.UserFriends, error) {
   return uf, nil
 }
 
-// *Configuraiton.FastIdUser(name string).SearchUserClubs()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
 func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
   var uc []api.Clubs
   var client = &http.Client{}
@@ -165,7 +177,9 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
 //
 // Set to true to discard hentai, yaoi and yuri.
 //
-// *Configuraiton.FastIdUser(name string).SearchUserAnimeRates(r Result)
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
 func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
   var ar []api.UserAnimeRates
   var client = &http.Client{}
@@ -206,7 +220,9 @@ func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
 //
 // Set to true to discard hentai, yaoi and yuri.
 //
-// *Configuraiton.FastIdUser(name string).SearchUserMangaRates(r Result)
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
 func (f *FastId) SearchUserMangaRates(r Result) ([]api.UserMangaRates, error) {
   var mr []api.UserMangaRates
   var client = &http.Client{}
@@ -235,7 +251,9 @@ func (f *FastId) SearchUserMangaRates(r Result) ([]api.UserMangaRates, error) {
   return mr, nil
 }
 
-// *Configuraiton.FastIdUser(name string).SearchUserFavourites()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
 func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
   var uf api.UserFavourites
   var client = &http.Client{}
@@ -276,7 +294,9 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
 // 	- Target_id: id anime/manga in string format.
 // 	- Target_type: Anime, Manga.
 //
-// *Configuraiton.FastIdUser(name string).SearchUserHistory(r Result)
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
 func (f *FastId) SearchUserHistory(r Result) ([]api.UserHistory, error) {
   var uh []api.UserHistory
   var client = &http.Client{}
@@ -305,7 +325,9 @@ func (f *FastId) SearchUserHistory(r Result) ([]api.UserHistory, error) {
   return uh, nil
 }
 
-// *Configuraiton.FastIdUser(name string).SearchUserBans()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
 func (f *FastId) SearchUserBans() ([]api.Bans, error) {
   var b []api.Bans
   var client = &http.Client{}
@@ -334,6 +356,9 @@ func (f *FastId) SearchUserBans() ([]api.Bans, error) {
   return b, nil
 }
 
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/whoami
 func (c *Configuration) WhoAmi() (api.Who, int, error) {
   var w api.Who
   var client = &http.Client{}
@@ -362,7 +387,9 @@ func (c *Configuration) WhoAmi() (api.Who, int, error) {
   return w, resp.StatusCode, nil
 }
 
-// *Configuraiton.FastIdAnime(name string).SearchAnime()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga
 func (f *FastId) SearchAnime() (api.Anime, error) {
   var a api.Anime
   var client = &http.Client{}
@@ -434,6 +461,10 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 //	- Franchise: not supported;
 //	- Ids: not supported;
 //	- Exclude_ids: not supported;
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga
 func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, error) {
   var a []api.Animes
   var client = &http.Client{}
@@ -462,7 +493,9 @@ func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, 
   return a, resp.StatusCode, nil
 }
 
-// *Configuraiton.FastIdManga(name string).SearchManga()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga
 func (f *FastId) SearchManga() (api.Manga, error) {
   var m api.Manga
   var client = &http.Client{}
@@ -530,6 +563,10 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 //	- Franchise: not supported;
 //	- Ids: not supported;
 //	- Exclude_ids: not supported;
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga
 func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
@@ -724,7 +761,9 @@ func (c *Configuration) FastIdPeople(name string) (*FastId, int, error) {
   return &FastId{Id: ap[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
 }
 
-// *Configuration.FastIdAnime(name string).SearchAnimeScreenshots()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_screenshots
 func (f *FastId) SearchAnimeScreenshots() ([]api.AnimeScreenshots, error) {
   var s []api.AnimeScreenshots
   var client = &http.Client{}
@@ -753,7 +792,9 @@ func (f *FastId) SearchAnimeScreenshots() ([]api.AnimeScreenshots, error) {
   return s, nil
 }
 
-// *Configuration.FastIdAnime(name string).SearchAnimeFranchise()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/franchise
 func (f *FastId) SearchAnimeFranchise() (api.Franchise, error) {
   var ff api.Franchise
   var client = &http.Client{}
@@ -781,7 +822,9 @@ func (f *FastId) SearchAnimeFranchise() (api.Franchise, error) {
   return ff, nil
 }
 
-// *Configuration.FastIdManga(name string).SearchMangaFranchise()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/franchise
 func (f *FastId) SearchMangaFranchise() (api.Franchise, error) {
   var ff api.Franchise
   var client = &http.Client{}
@@ -809,7 +852,9 @@ func (f *FastId) SearchMangaFranchise() (api.Franchise, error) {
   return ff, nil
 }
 
-// *Configuraiton.FastIdAnime(name string).SearchAnimeExternalLinks()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/external_links
 func (f *FastId) SearchAnimeExternalLinks() ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
   var client = &http.Client{}
@@ -837,7 +882,9 @@ func (f *FastId) SearchAnimeExternalLinks() ([]api.ExternalLinks, error) {
   return el, nil
 }
 
-// *Configuraiton.FastIdManga(name string).SearchMangaExternalLinks()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/external_links
 func (f *FastId) SearchMangaExternalLinks() ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
   var client = &http.Client{}
@@ -865,7 +912,9 @@ func (f *FastId) SearchMangaExternalLinks() ([]api.ExternalLinks, error) {
   return el, nil
 }
 
-// *Configuraiton.FastIdAnime(name string).SearchSimilarAnime()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/similar
 func (f *FastId) SearchSimilarAnime() ([]api.Animes, error) {
   var a []api.Animes
   var client = &http.Client{}
@@ -894,7 +943,9 @@ func (f *FastId) SearchSimilarAnime() ([]api.Animes, error) {
   return a, nil
 }
 
-// *Configuraiton.FastIdManga(name string).SearchSimilarManga()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/similar
 func (f *FastId) SearchSimilarManga() ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
@@ -923,7 +974,9 @@ func (f *FastId) SearchSimilarManga() ([]api.Mangas, error) {
   return m, nil
 }
 
-// *Configuraiton.FastIdAnime(name string).SearchRelatedAnime()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/related
 func (f *FastId) SearchRelatedAnime() ([]api.RelatedAnimes, error) {
   var a []api.RelatedAnimes
   var client = &http.Client{}
@@ -952,7 +1005,9 @@ func (f *FastId) SearchRelatedAnime() ([]api.RelatedAnimes, error) {
   return a, nil
 }
 
-// *Configuraiton.FastIdManga(name string).SearchRelatedManga()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/related
 func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, error) {
   var m []api.RelatedMangas
   var client = &http.Client{}
@@ -993,6 +1048,10 @@ func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, error) {
 //	- Search: default search;
 //
 // If we set the limit=1, we will still have 2 results.
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
 func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, error) {
   var cl []api.Clubs
   var client = &http.Client{}
@@ -1027,7 +1086,9 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
 // 'Options' settings:
 //	- Page: 100000 maximum;
 //
-// *Configuration.FastIdClub(name string).SearchClubAnimes(r Result)
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
 func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
   var a []api.Animes
   var client = &http.Client{}
@@ -1062,7 +1123,9 @@ func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
 // 'Options' settings:
 //	- Page: 100000 maximum;
 //
-// *Configuration.FastIdClub(name string).SearchClubMangas(r Result)
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
 func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
@@ -1097,7 +1160,9 @@ func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
 // 'Options' settings:
 //	- Page: 100000 maximum;
 //
-// *Configuration.FastIdClub(name string).SearchClubCharacters(r Result)
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
 func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
   var ci []api.CharacterInfo
   var client = &http.Client{}
@@ -1132,7 +1197,9 @@ func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
 // 'Options' settings:
 //	- Page: 100000 maximum;
 //
-// *Configuration.FastIdClub(name string).SearchClubClubs(r Result)
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
 func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
   var cc []api.Clubs
   var client = &http.Client{}
@@ -1167,7 +1234,9 @@ func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
 // 'Options' settings:
 //	- Page: 100000 maximum;
 //
-// *Configuration.FastIdClub(name string).SearchClubCollections(r Result)
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
 func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, error) {
   var cc []api.ClubCollections
   var client = &http.Client{}
@@ -1196,7 +1265,9 @@ func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, error) 
   return cc, nil
 }
 
-// *Configuration.FastIdClub(name string).SearchClubMembers()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
 func (f *FastId) SearchClubMembers() ([]api.UserFriends, error) {
   var uf []api.UserFriends
   var client = &http.Client{}
@@ -1225,7 +1296,9 @@ func (f *FastId) SearchClubMembers() ([]api.UserFriends, error) {
   return uf, nil
 }
 
-// *Configuration.FastIdClub(name string).SearchClubImages()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
 func (f *FastId) SearchClubImages() ([]api.ClubImages, error) {
   var cm []api.ClubImages
   var client = &http.Client{}
@@ -1254,9 +1327,9 @@ func (f *FastId) SearchClubImages() ([]api.ClubImages, error) {
   return cm, nil
 }
 
-// You can only get a StatusCode.
+// More information can be found in the [example].
 //
-// *Configuration.FastIdClub(name string).ClubJoin()
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
 func (f *FastId) ClubJoin() (int, error) {
   var client = &http.Client{}
 
@@ -1275,9 +1348,9 @@ func (f *FastId) ClubJoin() (int, error) {
   return resp.StatusCode, nil
 }
 
-// You can only get a StatusCode.
+// More information can be found in the [example].
 //
-// *Configuration.FastIdClub(name string).ClubLeave()
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
 func (f *FastId) ClubLeave() (int, error) {
   var client = &http.Client{}
 
@@ -1301,11 +1374,9 @@ func (f *FastId) ClubLeave() (int, error) {
 // Next comes the filtering through "NekoSearch" and the error about obtaining
 // specific achievements is already being processed there.
 //
-// Check [example].
+// More information can be found in the [example].
 //
-// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/achievements/main.go
-//
-// *Configuration.FastIdUser(name string).SearchAchievement()
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/achievements
 func (f *FastId) SearchAchievement() ([]api.Achievements, error) {
   var a []api.Achievements
   var client = &http.Client{}
@@ -1334,7 +1405,9 @@ func (f *FastId) SearchAchievement() ([]api.Achievements, error) {
   return a, nil
 }
 
-// *Configuration.FastIdAnime(name string).SearchAnimeVideos()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/video
 func (f *FastId) SearchAnimeVideos() ([]api.AnimeVideos, error) {
   var v []api.AnimeVideos
   var client = &http.Client{}
@@ -1363,7 +1436,9 @@ func (f *FastId) SearchAnimeVideos() ([]api.AnimeVideos, error) {
   return v, nil
 }
 
-// *Configuraiton.FastIdAnime(name string).SearchAnimeRoles()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/roles
 func (f *FastId) SearchAnimeRoles() ([]api.Roles, error) {
   var r []api.Roles
   var client = &http.Client{}
@@ -1392,7 +1467,9 @@ func (f *FastId) SearchAnimeRoles() ([]api.Roles, error) {
   return r, nil
 }
 
-// *Configuraiton.FastIdManga(name string).SearchMangaRoles()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/roles
 func (f *FastId) SearchMangaRoles() ([]api.Roles, error) {
   var r []api.Roles
   var client = &http.Client{}
@@ -1421,6 +1498,9 @@ func (f *FastId) SearchMangaRoles() ([]api.Roles, error) {
   return r, nil
 }
 
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/bans
 func (c *Configuration) SearchBans() ([]api.Bans, int, error) {
   var b []api.Bans
   var client = &http.Client{}
@@ -1455,6 +1535,10 @@ func (c *Configuration) SearchBans() ([]api.Bans, int, error) {
 //	- Censored: true, false;
 //
 // Set to false to allow hentai, yaoi and yuri.
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/calendar
 func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
   var ca []api.Calendar
   var client = &http.Client{}
@@ -1483,6 +1567,9 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
   return ca, resp.StatusCode, nil
 }
 
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/genres
 func (c *Configuration) SearchGenres() ([]api.Genres, int, error) {
   var g []api.Genres
   var client = &http.Client{}
@@ -1510,6 +1597,9 @@ func (c *Configuration) SearchGenres() ([]api.Genres, int, error) {
   return g, resp.StatusCode, nil
 }
 
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/studios
 func (c *Configuration) SearchStudios() ([]api.Studios, int, error) {
   var s []api.Studios
   var client = &http.Client{}
@@ -1537,6 +1627,9 @@ func (c *Configuration) SearchStudios() ([]api.Studios, int, error) {
   return s, resp.StatusCode, nil
 }
 
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/publishers
 func (c *Configuration) SearchPublishers() ([]api.Publishers, int, error) {
   var p []api.Publishers
   var client = &http.Client{}
@@ -1564,6 +1657,9 @@ func (c *Configuration) SearchPublishers() ([]api.Publishers, int, error) {
   return p, resp.StatusCode, nil
 }
 
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/forums
 func (c *Configuration) SearchForums() ([]api.Forums, int, error) {
   var f []api.Forums
   var client = &http.Client{}
@@ -1591,7 +1687,9 @@ func (c *Configuration) SearchForums() ([]api.Forums, int, error) {
   return f, resp.StatusCode, nil
 }
 
-// *Configuration.FastIdUser(name string).AddFriend()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/add_remove_friend
 func (f *FastId) AddFriend() (api.FriendRequest, error) {
   var ff api.FriendRequest
   var client = &http.Client{}
@@ -1620,7 +1718,9 @@ func (f *FastId) AddFriend() (api.FriendRequest, error) {
   return ff, nil
 }
 
-// *Configuration.FastIdUser(name string).RemoveFriend()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/add_remove_friend
 func (f *FastId) RemoveFriend() (api.FriendRequest, error) {
   var ff api.FriendRequest
   var client = &http.Client{}
@@ -1649,7 +1749,9 @@ func (f *FastId) RemoveFriend() (api.FriendRequest, error) {
   return ff, nil
 }
 
-// *Configuration.FastIdUser(name string).UserUnreadMessages()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/unread_messages
 func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
   var um api.UnreadMessages
   var client = &http.Client{}
@@ -1688,7 +1790,9 @@ func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
 // 	- Limit: 100 maximum;
 //  - Type: inbox, private, sent, news, notifications;
 //
-// *Configuration.FastIdUser(name string).UserMessages(r Result)
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/messages
 func (f *FastId) UserMessages(r Result) ([]api.Messages, error) {
   var m []api.Messages
   var client = &http.Client{}
@@ -1717,6 +1821,9 @@ func (f *FastId) UserMessages(r Result) ([]api.Messages, error) {
   return m, nil
 }
 
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
 func (c *Configuration) SearchConstantsAnime() (api.Constants, int, error) {
   var ca api.Constants
   var client = &http.Client{}
@@ -1745,6 +1852,9 @@ func (c *Configuration) SearchConstantsAnime() (api.Constants, int, error) {
   return ca, resp.StatusCode, nil
 }
 
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
 func (c *Configuration) SearchConstantsManga() (api.Constants, int, error) {
   var cm api.Constants
   var client = &http.Client{}
@@ -1773,6 +1883,9 @@ func (c *Configuration) SearchConstantsManga() (api.Constants, int, error) {
   return cm, resp.StatusCode, nil
 }
 
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
 func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, int, error) {
   var ur api.ConstantsUserRate
   var client = &http.Client{}
@@ -1801,6 +1914,9 @@ func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, int, e
   return ur, resp.StatusCode, nil
 }
 
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
 func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, int, error) {
   var cc api.ConstantsClub
   var client = &http.Client{}
@@ -1829,6 +1945,9 @@ func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, int, error) {
   return cc, resp.StatusCode, nil
 }
 
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
 func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, error) {
   var cs []api.ConstantsSmileys
   var client = &http.Client{}
@@ -1860,6 +1979,10 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, e
 // Limit: number of results obtained;
 //
 // Minimum: 1; Maximum: 50;
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/random
 func (c *Configuration) RandomAnimes(limit int) ([]api.Animes, int, error) {
   var a []api.Animes
   var client = &http.Client{}
@@ -1892,6 +2015,10 @@ func (c *Configuration) RandomAnimes(limit int) ([]api.Animes, int, error) {
 // Limit: number of results obtained;
 //
 // Minimum: 1; Maximum: 50;
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/random
 func (c *Configuration) RandomMangas(limit int) ([]api.Mangas, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
@@ -1921,7 +2048,9 @@ func (c *Configuration) RandomMangas(limit int) ([]api.Mangas, int, error) {
   return m, resp.StatusCode, nil
 }
 
-// *Configuraiton.FastIdPeople(name string).SearchPeople()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/people
 func (f *FastId) SearchPeople() (api.People, error) {
   var p api.People
   var client = &http.Client{}
@@ -1957,6 +2086,10 @@ func (f *FastId) SearchPeople() (api.People, error) {
 // 'Options' settings:
 //	- Page/Limit: not supported, idk why;
 //	- Kind: seyu, mangaka, producer;
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/people
 func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, int, error) {
   var ap []api.AllPeople
   var client = &http.Client{}
@@ -1988,7 +2121,9 @@ func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, i
 //
 // Kind(required when Linked_type is Person): common, seyu, mangaka, producer, person.
 //
-// *Configuraiton.FastIdAnime/FastIdManga(name string).FavoritesCreate(linked_type string, kind string)
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/favorites
 func (f *FastId) FavoritesCreate(linked_type string, kind string) (api.Favorites, error) {
   var fa api.Favorites
   var client = &http.Client{}
@@ -2027,7 +2162,9 @@ func (f *FastId) FavoritesCreate(linked_type string, kind string) (api.Favorites
 
 // Linked_type: Anime, Manga, Ranobe, Person, Character.
 //
-// *Configuraiton.FastIdAnime/FastIdManga(name string).FavoritesDelete(linked_type string)
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/favorites
 func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
   var ff api.Favorites
   var client = &http.Client{}
@@ -2066,7 +2203,9 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
 //
 // You can only get a StatusCode.
 //
-// *Configuraiton.FastIdAnime/FastIdManga(name string).FavoritesReorder(position int)
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/favorites
 func (f *FastId) FavoritesReorder(position int) (int, error) {
   var client = &http.Client{}
 
@@ -2085,7 +2224,9 @@ func (f *FastId) FavoritesReorder(position int) (int, error) {
   return resp.StatusCode, nil
 }
 
-// *Configuration.FastIdUser(name string).AddIgnoreUser()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/ignore
 func (f *FastId) AddIgnoreUser() (api.IgnoreUser, error) {
   var i api.IgnoreUser
   var client = &http.Client{}
@@ -2114,7 +2255,9 @@ func (f *FastId) AddIgnoreUser() (api.IgnoreUser, error) {
   return i, nil
 }
 
-// *Configuration.FastIdUser(name string).RemoveIgnoreUser()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/ignore
 func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, error) {
   var i api.IgnoreUser
   var client = &http.Client{}
@@ -2143,6 +2286,9 @@ func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, error) {
   return i, nil
 }
 
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/dialogs
 func (c *Configuration) Dialogs() ([]api.Dialogs, int, error) {
   var d []api.Dialogs
   var client = &http.Client{}
@@ -2169,7 +2315,9 @@ func (c *Configuration) Dialogs() ([]api.Dialogs, int, error) {
   return d, resp.StatusCode, nil
 }
 
-// *Configuration.FastIdUser(name string).SearchDialogs()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/dialogs
 func (f *FastId) SearchDialogs() ([]api.SearchDialogs, error) {
   var sd []api.SearchDialogs
   var client = &http.Client{}
@@ -2198,7 +2346,9 @@ func (f *FastId) SearchDialogs() ([]api.SearchDialogs, error) {
   return sd, nil
 }
 
-// *Configuration.FastIdUser(name string).DeleteDialogs()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/dialogs
 func (f *FastId) DeleteDialogs() (api.FriendRequest, error) {
   var fr api.FriendRequest
   var client = &http.Client{}
@@ -2228,7 +2378,9 @@ func (f *FastId) DeleteDialogs() (api.FriendRequest, error) {
   return fr, nil
 }
 
-// *Configuration.FastIdUser(name string).UserBriefInfo()
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
 func (f *FastId) UserBriefInfo() (api.Info, error) {
   var i api.Info
   var client = &http.Client{}
@@ -2257,6 +2409,7 @@ func (f *FastId) UserBriefInfo() (api.Info, error) {
   return i, nil
 }
 
+// FIXME: https://github.com/heycatch/goshikimori/issues/26
 func (c *Configuration) SignOut() (string, int, error) {
   var client = &http.Client{}
 
@@ -2283,6 +2436,10 @@ func (c *Configuration) SignOut() (string, int, error) {
 // Users having at least 1 completed animes and active during last month.
 //
 // Time to complete request increased to 40 seconds. Too big request.
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/active_users
 func (c *Configuration) ActiveUsers() ([]int, int, error) {
   var ids []int
   var client = &http.Client{}
@@ -2329,6 +2486,10 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
 //
 //	- Type: not supported;
 //
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
+//
 // TODO: Add implementation of creating/updating/deleting a topic. This is not needed at this stage.
 func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
@@ -2358,6 +2519,9 @@ func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
   return t, resp.StatusCode, nil
 }
 
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
 func (c *Configuration) SearchTopicsUpdates(r Result) ([]api.TopicsUpdates, int, error) {
   var t []api.TopicsUpdates
   var client = &http.Client{}
@@ -2386,6 +2550,9 @@ func (c *Configuration) SearchTopicsUpdates(r Result) ([]api.TopicsUpdates, int,
   return t, resp.StatusCode, nil
 }
 
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
 func (c *Configuration) SearchTopicsHot(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
   var client = &http.Client{}
@@ -2415,6 +2582,10 @@ func (c *Configuration) SearchTopicsHot(r Result) ([]api.Topics, int, error) {
 }
 
 // You can find the ID in functions such as: SearchTopics(), SearchTopicsUpdates(), SearchTopicsHot()
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
 func (c *Configuration) SearchTopicsId(id int) (api.TopicsId, int, error) {
   var t api.TopicsId
   var client = &http.Client{}
@@ -2444,6 +2615,10 @@ func (c *Configuration) SearchTopicsId(id int) (api.TopicsId, int, error) {
 }
 
 // You can find the ID in functions such as: SearchTopics(), SearchTopicsUpdates(), SearchTopicsHot()
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
 func (c *Configuration) AddIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
   var i api.IgnoreTopic
   var client = &http.Client{}
@@ -2473,6 +2648,10 @@ func (c *Configuration) AddIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
 }
 
 // You can find the ID in functions such as: SearchTopics(), SearchTopicsUpdates(), SearchTopicsHot()
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
 func (c *Configuration) RemoveIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
   var i api.IgnoreTopic
   var client = &http.Client{}
