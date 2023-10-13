@@ -1,8 +1,8 @@
 package graphql
 
 import (
-	"fmt"
-	"errors"
+  "fmt"
+  "errors"
 )
 
 func AnimeSchema(name string, options ...interface{}) (string, error) {

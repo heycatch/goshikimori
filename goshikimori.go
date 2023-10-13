@@ -2409,7 +2409,7 @@ func (f *FastId) UserBriefInfo() (api.Info, error) {
   return i, nil
 }
 
-// FIXME: https://github.com/heycatch/goshikimori/issues/26
+// https://github.com/heycatch/goshikimori/issues/26
 func (c *Configuration) SignOut() (string, int, error) {
   var client = &http.Client{}
 

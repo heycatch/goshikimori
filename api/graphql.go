@@ -16,10 +16,10 @@ type MessageGraphQL struct {
 
 /*
 # Removed:
-	Season: nil;
-	NextEpisodeAt: nil;
-	ExternalLinks: nil;
-	DescriptionSource: nil;
+  Season: nil;
+  NextEpisodeAt: nil;
+  ExternalLinks: nil;
+  DescriptionSource: nil;
 */
 type AnimesGraphQL struct {
   Id              string                  `json:"id"`
@@ -62,8 +62,8 @@ type AnimesGraphQL struct {
 
 /*
 # Removed:
-	ExternalLinks: nil;
-	DescriptionSource: nil;
+  ExternalLinks: nil;
+  DescriptionSource: nil;
 */
 type MangasGraphQL struct {
   Id              string                  `json:"id"`
