@@ -1,7 +1,7 @@
 package api
 
 type IgnoreUser struct {
-  User_id	   string `json:"user_id"`
+  User_id    string `json:"user_id"`
   Is_ignored bool   `json:"is_ignored"`
 }
 

@@ -99,9 +99,9 @@ type MangasGraphQL struct {
 }
 
 type AiredOnGraphQL struct {
-  Year  int 	 `json:"year"`
-  Month int 	 `json:"month"`
-  Day   int 	 `json:"day"`
+  Year  int    `json:"year"`
+  Month int    `json:"month"`
+  Day   int    `json:"day"`
   Date  string `json:"date"`
 }
 
