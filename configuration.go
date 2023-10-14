@@ -31,6 +31,7 @@ type Options struct {
 type Result interface {
   OptionsAnime()           string
   OptionsManga()           string
+  OptionsRanobe()          string
   OptionsUsers()           string
   OptionsClub()            string
   OptionsCalendar()        string
@@ -304,6 +305,69 @@ func (o *Options) OptionsManga() string {
   v.Add("limit", o.Limit)
   v.Add("order", o.Order)
   v.Add("kind", o.Kind)
+  v.Add("status", o.Status)
+  v.Add("season", o.Season)
+  v.Add("score", o.Score)
+  v.Add("censored", o.Censored)
+  v.Add("mylist", o.Mylist)
+
+  return v.Encode()
+}
+
+func (o *Options) OptionsRanobe() string {
+  p, _ := strconv.Atoi(o.Page)
+  l, _ := strconv.Atoi(o.Limit)
+
+  if p <= 0 || p >= 100001 { o.Page = "1" }
+  if l <= 0 || l >= 51 { o.Limit = "1" }
+
+  order_map := map[string]int8{
+    "id": 1, "ranked": 2, "kind": 3, "popularity": 4,
+    "name": 5, "aired_on": 6, "volumes": 7,
+    "chapters": 8, "status": 9,
+  }
+  _, ok_order := order_map[o.Order]; if !ok_order {
+    o.Order = ""
+  }
+
+  status_map := map[string]int8{
+    "anons": 1, "ongoing": 2, "released": 3, "paused": 4, "discontinued": 5,
+    "!anons": 6, "!ongoing": 7, "!released": 8, "!paused": 9, "!discontinued": 10,
+  }
+  _, ok_status := status_map[o.Status]; if !ok_status {
+    o.Status = ""
+  }
+
+  season_map := map[string]int8{
+    "2000_2010": 1, "2010_2014": 2, "2015_2019": 3, "199x": 4,
+    "!2000_2010": 5, "!2010_2014": 6, "!2015_2019": 7, "!199x": 8,
+    "198x": 9, "!198x": 10, "2020_2021": 11, "!2020_2021": 12,
+    "2022": 13, "!2022": 14, "2023": 15, "!2023": 16,
+  }
+  _, ok_season := season_map[o.Season]; if !ok_season {
+    o.Season = ""
+  }
+
+  s, _ := strconv.Atoi(o.Score)
+  if s <= 0 || s >= 10 { o.Score = "" }
+
+  censored_map := map[string]int8{"true": 1, "false": 2}
+  _, ok_censored := censored_map[o.Censored]; if !ok_censored {
+    o.Censored = "false"
+  }
+
+  mylist_map := map[string]int8{
+    "planned": 1, "watching": 2, "rewatching": 3,
+    "completed": 4, "on_hold": 5, "dropped": 6,
+  }
+  _, ok_mylist := mylist_map[o.Mylist]; if !ok_mylist {
+    o.Mylist = ""
+  }
+
+  v := url.Values{}
+  v.Add("page", o.Page)
+  v.Add("limit", o.Limit)
+  v.Add("order", o.Order)
   v.Add("status", o.Status)
   v.Add("season", o.Season)
   v.Add("score", o.Score)

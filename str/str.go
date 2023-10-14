@@ -97,3 +97,7 @@ func ConvertTopicsId(id int) string {
 func ConvertIgnoreTopic(id int) string {
   return fmt.Sprintf("v2/topics/%d/ignore", id)
 }
+
+func ConvertTopicsType(id int, name string) string {
+  return fmt.Sprintf("%s/%d/topics", name, id)
+}

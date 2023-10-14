@@ -90,10 +90,44 @@ func foundMangas() {
   }
 }
 
+func foundRanobe() {
+  c := conf()
+  fast, status, err := c.FastIdRanobe("sword art")
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+  res, err := fast.SearchRanobe()
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  fmt.Println(res.Id, res.Name, res.Description, res.Released_on, res.Volumes, res.Chapters)
+}
+
+func foundRanobes() {
+  c := conf()
+  o := &g.Options{
+    Page: "1", Limit: "5", Order: "", Status: "released",
+    Season: "", Score: "7", Censored: "", Mylist: "",
+  }
+  r, status, err := c.SearchRanobes("sword art", o)
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+  for _, v := range r {
+    fmt.Println(v.Name, v.Score, v.Released_on, v.Volumes, v.Chapters)
+  }
+}
+
 func main() {
   foundAnime()
   foundAnimes()
 
   foundManga()
   foundMangas()
+
+  foundRanobe()
+  foundRanobes()
 }

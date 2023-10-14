@@ -32,4 +32,13 @@ func main() {
   for _, v := range m {
     fmt.Println(v.Id, v.Name, v.Score, v.Chapters, v.Volumes)
   }
+
+  r, status, err := c.RandomRanobes(5)
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+  for _, v := range r {
+    fmt.Println(v.Id, v.Name, v.Score, v.Chapters, v.Volumes)
+  }
 }

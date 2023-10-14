@@ -389,7 +389,7 @@ func (c *Configuration) WhoAmi() (api.Who, int, error) {
 
 // More information can be found in the [example].
 //
-// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
 func (f *FastId) SearchAnime() (api.Anime, error) {
   var a api.Anime
   var client = &http.Client{}
@@ -451,8 +451,6 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 //	- Mylist: planned, watching, rewatching, completed, on_hold, dropped;
 //	- Search: default search;
 //
-// [RandomAnime]: https://github.com/heycatch/goshikimori/blob/master/examples/random/main.go
-//
 // Set to true to discard hentai, yaoi and yuri.
 //
 //	- Type: "deprecated";
@@ -464,7 +462,8 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 //
 // More information can be found in the [example].
 //
-// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga
+// [RandomAnime]: https://github.com/heycatch/goshikimori/blob/master/examples/random/main.go
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
 func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, error) {
   var a []api.Animes
   var client = &http.Client{}
@@ -495,7 +494,7 @@ func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, 
 
 // More information can be found in the [example].
 //
-// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
 func (f *FastId) SearchManga() (api.Manga, error) {
   var m api.Manga
   var client = &http.Client{}
@@ -553,8 +552,6 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 //	- Mylist: planned, watching, rewatching, completed, on_hold, dropped;
 //	- Search: default search;
 //
-// [RandomManga]: https://github.com/heycatch/goshikimori/blob/master/examples/random/main.go
-//
 // Set to true to discard hentai, yaoi and yuri.
 //
 //	- Type: "deprecated";
@@ -566,7 +563,8 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 //
 // More information can be found in the [example].
 //
-// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga
+// [RandomManga]: https://github.com/heycatch/goshikimori/blob/master/examples/random/main.go
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
 func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
@@ -574,6 +572,104 @@ func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, 
   get, cancel := req.NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "mangas?search=" + url.QueryEscape(name) + "&" + r.OptionsManga(), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    return nil, resp.StatusCode, err
+  }
+
+  return m, resp.StatusCode, nil
+}
+
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
+func (f *FastId) SearchRanobe() (api.Manga, error) {
+  var m api.Manga
+  var client = &http.Client{}
+
+  get, cancel := req.NewGetRequestWithCancel(
+    f.Conf.Application, f.Conf.AccessToken,
+    str.ConvertSearchById("ranobe", f.Id), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return m, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return m, err
+  }
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    return m, err
+  }
+
+  return m, nil
+}
+
+// Name: ranobe name.
+//
+// Exclamation mark(!) indicates ignore.
+//
+// If you use the 'order' parameter, you don't need to enter the name of the ranobe.
+//
+// If 'Options' empty fields:
+// 	- Page: 1;
+// 	- Limit: 1;
+//  - Order: empty field;
+//	- Status: empty field;
+//	- Season: empty field;
+//	- Score: empty field;
+//  - Censored: false;
+//  - Mylist: empty field;
+//
+// 'Options' settings:
+//	- Page: 100000 maximum;
+//	- Limit: 50 maximum;
+//	- Order: id, ranked, kind, popularity, name, aired_on, volumes, chapters, status; random has been moved to a separate function, check [RandomRanobe];
+//	- Status: anons, ongoing, released, paused, discontinued, !anons, !ongoing, !released, !paused, !discontinued;
+//	- Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//	- Score: 1-9 maximum;
+//	- Censored: true(string), false(string);
+//	- Mylist: planned, watching, rewatching, completed, on_hold, dropped;
+//	- Search: default search;
+//
+// Set to true to discard hentai, yaoi and yuri.
+//
+//	- Genre: not supported;
+//	- Publisher: not supported;
+//	- Franchise: not supported;
+//	- Ids: not supported;
+//	- Exclude_ids: not supported;
+//
+// More information can be found in the [example].
+//
+// [RandomRanobe]: https://github.com/heycatch/goshikimori/blob/master/examples/random/main.go
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
+func (c *Configuration) SearchRanobes(name string, r Result) ([]api.Mangas, int, error) {
+  var m []api.Mangas
+  var client = &http.Client{}
+
+  get, cancel := req.NewGetRequestWithCancel(
+    c.Application, c.AccessToken,
+    "ranobe?search=" + url.QueryEscape(name) + "&" + r.OptionsRanobe(), 10,
   )
   defer cancel()
 
@@ -667,6 +763,40 @@ func (c *Configuration) FastIdManga(name string) (*FastId, int, error) {
   get, cancel := req.NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "mangas?search=" + url.QueryEscape(name), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+  }
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+  }
+
+  // if len == 0; we get panic: runtime error.
+  // To avoid a crash, process the error here.
+  //
+  // There is no point in processing the error. there is no place to catch it.
+  if len(m) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, resp.StatusCode, nil }
+
+  return &FastId{Id: m[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
+}
+
+// Name: ranobe name.
+func (c *Configuration) FastIdRanobe(name string) (*FastId, int, error) {
+  var m []api.Mangas
+  var client = &http.Client{}
+
+  get, cancel := req.NewGetRequestWithCancel(
+    c.Application, c.AccessToken,
+    "ranobe?search=" + url.QueryEscape(name), 10,
   )
   defer cancel()
 
@@ -854,6 +984,36 @@ func (f *FastId) SearchMangaFranchise() (api.Franchise, error) {
 
 // More information can be found in the [example].
 //
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/franchise
+func (f *FastId) SearchRanobeFranchise() (api.Franchise, error) {
+  var ff api.Franchise
+  var client = &http.Client{}
+
+  get, cancel := req.NewGetRequestWithCancel(
+    f.Conf.Application, f.Conf.AccessToken,
+    str.ConvertFranchise(f.Id, "ranobe"), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return ff, err
+  }
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return ff, err
+  }
+
+  if err := json.Unmarshal(data, &ff); err != nil {
+    return ff, err
+  }
+
+  return ff, nil
+}
+
+// More information can be found in the [example].
+//
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/external_links
 func (f *FastId) SearchAnimeExternalLinks() ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
@@ -976,6 +1136,37 @@ func (f *FastId) SearchSimilarManga() ([]api.Mangas, error) {
 
 // More information can be found in the [example].
 //
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/similar
+func (f *FastId) SearchSimilarRanobe() ([]api.Mangas, error) {
+  var m []api.Mangas
+  var client = &http.Client{}
+
+  get, cancel := req.NewGetRequestWithCancel(
+    f.Conf.Application, f.Conf.AccessToken,
+    str.ConvertSimilar(f.Id, "ranobe"), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    return nil, err
+  }
+
+  return m, nil
+}
+
+// More information can be found in the [example].
+//
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/related
 func (f *FastId) SearchRelatedAnime() ([]api.RelatedAnimes, error) {
   var a []api.RelatedAnimes
@@ -1015,6 +1206,37 @@ func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, error) {
   get, cancel := req.NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     str.ConvertRelated(f.Id, "mangas"), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    return nil, err
+  }
+
+  return m, nil
+}
+
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/related
+func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, error) {
+  var m []api.RelatedMangas
+  var client = &http.Client{}
+
+  get, cancel := req.NewGetRequestWithCancel(
+    f.Conf.Application, f.Conf.AccessToken,
+    str.ConvertRelated(f.Id, "ranobe"), 10,
   )
   defer cancel()
 
@@ -2048,6 +2270,42 @@ func (c *Configuration) RandomMangas(limit int) ([]api.Mangas, int, error) {
   return m, resp.StatusCode, nil
 }
 
+// Limit: number of results obtained;
+//
+// Minimum: 1; Maximum: 50;
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/random
+func (c *Configuration) RandomRanobes(limit int) ([]api.Mangas, int, error) {
+  var m []api.Mangas
+  var client = &http.Client{}
+
+  if limit < 1 || limit > 50 { limit = 1 }
+
+  get, cancel := req.NewGetRequestWithCancel(
+    c.Application, c.AccessToken, str.ConvertRandom("ranobe", limit), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    return nil, resp.StatusCode, err
+  }
+
+  return m, resp.StatusCode, nil
+}
+
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/people
@@ -2466,6 +2724,123 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
   }
 
   return ids, resp.StatusCode, nil
+}
+
+// If 'Options' empty fields:
+// 	- Page: 1;
+// 	- Limit: 1;
+//
+// 'Options' settings:
+//	- Page: 100000 maximum;
+//	- Limit: 30 maximum;
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
+func (f *FastId) SearchTopicsAnime(r Result) ([]api.Topics, error) {
+  var t []api.Topics
+  var client = &http.Client{}
+
+  get, cancel := req.NewGetRequestWithCancel(
+    f.Conf.Application, f.Conf.AccessToken,
+    str.ConvertTopicsType(f.Id, "animes") + "?" + r.OptionsClub(), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &t); err != nil {
+    return nil, err
+  }
+
+  return t, nil
+}
+
+// If 'Options' empty fields:
+// 	- Page: 1;
+// 	- Limit: 1;
+//
+// 'Options' settings:
+//	- Page: 100000 maximum;
+//	- Limit: 30 maximum;
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
+func (f *FastId) SearchTopicsManga(r Result) ([]api.Topics, error) {
+  var t []api.Topics
+  var client = &http.Client{}
+
+  get, cancel := req.NewGetRequestWithCancel(
+    f.Conf.Application, f.Conf.AccessToken,
+    str.ConvertTopicsType(f.Id, "mangas") + "?" + r.OptionsClub(), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &t); err != nil {
+    return nil, err
+  }
+
+  return t, nil
+}
+
+// If 'Options' empty fields:
+// 	- Page: 1;
+// 	- Limit: 1;
+//
+// 'Options' settings:
+//	- Page: 100000 maximum;
+//	- Limit: 30 maximum;
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
+func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, error) {
+  var t []api.Topics
+  var client = &http.Client{}
+
+  get, cancel := req.NewGetRequestWithCancel(
+    f.Conf.Application, f.Conf.AccessToken,
+    str.ConvertTopicsType(f.Id, "ranobe") + "?" + r.OptionsClub(), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &t); err != nil {
+    return nil, err
+  }
+
+  return t, nil
 }
 
 // If 'Options' empty fields

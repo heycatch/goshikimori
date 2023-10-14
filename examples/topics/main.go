@@ -15,6 +15,54 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
 
+	// Search anime topic
+	fast_anime, status, err := c.FastIdAnime("initial d first stage")
+	if status != 200 || err != nil {
+		fmt.Println(status, err)
+		return
+	}
+  a := &g.Options{Page: "1", Limit: "10"}
+	topic_anime, err := fast_anime.SearchTopicsAnime(a)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for _, v := range topic_anime {
+		fmt.Println(v.Id, v.HTMLBody, v.Comments_count, v.Last_comment_viewed)
+	}
+
+	// Search manga topic
+	fast_manga, status, err := c.FastIdManga("naruto")
+	if status != 200 || err != nil {
+		fmt.Println(status, err)
+		return
+	}
+  m := &g.Options{Page: "1", Limit: "10"}
+	topic_manga, err := fast_manga.SearchTopicsManga(m)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for _, v := range topic_manga {
+		fmt.Println(v.Id, v.HTMLBody, v.Comments_count, v.Last_comment_viewed)
+	}
+
+	// Search ranobe topic
+	fast_ranobe, status, err := c.FastIdRanobe("sword art")
+	if status != 200 || err != nil {
+		fmt.Println(status, err)
+		return
+	}
+  r := &g.Options{Page: "1", Limit: "10"}
+	topic_ranobe, err := fast_ranobe.SearchTopicsRanobe(r)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for _, v := range topic_ranobe {
+		fmt.Println(v.Id, v.HTMLBody, v.Comments_count, v.Last_comment_viewed)
+	}
+
 	// Search topics
   o := &g.Options{Page: "1", Limit: "1", Forum: "", Linked_id: "", Linked_type: ""}
   t, status, err := c.SearchTopics(o)

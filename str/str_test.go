@@ -193,3 +193,11 @@ func TestConvertIgnoreTopic(t *testing.T) {
     t.Error("ConvertIgnoreTopic failed")
   }
 }
+
+func TestConvertTopicsType(t *testing.T) {
+  if ConvertTopicsType(1337, "ranobe") == "ranobe/1337/topics" {
+    t.Log("ConvertTopicsType passed")
+  } else {
+    t.Error("ConvertTopicsType failed")
+  }
+}

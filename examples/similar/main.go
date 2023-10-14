@@ -14,6 +14,8 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
+
+  // similar anime
   fast_anime, status, err := c.FastIdAnime("vampire knight")
   if err != nil {
     fmt.Println(err)
@@ -35,6 +37,8 @@ func main() {
   } else {
     fmt.Println(status)
   }
+
+  // similar manga
   fast_manga, status, err := c.FastIdManga("initial d")
   if err != nil {
     fmt.Println(err)
@@ -55,5 +59,24 @@ func main() {
     }
   } else {
     fmt.Println(status)
+  }
+
+  // similar ranobe
+  fast_ranobe, status, err := c.FastIdRanobe("sword art")
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+  r, err := fast_ranobe.SearchSimilarRanobe()
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if len(r) == 0 {
+    fmt.Println("Ranobe not found")
+    return
+  }
+  for _, v := range r {
+    fmt.Println(v.Id, v.Name, v.Score, v.Volumes, v.Chapters)
   }
 }
