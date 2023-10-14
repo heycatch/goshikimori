@@ -44,7 +44,7 @@ http://localhost:1337/pkg/github.com/heycatch/goshikimori/
 ```
 
 ### Shikimori documentation
-* [GraphQL](https://shikimori.me/api/doc/graphql)
-* [API v1](https://shikimori.me/api/doc/1.0)
-* [API v2](https://shikimori.me/api/doc/2.0)
-* [OAuth2](https://shikimori.me/oauth)
+* [GraphQL](https://shikimori.one/api/doc/graphql)
+* [API v1](https://shikimori.one/api/doc/1.0)
+* [API v2](https://shikimori.one/api/doc/2.0)
+* [OAuth2](https://shikimori.one/oauth)

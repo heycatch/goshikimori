@@ -27,19 +27,19 @@ run:
 	go run cmd/main.go
 
 graphql-request:
-	curl -X POST https://shikimori.me/api/graphql \
+	curl -X POST https://shikimori.one/api/graphql \
 	-H "User-Agent: $(App)" \
 	-H "Authorization: Bearer $(Token)" \
 	-H 'Content-Type: application/json' \
 	-d '{"query": "{ animes(search: \"initial d first stage\", limit: 1) { id name russian english japanese score status episodes description } }"}'
 
 request:
-	curl -X GET https://shikimori.me/api/users/whoami \
+	curl -X GET https://shikimori.one/api/animes?search=death+note&genre \
 	-H "User-Agent: $(App)" \
 	-H "Authorization: Bearer $(Token)"
 
 token:
-	curl -X POST "https://shikimori.me/oauth/token" \
+	curl -X POST "https://shikimori.one/oauth/token" \
 	-H "User-Agent: $(App)" \
 	-F grant_type="refresh_token" \
 	-F client_id="$(client_id)" \
@@ -47,7 +47,7 @@ token:
 	-F refresh_token="$(refresh)"
 
 auth:
-	curl -X POST "https://shikimori.me/oauth/token" \
+	curl -X POST "https://shikimori.one/oauth/token" \
 	-H "User-Agent: $(App)" \
 	-F grant_type="authorization_code" \
 	-F client_id="$(client_id)" \

@@ -8,7 +8,7 @@ import (
   "bytes"
 )
 
-const site string = "shikimori.me/api"
+const site string = "shikimori.one/api"
 
 func NewGetRequestWithCancel(application, accessToken, search string, number time.Duration) (*http.Request, context.CancelFunc) {
   custom_url := fmt.Sprintf("https://%s/%s", site, search)
