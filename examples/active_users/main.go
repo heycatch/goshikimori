@@ -19,5 +19,5 @@ func main() {
     fmt.Println(err)
     return
   }
-	if status == 200 { fmt.Println(result) }
+  if status == 200 { fmt.Println(result) }
 }
