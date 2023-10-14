@@ -201,3 +201,11 @@ func TestConvertTopicsType(t *testing.T) {
     t.Error("ConvertTopicsType failed")
   }
 }
+
+func TestConvertCharacters(t *testing.T) {
+  if ConvertCharacters(1337) == "characters/1337" {
+    t.Log("ConvertCharacters passed")
+  } else {
+    t.Error("ConvertCharacters failed")
+  }
+}

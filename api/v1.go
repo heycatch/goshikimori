@@ -808,3 +808,57 @@ type TopicsId struct {
   Viewed              bool        `json:"viewed"`
   Last_comment_viewed bool        `json:"last_comment_viewed"`
 }
+
+type Character struct {
+  Id                 int               `json:"id"`
+  Name               string            `json:"name"`
+  Russian            string            `json:"russian"`
+  Image              AnimeSize         `json:"image"`
+  Url                string            `json:"url"`
+  Altname            string            `json:"altname"`
+  Japanese           string            `json:"yapanese"`
+  Description        string            `json:"description"`
+  DescriptionHTML    string            `json:"description_html"`
+  DescriptionSource  string            `json:"description_source"`
+  Favoured           bool              `json:"favoured"`
+  Thread_id          int               `json:"thread_id"`
+  Topic_id           int               `json:"topic_id"`
+  Updated_at         time.Time         `json:"updated_at"`
+  Seyu               []AllPeople       `json:"seyu"`
+  Animes             []CharacterAnimes `json:"animes"`
+  Mangas             []CharacterMangas `json:"mangas"`
+}
+
+type CharacterAnimes struct {
+  Id             int       `json:"id"`
+  Name           string    `json:"name"`
+  Russian        string    `json:"russian"`
+  Image          AnimeSize `json:"image"`
+  Url            string    `json:"url"`
+  Kind           string    `json:"kind"`
+  Score          string    `json:"score"`
+  Status         string    `json:"status"`
+  Episodes       int       `json:"episodes"`
+  Episodes_aired int       `json:"episodes_aired"`
+  Aired_on       string    `json:"aired_on"`
+  Released_on    string    `json:"released_on"`
+  Roles          []string  `json:"roles"`
+  Role           string    `json:"role"`
+}
+
+type CharacterMangas struct {
+  Id             int       `json:"id"`
+  Name           string    `json:"name"`
+  Russian        string    `json:"russian"`
+  Image          AnimeSize `json:"image"`
+  Url            string    `json:"url"`
+  Kind           string    `json:"kind"`
+  Score          string    `json:"score"`
+  Status         string    `json:"status"`
+  Volumes        int       `json:"volumes"`
+  Chapters       int       `json:"chapters"`
+  Aired_on       string    `json:"aired_on"`
+  Released_on    string    `json:"released_on"`
+  Roles          []string  `json:"roles"`
+  Role           string    `json:"role"`
+}

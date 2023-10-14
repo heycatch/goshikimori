@@ -692,6 +692,8 @@ func (c *Configuration) SearchRanobes(name string, r Result) ([]api.Mangas, int,
 }
 
 // Name: user name.
+//
+// Search by user is case sensitive.
 func (c *Configuration) FastIdUser(name string) (*FastId, int, error) {
   var u api.Users
   var client = &http.Client{}
@@ -721,6 +723,8 @@ func (c *Configuration) FastIdUser(name string) (*FastId, int, error) {
 }
 
 // Name: anime name.
+//
+// Search by user is case sensitive.
 func (c *Configuration) FastIdAnime(name string) (*FastId, int, error) {
   var a []api.Animes
   var client = &http.Client{}
@@ -756,6 +760,8 @@ func (c *Configuration) FastIdAnime(name string) (*FastId, int, error) {
 }
 
 // Name: manga name.
+//
+// Search by user is case sensitive.
 func (c *Configuration) FastIdManga(name string) (*FastId, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
@@ -790,6 +796,8 @@ func (c *Configuration) FastIdManga(name string) (*FastId, int, error) {
 }
 
 // Name: ranobe name.
+//
+// Search by user is case sensitive.
 func (c *Configuration) FastIdRanobe(name string) (*FastId, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
@@ -824,6 +832,8 @@ func (c *Configuration) FastIdRanobe(name string) (*FastId, int, error) {
 }
 
 // Name: club name.
+//
+// Search by user is case sensitive.
 func (c *Configuration) FastIdClub(name string) (*FastId, int, error) {
   var cl []api.Clubs
   var client = &http.Client{}
@@ -857,7 +867,45 @@ func (c *Configuration) FastIdClub(name string) (*FastId, int, error) {
   return &FastId{Id: cl[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
 }
 
+// Name: character name.
+//
+// Search by user is case sensitive.
+func (c *Configuration) FastIdCharacter(name string) (*FastId, int, error) {
+  var ch []api.CharacterInfo
+  var client = &http.Client{}
+
+  get, cancel := req.NewGetRequestWithCancel(
+    c.Application, c.AccessToken,
+    "characters/search?search=" + url.QueryEscape(name), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+  }
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &ch); err != nil {
+    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+  }
+
+  // if len == 0; we get panic: runtime error.
+  // To avoid a crash, process the error here.
+  //
+  // There is no point in processing the error. there is no place to catch it.
+  if len(ch) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, resp.StatusCode, nil }
+
+  return &FastId{Id: ch[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
+}
+
 // Name: people name.
+//
+// Search by user is case sensitive.
 func (c *Configuration) FastIdPeople(name string) (*FastId, int, error) {
   var ap []api.AllPeople
   var client = &http.Client{}
@@ -2304,6 +2352,70 @@ func (c *Configuration) RandomRanobes(limit int) ([]api.Mangas, int, error) {
   }
 
   return m, resp.StatusCode, nil
+}
+
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/character
+func (f *FastId) SearchCharacter() (api.Character, error) {
+  var ch api.Character
+  var client = &http.Client{}
+
+  get, cancel := req.NewGetRequestWithCancel(
+    f.Conf.Application, f.Conf.AccessToken,
+    str.ConvertCharacters(f.Id), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return ch, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return ch, err
+  }
+
+  if err := json.Unmarshal(data, &ch); err != nil {
+    return ch, err
+  }
+
+  return ch, nil
+}
+
+// Name: character name.
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/character
+func (c *Configuration) SearchCharacters(name string) ([]api.CharacterInfo, int, error) {
+  var ci []api.CharacterInfo
+  var client = &http.Client{}
+
+  get, cancel := req.NewGetRequestWithCancel(
+    c.Application, c.AccessToken,
+    "characters/search?search=" + url.QueryEscape(name), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &ci); err != nil {
+    return nil, resp.StatusCode, err
+  }
+
+  return ci, resp.StatusCode, nil
 }
 
 // More information can be found in the [example].
