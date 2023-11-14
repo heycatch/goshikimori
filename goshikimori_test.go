@@ -1,10 +1,12 @@
 package goshikimori
 
 import (
+  "os"
+  "fmt"
   "time"
   "testing"
-  "fmt"
-  "os"
+
+  "github.com/heycatch/goshikimori/graphql"
 )
 
 type StatusBar struct {
@@ -632,9 +634,10 @@ func TestAchievements(t *testing.T) {
   c := conf()
   fast, _, _ := c.FastIdUser("incarnati0n")
   u, _ := fast.SearchAchievement()
+  neko, _ := NekoSearch("Hellsing")
 
   for _, v := range u {
-    if v.Neko_id == NekoSearch("Initial D") {
+    if v.Neko_id == neko {
       if v.Progress == 100 {
         t.Logf("Found: %d progress", v.Progress)
       } else {
@@ -734,7 +737,11 @@ func TestPeople(t *testing.T) {
 
 func TestAnimeGraphql(t *testing.T) {
   c := conf()
-  a, _, _ := c.SearchAnimeGraphql("initial d first stage", 1, 1, "", "", "", "", "", "", "", false)
+  s, _ := graphql.AnimeSchema(
+    graphql.Values("id", "malId", "rating", "kind", "episodes"),
+    "initial d first stage", 1, 1, "", "", "", "", "", "", "", false,
+  )
+  a, _, _ := c.SearchAnimesGraphql(s)
 
   for _, v := range a.Data.Animes {
     if v.Id == "185" && v.MalId == "185" && v.Rating == "pg_13" && v.Kind == "tv" && v.Episodes == 26 {
@@ -747,7 +754,11 @@ func TestAnimeGraphql(t *testing.T) {
 
 func TestMangaGraphQL(t *testing.T) {
   c := conf()
-  m, _, _ := c.SearchMangaGraphql("initial d", 1, 1, "", "", "", "", "", false)
+  s, _ := graphql.MangaSchema(
+    graphql.Values("id", "malId", "kind", "status", "volumes"),
+    "initial d", 1, 1, "", "", "", "", "", false,
+  )
+  m, _, _ := c.SearchMangasGraphql(s)
 
   for _, v := range m.Data.Mangas {
     if v.Id == "375" && v.MalId == "375" && v.Kind == "manga" && v.Status == "released" && v.Volumes == 48 {

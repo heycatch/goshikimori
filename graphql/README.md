@@ -15,11 +15,13 @@ package main
 
 import (
   "fmt"
-  g "github.com/heycatch/goshikimori"
+
+  "github.com/heycatch/goshikimori"
+  "github.com/heycatch/goshikimori/graphql"
 )
 
-func conf() *g.Configuration {
-  return g.Add(
+func conf() *goshikimori.Configuration {
+  return goshikimori.Add(
     "APPLICATION_NAME",
     "PRIVATE_KEY",
   )
@@ -28,7 +30,8 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
 
-  // The first parameter is the name of the anime; name: "initial d".
+  // The first parameter is the values of the anime; values: "id", "name", "score", "episodes", "airedOn{year month day date}".
+  // The second parameter is the name of the anime; name: "initial d".
   // Now let's move on to the interface:
   //    1)  limit: 5;
   //    2)  score: 8;
@@ -41,10 +44,18 @@ func main() {
   //    9)  mylist: ""; skipped;
   //    10) censored: false;
   //
-  // The available interface parameters can be found in the function description: SearchAnimeGraphql();
-  a, status, err := c.SearchAnimesGraphql(
-    "initial d", 5, 8, "", "tv", "released", "", "", "pg_13", "", false,
+  // The available interface parameters can be found in the function description: graphql.AnimeSchema();
+  schema, err := graphql.AnimeSchema(
+    graphql.Values("id", "name", "score", "episodes", "airedOn{year month day date}"),
+    "initial d",
+    5, 8, "", "tv", "released", "", "", "pg_13", "", false,
   )
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+
+  a, status, err := c.SearchAnimesGraphql(schema)
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return
@@ -54,7 +65,10 @@ func main() {
   fmt.Println(a.Errors)
   // Standard output of our search, nothing new.
   for _, v := range a.Data.Animes {
-    fmt.Println(v.Id, v.Name, v.Score, v.Episodes, v.ReleasedOn.Year)
+    fmt.Println(
+      v.Id, v.Name, v.Score, v.Episodes, v.AiredOn.Year,
+      v.AiredOn.Month, v.AiredOn.Day, v.AiredOn.Date,
+    )
   }
 }
 ```
@@ -63,11 +77,13 @@ package main
 
 import (
   "fmt"
-  g "github.com/heycatch/goshikimori"
+
+  "github.com/heycatch/goshikimori"
+  "github.com/heycatch/goshikimori/graphql"
 )
 
-func conf() *g.Configuration {
-  return g.Add(
+func conf() *goshikimori.Configuration {
+  return goshikimori.Add(
     "APPLICATION_NAME",
     "PRIVATE_KEY",
   )
@@ -76,7 +92,8 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
 
-  // The first parameter is the name of the manga; name: "initial d".
+  // The first parameter is the values of the manga; values: "id", "name", "score", "volumes", "chapters", "releasedOn{year}".
+  // The second parameter is the name of the manga; name: "initial d".
   // Now let's move on to the interface:
   //    1) limit: 1;
   //    2) score: 8;
@@ -87,10 +104,18 @@ func main() {
   //    7) mylist: ""; skipped;
   //    8) censored: false;
   //
-  // The available interface parameters can be found in the function description: SearchMangaGraphql();
-  m, status, err := c.SearchMangasGraphql(
-    "initial d", 1, 8, "", "manga", "released", "", "", false,
+  // The available interface parameters can be found in the function description: graphql.MangaSchema();
+  schema, err := graphql.MangaSchema(
+    graphql.Values("id", "name", "score", "volumes", "chapters", "releasedOn{year}"),
+    "initial d",
+    1, 8, "", "manga", "released", "", "", false,
   )
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+
+  m, status, err := c.SearchMangasGraphql(schema)
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return

@@ -29,8 +29,13 @@ func main() {
       fmt.Println("achievements not found")
       return
     }
+    neko, err := g.NekoSearch("Hellsing")
+    if err != nil {
+      fmt.Println(err)
+      return
+    }
     for _, v := range a {
-      if v.Neko_id == g.NekoSearch("Hellsing") {
+      if v.Neko_id == neko {
         fmt.Printf("level: %d - progress %d\n", v.Level, v.Progress)
         fmt.Printf("created: %v - updated: %v\n", v.Created_at, v.Updated_at)
       }
