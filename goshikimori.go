@@ -60,12 +60,12 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
 // Name: user name.
 //
 // If 'Options' empty fields:
-// 	- Page: 1;
-// 	- Limit: 1;
+//  - Page: 1;
+//  - Limit: 1;
 //
 // 'Options' settings:
-// 	- Page: 100000 maximum;
-// 	- Limit: 100 maximum;
+//  - Page: 100000 maximum;
+//  - Limit: 100 maximum;
 //
 // Don't use Stats.Statuses.Anime and Stats.Statuses.Manga: empty slice.
 //
@@ -163,16 +163,16 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
 }
 
 // If 'Options' empty fields:
-// 	- Page: 1;
-// 	- Limit: 1;
-//	- Status: watching;
-//	- Censored: false;
+//  - Page: 1;
+//  - Limit: 1;
+//  - Status: watching;
+//  - Censored: false;
 //
 // 'Options' settings:
-//	- Page: 100000 maximum;
-//	- Limit: 5000 maximum;
-//	- Status: planned, watching, rewatching, completed, on_hold, dropped;
-//	- Censored: true, false;
+//  - Page: 100000 maximum;
+//  - Limit: 5000 maximum;
+//  - Status: planned, watching, rewatching, completed, on_hold, dropped;
+//  - Censored: true, false;
 //
 // Set to true to discard hentai, yaoi and yuri.
 //
@@ -208,14 +208,14 @@ func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
 }
 
 // If 'Options' empty fields:
-// 	- Page: 1;
-// 	- Limit: 1;
-//	- Censored: false;
+//  - Page: 1;
+//  - Limit: 1;
+//  - Censored: false;
 //
 // 'Options' Settings:
-//	- Page: 100000 maximum;
-//	- Limit: 5000 maximum;
-//	- Censored: true, false;
+//  - Page: 100000 maximum;
+//  - Limit: 5000 maximum;
+//  - Censored: true, false;
 //
 // Set to true to discard hentai, yaoi and yuri.
 //
@@ -282,16 +282,16 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
 }
 
 // If 'Options' empty fields:
-// 	- Page: 1;
-// 	- Limit: 1;
-//	- Target_type: Anime;
-//	- Target_id: option is hidden if empty;
+//  - Page: 1;
+//  - Limit: 1;
+//  - Target_type: Anime;
+//  - Target_id: option is hidden if empty;
 //
 // 'Options' settings:
-// 	- Page: 100000 maximum.
-// 	- Limit: 100 maximum.
-// 	- Target_id: id anime/manga in string format.
-// 	- Target_type: Anime, Manga.
+//  - Page: 100000 maximum.
+//  - Limit: 100 maximum.
+//  - Target_id: id anime/manga in string format.
+//  - Target_type: Anime, Manga.
 //
 // More information can be found in the [example].
 //
@@ -424,40 +424,40 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 // If you use the 'order' parameter, you don't need to enter the name of the anime.
 //
 // If 'Options' empty fields:
-// 	- Page: 1;
-// 	- Limit: 1;
+//  - Page: 1;
+//  - Limit: 1;
 //  - Order: empty field;
-//	- Kind: empty field;
-//	- Status: empty field;
-//	- Season: empty field;
-//	- Score: empty field;
+//  - Kind: empty field;
+//  - Status: empty field;
+//  - Season: empty field;
+//  - Score: empty field;
 //  - Duration: empty field;
-//	- Rating: empty field;
+//  - Rating: empty field;
 //  - Censored: false;
 //  - Mylist: empty field;
 //
 // 'Options' settings:
-//	- Page: 100000 maximum;
-//	- Limit: 50 maximum;
-//	- Order: id, ranked, kind, popularity, name, aired_on, episodes, status; random has been moved to a separate function, check [RandomAnime];
-//	- Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48, !tv, !movie, !ova, !ona, !special, !music, !tv_13, !tv_24, !tv_48;
-//	- Status: anons, ongoing, released, !anons, !ongoing, !released;
-//	- Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
-//	- Score: 1-9 maximum;
+//  - Page: 100000 maximum;
+//  - Limit: 50 maximum;
+//  - Order: id, ranked, kind, popularity, name, aired_on, episodes, status; random has been moved to a separate function, check [RandomAnime];
+//  - Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48, !tv, !movie, !ova, !ona, !special, !music, !tv_13, !tv_24, !tv_48;
+//  - Status: anons, ongoing, released, !anons, !ongoing, !released;
+//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//  - Score: 1-9 maximum;
 //  - Duration: S, D, F, !S, !D, !F;
-//	- Rating: none, g, pg, pg_13, r, r_plus, rx, !g, !pg, !pg_13, !r, !r_plus, !rx;
-//	- Censored: true(string), false(string);
-//	- Mylist: planned, watching, rewatching, completed, on_hold, dropped;
-//	- Search: default search;
+//  - Rating: none, g, pg, pg_13, r, r_plus, rx, !g, !pg, !pg_13, !r, !r_plus, !rx;
+//  - Censored: true(string), false(string);
+//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
+//  - Search: default search;
 //
 // Set to true to discard hentai, yaoi and yuri.
 //
-//	- Type: "deprecated";
-//	- Genre: not supported;
-//	- Studio: not supported;
-//	- Franchise: not supported;
-//	- Ids: not supported;
-//	- Exclude_ids: not supported;
+//  - Type: "deprecated";
+//  - Genre: not supported;
+//  - Studio: not supported;
+//  - Franchise: not supported;
+//  - Ids: not supported;
+//  - Exclude_ids: not supported;
 //
 // More information can be found in the [example].
 //
@@ -529,36 +529,36 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 // If you use the 'order' parameter, you don't need to enter the name of the manga.
 //
 // If 'Options' empty fields:
-// 	- Page: 1;
-// 	- Limit: 1;
+//  - Page: 1;
+//  - Limit: 1;
 //  - Order: empty field;
-//	- Kind: empty field;
-//	- Status: empty field;
-//	- Season: empty field;
-//	- Score: empty field;
+//  - Kind: empty field;
+//  - Status: empty field;
+//  - Season: empty field;
+//  - Score: empty field;
 //  - Censored: false;
 //  - Mylist: empty field;
 //
 // 'Options' settings:
-//	- Page: 100000 maximum;
-//	- Limit: 50 maximum;
-//	- Order: id, ranked, kind, popularity, name, aired_on, volumes, chapters, status; random has been moved to a separate function, check [RandomManga];
-//	- Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin, !manga, !manhwa, !manhua, !light_novel, !novel, !one_shot, !doujin;
-//	- Status: anons, ongoing, released, paused, discontinued, !anons, !ongoing, !released, !paused, !discontinued;
-//	- Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
-//	- Score: 1-9 maximum;
-//	- Censored: true(string), false(string);
-//	- Mylist: planned, watching, rewatching, completed, on_hold, dropped;
-//	- Search: default search;
+//  - Page: 100000 maximum;
+//  - Limit: 50 maximum;
+//  - Order: id, ranked, kind, popularity, name, aired_on, volumes, chapters, status; random has been moved to a separate function, check [RandomManga];
+//  - Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin, !manga, !manhwa, !manhua, !light_novel, !novel, !one_shot, !doujin;
+//  - Status: anons, ongoing, released, paused, discontinued, !anons, !ongoing, !released, !paused, !discontinued;
+//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//  - Score: 1-9 maximum;
+//  - Censored: true(string), false(string);
+//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
+//  - Search: default search;
 //
 // Set to true to discard hentai, yaoi and yuri.
 //
-//	- Type: "deprecated";
-//	- Genre: not supported;
-//	- Publisher: not supported;
-//	- Franchise: not supported;
-//	- Ids: not supported;
-//	- Exclude_ids: not supported;
+//  - Type: "deprecated";
+//  - Genre: not supported;
+//  - Publisher: not supported;
+//  - Franchise: not supported;
+//  - Ids: not supported;
+//  - Exclude_ids: not supported;
 //
 // More information can be found in the [example].
 //
@@ -630,33 +630,33 @@ func (f *FastId) SearchRanobe() (api.Manga, error) {
 // If you use the 'order' parameter, you don't need to enter the name of the ranobe.
 //
 // If 'Options' empty fields:
-// 	- Page: 1;
-// 	- Limit: 1;
+//  - Page: 1;
+//  - Limit: 1;
 //  - Order: empty field;
-//	- Status: empty field;
-//	- Season: empty field;
-//	- Score: empty field;
+//  - Status: empty field;
+//  - Season: empty field;
+//  - Score: empty field;
 //  - Censored: false;
 //  - Mylist: empty field;
 //
 // 'Options' settings:
-//	- Page: 100000 maximum;
-//	- Limit: 50 maximum;
-//	- Order: id, ranked, kind, popularity, name, aired_on, volumes, chapters, status; random has been moved to a separate function, check [RandomRanobe];
-//	- Status: anons, ongoing, released, paused, discontinued, !anons, !ongoing, !released, !paused, !discontinued;
-//	- Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
-//	- Score: 1-9 maximum;
-//	- Censored: true(string), false(string);
-//	- Mylist: planned, watching, rewatching, completed, on_hold, dropped;
-//	- Search: default search;
+//  - Page: 100000 maximum;
+//  - Limit: 50 maximum;
+//  - Order: id, ranked, kind, popularity, name, aired_on, volumes, chapters, status; random has been moved to a separate function, check [RandomRanobe];
+//  - Status: anons, ongoing, released, paused, discontinued, !anons, !ongoing, !released, !paused, !discontinued;
+//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//  - Score: 1-9 maximum;
+//  - Censored: true(string), false(string);
+//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
+//  - Search: default search;
 //
 // Set to true to discard hentai, yaoi and yuri.
 //
-//	- Genre: not supported;
-//	- Publisher: not supported;
-//	- Franchise: not supported;
-//	- Ids: not supported;
-//	- Exclude_ids: not supported;
+//  - Genre: not supported;
+//  - Publisher: not supported;
+//  - Franchise: not supported;
+//  - Ids: not supported;
+//  - Exclude_ids: not supported;
 //
 // More information can be found in the [example].
 //
@@ -1308,13 +1308,13 @@ func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, error) {
 // Name: club name.
 //
 // If 'Options' empty fields:
-// 	- Page: 1;
-// 	- Limit: 1;
+//  - Page: 1;
+//  - Limit: 1;
 //
 // 'Options' settings:
-//	- Page: 100000 maximum;
-//	- Limit: 30 maximum;
-//	- Search: default search;
+//  - Page: 100000 maximum;
+//  - Limit: 30 maximum;
+//  - Search: default search;
 //
 // If we set the limit=1, we will still have 2 results.
 //
@@ -1350,10 +1350,10 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
 }
 
 // If 'Options' empty fields:
-//	- Page: 1;
+//  - Page: 1;
 //
 // 'Options' settings:
-//	- Page: 100000 maximum;
+//  - Page: 100000 maximum;
 //
 // More information can be found in the [example].
 //
@@ -1387,10 +1387,10 @@ func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
 }
 
 // If 'Options' empty fields:
-//	- Page: 1;
+//  - Page: 1;
 //
 // 'Options' settings:
-//	- Page: 100000 maximum;
+//  - Page: 100000 maximum;
 //
 // More information can be found in the [example].
 //
@@ -1424,10 +1424,10 @@ func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
 }
 
 // If 'Options' empty fields:
-//	- Page: 1;
+//  - Page: 1;
 //
 // 'Options' settings:
-//	- Page: 100000 maximum;
+//  - Page: 100000 maximum;
 //
 // More information can be found in the [example].
 //
@@ -1461,10 +1461,10 @@ func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
 }
 
 // If 'Options' empty fields:
-//	- Page: 1;
+//  - Page: 1;
 //
 // 'Options' settings:
-//	- Page: 100000 maximum;
+//  - Page: 100000 maximum;
 //
 // More information can be found in the [example].
 //
@@ -1498,10 +1498,10 @@ func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
 }
 
 // If 'Options' empty fields:
-//	- Page: 1;
+//  - Page: 1;
 //
 // 'Options' settings:
-//	- Page: 100000 maximum;
+//  - Page: 100000 maximum;
 //
 // More information can be found in the [example].
 //
@@ -1798,10 +1798,10 @@ func (c *Configuration) SearchBans() ([]api.Bans, int, error) {
 }
 
 // If 'Options' empty fields:
-// 	- Censored: false;
+//  - Censored: false;
 //
 // 'Options' settings:
-//	- Censored: true, false;
+//  - Censored: true, false;
 //
 // Set to false to allow hentai, yaoi and yuri.
 //
@@ -2050,13 +2050,13 @@ func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
 }
 
 // If 'Options' empty fields:
-// 	- Type: news;
-// 	- Page: 1;
-// 	- Limit: 1;
+//  - Type: news;
+//  - Page: 1;
+//  - Limit: 1;
 //
 // 'Options' settings:
-// 	- Page: 100000 maximum;
-// 	- Limit: 100 maximum;
+//  - Page: 100000 maximum;
+//  - Limit: 100 maximum;
 //  - Type: inbox, private, sent, news, notifications;
 //
 // More information can be found in the [example].
@@ -2450,11 +2450,11 @@ func (f *FastId) SearchPeople() (api.People, error) {
 // Name: people name.
 //
 // If 'Options' empty fields:
-//	- Kind: seyu;
+//  - Kind: seyu;
 //
 // 'Options' settings:
-//	- Page/Limit: not supported, idk why;
-//	- Kind: seyu, mangaka, producer;
+//  - Page/Limit: not supported, idk why;
+//  - Kind: seyu, mangaka, producer;
 //
 // More information can be found in the [example].
 //
@@ -2838,12 +2838,12 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
 }
 
 // If 'Options' empty fields:
-// 	- Page: 1;
-// 	- Limit: 1;
+//  - Page: 1;
+//  - Limit: 1;
 //
 // 'Options' settings:
-//	- Page: 100000 maximum;
-//	- Limit: 30 maximum;
+//  - Page: 100000 maximum;
+//  - Limit: 30 maximum;
 //
 // More information can be found in the [example].
 //
@@ -2877,12 +2877,12 @@ func (f *FastId) SearchTopicsAnime(r Result) ([]api.Topics, error) {
 }
 
 // If 'Options' empty fields:
-// 	- Page: 1;
-// 	- Limit: 1;
+//  - Page: 1;
+//  - Limit: 1;
 //
 // 'Options' settings:
-//	- Page: 100000 maximum;
-//	- Limit: 30 maximum;
+//  - Page: 100000 maximum;
+//  - Limit: 30 maximum;
 //
 // More information can be found in the [example].
 //
@@ -2916,12 +2916,12 @@ func (f *FastId) SearchTopicsManga(r Result) ([]api.Topics, error) {
 }
 
 // If 'Options' empty fields:
-// 	- Page: 1;
-// 	- Limit: 1;
+//  - Page: 1;
+//  - Limit: 1;
 //
 // 'Options' settings:
-//	- Page: 100000 maximum;
-//	- Limit: 30 maximum;
+//  - Page: 100000 maximum;
+//  - Limit: 30 maximum;
 //
 // More information can be found in the [example].
 //
@@ -2955,22 +2955,22 @@ func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, error) {
 }
 
 // If 'Options' empty fields
-// 	- Page: 1;
-// 	- Limit: 1;
-//	- Forum: all;
-//	- Linked_id: empty field;
+//  - Page: 1;
+//  - Limit: 1;
+//  - Forum: all;
+//  - Linked_id: empty field;
 //  - Linked_type: empty field;
 //
 // 'Options' settings
-//	- Page: 100000 maximum;
-//	- Limit: 30 maximum;
-//	- Forum: cosplay, animanga, site, games, vn, contests, offtopic, clubs, my_clubs, critiques, news, collections, articles;
+//  - Page: 100000 maximum;
+//  - Limit: 30 maximum;
+//  - Forum: cosplay, animanga, site, games, vn, contests, offtopic, clubs, my_clubs, critiques, news, collections, articles;
 //  - Linked_id: number without limit;
 //  - Linked_type: Anime, Manga, Ranobe, Character, Person, Club, ClubPage, Critique, Review, Contest, CosplayGallery, Collection, Article;
 //
 // REMARK: linked_id and linked_type are only used together.
 //
-//	- Type: not supported;
+//  - Type: not supported;
 //
 // More information can be found in the [example].
 //

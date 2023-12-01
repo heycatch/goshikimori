@@ -7,37 +7,37 @@ import (
 )
 
 // Available anime options:
-//   - id malId name russian licenseNameRu english japanese synonyms kind rating score status episodes episodesAired duration airedOn{year month day date} releasedOn{year month day date} url season
-//   - poster{id originalUrl mainUrl}
-//   - fansubbers fandubbers licensors createdAt updatedAt nextEpisodeAt isCensored
-//   - genres{id name russian kind}
-//   - studios{id name imageUrl}
-//   - personRoles{id rolesRu rolesEn person{id name poster{id}}}
-//   - characterRoles{id rolesRu rolesEn character{id name poster{id}}}
-//   - related{id anime{id name} manga{id name} relationRu relationEn}
-//   - videos{id url name kind}
-//   - screenshots{id originalUrl x166Url x332Url}
-//   - scoresStats{score count}
-//   - statusesStats{status count}
-//   - description descriptionHtml descriptionSource
+//  - id malId name russian licenseNameRu english japanese synonyms kind rating score status episodes episodesAired duration airedOn{year month day date} releasedOn{year month day date} url season
+//  - poster{id originalUrl mainUrl}
+//  - fansubbers fandubbers licensors createdAt updatedAt nextEpisodeAt isCensored
+//  - genres{id name russian kind}
+//  - studios{id name imageUrl}
+//  - personRoles{id rolesRu rolesEn person{id name poster{id}}}
+//  - characterRoles{id rolesRu rolesEn character{id name poster{id}}}
+//  - related{id anime{id name} manga{id name} relationRu relationEn}
+//  - videos{id url name kind}
+//  - screenshots{id originalUrl x166Url x332Url}
+//  - scoresStats{score count}
+//  - statusesStats{status count}
+//  - description descriptionHtml descriptionSource
 //
 // Available manga options:
-//   - id malId name russian licenseNameRu english japanese synonyms kind score status volumes chapters airedOn{year month day date} releasedOn{year month day date} url
-//   - poster{id originalUrl mainUrl}
-//   - licensors createdAt updatedAt isCensored
-//   - genres{id name russian kind}
-//   - publishers{id name}
-//   - personRoles{id rolesRu rolesEn person{id name poster{id}}}
-//   - characterRoles{id rolesRu rolesEn character{id name poster{id}}}
-//   - related{id anime{id name} manga{id name} relationRu relationEn}
-//   - scoresStats{score count}
-//   - statusesStats{status count}
-//   - description descriptionHtml descriptionSource
+//  - id malId name russian licenseNameRu english japanese synonyms kind score status volumes chapters airedOn{year month day date} releasedOn{year month day date} url
+//  - poster{id originalUrl mainUrl}
+//  - licensors createdAt updatedAt isCensored
+//  - genres{id name russian kind}
+//  - publishers{id name}
+//  - personRoles{id rolesRu rolesEn person{id name poster{id}}}
+//  - characterRoles{id rolesRu rolesEn character{id name poster{id}}}
+//  - related{id anime{id name} manga{id name} relationRu relationEn}
+//  - scoresStats{score count}
+//  - statusesStats{status count}
+//  - description descriptionHtml descriptionSource
 //
 // Available character options:
-//   - id malId name russian japanese synonyms url createdAt updatedAt isAnime isManga isRanobe
-//   - poster{id originalUrl mainUrl}
-//   - description descriptionHtml descriptionSource
+//  - id malId name russian japanese synonyms url createdAt updatedAt isAnime isManga isRanobe
+//  - poster{id originalUrl mainUrl}
+//  - description descriptionHtml descriptionSource
 func Values(input ...string) string {
   var res string
 
@@ -61,28 +61,28 @@ func Values(input ...string) string {
 // Exclamation mark(!) indicates ignore.
 //
 // If 'Options' empty fields:
-// 	- Limit: 1;
-//	- Score: 1;
+//  - Limit: 1;
+//  - Score: 1;
 //  - Order: empty field;
-//	- Kind: empty field;
-//	- Status: empty field;
-//	- Season: empty field;
-//	- Duration: empty field;
-//	- Rating: empty field;
-//	- Mylist: empty field;
-//	- Censored: false;
+//  - Kind: empty field;
+//  - Status: empty field;
+//  - Season: empty field;
+//  - Duration: empty field;
+//  - Rating: empty field;
+//  - Mylist: empty field;
+//  - Censored: false;
 //
 // 'Options' settings:
-//	- Limit: 50 maximum;
-//	- Order: id, ranked, kind, popularity, name, aired_on, episodes, statust; random has been moved to a separate function, check [RandomAnime];
-//	- Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48, !tv, !movie, !ova, !ona, !special, !music, !tv_13, !tv_24, !tv_48;
-//	- Status: anons, ongoing, released, !anons, !ongoing, !released;
-//	- Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
-//	- Score: 1-9 maximum;
+//  - Limit: 50 maximum;
+//  - Order: id, ranked, kind, popularity, name, aired_on, episodes, statust; random has been moved to a separate function, check [RandomAnime];
+//  - Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48, !tv, !movie, !ova, !ona, !special, !music, !tv_13, !tv_24, !tv_48;
+//  - Status: anons, ongoing, released, !anons, !ongoing, !released;
+//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//  - Score: 1-9 maximum;
 //  - Duration: S, D, F, !S, !D, !F;
-//	- Rating: none, g, pg, pg_13, r, r_plus, rx, !g, !pg, !pg_13, !r, !r_plus, !rx;
-//	- Censored: true, false;
-//	- Mylist: planned, watching, rewatching, completed, on_hold, dropped;
+//  - Rating: none, g, pg, pg_13, r, r_plus, rx, !g, !pg, !pg_13, !r, !r_plus, !rx;
+//  - Censored: true, false;
+//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
 //
 // How to use and all the information you need [here].
 //
@@ -177,24 +177,24 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
 // Exclamation mark(!) indicates ignore.
 //
 // If 'Options' empty fields:
-// 	- Limit: 1;
+//  - Limit: 1;
 //  - Order: empty field;
-//	- Kind: empty field;
-//	- Status: empty field;
-//	- Season: empty field;
-//	- Score: empty field;
+//  - Kind: empty field;
+//  - Status: empty field;
+//  - Season: empty field;
+//  - Score: empty field;
 //  - Censored: false;
 //  - Mylist: empty field;
 //
 // 'Options' settings:
-//	- Limit: 50 maximum;
-//	- Order: id, ranked, kind, popularity, name, aired_on, volumes, chapters, status; random has been moved to a separate function, check [RandomManga];
-//	- Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin, !manga, !manhwa, !manhua, !light_novel, !novel, !one_shot, !doujin;
-//	- Status: anons, ongoing, released, paused, discontinued, !anons, !ongoing, !released, !paused, !discontinued;
-//	- Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
-//	- Score: 1-9 maximum;
-//	- Censored: true, false;
-//	- Mylist: planned, watching, rewatching, completed, on_hold, dropped;
+//  - Limit: 50 maximum;
+//  - Order: id, ranked, kind, popularity, name, aired_on, volumes, chapters, status; random has been moved to a separate function, check [RandomManga];
+//  - Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin, !manga, !manhwa, !manhua, !light_novel, !novel, !one_shot, !doujin;
+//  - Status: anons, ongoing, released, paused, discontinued, !anons, !ongoing, !released, !paused, !discontinued;
+//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//  - Score: 1-9 maximum;
+//  - Censored: true, false;
+//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
 //
 // How to use and all the information you need [here].
 //
@@ -271,11 +271,11 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
 //
 // If 'Options' empty fields:
 //  - Page: 1;
-// 	- Limit: 1;
+//  - Limit: 1;
 //
 // 'Options' settings:
 //  - Page: >= 1;
-//	- Limit: 50 maximum;
+//  - Limit: 50 maximum;
 //
 // How to use and all the information you need [here].
 //
