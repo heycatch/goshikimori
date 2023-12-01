@@ -208,18 +208,18 @@ type CharactersGraphQL struct {
 }
 
 type PeopleGraphQL struct {
-  Id                string         `json:"id"`
-  MalId             string         `json:"malId"`
-  Name              string         `json:"name"`
-  Russian           string         `json:"russian"`
-  Japanese          string         `json:"japanese"`
-  Synonyms          []string       `json:"synonyms"`
-  Url               string         `json:"url"`
-  IsSeyu            bool           `json:"isSeyu"`
-  IsMangaka         bool           `json:"isMangaka"`
-  IsProducer        bool           `json:"isProducer"`
-  Website           string         `json:"website"`
-  BirthOn           AiredOnGraphQL `json:"birthOn"`
-  DeceasedOn        AiredOnGraphQL `json:"deceasedOn"`
-  Poster            PosterGraphQL  `json:"poster"`
+  Id         string         `json:"id"`
+  MalId      string         `json:"malId"`
+  Name       string         `json:"name"`
+  Russian    string         `json:"russian"`
+  Japanese   string         `json:"japanese"`
+  Synonyms   []string       `json:"synonyms"`
+  Url        string         `json:"url"`
+  IsSeyu     bool           `json:"isSeyu"`
+  IsMangaka  bool           `json:"isMangaka"`
+  IsProducer bool           `json:"isProducer"`
+  Website    string         `json:"website"`
+  BirthOn    AiredOnGraphQL `json:"birthOn"`
+  DeceasedOn AiredOnGraphQL `json:"deceasedOn"`
+  Poster     PosterGraphQL  `json:"poster"`
 }
