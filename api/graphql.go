@@ -9,6 +9,7 @@ type Data struct {
   Animes     []AnimesGraphQL     `json:"animes"`
   Mangas     []MangasGraphQL     `json:"mangas"`
   Characters []CharactersGraphQL `json:"characters"`
+  People     []PeopleGraphQL     `json:"people"`
 }
 
 type MessageGraphQL struct {
@@ -204,4 +205,21 @@ type CharactersGraphQL struct {
   Description       string        `json:"description"`
   DescriptionHTML   string        `json:"descriptionHtml"`
   DescriptionSource string        `json:"descriptionSource"`
+}
+
+type PeopleGraphQL struct {
+  Id                string         `json:"id"`
+  MalId             string         `json:"malId"`
+  Name              string         `json:"name"`
+  Russian           string         `json:"russian"`
+  Japanese          string         `json:"japanese"`
+  Synonyms          []string       `json:"synonyms"`
+  Url               string         `json:"url"`
+  IsSeyu            bool           `json:"isSeyu"`
+  IsMangaka         bool           `json:"isMangaka"`
+  IsProducer        bool           `json:"isProducer"`
+  Website           string         `json:"website"`
+  BirthOn           AiredOnGraphQL `json:"birthOn"`
+  DeceasedOn        AiredOnGraphQL `json:"deceasedOn"`
+  Poster            PosterGraphQL  `json:"poster"`
 }

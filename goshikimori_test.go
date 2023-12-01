@@ -283,3 +283,21 @@ func TestCharacterGraphQL(t *testing.T) {
     }
   }
 }
+
+func TestPeopleGraphQL(t *testing.T) {
+  c := conf()
+  s, _ := graphql.PeopleSchema(
+    graphql.Values("id", "name", "birthOn{year}"),
+    "satsuki",
+    1, 1, true, false, false,
+  )
+  p, _, _ := c.SearchGraphql(s)
+
+  for _, v := range p.Data.People {
+    if v.Id == "3" && v.BirthOn.Year == 1970 {
+      t.Logf("%s - found", v.Name)
+    } else {
+      t.Error("PeopleGraphql not found")
+    }
+  }
+}

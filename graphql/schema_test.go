@@ -3,11 +3,11 @@ package graphql
 import "testing"
 
 func TestAnimeSchema(t *testing.T) {
-  pass_normal := `graphql?query={animes(search: "initial d", limit: 1, score: 8, order: id, kind: "tv", status: "!anons", season: "199x", duration: "F", rating: "!rx", mylist: "completed", censored: false){id name russian english japanese score airedOn{year month day date} }}`
+  pass_normal := `graphql?query={animes(search: "initial d", page: 1, limit: 1, score: 8, order: id, kind: "tv", status: "!anons", season: "199x", duration: "F", rating: "!rx", mylist: "completed", censored: false){id name russian english japanese score airedOn{year month day date} }}`
   normal, _ := AnimeSchema(
     Values("id", "name", "russian", "english", "japanese", "score", "airedOn{year month day date}"),
     "initial d",
-    1, 8, "id", "tv", "!anons", "199x", "F", "!rx", "completed", false,
+    1, 1, 8, "id", "tv", "!anons", "199x", "F", "!rx", "completed", false,
   )
   if normal == pass_normal {
     t.Log("Normal AnimeSchema passed")
@@ -15,11 +15,11 @@ func TestAnimeSchema(t *testing.T) {
     t.Error("Normal AnimeSchema failed")
   }
 
-  pass_empty := `graphql?query={animes(search: "initial d", limit: 1, score: 1, censored: false){id}}`
+  pass_empty := `graphql?query={animes(search: "initial d", page: 1, limit: 1, score: 1, censored: false){id}}`
   empty, _ := AnimeSchema(
     Values(""),
     "initial d",
-    1, 1, "", "", "", "", "", "", "", false,
+    1, 1, 1, "", "", "", "", "", "", "", false,
   )
   if empty == pass_empty {
     t.Log("Empty AnimeSchema passed")
@@ -29,11 +29,11 @@ func TestAnimeSchema(t *testing.T) {
 }
 
 func TestMangaSchema(t *testing.T) {
-  pass_normal := `graphql?query={mangas(search: "initial d", limit: 3, score: 8, order: ranked, kind: "manga", status: "released", mylist: "planned", censored: false){id name russian volumes chapters releasedOn{year month day date} url }}`
+  pass_normal := `graphql?query={mangas(search: "initial d", page: 1, limit: 3, score: 8, order: ranked, kind: "manga", status: "released", mylist: "planned", censored: false){id name russian volumes chapters releasedOn{year month day date} url }}`
   normal, _ := MangaSchema(
     Values("id", "name", "russian", "volumes", "chapters", "releasedOn{year month day date}", "url"),
     "initial d",
-    3, 8, "ranked", "manga", "released", "", "planned", false,
+    1, 3, 8, "ranked", "manga", "released", "", "planned", false,
   )
   if normal == pass_normal {
     t.Log("Normal MangaSchema passed")
@@ -41,11 +41,11 @@ func TestMangaSchema(t *testing.T) {
     t.Error("Normal MangaSchema faile")
   }
 
-  pass_empty := `graphql?query={mangas(search: "initial d", limit: 1, score: 1, censored: false){id}}`
+  pass_empty := `graphql?query={mangas(search: "initial d", page: 1, limit: 1, score: 1, censored: false){id}}`
   empty, _ := MangaSchema(
     Values(""),
     "initial d",
-    1, 1, "", "", "", "", "", false,
+    1, 1, 1, "", "", "", "", "", false,
   )
   if empty == pass_empty {
     t.Log("Empty MangaSchema passed")
@@ -65,5 +65,19 @@ func TestCharacterSchema(t *testing.T) {
     t.Log("Normal CharacterSchema passed")
   } else {
     t.Error("Normal CharacterSchema failed")
+  }
+}
+
+func TestPeopleSchema(t *testing.T) {
+  pass := `graphql?query={people(search: "satsuki", page: 1, limit: 1, isSeyu: true, isMangaka: false, isProducer: false){id name russian url website birthOn{year month day date} }}`
+  normal, _ := PeopleSchema(
+    Values("id", "name", "russian", "url", "website", "birthOn{year month day date}"),
+    "satsuki",
+    1, 1, true, false, false,
+  )
+  if normal == pass {
+    t.Log("Normal PeopleSchema passed")
+  } else {
+    t.Error("Normal PeopleSchema failed")
   }
 }

@@ -38,6 +38,11 @@ import (
 //  - id malId name russian japanese synonyms url createdAt updatedAt isAnime isManga isRanobe
 //  - poster{id originalUrl mainUrl}
 //  - description descriptionHtml descriptionSource
+//
+// Available people options:
+//  - id malId name russian japanese synonyms url isSeyu isMangaka isProducer website createdAt updatedAt
+//  - birthOn{year month day date} deceasedOn{year month day date}
+//  - poster{id originalUrl mainUrl}
 func Values(input ...string) string {
   var res string
 
@@ -61,6 +66,7 @@ func Values(input ...string) string {
 // Exclamation mark(!) indicates ignore.
 //
 // If 'Options' empty fields:
+//  - Page: 1;
 //  - Limit: 1;
 //  - Score: 1;
 //  - Order: empty field;
@@ -73,6 +79,7 @@ func Values(input ...string) string {
 //  - Censored: false;
 //
 // 'Options' settings:
+//  - Page: >= 1;
 //  - Limit: 50 maximum;
 //  - Order: id, ranked, kind, popularity, name, aired_on, episodes, statust; random has been moved to a separate function, check [RandomAnime];
 //  - Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48, !tv, !movie, !ova, !ona, !special, !music, !tv_13, !tv_24, !tv_48;
@@ -93,12 +100,15 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
   for i, option := range options {
     switch i {
     case 0:
+      page, ok := option.(int)
+      if ok && page >= 1 { parameterOptions += fmt.Sprintf(", page: %d", page) }
+    case 1:
       limit, ok := option.(int)
       if ok && limit >= 1 && limit <= 50 { parameterOptions += fmt.Sprintf(", limit: %d", limit) }
-    case 1:
+    case 2:
       score, ok := option.(int)
       if ok && score >= 1 && score <= 9 { parameterOptions += fmt.Sprintf(", score: %d", score) }
-    case 2:
+    case 3:
       order, ok := option.(string)
       order_map := map[string]int8{
         "id": 1, "ranked": 2, "kind": 3, "popularity": 4,
@@ -106,7 +116,7 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
       }
       _, ok_order := order_map[order]
       if ok && ok_order { parameterOptions += fmt.Sprintf(", order: %s", order) } // this parameter(string) without the quotation marks.
-    case 3:
+    case 4:
       kind, ok := option.(string)
       kind_map := map[string]int8{
         "tv": 1, "movie": 2, "ova": 3, "ona": 4, "special": 5, "music": 6,
@@ -116,7 +126,7 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
       }
       _, ok_kind := kind_map[kind]
       if ok && ok_kind { parameterOptions += fmt.Sprintf(`, kind: "%s"`, kind) }
-    case 4:
+    case 5:
       status, ok := option.(string)
       status_map := map[string]int8{
         "anons": 1, "ongoing": 2, "released": 3,
@@ -124,7 +134,7 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
       }
       _, ok_status := status_map[status]
       if ok && ok_status { parameterOptions += fmt.Sprintf(`, status: "%s"`, status) }
-    case 5:
+    case 6:
       season, ok := option.(string)
       season_map := map[string]int8{
         "2000_2010": 1, "2010_2014": 2, "2015_2019": 3, "199x": 4,
@@ -134,12 +144,12 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
       }
       _, ok_season := season_map[season]
       if ok && ok_season { parameterOptions += fmt.Sprintf(`, season: "%s"`, season) }
-    case 6:
+    case 7:
       duration, ok := option.(string)
       duration_map := map[string]int8{"S": 1, "D": 2, "F": 3, "!S": 4, "!D": 5, "!F": 6}
       _, ok_duration := duration_map[duration]
       if ok && ok_duration { parameterOptions += fmt.Sprintf(`, duration: "%s"`, duration) }
-    case 7:
+    case 8:
       rating, ok := option.(string)
       rating_map := map[string]int8{
         "none": 1, "g": 2, "pg": 3, "pg_13": 4,
@@ -148,7 +158,7 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
       }
       _, ok_rating := rating_map[rating]
       if ok && ok_rating { parameterOptions += fmt.Sprintf(`, rating: "%s"`, rating) }
-    case 8:
+    case 9:
       mylist, ok := option.(string)
       mylist_map := map[string]int8{
         "planned": 1, "watching": 2, "rewatching": 3,
@@ -156,7 +166,7 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
       }
       _, ok_mylist := mylist_map[mylist]
       if ok && ok_mylist { parameterOptions += fmt.Sprintf(`, mylist: "%s"`, mylist) }
-    case 9:
+    case 10:
       censored, ok := option.(bool)
       if ok { parameterOptions += fmt.Sprintf(`, censored: %t`, censored) }
     default:
@@ -177,6 +187,7 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
 // Exclamation mark(!) indicates ignore.
 //
 // If 'Options' empty fields:
+//  - Page: 1;
 //  - Limit: 1;
 //  - Order: empty field;
 //  - Kind: empty field;
@@ -187,6 +198,7 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
 //  - Mylist: empty field;
 //
 // 'Options' settings:
+//  - Page: >= 1;
 //  - Limit: 50 maximum;
 //  - Order: id, ranked, kind, popularity, name, aired_on, volumes, chapters, status; random has been moved to a separate function, check [RandomManga];
 //  - Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin, !manga, !manhwa, !manhua, !light_novel, !novel, !one_shot, !doujin;
@@ -205,12 +217,15 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
   for i, option := range options {
     switch i {
     case 0:
+      page, ok := option.(int)
+      if ok && page >= 1 { parameterOptions += fmt.Sprintf(", page: %d", page) }
+    case 1:
       limit, ok := option.(int)
       if ok && limit >= 1 && limit <= 50 { parameterOptions += fmt.Sprintf(", limit: %d", limit) }
-    case 1:
+    case 2:
       score, ok := option.(int)
       if ok && score >= 1 && score <= 9 { parameterOptions += fmt.Sprintf(", score: %d", score) }
-    case 2:
+    case 3:
       order, ok := option.(string)
       order_map := map[string]int8{
         "id": 1, "ranked": 2, "kind": 3, "popularity": 4,
@@ -219,7 +234,7 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
       }
       _, ok_order := order_map[order]
       if ok && ok_order { parameterOptions += fmt.Sprintf(", order: %s", order) } // this parameter(string) without the quotation marks.
-    case 3:
+    case 4:
       kind, ok := option.(string)
       kind_map := map[string]int8{
         "manga": 1, "manhwa": 2, "manhua": 3, "light_novel": 4, "novel": 5,
@@ -228,7 +243,7 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
       }
       _, ok_kind := kind_map[kind]
       if ok && ok_kind { parameterOptions += fmt.Sprintf(`, kind: "%s"`, kind) }
-    case 4:
+    case 5:
       status, ok := option.(string)
       status_map := map[string]int8{
         "anons": 1, "ongoing": 2, "released": 3, "paused": 4, "discontinued": 5,
@@ -236,7 +251,7 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
       }
       _, ok_status := status_map[status]
       if ok && ok_status { parameterOptions += fmt.Sprintf(`, status: "%s"`, status) }
-    case 5:
+    case 6:
       season, ok := option.(string)
       season_map := map[string]int8{
         "2000_2010": 1, "2010_2014": 2, "2015_2019": 3, "199x": 4,
@@ -246,7 +261,7 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
       }
       _, ok_season := season_map[season]
       if ok && ok_season { parameterOptions += fmt.Sprintf(`, season: "%s"`, season) }
-    case 6:
+    case 7:
       mylist, ok := option.(string)
       mylist_map := map[string]int8{
         "planned": 1, "watching": 2, "rewatching": 3,
@@ -254,7 +269,7 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
       }
       _, ok_mylist := mylist_map[mylist]
       if ok && ok_mylist { parameterOptions += fmt.Sprintf(`, mylist: "%s"`, mylist) }
-    case 7:
+    case 8:
       censored, ok := option.(bool)
       if ok { parameterOptions += fmt.Sprintf(`, censored: %t`, censored) }
     default:
@@ -297,4 +312,53 @@ func CharacterSchema(values string, name string, options ...interface{}) (string
   }
 
   return fmt.Sprintf(`graphql?query={characters(search: "%s"%s){%s}}`, name, parameterOptions, values), nil
+}
+
+// Values: parameters we want to receive from the server.
+//
+// Name: people name.
+//
+// If 'Options' empty fields:
+//  - Page: 1;
+//  - Limit: 1;
+//  - isSeyu: true;
+//  - isMangaka: true;
+//  - isProducer: true;
+//
+// 'Options' settings:
+//  - Page: >= 1;
+//  - Limit: 50 maximum;
+//  - isSeyu: true, false;
+//  - isMangaka: true, false;
+//  - isProducer: true, false;
+//
+// How to use and all the information you need [here].
+//
+// [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
+func PeopleSchema(values string, name string, options ...interface{}) (string, error) {
+  var parameterOptions string
+
+  for i, option := range options {
+    switch i {
+    case 0:
+      page, ok := option.(int)
+      if ok && page >= 1 { parameterOptions += fmt.Sprintf(", page: %d", page) }
+    case 1:
+      limit, ok := option.(int)
+      if ok && limit >= 1 && limit <= 50 { parameterOptions += fmt.Sprintf(", limit: %d", limit) }
+    case 2:
+      seyu, ok := option.(bool)
+      if ok { parameterOptions += fmt.Sprintf(", isSeyu: %t", seyu) }
+    case 3:
+      mangaka, ok := option.(bool)
+      if ok { parameterOptions += fmt.Sprintf(", isMangaka: %t", mangaka) }
+    case 4:
+      producer, ok := option.(bool)
+      if ok { parameterOptions += fmt.Sprintf(", isProducer: %t", producer) }
+    default:
+      return "", errors.New("one of the parameters is entered incorrectly, check sequence or spelling errors")
+    }
+  }
+
+  return fmt.Sprintf(`graphql?query={people(search: "%s"%s){%s}}`, name, parameterOptions, values), nil
 }
