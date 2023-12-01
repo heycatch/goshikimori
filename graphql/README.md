@@ -2,13 +2,6 @@
 
 ## At the moment, the GraphQL API is stated as experimental.
 
-## How to use:
-In the standard examples, you may notice that the implementation for customizing the
-search goes through structures, but in this case we use *variant functions*.
-- First parameters what we are looking for (anime title, manga title, etc.)
-- The second parameter is the interface, with a strict sequence,
-  accepts int - string - bool and which is already needed just for search customization.
-
 Next, let's look at an examples:
 ```golang
 package main
@@ -44,6 +37,7 @@ func main() {
   //    9)  mylist: ""; skipped;
   //    10) censored: false;
   //
+  // The available values can be found in the function description: graphql.Values();
   // The available interface parameters can be found in the function description: graphql.AnimeSchema();
   schema, err := graphql.AnimeSchema(
     graphql.Values("id", "name", "score", "episodes", "airedOn{year month day date}"),
@@ -55,7 +49,7 @@ func main() {
     return
   }
 
-  a, status, err := c.SearchAnimesGraphql(schema)
+  a, status, err := c.SearchGraphql(schema)
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return
@@ -104,6 +98,7 @@ func main() {
   //    7) mylist: ""; skipped;
   //    8) censored: false;
   //
+  // The available values can be found in the function description: graphql.Values();
   // The available interface parameters can be found in the function description: graphql.MangaSchema();
   schema, err := graphql.MangaSchema(
     graphql.Values("id", "name", "score", "volumes", "chapters", "releasedOn{year}"),
@@ -115,7 +110,7 @@ func main() {
     return
   }
 
-  m, status, err := c.SearchMangasGraphql(schema)
+  m, status, err := c.SearchGraphql(schema)
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return
@@ -126,6 +121,58 @@ func main() {
   // Standard output of our search, nothing new.
   for _, v := range m.Data.Mangas {
     fmt.Println(v.Id, v.Name, v.Score, v.Volumes, v.Chapters, v.ReleasedOn.Year)
+  }
+}
+```
+```golang
+package main
+
+import (
+  "fmt"
+
+  "github.com/heycatch/goshikimori"
+  "github.com/heycatch/goshikimori/graphql"
+)
+
+func conf() *goshikimori.Configuration {
+  return goshikimori.Add(
+    "APPLICATION_NAME",
+    "PRIVATE_KEY",
+  )
+}
+
+func main() {
+  c := conf()
+
+  // The first parameter is the values of the character; values: "id", "name", "russian", "url", "description".
+  // The second parameter is the name of the character; name: "onizuka".
+  // Now let's move on to the interface:
+  //    1) page: 1;
+  //    2) limit: 2;
+  //
+  // The available values can be found in the function description: graphql.Values();
+  // The available interface parameters can be found in the function description: graphql.CharacterSchema();
+  schema, err := graphql.CharacterSchema(
+    graphql.Values("id", "name", "russian", "url", "description"),
+    "onizuka",
+    1, 2,
+  )
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+
+  m, status, err := c.SearchGraphql(schema)
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+
+  // Here you can track errors received during server response.
+  fmt.Println(m.Errors)
+  // Standard output of our search, nothing new.
+  for _, v := range m.Data.Characters {
+    fmt.Println(v.Id, v.Name, v.Russian, v.Url, v.Description)
   }
 }
 ```

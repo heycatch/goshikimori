@@ -6,8 +6,9 @@ type GraphQL struct {
 }
 
 type Data struct {
-  Animes []AnimesGraphQL `json:"animes"`
-  Mangas []MangasGraphQL `json:"mangas"`
+  Animes     []AnimesGraphQL     `json:"animes"`
+  Mangas     []MangasGraphQL     `json:"mangas"`
+  Characters []CharactersGraphQL `json:"characters"`
 }
 
 type MessageGraphQL struct {
@@ -16,86 +17,86 @@ type MessageGraphQL struct {
 
 /*
 # Removed:
-  Season: nil;
-  NextEpisodeAt: nil;
   ExternalLinks: nil;
-  DescriptionSource: nil;
 */
 type AnimesGraphQL struct {
-  Id              string                  `json:"id"`
-  MalId           string                  `json:"malId"`
-  Name            string                  `json:"name"`
-  Russian         string                  `json:"russian"`
-  LicenseNameRu   string                  `json:"licenseNameRu"`
-  English         string                  `json:"english"`
-  Japanese        string                  `json:"japanese"`
-  Synonyms        []string                `json:"synonyms"`
-  Kind            string                  `json:"kind"`
-  Rating          string                  `json:"rating"`
-  Score           float32                 `json:"score"`
-  Status          string                  `json:"status"`
-  Episodes        int                     `json:"episodes"`
-  EpisodesAired   int                     `json:"episodesAired"`
-  Duration        int                     `json:"duration"`
-  AiredOn         AiredOnGraphQL          `json:"airedOn"`
-  ReleasedOn      AiredOnGraphQL          `json:"releasedOn"`
-  Url             string                  `json:"url"`
-  Poster          PosterGraphQL           `json:"poster"`
-  Fansubbers      []string                `json:"fansubbers"`
-  Fandubbers      []string                `json:"fandubbers"`
-  Licensors       []string                `json:"licensors"`
-  CreatedAt       string                  `json:"createdAt"`
-  UpdatedAt       string                  `json:"updatedAt"`
-  IsCensored      bool                    `json:"isCensored"`
-  Genres          []GenresGraphQL         `json:"genres"`
-  Studios         []StudiosGraphQL        `json:"studios"`
-  PersonRoles     []PersonRolesGraphQL    `json:"personRoles"`
-  CharacterRoles  []CharacterRolesGraphQL `json:"characterRoles"`
-  Related         []RelatedGraphQL        `json:"related"`
-  Videos          []VideosGraphQL         `json:"videos"`
-  Screenshots     []ScreenshotsGraphQL    `json:"screenshots"`
-  ScoresStats     []ScoresStatsGraphQL    `json:"scoresStats"`
-  StatusesStats   []StatusesStatsGraphQL  `json:"statusesStats"`
-  Description     string                  `json:"description"`
-  DescriptionHTML string                  `json:"descriptionHtml"`
+  Id                string                  `json:"id"`
+  MalId             string                  `json:"malId"`
+  Name              string                  `json:"name"`
+  Russian           string                  `json:"russian"`
+  LicenseNameRu     string                  `json:"licenseNameRu"`
+  English           string                  `json:"english"`
+  Japanese          string                  `json:"japanese"`
+  Synonyms          []string                `json:"synonyms"`
+  Kind              string                  `json:"kind"`
+  Rating            string                  `json:"rating"`
+  Score             float32                 `json:"score"`
+  Status            string                  `json:"status"`
+  Episodes          int                     `json:"episodes"`
+  EpisodesAired     int                     `json:"episodesAired"`
+  Duration          int                     `json:"duration"`
+  AiredOn           AiredOnGraphQL          `json:"airedOn"`
+  ReleasedOn        AiredOnGraphQL          `json:"releasedOn"`
+  Url               string                  `json:"url"`
+  Season            string                  `json:"season"`
+  Poster            PosterGraphQL           `json:"poster"`
+  Fansubbers        []string                `json:"fansubbers"`
+  Fandubbers        []string                `json:"fandubbers"`
+  Licensors         []string                `json:"licensors"`
+  CreatedAt         string                  `json:"createdAt"`
+  UpdatedAt         string                  `json:"updatedAt"`
+  NextEpisodeAt     string                  `json:"nextEpisodeAt"`
+  IsCensored        bool                    `json:"isCensored"`
+  Genres            []GenresGraphQL         `json:"genres"`
+  Studios           []StudiosGraphQL        `json:"studios"`
+  PersonRoles       []PersonRolesGraphQL    `json:"personRoles"`
+  CharacterRoles    []CharacterRolesGraphQL `json:"characterRoles"`
+  Related           []RelatedGraphQL        `json:"related"`
+  Videos            []VideosGraphQL         `json:"videos"`
+  Screenshots       []ScreenshotsGraphQL    `json:"screenshots"`
+  ScoresStats       []ScoresStatsGraphQL    `json:"scoresStats"`
+  StatusesStats     []StatusesStatsGraphQL  `json:"statusesStats"`
+  Description       string                  `json:"description"`
+  DescriptionHTML   string                  `json:"descriptionHtml"`
+  DescriptionSource string                  `json:"descriptionSource"`
 }
 
 /*
 # Removed:
   ExternalLinks: nil;
-  DescriptionSource: nil;
 */
 type MangasGraphQL struct {
-  Id              string                  `json:"id"`
-  MalId           string                  `json:"malId"`
-  Name            string                  `json:"name"`
-  Russian         string                  `json:"russian"`
-  LicenseNameRu   string                  `json:"licenseNameRu"`
-  English         string                  `json:"english"`
-  Japanese        string                  `json:"japanese"`
-  Synonyms        []string                `json:"synonyms"`
-  Kind            string                  `json:"kind"`
-  Score           float32                 `json:"score"`
-  Status          string                  `json:"status"`
-  Volumes         int                     `json:"volumes"`
-  Chapters        int                     `json:"chapters"`
-  AiredOn         AiredOnGraphQL          `json:"airedOn"`
-  ReleasedOn      AiredOnGraphQL          `json:"releasedOn"`
-  Url             string                  `json:"url"`
-  Poster          PosterGraphQL           `json:"poster"`
-  Licensors       []string                `json:"licensors"`
-  CreatedAt       string                  `json:"createdAt"`
-  UpdatedAt       string                  `json:"updatedAt"`
-  IsCensored      bool                    `json:"isCensored"`
-  Genres          []GenresGraphQL         `json:"genres"`
-  Publishers      []ObjectInfo            `json:"publishers"`
-  PersonRoles     []PersonRolesGraphQL    `json:"personRoles"`
-  CharacterRoles  []CharacterRolesGraphQL `json:"characterRoles"`
-  Related         []RelatedGraphQL        `json:"related"`
-  ScoresStats     []ScoresStatsGraphQL    `json:"scoresStats"`
-  StatusesStats   []StatusesStatsGraphQL  `json:"statusesStats"`
-  Description     string                  `json:"description"`
-  DescriptionHTML string                  `json:"descriptionHtml"`
+  Id                string                  `json:"id"`
+  MalId             string                  `json:"malId"`
+  Name              string                  `json:"name"`
+  Russian           string                  `json:"russian"`
+  LicenseNameRu     string                  `json:"licenseNameRu"`
+  English           string                  `json:"english"`
+  Japanese          string                  `json:"japanese"`
+  Synonyms          []string                `json:"synonyms"`
+  Kind              string                  `json:"kind"`
+  Score             float32                 `json:"score"`
+  Status            string                  `json:"status"`
+  Volumes           int                     `json:"volumes"`
+  Chapters          int                     `json:"chapters"`
+  AiredOn           AiredOnGraphQL          `json:"airedOn"`
+  ReleasedOn        AiredOnGraphQL          `json:"releasedOn"`
+  Url               string                  `json:"url"`
+  Poster            PosterGraphQL           `json:"poster"`
+  Licensors         []string                `json:"licensors"`
+  CreatedAt         string                  `json:"createdAt"`
+  UpdatedAt         string                  `json:"updatedAt"`
+  IsCensored        bool                    `json:"isCensored"`
+  Genres            []GenresGraphQL         `json:"genres"`
+  Publishers        []ObjectInfo            `json:"publishers"`
+  PersonRoles       []PersonRolesGraphQL    `json:"personRoles"`
+  CharacterRoles    []CharacterRolesGraphQL `json:"characterRoles"`
+  Related           []RelatedGraphQL        `json:"related"`
+  ScoresStats       []ScoresStatsGraphQL    `json:"scoresStats"`
+  StatusesStats     []StatusesStatsGraphQL  `json:"statusesStats"`
+  Description       string                  `json:"description"`
+  DescriptionHTML   string                  `json:"descriptionHtml"`
+  DescriptionSource string                  `json:"descriptionSource"`
 }
 
 type AiredOnGraphQL struct {
@@ -184,4 +185,23 @@ type ScoresStatsGraphQL struct {
 type StatusesStatsGraphQL struct {
   Status string `json:"status"`
   Count  int    `json:"count"`
+}
+
+type CharactersGraphQL struct {
+  Id                string        `json:"id"`
+  MalId             string        `json:"malId"`
+  Name              string        `json:"name"`
+  Russian           string        `json:"russian"`
+  Japanese          string        `json:"japanese"`
+  Synonyms          []string      `json:"synonyms"`
+  Url               string        `json:"url"`
+  CreatedAt         string        `json:"createdAt"`
+  UpdatedAt         string        `json:"updatedAt"`
+  IsAnime           bool          `json:"isAnime"`
+  IsManga           bool          `json:"isManga"`
+  IsRanobe          bool          `json:"isRanobe"`
+  Poster            PosterGraphQL `json:"poster"`
+  Description       string        `json:"description"`
+  DescriptionHTML   string        `json:"descriptionHtml"`
+  DescriptionSource string        `json:"descriptionSource"`
 }

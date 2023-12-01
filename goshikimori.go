@@ -3171,39 +3171,7 @@ func (c *Configuration) RemoveIgnoreTopic(id int) (api.IgnoreTopic, int, error) 
 // How to use and all the information you need [here].
 //
 // [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
-func (c *Configuration) SearchAnimesGraphql(schema string) (api.GraphQL, int, error) {
-  var client = &http.Client{}
-  var g api.GraphQL
-
-  post, cancel := req.NewPostRequestWithCancel(
-    c.Application, c.AccessToken, schema, 10,
-  )
-  defer cancel()
-
-  resp, err := client.Do(post)
-  if err != nil {
-    return g, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return g, resp.StatusCode, err
-  }
-
-  if err := json.Unmarshal(data, &g); err != nil {
-    return g, resp.StatusCode, err
-  }
-
-  return g, resp.StatusCode, nil
-}
-
-// Schema: customized request.
-//
-// How to use and all the information you need [here].
-//
-// [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
-func (c *Configuration) SearchMangasGraphql(schema string) (api.GraphQL, int, error) {
+func (c *Configuration) SearchGraphql(schema string) (api.GraphQL, int, error) {
   var client = &http.Client{}
   var g api.GraphQL
 

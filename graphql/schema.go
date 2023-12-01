@@ -7,9 +7,9 @@ import (
 )
 
 // Available anime options:
-//   - id malId name russian licenseNameRu english japanese synonyms kind rating score status episodes episodesAired duration airedOn{year month day date} releasedOn{year month day date} url
+//   - id malId name russian licenseNameRu english japanese synonyms kind rating score status episodes episodesAired duration airedOn{year month day date} releasedOn{year month day date} url season
 //   - poster{id originalUrl mainUrl}
-//   - fansubbers fandubbers licensors createdAt updatedAt isCensored
+//   - fansubbers fandubbers licensors createdAt updatedAt nextEpisodeAt isCensored
 //   - genres{id name russian kind}
 //   - studios{id name imageUrl}
 //   - personRoles{id rolesRu rolesEn person{id name poster{id}}}
@@ -32,6 +32,11 @@ import (
 //   - related{id anime{id name} manga{id name} relationRu relationEn}
 //   - scoresStats{score count}
 //   - statusesStats{status count}
+//   - description descriptionHtml descriptionSource
+//
+// Available character options:
+//   - id malId name russian japanese synonyms url createdAt updatedAt isAnime isManga isRanobe
+//   - poster{id originalUrl mainUrl}
 //   - description descriptionHtml descriptionSource
 func Values(input ...string) string {
   var res string
@@ -258,4 +263,38 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
   }
 
   return fmt.Sprintf(`graphql?query={mangas(search: "%s"%s){%s}}`, name, parameterOptions, values), nil
+}
+
+// Values: parameters we want to receive from the server.
+//
+// Name: character name.
+//
+// If 'Options' empty fields:
+//  - Page: 1;
+// 	- Limit: 1;
+//
+// 'Options' settings:
+//  - Page: >= 1;
+//	- Limit: 50 maximum;
+//
+// How to use and all the information you need [here].
+//
+// [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
+func CharacterSchema(values string, name string, options ...interface{}) (string, error) {
+  var parameterOptions string
+
+  for i, option := range options {
+    switch i {
+    case 0:
+      page, ok := option.(int)
+      if ok && page >= 1 { parameterOptions += fmt.Sprintf(", page: %d", page) }
+    case 1:
+      limit, ok := option.(int)
+      if ok && limit >= 1 && limit <= 50 { parameterOptions += fmt.Sprintf(", limit: %d", limit) }
+    default:
+      return "", errors.New("one of the parameters is entered incorrectly, check sequence or spelling errors")
+    }
+  }
+
+  return fmt.Sprintf(`graphql?query={characters(search: "%s"%s){%s}}`, name, parameterOptions, values), nil
 }

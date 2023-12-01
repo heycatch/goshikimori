@@ -2,13 +2,6 @@
 
 ## На данный момент API GraphQL заявлен как экспериментальный.
 
-## Как использовать:
-В стандартных примерах можно заметить, что реализация для кастомизации
-поиска идет через структуры, но в данном случае мы используем *вариативные функции*.
-  - первым параметром идет название аниме, манги и т.д.
-  - вторым параметром следует интерфейс, со строгой последовательностью,
-    принимает int - string - bool и который уже нужен как раз таки для кастомизации поиска.
-
 Далее рассмотрим на примерах:
 ```golang
 package main
@@ -45,6 +38,7 @@ func main() {
   //    9)  mylist: ""; пропустил;
   //    10) censored: false;
   //
+  // Про доступные значения можно почитать в описании функции: graphql.Values();
   // Про доступные параметры интерфейса можно почитать в описании функции: graphql.AnimeSchema();
   schema, err := graphql.AnimeSchema(
     graphql.Values("id", "name", "score", "episodes", "airedOn{year month day date}"),
@@ -56,7 +50,7 @@ func main() {
     return
   }
 
-  a, status, err := c.SearchAnimesGraphql(schema)
+  a, status, err := c.SearchGraphql(schema)
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return
@@ -106,6 +100,7 @@ func main() {
   //    7) mylist: ""; пропустил;
   //    8) censored: false;
   //
+  // Про доступные значения можно почитать в описании функции: graphql.Values();
   // Про доступные параметры интерфейса можно почитать в описании функции: graphql.MangaSchema();
   schema, err := graphql.MangaSchema(
     graphql.Values("id", "name", "score", "volumes", "chapters", "releasedOn{year}"),
@@ -117,7 +112,7 @@ func main() {
     return
   }
 
-  m, status, err := c.SearchMangasGraphql(schema)
+  m, status, err := c.SearchGraphql(schema)
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return
@@ -128,6 +123,59 @@ func main() {
   // Стандартный вывод нашего поиска, ничего нового.
   for _, v := range m.Data.Mangas {
     fmt.Println(v.Id, v.Name, v.Score, v.Volumes, v.Chapters, v.ReleasedOn.Year)
+  }
+}
+```
+```golang
+package main
+
+import (
+  "fmt"
+
+  "github.com/heycatch/goshikimori"
+  "github.com/heycatch/goshikimori/graphql"
+)
+
+func conf() *goshikimori.Configuration {
+  return goshikimori.Add(
+    "APPLICATION_NAME",
+    "PRIVATE_KEY",
+  )
+}
+
+func main() {
+  c := conf()
+
+  // Первым параметром идет перечисление значений которые мы хотим получить
+  // от сервера; values: "id", "name", "russian", "url", "description"".
+  // Вторым параметром идет название персонажа; name: "onizuka".
+  // Теперь переходим к интерфейсу:
+  //    1) page: 1;
+  //    2) limit: 2;
+  //
+  // Про доступные значения можно почитать в описании функции: graphql.Values();
+  // Про доступные параметры интерфейса можно почитать в описании функции: graphql.CharacterSchema();
+  schema, err := graphql.CharacterSchema(
+    graphql.Values("id", "name", "russian", "url", "description"),
+    "onizuka",
+    1, 2,
+  )
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+
+  m, status, err := c.SearchGraphql(schema)
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+
+  // Тут можно отслеживать ошибки полученные при ответе сервера.
+  fmt.Println(m.Errors)
+  // Стандартный вывод нашего поиска, ничего нового.
+  for _, v := range m.Data.Characters {
+    fmt.Println(v.Id, v.Name, v.Russian, v.Url, v.Description)
   }
 }
 ```

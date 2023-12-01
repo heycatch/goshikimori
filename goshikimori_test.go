@@ -738,10 +738,11 @@ func TestPeople(t *testing.T) {
 func TestAnimeGraphql(t *testing.T) {
   c := conf()
   s, _ := graphql.AnimeSchema(
-    graphql.Values("id", "malId", "rating", "kind", "episodes"),
-    "initial d first stage", 1, 1, "", "", "", "", "", "", "", false,
+    graphql.Values("id", "malId", "name", "rating", "kind", "episodes"),
+    "initial d first stage",
+    1, 1, "", "", "", "", "", "", "", false,
   )
-  a, _, _ := c.SearchAnimesGraphql(s)
+  a, _, _ := c.SearchGraphql(s)
 
   for _, v := range a.Data.Animes {
     if v.Id == "185" && v.MalId == "185" && v.Rating == "pg_13" && v.Kind == "tv" && v.Episodes == 26 {
@@ -755,16 +756,35 @@ func TestAnimeGraphql(t *testing.T) {
 func TestMangaGraphQL(t *testing.T) {
   c := conf()
   s, _ := graphql.MangaSchema(
-    graphql.Values("id", "malId", "kind", "status", "volumes"),
-    "initial d", 1, 1, "", "", "", "", "", false,
+    graphql.Values("id", "malId", "name", "kind", "status", "volumes"),
+    "initial d",
+    1, 1, "", "", "", "", "", false,
   )
-  m, _, _ := c.SearchMangasGraphql(s)
+  m, _, _ := c.SearchGraphql(s)
 
   for _, v := range m.Data.Mangas {
     if v.Id == "375" && v.MalId == "375" && v.Kind == "manga" && v.Status == "released" && v.Volumes == 48 {
       t.Logf("%s - found", v.Name)
     } else {
       t.Error("MangaGraphql not found")
+    }
+  }
+}
+
+func TestCharacterGraphQL(t *testing.T) {
+  c := conf()
+  s, _ := graphql.CharacterSchema(
+    graphql.Values("id", "malId", "name", "isManga"),
+    "onizuka",
+    1, 1,
+  )
+  ch, _, _ := c.SearchGraphql(s)
+
+  for _, v := range ch.Data.Characters {
+    if v.Id == "20847" && v.MalId == "20847" && v.IsManga {
+      t.Logf("%s - found", v.Name)
+    } else {
+      t.Error("CharacterGraphql not found")
     }
   }
 }
