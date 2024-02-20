@@ -2,11 +2,17 @@ package api
 
 import "strconv"
 
-// Auxiliary function to get the correct list of genres
-func GenerateGenres(genres []Genres) map[int]string {
+// Auxiliary function to get the correct list of genres.
+//
+// name: Anime or Manga;
+//
+// genres: []api.Genres;
+func GenerateGenres(name string, genres []Genres) map[int]string {
   data := make(map[int]string)
   for _, v := range genres {
-    data[v.Id] = strconv.Itoa(v.Id) + "-" + v.Name
+    if v.Entry_type == name {
+      data[v.Id] = strconv.Itoa(v.Id) + "-" + v.Name
+    }
   }
   return data
 }

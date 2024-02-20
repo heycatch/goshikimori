@@ -458,17 +458,7 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 //  22 (Romance); 23 (School); 24 (Sci-Fi); 25 (Shoujo); 26 (Shoujo Ai); 27 (Shounen); 28 (Shounen Ai);
 //  29 (Space); 30 (Sports); 31 (Super Power); 32 (Vampire); 33 (Yaoi); 34 (Yuri); 35 (Harem);
 //  36 (Slice of Life); 37 (Supernatural); 38 (Military); 39 (Police); 40 (Psychological);
-//  41 (Thriller); 42 (Seinen); 43 (Josei); 46 (Mystery); 47 (Shounen); 48 (Supernatural);
-//  49 (Comedy); 50 (Drama); 51 (Ecchi); 52 (Seinen); 53 (Sci-Fi); 54 (Slice of Life); 55 (Shounen Ai);
-//  56 (Action); 57 (Fantasy); 58 (Magic); 59 (Hentai); 60 (School); 61 (Doujinshi); 62 (Romance);
-//  63 (Shoujo); 64 (Vampire); 65 (Yaoi); 66 (Martial Arts); 67 (Psychological); 68 (Adventure);
-//  69 (Historical); 70 (Military); 71 (Harem); 72 (Demons); 73 (Shoujo Ai); 74 (Gender Bender);
-//  75 (Yuri); 76 (Sports); 77 (Kids); 78 (Music); 79 (Game); 80 (Horror); 81 (Thriller);
-//  82 (Super Power); 83 (Mecha); 84 (Cars); 85 (Space); 86 (Parody); 87 (Josei); 88 (Samurai);
-//  89 (Police); 90 (Dementia); 539 (Erotica); 540 (Erotica); 541 (Work Life);
-//  542 (Work Life); 543 (Gourmet); 544 (Gourmet);
-//
-// (!) Genres have duplicates and they work.
+//  41 (Thriller); 42 (Seinen); 43 (Josei); 539 (Erotica); 541 (Work Life); 543 (Gourmet);
 //
 // Set to true to discard hentai, yaoi and yuri.
 //
@@ -557,6 +547,7 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 //  - Score: empty field;
 //  - Censored: false;
 //  - Mylist: empty field;
+//  - Genre_v2: empty field;
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
@@ -569,11 +560,20 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 //  - Censored: true(string), false(string);
 //  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
 //  - Search: default search;
+//  - Genre_v2: id search. Below is a list of all available genres by id:
+//
+//  > 46 (Mystery); 47 (Shounen); 48 (Supernatural);
+//  49 (Comedy); 50 (Drama); 51 (Ecchi); 52 (Seinen); 53 (Sci-Fi); 54 (Slice of Life); 55 (Shounen Ai);
+//  56 (Action); 57 (Fantasy); 58 (Magic); 59 (Hentai); 60 (School); 61 (Doujinshi); 62 (Romance);
+//  63 (Shoujo); 64 (Vampire); 65 (Yaoi); 66 (Martial Arts); 67 (Psychological); 68 (Adventure);
+//  69 (Historical); 70 (Military); 71 (Harem); 72 (Demons); 73 (Shoujo Ai); 74 (Gender Bender);
+//  75 (Yuri); 76 (Sports); 77 (Kids); 78 (Music); 79 (Game); 80 (Horror); 81 (Thriller);
+//  82 (Super Power); 83 (Mecha); 84 (Cars); 85 (Space); 86 (Parody); 87 (Josei); 88 (Samurai);
+//  89 (Police); 90 (Dementia); 540 (Erotica); 542 (Work Life); 544 (Gourmet);
 //
 // Set to true to discard hentai, yaoi and yuri.
 //
 //  - Type: "deprecated";
-//  - Genre: not supported;
 //  - Publisher: not supported;
 //  - Franchise: not supported;
 //  - Ids: not supported;
@@ -657,6 +657,7 @@ func (f *FastId) SearchRanobe() (api.Manga, error) {
 //  - Score: empty field;
 //  - Censored: false;
 //  - Mylist: empty field;
+//  - Genre_v2: empty field;
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
@@ -668,10 +669,19 @@ func (f *FastId) SearchRanobe() (api.Manga, error) {
 //  - Censored: true(string), false(string);
 //  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
 //  - Search: default search;
+//  - Genre_v2: id search. Below is a list of all available genres by id:
+//
+//  > 46 (Mystery); 47 (Shounen); 48 (Supernatural);
+//  49 (Comedy); 50 (Drama); 51 (Ecchi); 52 (Seinen); 53 (Sci-Fi); 54 (Slice of Life); 55 (Shounen Ai);
+//  56 (Action); 57 (Fantasy); 58 (Magic); 59 (Hentai); 60 (School); 61 (Doujinshi); 62 (Romance);
+//  63 (Shoujo); 64 (Vampire); 65 (Yaoi); 66 (Martial Arts); 67 (Psychological); 68 (Adventure);
+//  69 (Historical); 70 (Military); 71 (Harem); 72 (Demons); 73 (Shoujo Ai); 74 (Gender Bender);
+//  75 (Yuri); 76 (Sports); 77 (Kids); 78 (Music); 79 (Game); 80 (Horror); 81 (Thriller);
+//  82 (Super Power); 83 (Mecha); 84 (Cars); 85 (Space); 86 (Parody); 87 (Josei); 88 (Samurai);
+//  89 (Police); 90 (Dementia); 540 (Erotica); 542 (Work Life); 544 (Gourmet);
 //
 // Set to true to discard hentai, yaoi and yuri.
 //
-//  - Genre: not supported;
 //  - Publisher: not supported;
 //  - Franchise: not supported;
 //  - Ids: not supported;
@@ -1855,15 +1865,17 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
   return ca, resp.StatusCode, nil
 }
 
+// name: anime or manga.
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/genres
-func (c *Configuration) SearchGenres() ([]api.Genres, int, error) {
+func (c *Configuration) SearchGenres(name string) ([]api.Genres, int, error) {
   var g []api.Genres
   var client = &http.Client{}
 
   get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken, "genres", 10,
+    c.Application, c.AccessToken, str.ConvertGenres(name), 10,
   )
   defer cancel()
 

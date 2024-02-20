@@ -89,7 +89,7 @@ func TestMangas(t *testing.T) {
   o := &Options{
     Page: "1", Limit: "1", Kind: "", Status: "",
     Season: "", Score: "", Rating: "",
-    Censored: "", Mylist: "",
+    Censored: "", Mylist: "", Genre_v2: nil,
   }
   r, _, _ := c.SearchMangas("Initial D", o)
 
@@ -316,6 +316,24 @@ func TestAnimesUsingGenre(t *testing.T) {
       t.Logf("Anime: %s, Id: %d - found", v.Name, v.Id)
     } else {
       t.Errorf("Anime: %s, Id: %d - not found", v.Name, v.Id)
+    }
+  }
+}
+
+func TestMangasUsingGenre(t *testing.T) {
+  c := conf()
+  o := &Options{
+    Page: "1", Limit: "1", Kind: "", Status: "",
+    Season: "", Score: "", Rating: "",
+    Censored: "", Mylist: "", Genre_v2: []int{84},
+  }
+  r, _, _ := c.SearchMangas("Initial D", o)
+
+  for _, v := range r {
+    if v.Volumes == 48 && v.Chapters == 724 {
+      t.Logf("Manga: %s, Id: %d - found", v.Name, v.Id)
+    } else {
+      t.Errorf("Manga: %s, Id: %d - not found", v.Name, v.Id)
     }
   }
 }

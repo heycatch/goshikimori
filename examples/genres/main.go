@@ -15,19 +15,16 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
   g, status, err := c.SearchGenres()
-  if err != nil {
-    fmt.Println(err)
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
-  if status == 200 {
-    if len(g) == 0 {
-      fmt.Println("not found genres")
-      return
-    }
-    for _, v := range g {
-      fmt.Println(v.Id, v.Name, v.Russian, v.Kind, v.Entry_type)
-    }
-  } else {
-    fmt.Println(status)
+  if len(g) == 0 {
+    fmt.Println("not found genres")
+    return
+  }
+  for _, v := range g {
+    fmt.Println(v.Id, v.Name, v.Russian, v.Kind, v.Entry_type)
   }
 }
+

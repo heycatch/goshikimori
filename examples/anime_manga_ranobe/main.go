@@ -55,7 +55,7 @@ func foundManga() {
   c := conf()
   fast, status, err := c.FastIdManga("initial d")
   if status != 200 || err != nil {
-    fmt.Println(err)
+    fmt.Println(status, err)
     return
   }
   res, err := fast.SearchManga()
@@ -70,23 +70,19 @@ func foundMangas() {
   c := conf()
   o := &g.Options{
     Page: "1", Limit: "1", Order: "", Kind: "", Status: "released",
-    Season: "199x", Score: "8", Censored: "", Mylist: "",
+    Season: "199x", Score: "8", Censored: "", Mylist: "", Genre_v2: []int{84}, // SKIP GENRE: Genre_v2: nil,
   }
   m, status, err := c.SearchMangas("initial d", o)
-  if err != nil {
-    fmt.Println(err)
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
-  if status == 200 {
-    if len(m) == 0 {
-      fmt.Println("Manga not found")
-      return
-    }
-    for _, v := range m {
-      fmt.Println(v.Name, v.Released_on, v.Score)
-    }
-  } else {
-    fmt.Println(status)
+  if len(m) == 0 {
+    fmt.Println("Manga not found")
+    return
+  }
+  for _, v := range m {
+    fmt.Println(v.Name, v.Released_on, v.Score, v.Chapters, v.Volumes)
   }
 }
 
@@ -108,10 +104,10 @@ func foundRanobe() {
 func foundRanobes() {
   c := conf()
   o := &g.Options{
-    Page: "1", Limit: "5", Order: "", Status: "released",
-    Season: "", Score: "7", Censored: "", Mylist: "",
+    Page: "1", Limit: "10", Order: "", Status: "released",
+    Season: "", Score: "", Censored: "", Mylist: "", Genre_v2: []int{49}, // SKIP GENRE: Genre_v2: nil,
   }
-  r, status, err := c.SearchRanobes("sword art", o)
+  r, status, err := c.SearchRanobes("angel", o)
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return

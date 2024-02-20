@@ -209,3 +209,11 @@ func TestConvertCharacters(t *testing.T) {
     t.Error("ConvertCharacters failed")
   }
 }
+
+func TestConvertGenres(t *testing.T) {
+  if ConvertGenres("Anime") == "genres?kind=Anime" {
+    t.Log("ConvertGenres passed")
+  } else {
+    t.Error("ConvertGenres failed")
+  }
+}

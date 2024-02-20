@@ -105,3 +105,7 @@ func ConvertTopicsType(id int, name string) string {
 func ConvertCharacters(id int) string {
   return fmt.Sprintf("characters/%d", id)
 }
+
+func ConvertGenres(name string) string {
+  return fmt.Sprintf("genres?kind=%s", name)
+}
