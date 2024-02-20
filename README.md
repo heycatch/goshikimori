@@ -15,8 +15,7 @@ go get github.com/heycatch/goshikimori
 * [Click her](https://github.com/heycatch/goshikimori/tree/master/examples)
 
 ### Documentation
-A large number of functions are now available.
-For convenience, it is better to use **godoc**.
+**godoc** support is also available.
 ```bash
 # Method #1: Use docker.
 git clone git@github.com:heycatch/goshikimori.git && cd goshikimori
@@ -32,7 +31,7 @@ go install -v golang.org/x/tools/cmd/godoc@latest
 # GOPATH export.
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
-# Check that the application is working properly.
+# Reboot and check that the application is working properly.
 godoc --help
 
 # After install.

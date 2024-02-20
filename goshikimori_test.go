@@ -71,7 +71,7 @@ func TestAnimes(t *testing.T) {
   o := &Options{
     Page: "1", Limit: "1", Kind: "", Status: "",
     Season: "", Score: "", Rating: "", Duration: "",
-    Censored: "", Mylist: "",
+    Censored: "", Mylist: "", Genre_v2: nil,
   }
   s, _, _ := c.SearchAnimes("Initial D", o)
 
@@ -276,7 +276,7 @@ func TestCharacterGraphQL(t *testing.T) {
   ch, _, _ := c.SearchGraphql(s)
 
   for _, v := range ch.Data.Characters {
-    if v.Id == "20847" && v.MalId == "20847" && v.IsManga {
+    if v.Id == "17245" && v.MalId == "17245" && v.IsManga {
       t.Logf("%s - found", v.Name)
     } else {
       t.Error("CharacterGraphql not found")
@@ -298,6 +298,24 @@ func TestPeopleGraphQL(t *testing.T) {
       t.Logf("%s - found", v.Name)
     } else {
       t.Error("PeopleGraphql not found")
+    }
+  }
+}
+
+func TestAnimesUsingGenre(t *testing.T) {
+  c := conf()
+  o := &Options{
+    Page: "1", Limit: "1", Kind: "", Status: "",
+    Season: "", Score: "", Rating: "", Duration: "",
+    Censored: "", Mylist: "", Genre_v2: []int{3},
+  }
+  s, _, _ := c.SearchAnimes("Initial D", o)
+
+  for _, v := range s {
+    if v.Id == 12725 && v.Status == "released" {
+      t.Logf("Anime: %s, Id: %d - found", v.Name, v.Id)
+    } else {
+      t.Errorf("Anime: %s, Id: %d - not found", v.Name, v.Id)
     }
   }
 }

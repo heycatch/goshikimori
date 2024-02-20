@@ -435,6 +435,7 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 //  - Rating: empty field;
 //  - Censored: false;
 //  - Mylist: empty field;
+//  - Genre_v2: empty field;
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
@@ -449,11 +450,29 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 //  - Censored: true(string), false(string);
 //  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
 //  - Search: default search;
+//  - Genre_v2: id search. Below is a list of all available genres by id:
+//
+//  > 1 (Action); 2 (Adventure); 3 (Cars); 4 (Comedy); 5 (Dementia); 6 (Demons); 7 (Mystery);
+//  8 (Drama); 9 (Ecchi); 10 (Fantasy); 11 (Game); 12 (Hentai); 13 (Historical); 14 (Horror);
+//  15 (Kids); 16 (Magic); 17 (Martial Arts); 18 (Mecha); 19 (Music); 20 (Parody); 21 (Samurai);
+//  22 (Romance); 23 (School); 24 (Sci-Fi); 25 (Shoujo); 26 (Shoujo Ai); 27 (Shounen); 28 (Shounen Ai);
+//  29 (Space); 30 (Sports); 31 (Super Power); 32 (Vampire); 33 (Yaoi); 34 (Yuri); 35 (Harem);
+//  36 (Slice of Life); 37 (Supernatural); 38 (Military); 39 (Police); 40 (Psychological);
+//  41 (Thriller); 42 (Seinen); 43 (Josei); 46 (Mystery); 47 (Shounen); 48 (Supernatural);
+//  49 (Comedy); 50 (Drama); 51 (Ecchi); 52 (Seinen); 53 (Sci-Fi); 54 (Slice of Life); 55 (Shounen Ai);
+//  56 (Action); 57 (Fantasy); 58 (Magic); 59 (Hentai); 60 (School); 61 (Doujinshi); 62 (Romance);
+//  63 (Shoujo); 64 (Vampire); 65 (Yaoi); 66 (Martial Arts); 67 (Psychological); 68 (Adventure);
+//  69 (Historical); 70 (Military); 71 (Harem); 72 (Demons); 73 (Shoujo Ai); 74 (Gender Bender);
+//  75 (Yuri); 76 (Sports); 77 (Kids); 78 (Music); 79 (Game); 80 (Horror); 81 (Thriller);
+//  82 (Super Power); 83 (Mecha); 84 (Cars); 85 (Space); 86 (Parody); 87 (Josei); 88 (Samurai);
+//  89 (Police); 90 (Dementia); 539 (Erotica); 540 (Erotica); 541 (Work Life);
+//  542 (Work Life); 543 (Gourmet); 544 (Gourmet);
+//
+// (!) Genres have duplicates and they work.
 //
 // Set to true to discard hentai, yaoi and yuri.
 //
 //  - Type: "deprecated";
-//  - Genre: not supported;
 //  - Studio: not supported;
 //  - Franchise: not supported;
 //  - Ids: not supported;
@@ -461,7 +480,7 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 //
 // More information can be found in the [example].
 //
-// [RandomAnime]: https://github.com/heycatch/goshikimori/blob/master/examples/random/main.go
+// [RandomAnime]: https://github.com/heycatch/goshikimori/blob/master/examples/random
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
 func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, error) {
   var a []api.Animes
@@ -562,7 +581,7 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 //
 // More information can be found in the [example].
 //
-// [RandomManga]: https://github.com/heycatch/goshikimori/blob/master/examples/random/main.go
+// [RandomManga]: https://github.com/heycatch/goshikimori/blob/master/examples/random
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
 func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
@@ -660,7 +679,7 @@ func (f *FastId) SearchRanobe() (api.Manga, error) {
 //
 // More information can be found in the [example].
 //
-// [RandomRanobe]: https://github.com/heycatch/goshikimori/blob/master/examples/random/main.go
+// [RandomRanobe]: https://github.com/heycatch/goshikimori/blob/master/examples/random
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
 func (c *Configuration) SearchRanobes(name string, r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas

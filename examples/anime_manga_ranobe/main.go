@@ -29,9 +29,9 @@ func foundAnime() {
 func foundAnimes() {
   c := conf()
   o := &g.Options{
-    Page: "1", Limit: "2", Order: "", Kind: "", Status: "released",
+    Page: "1", Limit: "5", Order: "", Kind: "", Status: "released",
     Season: "199x", Score: "", Rating: "", Duration: "",
-    Censored: "", Mylist: "",
+    Censored: "", Mylist: "", Genre_v2: []int{3}, // SKIP GENRE: Genre_v2: nil,
   }
   a, status, err := c.SearchAnimes("initial d", o)
   if err != nil {
