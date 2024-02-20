@@ -14,7 +14,7 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  g, status, err := c.SearchGenres()
+  g, status, err := c.SearchGenres("Anime")
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return
