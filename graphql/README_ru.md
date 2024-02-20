@@ -38,13 +38,14 @@ func main() {
   //    9)  rating: "pg_13";
   //    10) mylist: ""; пропустил;
   //    11) censored: false;
+  //    12) genre: nil; пропустил;
   //
   // Про доступные значения можно почитать в описании функции: graphql.Values();
   // Про доступные параметры интерфейса можно почитать в описании функции: graphql.AnimeSchema();
   schema, err := graphql.AnimeSchema(
     graphql.Values("id", "name", "score", "episodes", "airedOn{year month day date}"),
     "initial d",
-    1, 5, 8, "", "tv", "released", "", "", "pg_13", "", false,
+    1, 5, 8, "", "tv", "released", "", "", "pg_13", "", false, nil,
   )
   if err != nil {
     fmt.Println(err)
@@ -101,13 +102,14 @@ func main() {
   //    7) season: ""; пропустил;
   //    8) mylist: ""; пропустил;
   //    9) censored: false;
+  //    10) genre: nil; пропустил;
   //
   // Про доступные значения можно почитать в описании функции: graphql.Values();
   // Про доступные параметры интерфейса можно почитать в описании функции: graphql.MangaSchema();
   schema, err := graphql.MangaSchema(
     graphql.Values("id", "name", "score", "volumes", "chapters", "releasedOn{year}"),
     "initial d",
-    1, 1, 8, "", "manga", "released", "", "", false,
+    1, 1, 8, "", "manga", "released", "", "", false, nil,
   )
   if err != nil {
     fmt.Println(err)

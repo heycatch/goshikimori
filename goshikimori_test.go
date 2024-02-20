@@ -235,7 +235,7 @@ func TestAnimeGraphql(t *testing.T) {
   s, _ := graphql.AnimeSchema(
     graphql.Values("id", "malId", "name", "rating", "kind", "episodes"),
     "initial d first stage",
-    1, 1, "", "", "", "", "", "", "", false,
+    1, 1, "", "", "", "", "", "", "", false, nil,
   )
   a, _, _ := c.SearchGraphql(s)
 
@@ -253,7 +253,7 @@ func TestMangaGraphQL(t *testing.T) {
   s, _ := graphql.MangaSchema(
     graphql.Values("id", "malId", "name", "kind", "status", "volumes"),
     "initial d",
-    1, 1, "", "", "", "", "", false,
+    1, 1, "", "", "", "", "", false, nil,
   )
   m, _, _ := c.SearchGraphql(s)
 
