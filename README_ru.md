@@ -28,13 +28,13 @@ http://localhost:1337/pkg/github.com/heycatch/goshikimori/
 ```bash
 # Способ #2(Linux): Установка godoc.
 go install -v golang.org/x/tools/cmd/godoc@latest
-# Экспортируем путь(GOPATH).
+# Добавить 'экспорт' в файл /home/$USER/.profile
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 # Перезагружаемся и проверяем работоспособность.
 godoc --help
 
-# После установки godoc.
+# После установки или если 'godoc' уже установлен.
 git clone git@github.com:heycatch/goshikimori.git && cd goshikimori
 make doc
 

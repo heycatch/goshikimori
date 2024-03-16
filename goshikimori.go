@@ -2813,13 +2813,13 @@ func (f *FastId) UserBriefInfo() (api.Info, error) {
 func (c *Configuration) SignOut() (string, int, error) {
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  post, cancel := req.NewPostRequestWithCancel(
     c.Application, c.AccessToken,
     "users/sign_out", 10,
   )
   defer cancel()
 
-  resp, err := client.Do(get)
+  resp, err := client.Do(post)
   if err != nil {
     return "", resp.StatusCode, err
   }

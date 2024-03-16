@@ -12,15 +12,7 @@ type UserSize struct {
   X16  string `json:"x16"`
 }
 
-type StatusesAnime struct {
-  Id         int    `json:"id"`
-  Grouped_id string `json:"grouped_id"`
-  Name       string `json:"name"`
-  Size       int    `json:"size"`
-  Type       string `json:"type"`
-}
-
-type StatusesManga struct {
+type StatusesAnimeManga struct {
   Id         int    `json:"id"`
   Grouped_id string `json:"grouped_id"`
   Name       string `json:"name"`
@@ -40,8 +32,8 @@ type StatusesManga struct {
   Activity: no response after request;
 */
 type StatusesInfo struct {
-  Anime  []StatusesAnime `json:"anime"`
-  Manga  []StatusesManga `json:"manga"`
+  Anime  []StatusesAnimeManga `json:"anime"`
+  Manga  []StatusesAnimeManga `json:"manga"`
 }
 
 type StatsInfo struct {

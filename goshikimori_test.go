@@ -55,14 +55,13 @@ func TestConfiguration(t *testing.T) {
 }
 
 func TestUser(t *testing.T) {
-  name := "incarnati0n"
   c := conf()
-  s, _, _:= c.SearchUser(name)
+  s, _, _:= c.SearchUser("arctica")
 
   if s.Id == 181833 && s.Sex == "male" {
     t.Logf("User: %s, Id: %d - found", s.Nickname, s.Id)
   } else {
-    t.Errorf("User: %s - not found", name)
+    t.Error("User: arctica - not found")
   }
 }
 
@@ -127,7 +126,7 @@ func TestAchievements(t *testing.T) {
   }
 
   c := conf()
-  fast, _, _ := c.FastIdUser("incarnati0n")
+  fast, _, _ := c.FastIdUser("arctica")
   u, _ := fast.SearchAchievement()
   neko, _ := NekoSearch("Hellsing")
 
@@ -167,7 +166,7 @@ func TestUserUnreadMessages(t *testing.T) {
   }
 
   c := conf()
-  fast, _, _ := c.FastIdUser("incarnati0n")
+  fast, _, _ := c.FastIdUser("arctica")
   um, _ := fast.UserUnreadMessages()
 
   if um.News > 0 || um.News == 0 {
@@ -270,13 +269,13 @@ func TestCharacterGraphQL(t *testing.T) {
   c := conf()
   s, _ := graphql.CharacterSchema(
     graphql.Values("id", "malId", "name", "isManga"),
-    "onizuka",
+    "miku",
     1, 1,
   )
   ch, _, _ := c.SearchGraphql(s)
 
   for _, v := range ch.Data.Characters {
-    if v.Id == "17245" && v.MalId == "17245" && v.IsManga {
+    if v.Id == "20840" && v.MalId == "20840" && !v.IsManga {
       t.Logf("%s - found", v.Name)
     } else {
       t.Error("CharacterGraphql not found")
