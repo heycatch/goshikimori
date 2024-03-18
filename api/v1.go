@@ -176,14 +176,9 @@ type AnimeSize struct {
   X48      string `json:"x48"`
 }
 
-type StatsScores struct {
-  Name  int `json:"name"`
+type Stats[T int | string] struct {
+  Name  T   `json:"name"`
   Value int `json:"value"`
-}
-
-type StatsStatuses struct {
-  Name  string `json:"name"`
-  Value int    `json:"value"`
 }
 
 type AnimeGenres struct {
@@ -232,8 +227,8 @@ type Anime struct {
   Thread_id          int                `json:"thread_id"`
   Topic_id           int                `json:"topic_id"`
   Myanimelist_id     int                `json:"myanimelist_id"`
-  RatesScoresStats   []StatsScores      `json:"rates_scores_stats"`
-  RatesStatusesStats []StatsStatuses    `json:"rates_statuses_stats"`
+  RatesScoresStats   []Stats[int]       `json:"rates_scores_stats"`
+  RatesStatusesStats []Stats[string]    `json:"rates_statuses_stats"`
   Updated_at         time.Time          `json:"updated_at"`
   Next_episode_at    time.Time          `json:"next_episode_at"`
   Fansubbers         []string           `json:"fansubbers"`
@@ -289,8 +284,8 @@ type Manga struct {
   Thread_id          int              `json:"thread_id"`
   Topic_id           int              `json:"topic_id"`
   Myanimelist_id     int              `json:"myanimelist_id"`
-  RatesScoresStats   []StatsScores    `json:"rates_scores_stats"`
-  RatesStatusesStats []StatsStatuses  `json:"rates_statuses_stats"`
+  RatesScoresStats   []Stats[int]     `json:"rates_scores_stats"`
+  RatesStatusesStats []Stats[string]  `json:"rates_statuses_stats"`
   Licensors          []string         `json:"licensors"`
   Genres             []AnimeGenres    `json:"genres"`
   Publishers         []Publishers     `json:"publishers"`
