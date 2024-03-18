@@ -109,3 +109,7 @@ func ConvertCharacters(id int) string {
 func ConvertGenres(name string) string {
   return fmt.Sprintf("genres?kind=%s", name)
 }
+
+func ConvertMessage(id int) string {
+  return fmt.Sprintf("messages/%d", id)
+}

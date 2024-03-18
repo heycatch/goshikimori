@@ -2049,6 +2049,8 @@ func (f *FastId) RemoveFriend() (api.FriendRequest, error) {
   return ff, nil
 }
 
+// Show current user unread messages counts.
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/unread_messages
@@ -3227,4 +3229,145 @@ func (c *Configuration) SearchGraphql(schema string) (api.GraphQL, int, error) {
   }
 
   return g, resp.StatusCode, nil
+}
+
+// Id: message id.
+//
+// Ignore:
+//   - Linked_type: nil;
+//   - Linked: nil;
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/message
+func (c *Configuration) ReadMessage(id int) (api.Messages, int, error) {
+  var client = &http.Client{}
+  var m api.Messages
+
+  get, cancel := req.NewGetRequestWithCancel(
+    c.Application, c.AccessToken,
+    str.ConvertMessage(id), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return m, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return m, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    return m, resp.StatusCode, err
+  }
+
+  return m, resp.StatusCode, nil
+}
+
+// From_id: your Id.
+//
+// To_id: the Id of the person you want to send the message to.
+//
+// Message: message text.
+//
+// Returns a status of 201.
+//
+// Ignore:
+//   - Linked_type: nil;
+//   - Linked: nil;
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/message
+func (c *Configuration) SendMessage(from_id, to_id int, message string) (api.Messages, int, error) {
+  var client = &http.Client{}
+  var m api.Messages
+
+  post, cancel := req.NewSendMessagePostRequestWithCancel(
+    c.Application, c.AccessToken, "messages", message, from_id, to_id, 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(post)
+  if err != nil {
+    return m, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return m, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    return m, resp.StatusCode, err
+  }
+
+  return m, resp.StatusCode, nil
+}
+
+// Id: message id.
+//
+// Message: message text.
+//
+// Ignore:
+//   - Linked_type: nil;
+//   - Linked: nil;
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/message
+func (c *Configuration) ChangeMessage(id int, message string) (api.Messages, int, error) {
+  var client = &http.Client{}
+  var m api.Messages
+
+  put, cancel := req.NewChangeMessagePutRequestWithCancel(
+    c.Application, c.AccessToken, str.ConvertMessage(id), message, 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(put)
+  if err != nil {
+    return m, resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return m, resp.StatusCode, err
+  }
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    return m, resp.StatusCode, err
+  }
+
+  return m, resp.StatusCode, nil
+}
+
+// Id: message id.
+//
+// Only status 204 is returned.
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/message
+func (c *Configuration) DeleteMessage(id int) (int, error) {
+  var client = &http.Client{}
+
+  del, cancel := req.NewDeleteMessageDeleteRequestWithCancel(
+    c.Application, c.AccessToken, str.ConvertMessage(id), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(del)
+  if err != nil {
+    return resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  return resp.StatusCode, nil
 }

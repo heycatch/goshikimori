@@ -217,3 +217,11 @@ func TestConvertGenres(t *testing.T) {
     t.Error("ConvertGenres failed")
   }
 }
+
+func TestConvertMessage(t *testing.T) {
+  if ConvertMessage(1337) == "messages/1337" {
+    t.Log("ConvertMessage passed")
+  } else {
+    t.Error("ConvertMessage failed")
+  }
+}
