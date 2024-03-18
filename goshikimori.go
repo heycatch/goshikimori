@@ -1,4 +1,4 @@
-// Copyright (C) 2023 heycatch <andreyisback@yandex.ru>.
+// Copyright (C) 2024 heycatch <andreyisback@yandex.ru>.
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file.
@@ -2053,7 +2053,7 @@ func (f *FastId) RemoveFriend() (api.FriendRequest, error) {
 //
 // More information can be found in the [example].
 //
-// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/unread_messages
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/messages
 func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
   var um api.UnreadMessages
   var client = &http.Client{}
