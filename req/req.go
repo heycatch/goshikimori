@@ -47,6 +47,20 @@ func NewReorderPostRequestWithCancel(application, accessToken, search string,
   return req, cancel
 }
 
+// Mark order messages: POST request. To work correctly with the POST method,
+// make sure that your application has all the necessary permissions.
+func NewMarkReadPostRequestWithCancel(application, accessToken, search, ids string,
+    is_read int, number time.Duration) (*http.Request, context.CancelFunc) {
+  custom_url := fmt.Sprintf("https://%s/%s", site, search)
+  data := []byte(fmt.Sprintf(`{"ids": "%s", "is_read": "%d"}`, ids, is_read))
+  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second) // number->10seconds
+  req, _ := http.NewRequestWithContext(ctx, http.MethodPost, custom_url, bytes.NewBuffer(data))
+  req.Header.Add("User-Agent", application)
+  req.Header.Add("Authorization", "Bearer " + accessToken)
+  req.Header.Set("Content-Type", "application/json")
+  return req, cancel
+}
+
 // Send message: POST request. To work correctly with the POST method,
 // make sure that your application has all the necessary permissions.
 func NewSendMessagePostRequestWithCancel(application, accessToken, search, body string,

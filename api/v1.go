@@ -493,7 +493,7 @@ type FriendRequest struct {
 }
 
 type UnreadMessages struct {
-  Messages      int `json:"message"`
+  Messages      int `json:"messages"`
   News          int `json:"news"`
   Notifications int `json:"notifications"`
 }

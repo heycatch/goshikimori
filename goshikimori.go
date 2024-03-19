@@ -3371,3 +3371,33 @@ func (c *Configuration) DeleteMessage(id int) (int, error) {
 
   return resp.StatusCode, nil
 }
+
+// Ids: array of ids converted to a string.
+//
+// Is_read: mark a message as read or unread.
+//
+// 'Is_read' settings:
+//  - 1 (read)
+//  - 0 (unread)
+//
+// Only status 200 is returned.
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/message
+func (c *Configuration) MarkReadMessages(ids string, is_read int) (int, error) {
+  var client = &http.Client{}
+
+  post, cancel := req.NewMarkReadPostRequestWithCancel(
+    c.Application, c.AccessToken, "messages/mark_read", ids, is_read, 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(post)
+  if err != nil {
+    return resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  return resp.StatusCode, nil
+}

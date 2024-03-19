@@ -142,10 +142,53 @@ func deleteMessage() {
   }
 }
 
+func markReadUnreadMessages() {
+  c := conf()
+  var count int
+
+  fast, status, err := c.FastIdUser("arctica")
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+
+  ids, err := fast.UnreadMessagesIds("messages")
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+
+  messages, err := fast.UserMessages(&g.Options{Type: "inbox", Page: "1", Limit: "10"})
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  for _, v := range messages {
+    message, status, err := c.ReadMessage(v.Id)
+    if status != 200 || err != nil {
+      fmt.Println(status, err)
+      return
+    }
+    // You can set all sorts of filters for easy array compilation.
+    if message.From.Nickname == "morr" && !message.Read {
+      ids[count] = message.Id
+      count++
+    }
+  }
+
+  read, err := c.MarkReadMessages(g.IdsToStirng(ids), 1)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  fmt.Println(read)
+}
+
 func main() {
   // not to use all requests at the same time!
   readMessage()
   sendMessage()
   changeMesage()
   deleteMessage()
+  markReadUnreadMessages()
 }
