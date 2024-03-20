@@ -2987,14 +2987,14 @@ func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, error) {
   return t, nil
 }
 
-// If 'Options' empty fields
+// If 'Options' empty fields:
 //  - Page: 1;
 //  - Limit: 1;
 //  - Forum: all;
 //  - Linked_id: empty field;
 //  - Linked_type: empty field;
 //
-// 'Options' settings
+// 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
 //  - Forum: cosplay, animanga, site, games, vn, contests, offtopic, clubs, my_clubs, critiques, news, collections, articles;
@@ -3390,6 +3390,62 @@ func (c *Configuration) MarkReadMessages(ids string, is_read int) (int, error) {
 
   post, cancel := req.NewMarkReadPostRequestWithCancel(
     c.Application, c.AccessToken, "messages/mark_read", ids, is_read, 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(post)
+  if err != nil {
+    return resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  return resp.StatusCode, nil
+}
+
+// Name: type in the mail.
+//
+// Returns a status of 200.
+//
+// 'Name' settings:
+//  - news
+//  - notifications
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/message
+func (c *Configuration) ReadAllMessages(name string) (int, error) {
+  var client = &http.Client{}
+
+  post, cancel := req.NewReadDeleteAllPostRequestWithCancel(
+    c.Application, c.AccessToken, "messages/read_all", name, 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(post)
+  if err != nil {
+    return resp.StatusCode, err
+  }
+  defer resp.Body.Close()
+
+  return resp.StatusCode, nil
+}
+
+// Name: type in the mail.
+//
+// Returns a status of 200.
+//
+// 'Name' settings:
+//  - news
+//  - notifications
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/message
+func (c *Configuration) DeleteAllMessages(name string) (int, error) {
+  var client = &http.Client{}
+
+  post, cancel := req.NewReadDeleteAllPostRequestWithCancel(
+    c.Application, c.AccessToken, "messages/delete_all", name, 10,
   )
   defer cancel()
 

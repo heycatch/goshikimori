@@ -184,11 +184,34 @@ func markReadUnreadMessages() {
   fmt.Println(read)
 }
 
+func readAll() {
+  c := conf()
+  read, err := c.ReadAllMessages("notifications")
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  fmt.Println(read)
+}
+
+func deleteAll() {
+  c := conf()
+  del, err := c.DeleteAllMessages("notifications")
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  fmt.Println(del)
+}
+
 func main() {
   // not to use all requests at the same time!
   readMessage()
   sendMessage()
   changeMesage()
   deleteMessage()
+
   markReadUnreadMessages()
+  readAll()
+  deleteAll()
 }

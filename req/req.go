@@ -61,6 +61,20 @@ func NewMarkReadPostRequestWithCancel(application, accessToken, search, ids stri
   return req, cancel
 }
 
+// Read/Delete all messages: POST request. To work correctly with the POST method,
+// make sure that your application has all the necessary permissions.
+func NewReadDeleteAllPostRequestWithCancel(application, accessToken, search, name string,
+    number time.Duration) (*http.Request, context.CancelFunc) {
+  custom_url := fmt.Sprintf("https://%s/%s", site, search)
+  data := []byte(fmt.Sprintf(`{"frontend": "false", "type": "%s"}`, name))
+  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second) // number->10seconds
+  req, _ := http.NewRequestWithContext(ctx, http.MethodPost, custom_url, bytes.NewBuffer(data))
+  req.Header.Add("User-Agent", application)
+  req.Header.Add("Authorization", "Bearer " + accessToken)
+  req.Header.Set("Content-Type", "application/json")
+  return req, cancel
+}
+
 // Send message: POST request. To work correctly with the POST method,
 // make sure that your application has all the necessary permissions.
 func NewSendMessagePostRequestWithCancel(application, accessToken, search, body string,
