@@ -100,16 +100,24 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, er
   return u, resp.StatusCode, nil
 }
 
+// If 'Options' empty fields:
+//  - Page: 1;
+//  - Limit: 1;
+//
+// 'Options' settings:
+//  - Page: 100000 maximum;
+//  - Limit: 100 maximum;
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
-func (f *FastId) SearchUserFriends() ([]api.UserFriends, error) {
+func (f *FastId) SearchUserFriends(r Result) ([]api.UserFriends, error) {
   var uf []api.UserFriends
   var client = &http.Client{}
 
   get, cancel := req.NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertUser(f.Id, "friends"), 10,
+    str.ConvertUser(f.Id, "friends?" + r.OptionsUsers()), 10,
   )
   defer cancel()
 
