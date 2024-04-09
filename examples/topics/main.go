@@ -21,7 +21,7 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  a := &g.Options{Page: "1", Limit: "10"}
+  a := &g.Options{Page: 1, Limit: 10}
   topic_anime, err := fast_anime.SearchTopicsAnime(a)
   if err != nil {
     fmt.Println(err)
@@ -37,7 +37,7 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  m := &g.Options{Page: "1", Limit: "10"}
+  m := &g.Options{Page: 1, Limit: 10}
   topic_manga, err := fast_manga.SearchTopicsManga(m)
   if err != nil {
     fmt.Println(err)
@@ -53,7 +53,7 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  r := &g.Options{Page: "1", Limit: "10"}
+  r := &g.Options{Page: 1, Limit: 10}
   topic_ranobe, err := fast_ranobe.SearchTopicsRanobe(r)
   if err != nil {
     fmt.Println(err)
@@ -64,7 +64,7 @@ func main() {
   }
 
   // Search topics
-  o := &g.Options{Page: "1", Limit: "1", Forum: "", Linked_id: "", Linked_type: ""}
+  o := &g.Options{Page: 1, Limit: 1, Forum: ""}
   t, status, err := c.SearchTopics(o)
   if err != nil {
     fmt.Println(err)
@@ -77,7 +77,7 @@ func main() {
   }
 
   // Search topics updates
-  ou := &g.Options{Page: "1", Limit: "5"}
+  ou := &g.Options{Page: 1, Limit: 5}
   tu, status_updates, err := c.SearchTopicsUpdates(ou)
   if err != nil {
     fmt.Println(err)
@@ -90,7 +90,7 @@ func main() {
   }
 
   // Search topics hot
-  oh := &g.Options{Limit: "5"}
+  oh := &g.Options{Limit: 5}
   th, status_hot, err := c.SearchTopicsHot(oh)
   if err != nil {
     fmt.Println(err)

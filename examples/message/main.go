@@ -20,7 +20,7 @@ func readMessage() {
     fmt.Println(status, err)
     return
   }
-  messages, err := fast.UserMessages(&g.Options{Type: "inbox", Page: "1", Limit: "10"})
+  messages, err := fast.UserMessages(&g.Options{Type: "inbox", Page: 1, Limit: 10})
   if err != nil {
     fmt.Println(err)
     return
@@ -158,7 +158,7 @@ func markReadUnreadMessages() {
     return
   }
 
-  messages, err := fast.UserMessages(&g.Options{Type: "inbox", Page: "1", Limit: "10"})
+  messages, err := fast.UserMessages(&g.Options{Type: "inbox", Page: 1, Limit: 10})
   if err != nil {
     fmt.Println(err)
     return

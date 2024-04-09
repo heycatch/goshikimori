@@ -1,4 +1,4 @@
-package str
+package goshikimori
 
 import "testing"
 

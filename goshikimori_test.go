@@ -68,9 +68,9 @@ func TestUser(t *testing.T) {
 func TestAnimes(t *testing.T) {
   c := conf()
   o := &Options{
-    Page: "1", Limit: "1", Kind: "", Status: "",
-    Season: "", Score: "", Rating: "", Duration: "",
-    Censored: "", Mylist: "", Genre_v2: nil,
+    Page: 1, Limit: 1, Kind: "", Status: "",
+    Season: "", Score: 1, Rating: "", Duration: "",
+    Censored: false, Mylist: "", Genre_v2: nil,
   }
   s, _, _ := c.SearchAnimes("Initial D", o)
 
@@ -86,9 +86,8 @@ func TestAnimes(t *testing.T) {
 func TestMangas(t *testing.T) {
   c := conf()
   o := &Options{
-    Page: "1", Limit: "1", Kind: "", Status: "",
-    Season: "", Score: "", Rating: "",
-    Censored: "", Mylist: "", Genre_v2: nil,
+    Page: 1, Limit: 1, Kind: "", Status: "",
+    Season: "", Rating: "", Mylist: "", Genre_v2: nil,
   }
   r, _, _ := c.SearchMangas("Initial D", o)
 
@@ -103,7 +102,7 @@ func TestMangas(t *testing.T) {
 
 func TestClub(t *testing.T) {
   c := conf()
-  o := &Options{Page: "1", Limit: "1"}
+  o := &Options{Page: 1, Limit: 1}
   r, _, _ := c.SearchClubs("milf thred", o)
 
   for _, v := range r {
@@ -269,13 +268,13 @@ func TestCharacterGraphQL(t *testing.T) {
   c := conf()
   s, _ := graphql.CharacterSchema(
     graphql.Values("id", "malId", "name", "isManga"),
-    "miku",
+    "Natsuno Yuuki",
     1, 1,
   )
   ch, _, _ := c.SearchGraphql(s)
 
   for _, v := range ch.Data.Characters {
-    if v.Id == "20840" && v.MalId == "20840" && !v.IsManga {
+    if v.Id == "7582" && v.MalId == "7582" && v.IsManga {
       t.Logf("%s - found", v.Name)
     } else {
       t.Error("CharacterGraphql not found")
@@ -304,9 +303,9 @@ func TestPeopleGraphQL(t *testing.T) {
 func TestAnimesUsingGenre(t *testing.T) {
   c := conf()
   o := &Options{
-    Page: "1", Limit: "1", Kind: "", Status: "",
-    Season: "", Score: "", Rating: "", Duration: "",
-    Censored: "", Mylist: "", Genre_v2: []int{3},
+    Page: 1, Limit: 1, Kind: "", Status: "",
+    Season: "", Rating: "", Duration: "",
+    Mylist: "", Genre_v2: []int{3},
   }
   s, _, _ := c.SearchAnimes("Initial D", o)
 
@@ -322,9 +321,8 @@ func TestAnimesUsingGenre(t *testing.T) {
 func TestMangasUsingGenre(t *testing.T) {
   c := conf()
   o := &Options{
-    Page: "1", Limit: "1", Kind: "", Status: "",
-    Season: "", Score: "", Rating: "",
-    Censored: "", Mylist: "", Genre_v2: []int{84},
+    Page: 1, Limit: 1, Kind: "", Status: "",
+    Season: "", Rating: "", Mylist: "", Genre_v2: []int{84},
   }
   r, _, _ := c.SearchMangas("Initial D", o)
 

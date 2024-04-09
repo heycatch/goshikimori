@@ -18,9 +18,9 @@ import (
   "errors"
 
   "github.com/heycatch/goshikimori/api"
-  "github.com/heycatch/goshikimori/str"
-  "github.com/heycatch/goshikimori/req"
 )
+
+const site string = "shikimori.one/api"
 
 // Name: user name.
 //
@@ -33,9 +33,8 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
   var u api.Users
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    "users/" + url.QueryEscape(name), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, "users/" + url.QueryEscape(name), 10,
   )
   defer cancel()
 
@@ -76,7 +75,7 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, er
   var u []api.Users
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "users?search=" + url.QueryEscape(name) + "&" + r.OptionsUsers(), 10,
   )
@@ -115,9 +114,9 @@ func (f *FastId) SearchUserFriends(r Result) ([]api.UserFriends, error) {
   var uf []api.UserFriends
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertUser(f.Id, "friends?" + r.OptionsUsers()), 10,
+    ConvertUser(f.Id, "friends?" + r.OptionsUsers()), 10,
   )
   defer cancel()
 
@@ -146,9 +145,9 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
   var uc []api.Clubs
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertUser(f.Id, "clubs"), 10,
+    ConvertUser(f.Id, "clubs"), 10,
   )
   defer cancel()
 
@@ -191,9 +190,9 @@ func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
   var ar []api.UserAnimeRates
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertUserRates(f.Id, "anime_rates", r.OptionsAnimeRates()), 10,
+    ConvertUserRates(f.Id, "anime_rates", r.OptionsAnimeRates()), 10,
   )
   defer cancel()
 
@@ -234,9 +233,9 @@ func (f *FastId) SearchUserMangaRates(r Result) ([]api.UserMangaRates, error) {
   var mr []api.UserMangaRates
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertUserRates(f.Id, "manga_rates", r.OptionsMangaRates()), 10,
+    ConvertUserRates(f.Id, "manga_rates", r.OptionsMangaRates()), 10,
   )
   defer cancel()
 
@@ -265,9 +264,9 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
   var uf api.UserFavourites
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertUser(f.Id, "favourites"), 10,
+    ConvertUser(f.Id, "favourites"), 10,
   )
   defer cancel()
 
@@ -308,9 +307,9 @@ func (f *FastId) SearchUserHistory(r Result) ([]api.UserHistory, error) {
   var uh []api.UserHistory
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertUserRates(f.Id, "history", r.OptionsUserHistory()), 10,
+    ConvertUserRates(f.Id, "history", r.OptionsUserHistory()), 10,
   )
   defer cancel()
 
@@ -339,9 +338,9 @@ func (f *FastId) SearchUserBans() ([]api.Bans, error) {
   var b []api.Bans
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertUser(f.Id, "bans"), 10,
+    ConvertUser(f.Id, "bans"), 10,
   )
   defer cancel()
 
@@ -370,7 +369,7 @@ func (c *Configuration) WhoAmi() (api.Who, int, error) {
   var w api.Who
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "users/whoami", 10,
   )
@@ -401,9 +400,9 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
   var a api.Anime
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertSearchById("animes", f.Id), 10,
+    ConvertSearchById("animes", f.Id), 10,
   )
   defer cancel()
 
@@ -484,7 +483,7 @@ func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, 
   var a []api.Animes
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "animes?search=" + url.QueryEscape(name) + "&" + r.OptionsAnime(), 10,
   )
@@ -515,9 +514,9 @@ func (f *FastId) SearchManga() (api.Manga, error) {
   var m api.Manga
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertSearchById("mangas", f.Id), 10,
+    ConvertSearchById("mangas", f.Id), 10,
   )
   defer cancel()
 
@@ -595,7 +594,7 @@ func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, 
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "mangas?search=" + url.QueryEscape(name) + "&" + r.OptionsManga(), 10,
   )
@@ -626,9 +625,9 @@ func (f *FastId) SearchRanobe() (api.Manga, error) {
   var m api.Manga
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertSearchById("ranobe", f.Id), 10,
+    ConvertSearchById("ranobe", f.Id), 10,
   )
   defer cancel()
 
@@ -703,7 +702,7 @@ func (c *Configuration) SearchRanobes(name string, r Result) ([]api.Mangas, int,
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "ranobe?search=" + url.QueryEscape(name) + "&" + r.OptionsRanobe(), 10,
   )
@@ -734,7 +733,7 @@ func (c *Configuration) FastIdUser(name string) (*FastId, int, error) {
   var u api.Users
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "users/" + url.QueryEscape(name), 10,
   )
@@ -765,7 +764,7 @@ func (c *Configuration) FastIdAnime(name string) (*FastId, int, error) {
   var a []api.Animes
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "animes?search=" + url.QueryEscape(name), 10,
   )
@@ -802,7 +801,7 @@ func (c *Configuration) FastIdManga(name string) (*FastId, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "mangas?search=" + url.QueryEscape(name), 10,
   )
@@ -838,7 +837,7 @@ func (c *Configuration) FastIdRanobe(name string) (*FastId, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "ranobe?search=" + url.QueryEscape(name), 10,
   )
@@ -874,7 +873,7 @@ func (c *Configuration) FastIdClub(name string) (*FastId, int, error) {
   var cl []api.Clubs
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "clubs?search=" + url.QueryEscape(name), 10,
   )
@@ -910,7 +909,7 @@ func (c *Configuration) FastIdCharacter(name string) (*FastId, int, error) {
   var ch []api.CharacterInfo
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "characters/search?search=" + url.QueryEscape(name), 10,
   )
@@ -946,7 +945,7 @@ func (c *Configuration) FastIdPeople(name string) (*FastId, int, error) {
   var ap []api.AllPeople
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "people/search?search=" + url.QueryEscape(name), 10,
   )
@@ -982,9 +981,9 @@ func (f *FastId) SearchAnimeScreenshots() ([]api.AnimeScreenshots, error) {
   var s []api.AnimeScreenshots
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertAnime(f.Id, "screenshots"), 10,
+    ConvertAnime(f.Id, "screenshots"), 10,
   )
   defer cancel()
 
@@ -1013,9 +1012,9 @@ func (f *FastId) SearchAnimeFranchise() (api.Franchise, error) {
   var ff api.Franchise
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertFranchise(f.Id, "animes"), 10,
+    ConvertFranchise(f.Id, "animes"), 10,
   )
   defer cancel()
 
@@ -1043,9 +1042,9 @@ func (f *FastId) SearchMangaFranchise() (api.Franchise, error) {
   var ff api.Franchise
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertFranchise(f.Id, "mangas"), 10,
+    ConvertFranchise(f.Id, "mangas"), 10,
   )
   defer cancel()
 
@@ -1073,9 +1072,9 @@ func (f *FastId) SearchRanobeFranchise() (api.Franchise, error) {
   var ff api.Franchise
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertFranchise(f.Id, "ranobe"), 10,
+    ConvertFranchise(f.Id, "ranobe"), 10,
   )
   defer cancel()
 
@@ -1103,9 +1102,9 @@ func (f *FastId) SearchAnimeExternalLinks() ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertExternalLinks(f.Id, "animes"), 10,
+    ConvertExternalLinks(f.Id, "animes"), 10,
   )
   defer cancel()
 
@@ -1133,9 +1132,9 @@ func (f *FastId) SearchMangaExternalLinks() ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertExternalLinks(f.Id, "mangas"), 10,
+    ConvertExternalLinks(f.Id, "mangas"), 10,
   )
   defer cancel()
 
@@ -1163,9 +1162,9 @@ func (f *FastId) SearchSimilarAnime() ([]api.Animes, error) {
   var a []api.Animes
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertSimilar(f.Id, "animes"), 10,
+    ConvertSimilar(f.Id, "animes"), 10,
   )
   defer cancel()
 
@@ -1194,9 +1193,9 @@ func (f *FastId) SearchSimilarManga() ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertSimilar(f.Id, "mangas"), 10,
+    ConvertSimilar(f.Id, "mangas"), 10,
   )
   defer cancel()
 
@@ -1225,9 +1224,9 @@ func (f *FastId) SearchSimilarRanobe() ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertSimilar(f.Id, "ranobe"), 10,
+    ConvertSimilar(f.Id, "ranobe"), 10,
   )
   defer cancel()
 
@@ -1256,9 +1255,9 @@ func (f *FastId) SearchRelatedAnime() ([]api.RelatedAnimes, error) {
   var a []api.RelatedAnimes
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertRelated(f.Id, "animes"), 10,
+    ConvertRelated(f.Id, "animes"), 10,
   )
   defer cancel()
 
@@ -1287,9 +1286,9 @@ func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, error) {
   var m []api.RelatedMangas
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertRelated(f.Id, "mangas"), 10,
+    ConvertRelated(f.Id, "mangas"), 10,
   )
   defer cancel()
 
@@ -1318,9 +1317,9 @@ func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, error) {
   var m []api.RelatedMangas
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertRelated(f.Id, "ranobe"), 10,
+    ConvertRelated(f.Id, "ranobe"), 10,
   )
   defer cancel()
 
@@ -1362,7 +1361,7 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
   var cl []api.Clubs
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "clubs?search=" + url.QueryEscape(name) + "&" + r.OptionsClub(), 10,
   )
@@ -1399,9 +1398,9 @@ func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
   var a []api.Animes
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertClub(f.Id, "animes") + "?" + r.OptionsClubInformation(), 10,
+    ConvertClub(f.Id, "animes") + "?" + r.OptionsClubInformation(), 10,
   )
   defer cancel()
 
@@ -1436,9 +1435,9 @@ func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertClub(f.Id, "mangas") + "?" + r.OptionsClubInformation(), 10,
+    ConvertClub(f.Id, "mangas") + "?" + r.OptionsClubInformation(), 10,
   )
   defer cancel()
 
@@ -1473,9 +1472,9 @@ func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
   var ci []api.CharacterInfo
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertClub(f.Id, "characters") + "?" + r.OptionsClubInformation(), 10,
+    ConvertClub(f.Id, "characters") + "?" + r.OptionsClubInformation(), 10,
   )
   defer cancel()
 
@@ -1510,9 +1509,9 @@ func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
   var cc []api.Clubs
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertClub(f.Id, "clubs") + "?" + r.OptionsClubInformation(), 10,
+    ConvertClub(f.Id, "clubs") + "?" + r.OptionsClubInformation(), 10,
   )
   defer cancel()
 
@@ -1547,9 +1546,9 @@ func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, error) 
   var cc []api.ClubCollections
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertClub(f.Id, "collections") + "?" + r.OptionsClubInformation(), 10,
+    ConvertClub(f.Id, "collections") + "?" + r.OptionsClubInformation(), 10,
   )
   defer cancel()
 
@@ -1578,9 +1577,9 @@ func (f *FastId) SearchClubMembers() ([]api.UserFriends, error) {
   var uf []api.UserFriends
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertClub(f.Id, "members"), 10,
+    ConvertClub(f.Id, "members"), 10,
   )
   defer cancel()
 
@@ -1609,9 +1608,9 @@ func (f *FastId) SearchClubImages() ([]api.ClubImages, error) {
   var cm []api.ClubImages
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertClub(f.Id, "images"), 10,
+    ConvertClub(f.Id, "images"), 10,
   )
   defer cancel()
 
@@ -1639,9 +1638,9 @@ func (f *FastId) SearchClubImages() ([]api.ClubImages, error) {
 func (f *FastId) ClubJoin() (int, error) {
   var client = &http.Client{}
 
-  post, cancel := req.NewPostRequestWithCancel(
+  post, cancel := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertClub(f.Id, "join"), 10,
+    ConvertClub(f.Id, "join"), 10,
   )
   defer cancel()
 
@@ -1660,9 +1659,9 @@ func (f *FastId) ClubJoin() (int, error) {
 func (f *FastId) ClubLeave() (int, error) {
   var client = &http.Client{}
 
-  post, cancel := req.NewPostRequestWithCancel(
+  post, cancel := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertClub(f.Id, "leave"), 10,
+    ConvertClub(f.Id, "leave"), 10,
   )
   defer cancel()
 
@@ -1687,9 +1686,9 @@ func (f *FastId) SearchAchievement() ([]api.Achievements, error) {
   var a []api.Achievements
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertAchievements(f.Id), 10,
+    ConvertAchievements(f.Id), 10,
   )
   defer cancel()
 
@@ -1718,9 +1717,9 @@ func (f *FastId) SearchAnimeVideos() ([]api.AnimeVideos, error) {
   var v []api.AnimeVideos
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertAnime(f.Id, "videos"), 10,
+    ConvertAnime(f.Id, "videos"), 10,
   )
   defer cancel()
 
@@ -1749,9 +1748,9 @@ func (f *FastId) SearchAnimeRoles() ([]api.Roles, error) {
   var r []api.Roles
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertRoles(f.Id, "animes"), 10,
+    ConvertRoles(f.Id, "animes"), 10,
   )
   defer cancel()
 
@@ -1780,9 +1779,9 @@ func (f *FastId) SearchMangaRoles() ([]api.Roles, error) {
   var r []api.Roles
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertRoles(f.Id, "mangas"), 10,
+    ConvertRoles(f.Id, "mangas"), 10,
   )
   defer cancel()
 
@@ -1811,7 +1810,7 @@ func (c *Configuration) SearchBans() ([]api.Bans, int, error) {
   var b []api.Bans
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "bans", 10,
   )
   defer cancel()
@@ -1849,9 +1848,9 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
   var ca []api.Calendar
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    str.ConvertCalendar(r.OptionsCalendar()), 10,
+    ConvertCalendar(r.OptionsCalendar()), 10,
   )
   defer cancel()
 
@@ -1882,8 +1881,8 @@ func (c *Configuration) SearchGenres(name string) ([]api.Genres, int, error) {
   var g []api.Genres
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken, str.ConvertGenres(name), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, ConvertGenres(name), 10,
   )
   defer cancel()
 
@@ -1912,7 +1911,7 @@ func (c *Configuration) SearchStudios() ([]api.Studios, int, error) {
   var s []api.Studios
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "studios", 10,
   )
   defer cancel()
@@ -1942,7 +1941,7 @@ func (c *Configuration) SearchPublishers() ([]api.Publishers, int, error) {
   var p []api.Publishers
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "publishers", 10,
   )
   defer cancel()
@@ -1972,7 +1971,7 @@ func (c *Configuration) SearchForums() ([]api.Forums, int, error) {
   var f []api.Forums
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "forums", 10,
   )
   defer cancel()
@@ -2002,9 +2001,9 @@ func (f *FastId) AddFriend() (api.FriendRequest, error) {
   var ff api.FriendRequest
   var client = &http.Client{}
 
-  post, cancel := req.NewPostRequestWithCancel(
+  post, cancel := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertFriend(f.Id), 10,
+    ConvertFriend(f.Id), 10,
   )
   defer cancel()
 
@@ -2033,9 +2032,9 @@ func (f *FastId) RemoveFriend() (api.FriendRequest, error) {
   var ff api.FriendRequest
   var client = &http.Client{}
 
-  remove, cancel := req.NewDeleteRequestWithCancel(
+  remove, cancel := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertFriend(f.Id), 10,
+    ConvertFriend(f.Id), 10,
   )
   defer cancel()
 
@@ -2066,9 +2065,9 @@ func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
   var um api.UnreadMessages
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertUser(f.Id, "unread_messages"), 10,
+    ConvertUser(f.Id, "unread_messages"), 10,
   )
   defer cancel()
 
@@ -2107,9 +2106,9 @@ func (f *FastId) UserMessages(r Result) ([]api.Messages, error) {
   var m []api.Messages
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertMessages(f.Id, r.OptionsMessages()), 10,
+    ConvertMessages(f.Id, r.OptionsMessages()), 10,
   )
   defer cancel()
 
@@ -2138,9 +2137,8 @@ func (c *Configuration) SearchConstantsAnime() (api.Constants, int, error) {
   var ca api.Constants
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    str.ConvertConstants("anime"), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, ConvertConstants("anime"), 10,
   )
   defer cancel()
 
@@ -2169,9 +2167,8 @@ func (c *Configuration) SearchConstantsManga() (api.Constants, int, error) {
   var cm api.Constants
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    str.ConvertConstants("manga"), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, ConvertConstants("manga"), 10,
   )
   defer cancel()
 
@@ -2200,9 +2197,8 @@ func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, int, e
   var ur api.ConstantsUserRate
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    str.ConvertConstants("user_rate"), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, ConvertConstants("user_rate"), 10,
   )
   defer cancel()
 
@@ -2231,9 +2227,8 @@ func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, int, error) {
   var cc api.ConstantsClub
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    str.ConvertConstants("club"), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, ConvertConstants("club"), 10,
   )
   defer cancel()
 
@@ -2262,9 +2257,8 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, e
   var cs []api.ConstantsSmileys
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    str.ConvertConstants("smileys"), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, ConvertConstants("smileys"), 10,
   )
   defer cancel()
 
@@ -2299,8 +2293,8 @@ func (c *Configuration) RandomAnimes(limit int) ([]api.Animes, int, error) {
 
   if limit < 1 || limit > 50 { limit = 1 }
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken, str.ConvertRandom("animes", limit), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, ConvertRandom("animes", limit), 10,
   )
   defer cancel()
 
@@ -2335,8 +2329,8 @@ func (c *Configuration) RandomMangas(limit int) ([]api.Mangas, int, error) {
 
   if limit < 1 || limit > 50 { limit = 1 }
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken, str.ConvertRandom("mangas", limit), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, ConvertRandom("mangas", limit), 10,
   )
   defer cancel()
 
@@ -2371,8 +2365,8 @@ func (c *Configuration) RandomRanobes(limit int) ([]api.Mangas, int, error) {
 
   if limit < 1 || limit > 50 { limit = 1 }
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken, str.ConvertRandom("ranobe", limit), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, ConvertRandom("ranobe", limit), 10,
   )
   defer cancel()
 
@@ -2401,9 +2395,9 @@ func (f *FastId) SearchCharacter() (api.Character, error) {
   var ch api.Character
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertCharacters(f.Id), 10,
+    ConvertCharacters(f.Id), 10,
   )
   defer cancel()
 
@@ -2434,7 +2428,7 @@ func (c *Configuration) SearchCharacters(name string) ([]api.CharacterInfo, int,
   var ci []api.CharacterInfo
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "characters/search?search=" + url.QueryEscape(name), 10,
   )
@@ -2465,9 +2459,9 @@ func (f *FastId) SearchPeople() (api.People, error) {
   var p api.People
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertPeople(f.Id), 10,
+    ConvertPeople(f.Id), 10,
   )
   defer cancel()
 
@@ -2504,7 +2498,7 @@ func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, i
   var ap []api.AllPeople
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "people/search?search=" + url.QueryEscape(name) + "&" + r.OptionsPeople(), 10,
   )
@@ -2546,9 +2540,9 @@ func (f *FastId) FavoritesCreate(linked_type string, kind string) (api.Favorites
   _, ok_kind := kind_map[kind]
   if !ok_kind { kind = "" }
 
-  post, cancel := req.NewPostRequestWithCancel(
+  post, cancel := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertFavorites(linked_type, f.Id, kind), 10,
+    ConvertFavorites(linked_type, f.Id, kind), 10,
   )
   defer cancel()
 
@@ -2583,9 +2577,9 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
   _, ok_type := type_map[linked_type]
   if !ok_type { return ff, errors.New("incorrect string, try again and watch the upper case") }
 
-  remove, cancel := req.NewDeleteRequestWithCancel(
+  remove, cancel := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertFavorites(linked_type, f.Id, ""), 10,
+    ConvertFavorites(linked_type, f.Id, ""), 10,
   )
   defer cancel()
 
@@ -2619,9 +2613,9 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
 func (f *FastId) FavoritesReorder(position int) (int, error) {
   var client = &http.Client{}
 
-  post, cancel := req.NewReorderPostRequestWithCancel(
+  post, cancel := NewReorderPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertFavoritesReorder(f.Id), position, 10,
+    ConvertFavoritesReorder(f.Id), position, 10,
   )
   defer cancel()
 
@@ -2641,9 +2635,9 @@ func (f *FastId) AddIgnoreUser() (api.IgnoreUser, error) {
   var i api.IgnoreUser
   var client = &http.Client{}
 
-  post, cancel := req.NewPostRequestWithCancel(
+  post, cancel := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertIgnoreUser(f.Id), 10,
+    ConvertIgnoreUser(f.Id), 10,
   )
   defer cancel()
 
@@ -2672,9 +2666,9 @@ func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, error) {
   var i api.IgnoreUser
   var client = &http.Client{}
 
-  remove, cancel := req.NewDeleteRequestWithCancel(
+  remove, cancel := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertIgnoreUser(f.Id), 10,
+    ConvertIgnoreUser(f.Id), 10,
   )
   defer cancel()
 
@@ -2703,7 +2697,7 @@ func (c *Configuration) Dialogs() ([]api.Dialogs, int, error) {
   var d []api.Dialogs
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "dialogs", 10,
   )
   defer cancel()
@@ -2732,9 +2726,9 @@ func (f *FastId) SearchDialogs() ([]api.SearchDialogs, error) {
   var sd []api.SearchDialogs
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertDialogs(f.Id), 10,
+    ConvertDialogs(f.Id), 10,
   )
   defer cancel()
 
@@ -2763,9 +2757,9 @@ func (f *FastId) DeleteDialogs() (api.FriendRequest, error) {
   var fr api.FriendRequest
   var client = &http.Client{}
 
-  remove, cancel := req.NewDeleteRequestWithCancel(
+  remove, cancel := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertDialogs(f.Id), 10,
+    ConvertDialogs(f.Id), 10,
   )
   defer cancel()
 
@@ -2795,9 +2789,9 @@ func (f *FastId) UserBriefInfo() (api.Info, error) {
   var i api.Info
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertUserBriefInfo(f.Id), 10,
+    ConvertUserBriefInfo(f.Id), 10,
   )
   defer cancel()
 
@@ -2823,9 +2817,8 @@ func (f *FastId) UserBriefInfo() (api.Info, error) {
 func (c *Configuration) SignOut() (string, int, error) {
   var client = &http.Client{}
 
-  post, cancel := req.NewPostRequestWithCancel(
-    c.Application, c.AccessToken,
-    "users/sign_out", 10,
+  post, cancel := NewPostRequestWithCancel(
+    c.Application, c.AccessToken, "users/sign_out", 10,
   )
   defer cancel()
 
@@ -2854,9 +2847,8 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
   var ids []int
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    "stats/active_users", 40,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, "stats/active_users", 40,
   )
   defer cancel()
 
@@ -2893,9 +2885,9 @@ func (f *FastId) SearchTopicsAnime(r Result) ([]api.Topics, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertTopicsType(f.Id, "animes") + "?" + r.OptionsClub(), 10,
+    ConvertTopicsType(f.Id, "animes") + "?" + r.OptionsClub(), 10,
   )
   defer cancel()
 
@@ -2932,9 +2924,9 @@ func (f *FastId) SearchTopicsManga(r Result) ([]api.Topics, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertTopicsType(f.Id, "mangas") + "?" + r.OptionsClub(), 10,
+    ConvertTopicsType(f.Id, "mangas") + "?" + r.OptionsClub(), 10,
   )
   defer cancel()
 
@@ -2971,9 +2963,9 @@ func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertTopicsType(f.Id, "ranobe") + "?" + r.OptionsClub(), 10,
+    ConvertTopicsType(f.Id, "ranobe") + "?" + r.OptionsClub(), 10,
   )
   defer cancel()
 
@@ -3022,9 +3014,8 @@ func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    "topics?" + r.OptionsTopics(), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, "topics?" + r.OptionsTopics(), 10,
   )
   defer cancel()
 
@@ -3053,9 +3044,8 @@ func (c *Configuration) SearchTopicsUpdates(r Result) ([]api.TopicsUpdates, int,
   var t []api.TopicsUpdates
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    "topics/updates?" + r.OptionsClub(), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, "topics/updates?" + r.OptionsClub(), 10,
   )
   defer cancel()
 
@@ -3084,9 +3074,8 @@ func (c *Configuration) SearchTopicsHot(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    "topics/hot?" + r.OptionsTopicsHot(), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, "topics/hot?" + r.OptionsTopicsHot(), 10,
   )
   defer cancel()
 
@@ -3117,9 +3106,8 @@ func (c *Configuration) SearchTopicsId(id int) (api.TopicsId, int, error) {
   var t api.TopicsId
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    str.ConvertTopicsId(id), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, ConvertTopicsId(id), 10,
   )
   defer cancel()
 
@@ -3150,9 +3138,8 @@ func (c *Configuration) AddIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
   var i api.IgnoreTopic
   var client = &http.Client{}
 
-  post, cancel := req.NewPostRequestWithCancel(
-    c.Application, c.AccessToken,
-    str.ConvertIgnoreTopic(id), 10,
+  post, cancel := NewPostRequestWithCancel(
+    c.Application, c.AccessToken, ConvertIgnoreTopic(id), 10,
   )
   defer cancel()
 
@@ -3183,9 +3170,8 @@ func (c *Configuration) RemoveIgnoreTopic(id int) (api.IgnoreTopic, int, error) 
   var i api.IgnoreTopic
   var client = &http.Client{}
 
-  remove, cancel := req.NewDeleteRequestWithCancel(
-    c.Application, c.AccessToken,
-    str.ConvertIgnoreTopic(id), 10,
+  remove, cancel := NewDeleteRequestWithCancel(
+    c.Application, c.AccessToken, ConvertIgnoreTopic(id), 10,
   )
   defer cancel()
 
@@ -3216,7 +3202,7 @@ func (c *Configuration) SearchGraphql(schema string) (api.GraphQL, int, error) {
   var client = &http.Client{}
   var g api.GraphQL
 
-  post, cancel := req.NewPostRequestWithCancel(
+  post, cancel := NewPostRequestWithCancel(
     c.Application, c.AccessToken, schema, 10,
   )
   defer cancel()
@@ -3252,9 +3238,8 @@ func (c *Configuration) ReadMessage(id int) (api.Messages, int, error) {
   var client = &http.Client{}
   var m api.Messages
 
-  get, cancel := req.NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    str.ConvertMessage(id), 10,
+  get, cancel := NewGetRequestWithCancel(
+    c.Application, c.AccessToken, ConvertMessage(id), 10,
   )
   defer cancel()
 
@@ -3295,7 +3280,7 @@ func (c *Configuration) SendMessage(from_id, to_id int, message string) (api.Mes
   var client = &http.Client{}
   var m api.Messages
 
-  post, cancel := req.NewSendMessagePostRequestWithCancel(
+  post, cancel := NewSendMessagePostRequestWithCancel(
     c.Application, c.AccessToken, "messages", message, from_id, to_id, 10,
   )
   defer cancel()
@@ -3333,8 +3318,8 @@ func (c *Configuration) ChangeMessage(id int, message string) (api.Messages, int
   var client = &http.Client{}
   var m api.Messages
 
-  put, cancel := req.NewChangeMessagePutRequestWithCancel(
-    c.Application, c.AccessToken, str.ConvertMessage(id), message, 10,
+  put, cancel := NewChangeMessagePutRequestWithCancel(
+    c.Application, c.AccessToken, ConvertMessage(id), message, 10,
   )
   defer cancel()
 
@@ -3366,8 +3351,8 @@ func (c *Configuration) ChangeMessage(id int, message string) (api.Messages, int
 func (c *Configuration) DeleteMessage(id int) (int, error) {
   var client = &http.Client{}
 
-  del, cancel := req.NewDeleteMessageDeleteRequestWithCancel(
-    c.Application, c.AccessToken, str.ConvertMessage(id), 10,
+  del, cancel := NewDeleteMessageDeleteRequestWithCancel(
+    c.Application, c.AccessToken, ConvertMessage(id), 10,
   )
   defer cancel()
 
@@ -3396,7 +3381,7 @@ func (c *Configuration) DeleteMessage(id int) (int, error) {
 func (c *Configuration) MarkReadMessages(ids string, is_read int) (int, error) {
   var client = &http.Client{}
 
-  post, cancel := req.NewMarkReadPostRequestWithCancel(
+  post, cancel := NewMarkReadPostRequestWithCancel(
     c.Application, c.AccessToken, "messages/mark_read", ids, is_read, 10,
   )
   defer cancel()
@@ -3424,7 +3409,7 @@ func (c *Configuration) MarkReadMessages(ids string, is_read int) (int, error) {
 func (c *Configuration) ReadAllMessages(name string) (int, error) {
   var client = &http.Client{}
 
-  post, cancel := req.NewReadDeleteAllPostRequestWithCancel(
+  post, cancel := NewReadDeleteAllPostRequestWithCancel(
     c.Application, c.AccessToken, "messages/read_all", name, 10,
   )
   defer cancel()
@@ -3452,7 +3437,7 @@ func (c *Configuration) ReadAllMessages(name string) (int, error) {
 func (c *Configuration) DeleteAllMessages(name string) (int, error) {
   var client = &http.Client{}
 
-  post, cancel := req.NewReadDeleteAllPostRequestWithCancel(
+  post, cancel := NewReadDeleteAllPostRequestWithCancel(
     c.Application, c.AccessToken, "messages/delete_all", name, 10,
   )
   defer cancel()

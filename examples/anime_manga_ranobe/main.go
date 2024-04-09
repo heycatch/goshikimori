@@ -29,25 +29,21 @@ func foundAnime() {
 func foundAnimes() {
   c := conf()
   o := &g.Options{
-    Page: "1", Limit: "5", Order: "", Kind: "", Status: "released",
-    Season: "199x", Score: "", Rating: "", Duration: "",
-    Censored: "", Mylist: "", Genre_v2: []int{3}, // SKIP GENRE: Genre_v2: nil,
+    Page: 1, Limit: 5, Order: "", Kind: "", Status: "released",
+    Season: "199x", Rating: "", Duration: "",
+    Mylist: "", Genre_v2: []int{3}, // SKIP GENRE: Genre_v2: nil,
   }
   a, status, err := c.SearchAnimes("initial d", o)
-  if err != nil {
-    fmt.Println(err)
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
-  if status == 200 {
-    if len(a) == 0 {
-      fmt.Println("Anime not found")
-      return
-    }
-    for _, v := range a {
-      fmt.Println(v.Name, v.Released_on, v.Score)
-    }
-  } else {
-    fmt.Println(status)
+  if len(a) == 0 {
+    fmt.Println("Anime not found")
+    return
+  }
+  for _, v := range a {
+    fmt.Println(v.Name, v.Released_on, v.Score)
   }
 }
 
@@ -69,8 +65,8 @@ func foundManga() {
 func foundMangas() {
   c := conf()
   o := &g.Options{
-    Page: "1", Limit: "1", Order: "", Kind: "", Status: "released",
-    Season: "199x", Score: "8", Censored: "", Mylist: "", Genre_v2: []int{84}, // SKIP GENRE: Genre_v2: nil,
+    Page: 1, Limit: 1, Order: "", Kind: "", Status: "released",
+    Season: "199x", Score: 8, Censored: false, Mylist: "", Genre_v2: []int{84}, // SKIP GENRE: Genre_v2: nil,
   }
   m, status, err := c.SearchMangas("initial d", o)
   if status != 200 || err != nil {
@@ -104,8 +100,8 @@ func foundRanobe() {
 func foundRanobes() {
   c := conf()
   o := &g.Options{
-    Page: "1", Limit: "10", Order: "", Status: "released",
-    Season: "", Score: "", Censored: "", Mylist: "", Genre_v2: []int{49}, // SKIP GENRE: Genre_v2: nil,
+    Page: 1, Limit: 10, Order: "", Status: "released",
+    Season: "", Mylist: "", Genre_v2: []int{49}, // SKIP GENRE: Genre_v2: nil,
   }
   r, status, err := c.SearchRanobes("angel", o)
   if status != 200 || err != nil {

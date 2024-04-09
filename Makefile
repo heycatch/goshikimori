@@ -1,3 +1,6 @@
+.PHONY: default
+default: run
+
 App :=
 Token :=
 
@@ -20,8 +23,6 @@ docker-start:
 
 test:
 	go test -v
-	go test -v ./str
-	go test -v ./graphql
 
 run:
 	go run cmd/main.go

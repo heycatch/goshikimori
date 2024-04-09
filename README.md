@@ -5,7 +5,7 @@ A small library for interacting with shikimori, written in golang.
 * Work with API occurs only through `OAuth2`.
 * No dependencies on other libraries.
 * The GNU [make](https://www.gnu.org/software/make/manual/make.html) utility is used for tests and builds.
-* Minimum language version >= `1.18`.
+* Minimum language version >= `1.18`(generics are used).
 
 ### Install
 ```bash
@@ -29,10 +29,10 @@ http://localhost:1337/pkg/github.com/heycatch/goshikimori/
 ```bash
 # Method #2(Linux): Install godoc.
 go install -v golang.org/x/tools/cmd/godoc@latest
-# Add 'export' to the file /home/$USER/.profile
+# Add 'export' to the file /home/$USER/.profile and reboot.
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
-# Reboot and check that the application is working properly.
+# Check that the application is working properly.
 godoc --help
 
 # After installation or if 'godoc' is already installed.

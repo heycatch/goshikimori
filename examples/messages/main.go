@@ -20,7 +20,7 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  m, err := fast.UserMessages(&g.Options{Type: "news", Page: "1", Limit: "10"})
+  m, err := fast.UserMessages(&g.Options{Type: "news", Page: 1, Limit: 10})
   if err != nil {
     fmt.Println(err)
     return

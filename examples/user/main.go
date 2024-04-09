@@ -46,7 +46,7 @@ func main() {
     fmt.Println(v.Id, v.Name, v.Is_censored)
   }
   // user friends
-  ufo := &g.Options{Page: "1", Limit: "5"}
+  ufo := &g.Options{Page: 1, Limit: 5}
   uf, err := fast.SearchUserFriends(ufo)
   if err != nil || len(uf) == 0{
     fmt.Println(err)
@@ -56,7 +56,7 @@ func main() {
     fmt.Println(v.Id, v.Nickname, v.Last_online_at)
   }
   // search anime and manga rates
-  oar := &g.Options{Page: "1", Limit: "5", Status: "completed", Censored: ""}
+  oar := &g.Options{Page: 1, Limit: 5, Status: "completed", Censored: true}
   ar, err := fast.SearchUserAnimeRates(oar)
   if err != nil || len(ar) == 0 {
     fmt.Println(err)
@@ -65,7 +65,7 @@ func main() {
   for _, v := range ar {
     fmt.Println(v.Status, v.Anime.Name, v.Episodes, v.Score)
   }
-  omr := &g.Options{Page: "1", Limit: "5", Censored: ""}
+  omr := &g.Options{Page: 1, Limit: 5, Censored: true}
   mr, err := fast.SearchUserMangaRates(omr)
   if err != nil || len(mr) == 0 {
     fmt.Println(err)
@@ -88,7 +88,7 @@ func main() {
   }
   // user history
   // NOTES: Target_id - Anime.id or Manga.id; convert to a string to search the history point-by-point.
-  ouh := &g.Options{Page: "1", Limit: "10", Target_id: "", Target_type: "Anime"}
+  ouh := &g.Options{Page: 1, Limit: 10, Target_id: "", Target_type: "Anime"}
   uh, err := fast.SearchUserHistory(ouh)
   if err != nil || len(uh) == 0 {
     fmt.Println(err)

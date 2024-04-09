@@ -8,8 +8,6 @@ import (
   "errors"
 
   "github.com/heycatch/goshikimori/api"
-  "github.com/heycatch/goshikimori/str"
-  "github.com/heycatch/goshikimori/req"
 )
 
 // Converting an array with an ids to a string.
@@ -31,13 +29,12 @@ func IdsToStirng(target []int) string {
 //
 // Empty array to be filled with ids for messages.
 func (f *FastId) UnreadMessagesIds(name string) ([]int, error) {
-  var res []int
   var um api.UnreadMessages
   var client = &http.Client{}
 
-  get, cancel := req.NewGetRequestWithCancel(
+  get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    str.ConvertUser(f.Id, "unread_messages"), 10,
+    ConvertUser(f.Id, "unread_messages"), 10,
   )
   defer cancel()
 
@@ -57,15 +54,9 @@ func (f *FastId) UnreadMessagesIds(name string) ([]int, error) {
   }
 
   switch name {
-  case "messages":
-    res = make([]int, um.Messages)
-  case "news":
-    res = make([]int, um.News)
-  case "notifications":
-    res = make([]int, um.Notifications)
-  default:
-    return nil, errors.New("wrong name... try messages, news or notifications")
+  case "messages": return make([]int, um.Messages), nil
+  case "news": return make([]int, um.News), nil
+  case "notifications": return make([]int, um.Notifications), nil
+  default: return nil, errors.New("wrong name... try messages, news or notifications")
   }
-
-  return res, nil
 }

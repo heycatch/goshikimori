@@ -5,7 +5,7 @@
 * Работа с API происходит только через `OAuth2`.
 * Никаких зависимостей от других библиотек.
 * Для тестов и сборки используется утилита GNU [make](https://www.gnu.org/software/make/manual/make.html).
-* Минимальная версия языка >= `1.18`.
+* Минимальная версия языка >= `1.18`(используются дженерики).
 
 ### Установка
 ```bash
@@ -29,10 +29,10 @@ http://localhost:1337/pkg/github.com/heycatch/goshikimori/
 ```bash
 # Способ #2(Linux): Установка godoc.
 go install -v golang.org/x/tools/cmd/godoc@latest
-# Добавить 'экспорт' в файл /home/$USER/.profile
+# Добавить 'экспорт' в файл /home/$USER/.profile и перезагружаемся.
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
-# Перезагружаемся и проверяем работоспособность.
+# Проверяем работоспособность.
 godoc --help
 
 # После установки или если 'godoc' уже установлен.

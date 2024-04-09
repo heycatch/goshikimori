@@ -25,9 +25,10 @@ func Add(appname, token string) *Configuration {
 }
 
 type Options struct {
-  Page, Limit, Order, Kind, Status, Season, Score string
-  Rating, Censored, Type, Target_id, Target_type string
-  Duration, Mylist, Forum, Linked_id, Linked_type string
+  Order, Kind, Status, Season, Rating, Type, Target_id,
+  Target_type, Duration, Mylist, Forum, Linked_type string
+  Page, Limit, Score, Linked_id int
+  Censored bool
   Genre_v2 []int
 }
 
@@ -48,188 +49,164 @@ type Result interface {
   OptionsTopicsHot()       string
 }
 
+// simple keyword search.
+func simpleSearch(ch chan string, target string, list []string) {
+  var temp string
+  for i := 0; i < len(list); i++ {
+    if list[i] == target { temp = list[i]; break }
+  }
+  ch <- temp
+}
+
 func (o *Options) OptionsTopics() string {
-  p, _ := strconv.Atoi(o.Page)
-  l, _ := strconv.Atoi(o.Limit)
-
-  if p <= 0 || p >= 100001 { o.Page = "1" }
-  if l <= 0 || l >= 31 { o.Limit = "1" }
-
-  forum_map := map[string]int8{
-    "cosplay": 1, "animanga": 2, "site": 3,
-    "games": 4, "vn": 5, "contests": 6,
-    "offtopic": 7, "clubs": 8, "my_clubs": 9,
-    "critiques": 10, "news": 11,
-    "collections": 12, "articles": 13,
-  }
-  _, ok_forum := forum_map[o.Forum]; if !ok_forum {
-    o.Forum = "all"
-  }
-
-  li, _ := strconv.Atoi(o.Linked_id)
-  if li <= 0 { o.Linked_id = "" }
-
-  linked_type_map := map[string]int8{
-    "Anime": 1, "Manga": 2, "Ranobe": 3,
-    "Character": 4, "Person": 5, "Club": 6,
-    "ClubPage": 7, "Critique": 8, "Review": 9,
-    "Contest": 10, "CosplayGallery": 11,
-    "Collection": 12, "Article": 13,
-  }
-  _, ok_linked_type := linked_type_map[o.Linked_type]; if !ok_linked_type {
-    o.Linked_type = ""
-  }
-
   v := url.Values{}
-  v.Add("page", o.Page)
-  v.Add("limit", o.Limit)
+
+  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
+  v.Add("page", strconv.Itoa(o.Page))
+  if o.Limit <= 0 || o.Limit >= 31 { o.Limit = 1 }
+  v.Add("limit", strconv.Itoa(o.Limit))
+
+  ch := make(chan string, 2)
+
+  go simpleSearch(ch, o.Forum, []string{
+    "cosplay", "animanga", "site", "games", "vn",
+    "contests", "offtopic", "clubs", "my_clubs",
+    "critiques", "news", "collections", "articles",
+  })
+  o.Forum = <-ch
+  if o.Forum == "" { o.Forum = "all" }
+
+  go simpleSearch(ch, o.Linked_type, []string{
+    "Anime", "Manga", "Ranobe", "Character", "Person",
+    "Club", "ClubPage", "Critique", "Review",
+    "Contest", "CosplayGallery", "Collection", "Article",
+  })
+  o.Linked_type = <-ch
+
+  close(ch)
+
   v.Add("forum", o.Forum)
   // linked_id and linked_type are only used together.
-  if o.Linked_id != "" && o.Linked_type != "" {
-    v.Add("linked_id", o.Linked_id)
+  if o.Linked_id >= 1 && o.Linked_type != "" {
+    v.Add("linked_id", strconv.Itoa(o.Linked_id))
     v.Add("linked_type", o.Linked_type)
   }
-
   return v.Encode()
 }
 
 func (o *Options) OptionsMessages() string {
-  p, _ := strconv.Atoi(o.Page)
-  l, _ := strconv.Atoi(o.Limit)
-
-  if p <= 0 || p >= 100001 { o.Page = "1" }
-  if l <= 0 || l >= 101 { o.Limit = "1" }
-
-  type_map := map[string]int8{
-    "inbox": 1, "private": 2, "sent": 3,
-    "news": 4, "notifications": 5,
-  }
-  _, ok_type := type_map[o.Type]; if !ok_type {
-    o.Type = "news"
-  }
-
   v := url.Values{}
-  v.Add("type", o.Type)
-  v.Add("page", o.Page)
-  v.Add("limit", o.Limit)
 
+  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
+  v.Add("page", strconv.Itoa(o.Page))
+  if o.Limit <= 0 || o.Limit >= 101 { o.Limit = 1 }
+  v.Add("limit", strconv.Itoa(o.Limit))
+
+  ch := make(chan string, 1)
+
+  go simpleSearch(ch, o.Type, []string{
+    "inbox", "private", "sent", "news", "notifications",
+  })
+  o.Type = <-ch
+  if o.Type == "" { o.Type = "news" }
+
+  close(ch)
+
+  v.Add("type", o.Type)
   return v.Encode()
 }
 
 func (o *Options) OptionsUserHistory() string {
-  p, _ := strconv.Atoi(o.Page)
-  l, _ := strconv.Atoi(o.Limit)
-
-  if p <= 0 || p >= 100001 { o.Page = "1" }
-  if l <= 0 || l >= 101 { o.Limit = "1" }
-
-  target_map := map[string]int8{"Anime": 1, "Manga": 2}
-  _, ok := target_map[o.Target_type]; if !ok {
-    o.Target_type = "Anime"
-  }
-
   v := url.Values{}
-  v.Add("page", o.Page)
-  v.Add("limit", o.Limit)
+
+  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
+  v.Add("page", strconv.Itoa(o.Page))
+  if o.Limit <= 0 || o.Limit >= 101 { o.Limit = 1 }
+  v.Add("limit", strconv.Itoa(o.Limit))
+
+  ch := make(chan string, 1)
+
+  go simpleSearch(ch, o.Target_type, []string{"Anime", "Manga"})
+  o.Target_type = <-ch
+  if o.Target_type == "" { o.Target_type = "Anime" }
+
+  close(ch)
+
   // We get an error if we do not process the request in this way.
   // json: cannot unmarshal string into Go value of type api.UserHistory
   if o.Target_id != "" { v.Add("target_id", o.Target_id) }
   v.Add("target_type", o.Target_type)
-
   return v.Encode()
 }
 
 func (o *Options) OptionsUsers() string {
-  p, _ := strconv.Atoi(o.Page)
-  l, _ := strconv.Atoi(o.Limit)
-
-  if p <= 0 || p >= 100001 { o.Page = "1" }
-  if l <= 0 || l >= 101 { o.Limit = "1" }
-
   v := url.Values{}
-  v.Add("page", o.Page)
-  v.Add("limit", o.Limit)
 
+  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
+  v.Add("page", strconv.Itoa(o.Page))
+  if o.Limit <= 0 || o.Limit >= 101 { o.Limit = 1 }
+  v.Add("limit", strconv.Itoa(o.Limit))
   return v.Encode()
 }
 
 func (o *Options) OptionsAnime() string {
-  p, _ := strconv.Atoi(o.Page)
-  l, _ := strconv.Atoi(o.Limit)
+  v := url.Values{}
 
-  if p <= 0 || p >= 100001 { o.Page = "1" }
-  if l <= 0 || l >= 51 { o.Limit = "1" }
+  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
+  v.Add("page", strconv.Itoa(o.Page))
+  if o.Limit <= 0 || o.Limit >= 51 { o.Limit = 1 }
+  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  order_map := map[string]int8{
-    "id": 1, "ranked": 2, "kind": 3, "popularity": 4,
-    "name": 5, "aired_on": 6, "episodes": 7, "status": 8,
-  }
-  _, ok_order := order_map[o.Order]; if !ok_order {
-    o.Order = ""
-  }
+  ch := make(chan string, 7)
 
-  kind_map := map[string]int8{
-    "tv": 1, "movie": 2, "ova": 3, "ona": 4, "special": 5, "music": 6,
-    "tv_13": 7, "tv_24": 8, "tv_48": 9, "!tv": 10, "!movie": 11,
-    "!ova": 12, "!ona": 13, "!special": 14, "!music": 15, "!tv_13": 16,
-    "!tv_24": 17, "!tv_48": 18,
-  }
-  _, ok_kind := kind_map[o.Kind]; if !ok_kind {
-    o.Kind = ""
-  }
+  go simpleSearch(ch, o.Order, []string{
+    "id", "ranked", "kind", "popularity",
+    "name", "aired_on", "episodes", "status",
+  })
+  o.Order = <-ch
 
-  status_map := map[string]int8{
-    "anons": 1, "ongoing": 2, "released": 3,
-    "!anons": 4, "!ongoing": 5, "!released": 6,
-  }
-  _, ok_status := status_map[o.Status]; if !ok_status {
-    o.Status = ""
-  }
+  go simpleSearch(ch, o.Kind, []string{
+    "tv", "movie", "ova", "ona", "special", "music",
+    "tv_13", "tv_24", "tv_48", "!tv", "!movie", "!ova",
+    "!ona", "!special", "!music", "!tv_13", "!tv_24", "!tv_48",
+  })
+  o.Kind = <-ch
 
-  season_map := map[string]int8{
-    "2000_2010": 1, "2010_2014": 2, "2015_2019": 3, "199x": 4,
-    "!2000_2010": 5, "!2010_2014": 6, "!2015_2019": 7, "!199x": 8,
-    "198x": 9, "!198x": 10, "2020_2021": 11, "!2020_2021": 12,
-    "2022": 13, "!2022": 14, "2023": 15, "!2023": 16,
-  }
-  _, ok_season := season_map[o.Season]; if !ok_season {
-    o.Season = ""
-  }
+  go simpleSearch(ch, o.Status, []string{
+    "anons", "ongoing", "released", "!anons", "!ongoing", "!released",
+  })
+  o.Status = <-ch
 
-  s, _ := strconv.Atoi(o.Score)
-  if s <= 0 || s >= 10 { o.Score = "" }
+  go simpleSearch(ch, o.Season, []string{
+    "2000_2010", "2010_2014", "2015_2019", "199x",
+    "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
+    "198x", "!198x", "2020_2021", "!2020_2021",
+    "2022", "!2022", "2023", "!2023",
+  })
+  o.Season = <-ch
 
-  rating_map := map[string]int8{
-    "none": 1, "g": 2, "pg": 3, "pg_13": 4,
-    "r": 5, "r_plus": 6, "rx": 7, "!g": 8, "!pg": 9,
-    "!pg_13": 10, "!r": 11, "!r_plus": 12, "!rx": 13,
-  }
-  _, ok_rating := rating_map[o.Rating]; if !ok_rating {
-    o.Rating = ""
-  }
+  go simpleSearch(ch, o.Rating, []string{
+    "none", "g", "pg", "pg_13",
+    "r", "r_plus", "rx", "!g", "!pg",
+    "!pg_13", "!r", "!r_plus", "!rx",
+  })
+  o.Rating = <-ch
 
-  duration_map := map[string]int8{
-    "S": 1, "D": 2, "F": 3, "!S": 4, "!D": 5, "!F": 6,
-  }
-  _, ok_duration := duration_map[o.Duration]; if !ok_duration {
-    o.Duration = ""
-  }
+  go simpleSearch(ch, o.Duration, []string{
+    "S", "D", "F", "!S", "!D", "!F",
+  })
+  o.Duration = <-ch
 
-  mylist_map := map[string]int8{
-    "planned": 1, "watching": 2, "rewatching": 3,
-    "completed": 4, "on_hold": 5, "dropped": 6,
-  }
-  _, ok_mylist := mylist_map[o.Mylist]; if !ok_mylist {
-    o.Mylist = ""
-  }
+  go simpleSearch(ch, o.Mylist, []string{
+    "planned", "watching", "rewatching",
+    "completed", "on_hold", "dropped",
+  })
+  o.Mylist = <-ch
 
-  censored_map := map[string]int8{"true": 1, "false": 2}
-  _, ok_censored := censored_map[o.Censored]; if !ok_censored {
-    o.Censored = "false"
-  }
+  close(ch)
 
   var genre_v2 string
-
   genres := map[int]string{
     1: "1-Action", 2: "2-Adventure", 3: "3-Cars", 4: "4-Comedy",
     5: "5-Dementia", 6: "6-Demons", 7: "7-Mystery", 8: "8-Drama",
@@ -245,93 +222,71 @@ func (o *Options) OptionsAnime() string {
     42: "42-Seinen", 43: "43-Josei",
     539: "539-Erotica", 541: "541-Work Life", 543: "543-Gourmet",
   }
-
   for i := 0; i < len(o.Genre_v2); i++ {
     _, ok := genres[o.Genre_v2[i]]; if ok {
       genre_v2 += genres[o.Genre_v2[i]] + ","
     }
   }
 
-  if len(genre_v2) != 0 { genre_v2 = genre_v2[:len(genre_v2)-1] }
-
-  v := url.Values{}
-  v.Add("page", o.Page)
-  v.Add("limit", o.Limit)
   v.Add("order", o.Order)
   v.Add("kind", o.Kind)
   v.Add("status", o.Status)
   v.Add("season", o.Season)
-  v.Add("score", o.Score)
   v.Add("rating", o.Rating)
   v.Add("duration", o.Duration)
-  v.Add("censored", o.Censored)
+  v.Add("censored", strconv.FormatBool(o.Censored))
   v.Add("mylist", o.Mylist)
-  v.Add("genre_v2", genre_v2)
-
+  if len(genre_v2) > 0 { v.Add("genre_v2", genre_v2[:len(genre_v2)-1]) }
   return v.Encode()
 }
 
 func (o *Options) OptionsManga() string {
-  p, _ := strconv.Atoi(o.Page)
-  l, _ := strconv.Atoi(o.Limit)
+  v := url.Values{}
 
-  if p <= 0 || p >= 100001 { o.Page = "1" }
-  if l <= 0 || l >= 51 { o.Limit = "1" }
+  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
+  v.Add("page", strconv.Itoa(o.Page))
+  if o.Limit <= 0 || o.Limit >= 51 { o.Limit = 1 }
+  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  order_map := map[string]int8{
-    "id": 1, "ranked": 2, "kind": 3, "popularity": 4,
-    "name": 5, "aired_on": 6, "volumes": 7,
-    "chapters": 8, "status": 9,
-  }
-  _, ok_order := order_map[o.Order]; if !ok_order {
-    o.Order = ""
-  }
+  ch := make(chan string, 5)
 
-  kind_map := map[string]int8{
-    "manga": 1, "manhwa": 2, "manhua": 3, "light_novel": 4, "novel": 5,
-    "one_shot": 6, "doujin": 7, "!manga": 8, "!manhwa": 9, "!manhua": 10,
-    "!light_novel": 11, "!novel": 12, "!one_shot": 13, "!doujin": 14,
-  }
-  _, ok_kind := kind_map[o.Kind]; if !ok_kind {
-    o.Kind = ""
-  }
+  go simpleSearch(ch, o.Order, []string{
+    "id", "ranked", "kind", "popularity", "name",
+    "aired_on", "volumes", "chapters", "status",
+  })
+  o.Order = <-ch
 
-  status_map := map[string]int8{
-    "anons": 1, "ongoing": 2, "released": 3, "paused": 4, "discontinued": 5,
-    "!anons": 6, "!ongoing": 7, "!released": 8, "!paused": 9, "!discontinued": 10,
-  }
-  _, ok_status := status_map[o.Status]; if !ok_status {
-    o.Status = ""
-  }
+  go simpleSearch(ch, o.Kind, []string{
+    "manga", "manhwa", "manhua", "light_novel", "novel",
+    "one_shot", "doujin", "!manga", "!manhwa", "!manhua",
+    "!light_novel", "!novel", "!one_shot", "!doujin",
+  })
+  o.Kind = <-ch
 
-  season_map := map[string]int8{
-    "2000_2010": 1, "2010_2014": 2, "2015_2019": 3, "199x": 4,
-    "!2000_2010": 5, "!2010_2014": 6, "!2015_2019": 7, "!199x": 8,
-    "198x": 9, "!198x": 10, "2020_2021": 11, "!2020_2021": 12,
-    "2022": 13, "!2022": 14, "2023": 15, "!2023": 16,
-  }
-  _, ok_season := season_map[o.Season]; if !ok_season {
-    o.Season = ""
-  }
+  go simpleSearch(ch, o.Status, []string{
+    "anons", "ongoing", "released", "paused", "discontinued",
+    "!anons", "!ongoing", "!released", "!paused", "!discontinued",
+  })
+  o.Status = <-ch
 
-  s, _ := strconv.Atoi(o.Score)
-  if s <= 0 || s >= 10 { o.Score = "" }
+  go simpleSearch(ch, o.Season, []string{
+    "2000_2010", "2010_2014", "2015_2019", "199x",
+    "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
+    "198x", "!198x", "2020_2021", "!2020_2021",
+    "2022", "!2022", "2023", "!2023",
+  })
+  o.Season = <-ch
 
-  censored_map := map[string]int8{"true": 1, "false": 2}
-  _, ok_censored := censored_map[o.Censored]; if !ok_censored {
-    o.Censored = "false"
-  }
+  go simpleSearch(ch, o.Mylist, []string{
+    "planned", "watching", "rewatching",
+    "completed", "on_hold", "dropped",
+  })
+  o.Mylist = <-ch
 
-  mylist_map := map[string]int8{
-    "planned": 1, "watching": 2, "rewatching": 3,
-    "completed": 4, "on_hold": 5, "dropped": 6,
-  }
-  _, ok_mylist := mylist_map[o.Mylist]; if !ok_mylist {
-    o.Mylist = ""
-  }
+  close(ch)
 
   var genre_v2 string
-
   genres := map[int]string{
     46: "46-Mystery", 47: "47-Shounen",
     48: "48-Supernatural", 49: "49-Comedy", 50: "50-Drama", 51: "51-Ecchi",
@@ -346,82 +301,62 @@ func (o *Options) OptionsManga() string {
     85: "85-Space", 86: "86-Parody", 87: "87-Josei", 88: "88-Samurai", 89: "89-Police",
     90: "90-Dementia", 540: "540-Erotica", 542: "542-Work Life", 544: "544-Gourmet",
   }
-
   for i := 0; i < len(o.Genre_v2); i++ {
     _, ok := genres[o.Genre_v2[i]]; if ok {
       genre_v2 += genres[o.Genre_v2[i]] + ","
     }
   }
 
-  if len(genre_v2) != 0 { genre_v2 = genre_v2[:len(genre_v2)-1] }
-
-  v := url.Values{}
-  v.Add("page", o.Page)
-  v.Add("limit", o.Limit)
   v.Add("order", o.Order)
   v.Add("kind", o.Kind)
   v.Add("status", o.Status)
   v.Add("season", o.Season)
-  v.Add("score", o.Score)
-  v.Add("censored", o.Censored)
+  v.Add("censored", strconv.FormatBool(o.Censored))
   v.Add("mylist", o.Mylist)
-  v.Add("genre_v2", genre_v2)
-
+  if len(genre_v2) > 0 { v.Add("genre_v2", genre_v2[:len(genre_v2)-1]) }
   return v.Encode()
 }
 
 func (o *Options) OptionsRanobe() string {
-  p, _ := strconv.Atoi(o.Page)
-  l, _ := strconv.Atoi(o.Limit)
+  v := url.Values{}
 
-  if p <= 0 || p >= 100001 { o.Page = "1" }
-  if l <= 0 || l >= 51 { o.Limit = "1" }
+  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
+  v.Add("page", strconv.Itoa(o.Page))
+  if o.Limit <= 0 || o.Limit >= 51 { o.Limit = 1 }
+  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  order_map := map[string]int8{
-    "id": 1, "ranked": 2, "kind": 3, "popularity": 4,
-    "name": 5, "aired_on": 6, "volumes": 7,
-    "chapters": 8, "status": 9,
-  }
-  _, ok_order := order_map[o.Order]; if !ok_order {
-    o.Order = ""
-  }
+  ch := make(chan string, 4)
 
-  status_map := map[string]int8{
-    "anons": 1, "ongoing": 2, "released": 3, "paused": 4, "discontinued": 5,
-    "!anons": 6, "!ongoing": 7, "!released": 8, "!paused": 9, "!discontinued": 10,
-  }
-  _, ok_status := status_map[o.Status]; if !ok_status {
-    o.Status = ""
-  }
+  go simpleSearch(ch, o.Order, []string{
+    "id", "ranked", "kind", "popularity", "name",
+    "aired_on", "volumes", "chapters", "status",
+  })
+  o.Order = <-ch
 
-  season_map := map[string]int8{
-    "2000_2010": 1, "2010_2014": 2, "2015_2019": 3, "199x": 4,
-    "!2000_2010": 5, "!2010_2014": 6, "!2015_2019": 7, "!199x": 8,
-    "198x": 9, "!198x": 10, "2020_2021": 11, "!2020_2021": 12,
-    "2022": 13, "!2022": 14, "2023": 15, "!2023": 16,
-  }
-  _, ok_season := season_map[o.Season]; if !ok_season {
-    o.Season = ""
-  }
+  go simpleSearch(ch, o.Status, []string{
+    "anons", "ongoing", "released", "paused", "discontinued",
+    "!anons", "!ongoing", "!released", "!paused", "!discontinued",
+  })
+  o.Status = <-ch
 
-  s, _ := strconv.Atoi(o.Score)
-  if s <= 0 || s >= 10 { o.Score = "" }
+  go simpleSearch(ch, o.Season, []string{
+    "2000_2010", "2010_2014", "2015_2019", "199x",
+    "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
+    "198x", "!198x", "2020_2021", "!2020_2021",
+    "2022", "!2022", "2023", "!2023",
+  })
+  o.Season = <-ch
 
-  censored_map := map[string]int8{"true": 1, "false": 2}
-  _, ok_censored := censored_map[o.Censored]; if !ok_censored {
-    o.Censored = "false"
-  }
+  go simpleSearch(ch, o.Mylist, []string{
+    "planned", "watching", "rewatching",
+    "completed", "on_hold", "dropped",
+  })
+  o.Mylist = <-ch
 
-  mylist_map := map[string]int8{
-    "planned": 1, "watching": 2, "rewatching": 3,
-    "completed": 4, "on_hold": 5, "dropped": 6,
-  }
-  _, ok_mylist := mylist_map[o.Mylist]; if !ok_mylist {
-    o.Mylist = ""
-  }
+  close(ch)
 
   var genre_v2 string
-
   genres := map[int]string{
     46: "46-Mystery", 47: "47-Shounen",
     48: "48-Supernatural", 49: "49-Comedy", 50: "50-Drama", 51: "51-Ecchi",
@@ -436,137 +371,100 @@ func (o *Options) OptionsRanobe() string {
     85: "85-Space", 86: "86-Parody", 87: "87-Josei", 88: "88-Samurai", 89: "89-Police",
     90: "90-Dementia", 540: "540-Erotica", 542: "542-Work Life", 544: "544-Gourmet",
   }
-
   for i := 0; i < len(o.Genre_v2); i++ {
     _, ok := genres[o.Genre_v2[i]]; if ok {
       genre_v2 += genres[o.Genre_v2[i]] + ","
     }
   }
 
-  if len(genre_v2) != 0 { genre_v2 = genre_v2[:len(genre_v2)-1] }
-
-  v := url.Values{}
-  v.Add("page", o.Page)
-  v.Add("limit", o.Limit)
   v.Add("order", o.Order)
   v.Add("status", o.Status)
   v.Add("season", o.Season)
-  v.Add("score", o.Score)
-  v.Add("censored", o.Censored)
+  v.Add("censored", strconv.FormatBool(o.Censored))
   v.Add("mylist", o.Mylist)
-  v.Add("genre_v2", genre_v2)
-
+  if len(genre_v2) != 0 { v.Add("genre_v2", genre_v2[:len(genre_v2)-1]) }
   return v.Encode()
 }
 
 func (o *Options) OptionsClub() string {
-  p, _ := strconv.Atoi(o.Page)
-  l, _ := strconv.Atoi(o.Limit)
-
-  if p <= 0 || p >= 100001 { o.Page = "1" }
-  if l <= 0 || l >= 31 { o.Limit = "1" }
-
   v := url.Values{}
-  v.Add("page", o.Page)
-  v.Add("limit", o.Limit)
 
+  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
+  v.Add("page", strconv.Itoa(o.Page))
+  if o.Limit <= 0 || o.Limit >= 31 { o.Limit = 1 }
+  v.Add("limit", strconv.Itoa(o.Limit))
   return v.Encode()
 }
 
 func (o *Options) OptionsCalendar() string {
-  censored_map := map[string]int8{"true": 1, "false": 2}
-  _, ok := censored_map[o.Censored]; if !ok {
-    o.Censored = "false"
-  }
-
   v := url.Values{}
-  v.Add("censored", o.Censored)
 
+  v.Add("censored", strconv.FormatBool(o.Censored))
   return v.Encode()
 }
 
 func (o *Options) OptionsAnimeRates() string {
-  p, _ := strconv.Atoi(o.Page)
-  l, _ := strconv.Atoi(o.Limit)
-
-  if p <= 0 || p >= 100001 { o.Page = "1" }
-  if l <= 0 || l >= 5001 { o.Limit = "1" }
-
-  status_map := map[string]int8{
-    "planned": 1, "watching": 2,
-    "rewatching": 3, "completed": 4,
-    "on_hold": 5, "dropped": 6,
-  }
-  _, ok_status := status_map[o.Status]; if !ok_status {
-    o.Status = "watching"
-  }
-
-  censored_map := map[string]int8{"true": 1, "false": 2}
-  _, ok_censored := censored_map[o.Censored]; if !ok_censored {
-    o.Censored = "false"
-  }
-
   v := url.Values{}
-  v.Add("page", o.Page)
-  v.Add("limit", o.Limit)
-  v.Add("status", o.Status)
-  v.Add("censored", o.Censored)
 
+  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
+  v.Add("page", strconv.Itoa(o.Page))
+  if o.Limit <= 0 || o.Limit >= 5001 { o.Limit = 1 }
+  v.Add("limit", strconv.Itoa(o.Limit))
+
+  ch := make(chan string, 1)
+
+  go simpleSearch(ch, o.Status, []string{
+    "planned", "watching", "rewatching",
+    "completed", "on_hold", "dropped",
+  })
+  o.Status = <-ch
+  if o.Status == "" { o.Status = "watching" }
+
+  close(ch)
+
+  v.Add("status", o.Status)
+  v.Add("censored", strconv.FormatBool(o.Censored))
   return v.Encode()
 }
 
 func (o *Options) OptionsMangaRates() string {
-  p, _ := strconv.Atoi(o.Page)
-  l, _ := strconv.Atoi(o.Limit)
-
-  if p <= 0 || p >= 100001 { o.Page = "1" }
-  if l <= 0 || l >= 5001 { o.Limit = "1" }
-
-  censored_map := map[string]int8{"true": 1, "false": 2}
-  _, ok := censored_map[o.Censored]; if !ok {
-    o.Censored = "false"
-  }
-
   v := url.Values{}
-  v.Add("page", o.Page)
-  v.Add("limit", o.Limit)
-  v.Add("censored", o.Censored)
 
+  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
+  v.Add("page", strconv.Itoa(o.Page))
+  if o.Limit <= 0 || o.Limit >= 5001 { o.Limit = 1 }
+  v.Add("limit", strconv.Itoa(o.Limit))
+  v.Add("censored", strconv.FormatBool(o.Censored))
   return v.Encode()
 }
 
 func (o *Options) OptionsPeople() string {
-  kind_map := map[string]int8{
-    "seyu": 1, "mangaka": 2, "producer": 3,
-  }
-  _, ok := kind_map[o.Kind]; if !ok {
-    o.Kind = "seyu"
-  }
-
   v := url.Values{}
-  v.Add("kind", o.Kind)
 
+  ch := make(chan string, 1)
+
+  go simpleSearch(ch, o.Kind, []string{"seyu", "mangaka", "producer"})
+  o.Kind = <-ch
+  if o.Kind == "" { o.Kind = "seyu" }
+
+  close(ch)
+
+  v.Add("kind", o.Kind)
   return v.Encode()
 }
 
 func (o *Options) OptionsClubInformation() string {
-  p, _ := strconv.Atoi(o.Page)
-
-  if p <= 0 || p >= 100001 { o.Page = "1" }
-
   v := url.Values{}
-  v.Add("page", o.Page)
 
+  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
+  v.Add("page", strconv.Itoa(o.Page))
   return v.Encode()
 }
 
 func (o *Options) OptionsTopicsHot() string {
-  l, _ := strconv.Atoi(o.Limit)
-
-  if l <= 0 || l >= 11 { o.Limit = "1" }
-
   v := url.Values{}
-  v.Add("limit", o.Limit)
 
+  if o.Limit <= 0 || o.Limit >= 11 { o.Limit = 1 }
+  v.Add("limit", strconv.Itoa(o.Limit))
   return v.Encode()
 }

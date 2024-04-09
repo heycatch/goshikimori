@@ -14,7 +14,7 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  o := &g.Options{Censored: "false"}
+  o := &g.Options{Censored: false}
   ca, status, err := c.SearchCalendar(o)
   if err != nil {
     fmt.Println(err)

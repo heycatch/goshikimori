@@ -1,4 +1,4 @@
-package req
+package goshikimori
 
 import (
   "fmt"
@@ -7,8 +7,6 @@ import (
   "time"
   "bytes"
 )
-
-const site string = "shikimori.one/api"
 
 func NewGetRequestWithCancel(application, accessToken, search string,
     number time.Duration) (*http.Request, context.CancelFunc) {
