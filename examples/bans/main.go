@@ -15,15 +15,11 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
   b, status, err := c.SearchBans()
-  if err != nil {
-    fmt.Println(err)
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
-  if status == 200 {
-    for _, v := range b {
-      fmt.Println(v.Id, v.User.Id, v.User.Nickname)
-    }
-  } else {
-    fmt.Println(status)
+  for _, v := range b {
+    fmt.Println(v.Id, v.User.Id, v.User.Nickname)
   }
 }

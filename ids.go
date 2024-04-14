@@ -6,18 +6,18 @@ import (
   "net/http"
   "encoding/json"
   "errors"
+  "strings"
 
   "github.com/heycatch/goshikimori/api"
 )
 
 // Converting an array with an ids to a string.
-func IdsToStirng(target []int) string {
+func IdsToString(target []int) string {
   var res string
   for i := 0; i < len(target); i++ {
     if target[i] != 0 { res += strconv.Itoa(target[i]) + "," }
   }
-  if res == "" { return "" } // check for zeros or panic error.
-  return res[:len(res)-1]
+  return strings.TrimSuffix(res, ",")
 }
 
 // Name: unread message type.
@@ -34,7 +34,7 @@ func (f *FastId) UnreadMessagesIds(name string) ([]int, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertUser(f.Id, "unread_messages"), 10,
+    "users/" + strconv.Itoa(f.Id) + "/unread_messages", 10,
   )
   defer cancel()
 

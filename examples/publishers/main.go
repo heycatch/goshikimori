@@ -15,19 +15,15 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
   p, status, err := c.SearchPublishers()
-  if err != nil {
-    fmt.Println(err)
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
-  if status == 200 {
-    if len(p) == 0 {
-      fmt.Println("not found publishers")
-      return
-    }
-    for _, v := range p {
-      fmt.Println(v.Id, v.Name)
-    }
-  } else {
-    fmt.Println(status)
+  if len(p) == 0 {
+    fmt.Println("not found publishers")
+    return
+  }
+  for _, v := range p {
+    fmt.Println(v.Id, v.Name)
   }
 }

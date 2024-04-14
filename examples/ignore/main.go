@@ -15,19 +15,15 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
   fast, status, err := c.FastIdUser("morr")
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+  ignore, err := fast.AddIgnoreUser()
+  //ignore, err := fast.RemoveIgnoreUser()
   if err != nil {
     fmt.Println(err)
     return
   }
-  if status == 200 {
-    ignore, err := fast.AddIgnoreUser()
-    //status, err := fast.RemoveIgnoreUser()
-    if err != nil {
-      fmt.Println(err)
-      return
-    }
-    if status == 200 { fmt.Println(ignore.User_id, ignore.Is_ignored) }
-  } else {
-    fmt.Println(status)
-  }
+  fmt.Println(ignore.User_id, ignore.Is_ignored)
 }

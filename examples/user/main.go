@@ -34,7 +34,7 @@ func main() {
   // user clubs
   fast, status, err := c.FastIdUser("arctica")
   if status != 200 || err != nil {
-    fmt.Println(err)
+    fmt.Println(status, err)
     return
   }
   uc, err := fast.SearchUserClubs()

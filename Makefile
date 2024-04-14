@@ -23,6 +23,7 @@ docker-start:
 
 test:
 	go test -v
+	go vet .
 
 run:
 	go run cmd/main.go

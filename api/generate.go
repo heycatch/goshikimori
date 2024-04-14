@@ -1,6 +1,9 @@
 package api
 
-import "strconv"
+import (
+  "strconv"
+  "strings"
+)
 
 // Auxiliary function to get the correct list of genres.
 //
@@ -11,8 +14,17 @@ func GenerateGenres(name string, genres []Genres) map[int]string {
   data := make(map[int]string)
   for _, v := range genres {
     if v.Entry_type == name {
-      data[v.Id] = strconv.Itoa(v.Id) + "-" + v.Name
+      data[v.Id] = toString(strconv.Itoa(v.Id), v.Name)
     }
   }
   return data
+}
+
+func toString(id, name string) string {
+  var res strings.Builder
+  res.Grow(len(id) + 1 + len(name))
+  res.WriteString(id)
+  res.WriteString("-")
+  res.WriteString(name)
+  return res.String()
 }

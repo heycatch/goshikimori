@@ -3,19 +3,19 @@ package goshikimori
 import "testing"
 
 func TestIdsToString(t *testing.T) {
-  if IdsToStirng([]int{}) == "" {
+  if IdsToString([]int{}) == "" {
     t.Log("IdsTostring passed")
   } else {
     t.Error("IdsToString failed")
   }
 
-  if IdsToStirng([]int{0, 0}) == "" {
+  if IdsToString([]int{0, 0}) == "" {
     t.Log("IdsTostring passed")
   } else {
     t.Error("IdsToString failed")
   }
 
-  if IdsToStirng([]int{1, 2, 3}) == "1,2,3" {
+  if IdsToString([]int{1, 2, 3}) == "1,2,3" {
     t.Log("IdsTostring passed")
   } else {
     t.Error("IdsToString failed")

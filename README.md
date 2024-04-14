@@ -5,7 +5,6 @@ A small library for interacting with shikimori, written in golang.
 * Work with API occurs only through `OAuth2`.
 * No dependencies on other libraries.
 * The GNU [make](https://www.gnu.org/software/make/manual/make.html) utility is used for tests and builds.
-* Minimum language version >= `1.18`(generics are used).
 
 ### Install
 ```bash

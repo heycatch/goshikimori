@@ -16,6 +16,8 @@ import (
   "encoding/json"
   "net/url"
   "errors"
+  "strconv"
+  "sync"
 
   "github.com/heycatch/goshikimori/api"
 )
@@ -56,6 +58,8 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
   return u, resp.StatusCode, nil
 }
 
+// FIXME: Limit always returns +1 of the given number.
+//
 // Name: user name.
 //
 // If 'Options' empty fields:
@@ -116,7 +120,7 @@ func (f *FastId) SearchUserFriends(r Result) ([]api.UserFriends, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertUser(f.Id, "friends?" + r.OptionsUsers()), 10,
+    "users/" + strconv.Itoa(f.Id) + "/friends?" + r.OptionsUsers(), 10,
   )
   defer cancel()
 
@@ -147,7 +151,7 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertUser(f.Id, "clubs"), 10,
+    "users/" + strconv.Itoa(f.Id) + "/clubs", 10,
   )
   defer cancel()
 
@@ -169,6 +173,8 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
   return uc, nil
 }
 
+// FIXME: Limit always returns +1 of the given number.
+//
 // If 'Options' empty fields:
 //  - Page: 1;
 //  - Limit: 1;
@@ -192,7 +198,7 @@ func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertUserRates(f.Id, "anime_rates", r.OptionsAnimeRates()), 10,
+    "users/" + strconv.Itoa(f.Id) + "/anime_rates?" + r.OptionsAnimeRates(), 10,
   )
   defer cancel()
 
@@ -214,6 +220,8 @@ func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
   return ar, nil
 }
 
+// FIXME: Limit always returns +1 of the given number.
+//
 // If 'Options' empty fields:
 //  - Page: 1;
 //  - Limit: 1;
@@ -235,7 +243,7 @@ func (f *FastId) SearchUserMangaRates(r Result) ([]api.UserMangaRates, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertUserRates(f.Id, "manga_rates", r.OptionsMangaRates()), 10,
+    "users/" + strconv.Itoa(f.Id) + "/manga_rates?" + r.OptionsMangaRates(), 10,
   )
   defer cancel()
 
@@ -266,7 +274,7 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertUser(f.Id, "favourites"), 10,
+    "users/" + strconv.Itoa(f.Id) + "/favourites", 10,
   )
   defer cancel()
 
@@ -288,6 +296,8 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
   return uf, nil
 }
 
+// FIXME: Limit always returns +1 of the given number.
+//
 // If 'Options' empty fields:
 //  - Page: 1;
 //  - Limit: 1;
@@ -309,7 +319,7 @@ func (f *FastId) SearchUserHistory(r Result) ([]api.UserHistory, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertUserRates(f.Id, "history", r.OptionsUserHistory()), 10,
+    "users/" + strconv.Itoa(f.Id) + "/history?" + r.OptionsUserHistory(), 10,
   )
   defer cancel()
 
@@ -340,7 +350,7 @@ func (f *FastId) SearchUserBans() ([]api.Bans, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertUser(f.Id, "bans"), 10,
+    "users/" + strconv.Itoa(f.Id) + "/bans", 10,
   )
   defer cancel()
 
@@ -370,8 +380,7 @@ func (c *Configuration) WhoAmi() (api.Who, int, error) {
   var client = &http.Client{}
 
   get, cancel := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
-    "users/whoami", 10,
+    c.Application, c.AccessToken, "users/whoami", 10,
   )
   defer cancel()
 
@@ -402,7 +411,7 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertSearchById("animes", f.Id), 10,
+    "animes/" + strconv.Itoa(f.Id), 10,
   )
   defer cancel()
 
@@ -516,7 +525,7 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertSearchById("mangas", f.Id), 10,
+    "mangas/" + strconv.Itoa(f.Id), 10,
   )
   defer cancel()
 
@@ -627,7 +636,7 @@ func (f *FastId) SearchRanobe() (api.Manga, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertSearchById("ranobe", f.Id), 10,
+    "ranobe/" + strconv.Itoa(f.Id), 10,
   )
   defer cancel()
 
@@ -983,7 +992,7 @@ func (f *FastId) SearchAnimeScreenshots() ([]api.AnimeScreenshots, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertAnime(f.Id, "screenshots"), 10,
+    "animes/" + strconv.Itoa(f.Id) + "/screenshots", 10,
   )
   defer cancel()
 
@@ -1014,7 +1023,7 @@ func (f *FastId) SearchAnimeFranchise() (api.Franchise, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertFranchise(f.Id, "animes"), 10,
+    "animes/" + strconv.Itoa(f.Id) + "/franchise", 10,
   )
   defer cancel()
 
@@ -1044,7 +1053,7 @@ func (f *FastId) SearchMangaFranchise() (api.Franchise, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertFranchise(f.Id, "mangas"), 10,
+    "mangas/" + strconv.Itoa(f.Id) + "/franchise", 10,
   )
   defer cancel()
 
@@ -1074,7 +1083,7 @@ func (f *FastId) SearchRanobeFranchise() (api.Franchise, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertFranchise(f.Id, "ranobe"), 10,
+    "ranobe/" + strconv.Itoa(f.Id) + "/franchise", 10,
   )
   defer cancel()
 
@@ -1104,7 +1113,7 @@ func (f *FastId) SearchAnimeExternalLinks() ([]api.ExternalLinks, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertExternalLinks(f.Id, "animes"), 10,
+    "animes/" + strconv.Itoa(f.Id) + "/external_links", 10,
   )
   defer cancel()
 
@@ -1134,7 +1143,37 @@ func (f *FastId) SearchMangaExternalLinks() ([]api.ExternalLinks, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertExternalLinks(f.Id, "mangas"), 10,
+    "mangas/" + strconv.Itoa(f.Id) + "/external_links", 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, err
+  }
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &el); err != nil {
+    return nil, err
+  }
+
+  return el, nil
+}
+
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/external_links
+func (f *FastId) SearchRanobeExternalLinks() ([]api.ExternalLinks, error) {
+  var el []api.ExternalLinks
+  var client = &http.Client{}
+
+  get, cancel := NewGetRequestWithCancel(
+    f.Conf.Application, f.Conf.AccessToken,
+    "ranobe/" + strconv.Itoa(f.Id) + "/external_links", 10,
   )
   defer cancel()
 
@@ -1164,7 +1203,7 @@ func (f *FastId) SearchSimilarAnime() ([]api.Animes, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertSimilar(f.Id, "animes"), 10,
+    "animes/" + strconv.Itoa(f.Id) + "/similar", 10,
   )
   defer cancel()
 
@@ -1195,7 +1234,7 @@ func (f *FastId) SearchSimilarManga() ([]api.Mangas, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertSimilar(f.Id, "mangas"), 10,
+    "mangas/" + strconv.Itoa(f.Id) + "/similar", 10,
   )
   defer cancel()
 
@@ -1226,7 +1265,7 @@ func (f *FastId) SearchSimilarRanobe() ([]api.Mangas, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertSimilar(f.Id, "ranobe"), 10,
+    "ranobe/" + strconv.Itoa(f.Id) + "/similar", 10,
   )
   defer cancel()
 
@@ -1257,7 +1296,7 @@ func (f *FastId) SearchRelatedAnime() ([]api.RelatedAnimes, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertRelated(f.Id, "animes"), 10,
+    "animes/" + strconv.Itoa(f.Id) + "/related", 10,
   )
   defer cancel()
 
@@ -1288,7 +1327,7 @@ func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertRelated(f.Id, "mangas"), 10,
+    "mangas/" + strconv.Itoa(f.Id) + "/related", 10,
   )
   defer cancel()
 
@@ -1319,7 +1358,7 @@ func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertRelated(f.Id, "ranobe"), 10,
+    "ranobe/" + strconv.Itoa(f.Id) + "/related", 10,
   )
   defer cancel()
 
@@ -1385,11 +1424,15 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
   return cl, resp.StatusCode, nil
 }
 
+// FIXME: The limit does not work and always gives the maximum amount.
+//
 // If 'Options' empty fields:
 //  - Page: 1;
+//  - Limit: 1;
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
+//  - Limit: 20 maximum;
 //
 // More information can be found in the [example].
 //
@@ -1400,7 +1443,7 @@ func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertClub(f.Id, "animes") + "?" + r.OptionsClubInformation(), 10,
+    "clubs/" + strconv.Itoa(f.Id) + "/animes?" + r.OptionsClubAnimeManga(), 10,
   )
   defer cancel()
 
@@ -1422,11 +1465,15 @@ func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
   return a, nil
 }
 
+// FIXME: The limit does not work and always gives the maximum amount.
+//
 // If 'Options' empty fields:
 //  - Page: 1;
+//  - Limit: 1;
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
+//  - Limit: 20 maximum;
 //
 // More information can be found in the [example].
 //
@@ -1437,7 +1484,7 @@ func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertClub(f.Id, "mangas") + "?" + r.OptionsClubInformation(), 10,
+    "clubs/" + strconv.Itoa(f.Id) + "/mangas?" + r.OptionsClubAnimeManga(), 10,
   )
   defer cancel()
 
@@ -1459,11 +1506,56 @@ func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
   return m, nil
 }
 
+// FIXME: The limit does not work and always gives the maximum amount.
+//
 // If 'Options' empty fields:
 //  - Page: 1;
+//  - Limit: 1;
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
+//  - Limit: 20 maximum;
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
+func (f *FastId) SearchClubRanobe(r Result) ([]api.Mangas, error) {
+  var m []api.Mangas
+  var client = &http.Client{}
+
+  get, cancel := NewGetRequestWithCancel(
+    f.Conf.Application, f.Conf.AccessToken,
+    "clubs/" + strconv.Itoa(f.Id) + "/ranobe?" + r.OptionsClubAnimeManga(), 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &m); err != nil {
+    return nil, err
+  }
+
+  return m, nil
+}
+
+// FIXME: The limit does not work and always gives the maximum amount.
+//
+// If 'Options' empty fields:
+//  - Page: 1;
+//  - Limit: 1;
+//
+// 'Options' settings:
+//  - Page: 100000 maximum;
+//  - Limit: 20 maximum;
 //
 // More information can be found in the [example].
 //
@@ -1474,7 +1566,7 @@ func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertClub(f.Id, "characters") + "?" + r.OptionsClubInformation(), 10,
+    "clubs/" + strconv.Itoa(f.Id) + "/characters?" + r.OptionsClubAnimeManga(), 10,
   )
   defer cancel()
 
@@ -1496,11 +1588,15 @@ func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
   return ci, nil
 }
 
+// FIXME: The limit does not work and always gives the maximum amount.
+//
 // If 'Options' empty fields:
 //  - Page: 1;
+//  - Limit: 1;
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
+//  - Limit: 30 maximum;
 //
 // More information can be found in the [example].
 //
@@ -1511,7 +1607,7 @@ func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertClub(f.Id, "clubs") + "?" + r.OptionsClubInformation(), 10,
+    "clubs/" + strconv.Itoa(f.Id) + "/clubs?" + r.OptionsClub(), 10,
   )
   defer cancel()
 
@@ -1533,11 +1629,15 @@ func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
   return cc, nil
 }
 
+// FIXME: The limit does not work and always gives the maximum amount.
+//
 // If 'Options' empty fields:
 //  - Page: 1;
+//  - Limit: 1;
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
+//  - Page: 4 maximum;
 //
 // More information can be found in the [example].
 //
@@ -1548,7 +1648,7 @@ func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, error) 
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertClub(f.Id, "collections") + "?" + r.OptionsClubInformation(), 10,
+    "clubs/" + strconv.Itoa(f.Id) + "/collections?" + r.OptionsClubCollections(), 10,
   )
   defer cancel()
 
@@ -1570,16 +1670,26 @@ func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, error) 
   return cc, nil
 }
 
+// FIXME: Limit always returns +1 of the given number.
+//
+// If 'Options' empty fields:
+//  - Page: 1;
+//  - Limit: 1;
+//
+// 'Options' settings:
+//  - Page: 100000 maximum;
+//  - Limit: 100 maximum;
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
-func (f *FastId) SearchClubMembers() ([]api.UserFriends, error) {
+func (f *FastId) SearchClubMembers(r Result) ([]api.UserFriends, error) {
   var uf []api.UserFriends
   var client = &http.Client{}
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertClub(f.Id, "members"), 10,
+    "clubs/" + strconv.Itoa(f.Id) + "/members?" + r.OptionsUsers(), 10,
   )
   defer cancel()
 
@@ -1601,16 +1711,26 @@ func (f *FastId) SearchClubMembers() ([]api.UserFriends, error) {
   return uf, nil
 }
 
+// FIXME: Limit always returns +1 of the given number.
+//
+// If 'Options' empty fields:
+//  - Page: 1;
+//  - Limit: 1;
+//
+// 'Options' settings:
+//  - Page: 100000 maximum;
+//  - Limit: 100 maximum;
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
-func (f *FastId) SearchClubImages() ([]api.ClubImages, error) {
+func (f *FastId) SearchClubImages(r Result) ([]api.ClubImages, error) {
   var cm []api.ClubImages
   var client = &http.Client{}
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertClub(f.Id, "images"), 10,
+    "clubs/" + strconv.Itoa(f.Id) + "/images?" + r.OptionsUsers(), 10,
   )
   defer cancel()
 
@@ -1640,7 +1760,7 @@ func (f *FastId) ClubJoin() (int, error) {
 
   post, cancel := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertClub(f.Id, "join"), 10,
+    "clubs/" + strconv.Itoa(f.Id) + "/join", 10,
   )
   defer cancel()
 
@@ -1661,7 +1781,7 @@ func (f *FastId) ClubLeave() (int, error) {
 
   post, cancel := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertClub(f.Id, "leave"), 10,
+    "clubs/" + strconv.Itoa(f.Id) + "/leave", 10,
   )
   defer cancel()
 
@@ -1688,7 +1808,7 @@ func (f *FastId) SearchAchievement() ([]api.Achievements, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertAchievements(f.Id), 10,
+    "achievements?user_id=" + strconv.Itoa(f.Id), 10,
   )
   defer cancel()
 
@@ -1719,7 +1839,7 @@ func (f *FastId) SearchAnimeVideos() ([]api.AnimeVideos, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertAnime(f.Id, "videos"), 10,
+    "animes/" + strconv.Itoa(f.Id) + "/videos", 10,
   )
   defer cancel()
 
@@ -1750,7 +1870,7 @@ func (f *FastId) SearchAnimeRoles() ([]api.Roles, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertRoles(f.Id, "animes"), 10,
+    "animes/" + strconv.Itoa(f.Id) + "/roles", 10,
   )
   defer cancel()
 
@@ -1781,7 +1901,38 @@ func (f *FastId) SearchMangaRoles() ([]api.Roles, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertRoles(f.Id, "mangas"), 10,
+    "mangas/" + strconv.Itoa(f.Id) + "/roles", 10,
+  )
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &r); err != nil {
+    return nil, err
+  }
+
+  return r, nil
+}
+
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/roles
+func (f *FastId) SearchRanobeRoles() ([]api.Roles, error) {
+  var r []api.Roles
+  var client = &http.Client{}
+
+  get, cancel := NewGetRequestWithCancel(
+    f.Conf.Application, f.Conf.AccessToken,
+    "ranobe/" + strconv.Itoa(f.Id) + "/roles", 10,
   )
   defer cancel()
 
@@ -1850,7 +2001,7 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
 
   get, cancel := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    ConvertCalendar(r.OptionsCalendar()), 10,
+    "calendar?" + r.OptionsCalendar(), 10,
   )
   defer cancel()
 
@@ -1882,7 +2033,7 @@ func (c *Configuration) SearchGenres(name string) ([]api.Genres, int, error) {
   var client = &http.Client{}
 
   get, cancel := NewGetRequestWithCancel(
-    c.Application, c.AccessToken, ConvertGenres(name), 10,
+    c.Application, c.AccessToken, "genres?kind=" + name, 10,
   )
   defer cancel()
 
@@ -2003,7 +2154,7 @@ func (f *FastId) AddFriend() (api.FriendRequest, error) {
 
   post, cancel := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertFriend(f.Id), 10,
+    "friends/" + strconv.Itoa(f.Id), 10,
   )
   defer cancel()
 
@@ -2034,7 +2185,7 @@ func (f *FastId) RemoveFriend() (api.FriendRequest, error) {
 
   remove, cancel := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertFriend(f.Id), 10,
+    "friends/" + strconv.Itoa(f.Id), 10,
   )
   defer cancel()
 
@@ -2067,7 +2218,7 @@ func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertUser(f.Id, "unread_messages"), 10,
+    "users/" + strconv.Itoa(f.Id) + "/unread_messages", 10,
   )
   defer cancel()
 
@@ -2108,7 +2259,7 @@ func (f *FastId) UserMessages(r Result) ([]api.Messages, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertMessages(f.Id, r.OptionsMessages()), 10,
+    "users/" + strconv.Itoa(f.Id) + "/messages?" + r.OptionsMessages(), 10,
   )
   defer cancel()
 
@@ -2138,7 +2289,7 @@ func (c *Configuration) SearchConstantsAnime() (api.Constants, int, error) {
   var client = &http.Client{}
 
   get, cancel := NewGetRequestWithCancel(
-    c.Application, c.AccessToken, ConvertConstants("anime"), 10,
+    c.Application, c.AccessToken, "constants/anime", 10,
   )
   defer cancel()
 
@@ -2168,7 +2319,7 @@ func (c *Configuration) SearchConstantsManga() (api.Constants, int, error) {
   var client = &http.Client{}
 
   get, cancel := NewGetRequestWithCancel(
-    c.Application, c.AccessToken, ConvertConstants("manga"), 10,
+    c.Application, c.AccessToken, "constants/manga", 10,
   )
   defer cancel()
 
@@ -2198,7 +2349,7 @@ func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, int, e
   var client = &http.Client{}
 
   get, cancel := NewGetRequestWithCancel(
-    c.Application, c.AccessToken, ConvertConstants("user_rate"), 10,
+    c.Application, c.AccessToken, "constants/user_rate", 10,
   )
   defer cancel()
 
@@ -2228,7 +2379,7 @@ func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, int, error) {
   var client = &http.Client{}
 
   get, cancel := NewGetRequestWithCancel(
-    c.Application, c.AccessToken, ConvertConstants("club"), 10,
+    c.Application, c.AccessToken, "constants/club", 10,
   )
   defer cancel()
 
@@ -2258,7 +2409,7 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, e
   var client = &http.Client{}
 
   get, cancel := NewGetRequestWithCancel(
-    c.Application, c.AccessToken, ConvertConstants("smileys"), 10,
+    c.Application, c.AccessToken, "constants/smileys", 10,
   )
   defer cancel()
 
@@ -2294,7 +2445,8 @@ func (c *Configuration) RandomAnimes(limit int) ([]api.Animes, int, error) {
   if limit < 1 || limit > 50 { limit = 1 }
 
   get, cancel := NewGetRequestWithCancel(
-    c.Application, c.AccessToken, ConvertRandom("animes", limit), 10,
+    c.Application, c.AccessToken,
+    "animes?order=random&limit=" + strconv.Itoa(limit), 10,
   )
   defer cancel()
 
@@ -2330,7 +2482,8 @@ func (c *Configuration) RandomMangas(limit int) ([]api.Mangas, int, error) {
   if limit < 1 || limit > 50 { limit = 1 }
 
   get, cancel := NewGetRequestWithCancel(
-    c.Application, c.AccessToken, ConvertRandom("mangas", limit), 10,
+    c.Application, c.AccessToken,
+    "mangas?order=random&limit=" + strconv.Itoa(limit), 10,
   )
   defer cancel()
 
@@ -2366,7 +2519,8 @@ func (c *Configuration) RandomRanobes(limit int) ([]api.Mangas, int, error) {
   if limit < 1 || limit > 50 { limit = 1 }
 
   get, cancel := NewGetRequestWithCancel(
-    c.Application, c.AccessToken, ConvertRandom("ranobe", limit), 10,
+    c.Application, c.AccessToken,
+    "ranobe?order=random&limit=" + strconv.Itoa(limit), 10,
   )
   defer cancel()
 
@@ -2397,7 +2551,7 @@ func (f *FastId) SearchCharacter() (api.Character, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertCharacters(f.Id), 10,
+    "characters/" + strconv.Itoa(f.Id), 10,
   )
   defer cancel()
 
@@ -2461,7 +2615,7 @@ func (f *FastId) SearchPeople() (api.People, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertPeople(f.Id), 10,
+    "people/" + strconv.Itoa(f.Id), 10,
   )
   defer cancel()
 
@@ -2532,17 +2686,26 @@ func (f *FastId) FavoritesCreate(linked_type string, kind string) (api.Favorites
   var fa api.Favorites
   var client = &http.Client{}
 
-  type_map := map[string]int8{"Anime": 1, "Manga": 2, "Ranobe": 3, "Person": 4, "Character": 5}
-  _, ok_type := type_map[linked_type]
-  if !ok_type { return fa, errors.New("incorrect string, try again and watch the upper case") }
+  var wg sync.WaitGroup
+  wg.Add(2)
 
-  kind_map := map[string]int8{"common": 1, "seyu": 2, "mangaka": 3, "producer": 4, "person": 5}
-  _, ok_kind := kind_map[kind]
-  if !ok_kind { kind = "" }
+  ch := make(chan bool)
+
+  go simpleSearchBool(&wg, ch, linked_type, []string{
+    "Anime", "Manga", "Ranobe", "Person", "Character",
+  })
+  if !<-ch { return fa, errors.New("incorrect string, try again and watch the upper case") }
+
+  go simpleSearchBool(&wg, ch, kind, []string{
+    "common", "seyu", "mangaka", "producer", "person",
+  })
+  if !<-ch { kind = "" }
+
+  wg.Wait()
 
   post, cancel := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertFavorites(linked_type, f.Id, kind), 10,
+    "favorites/" + linked_type + "/" + strconv.Itoa(f.Id) + "/" + kind, 10,
   )
   defer cancel()
 
@@ -2573,13 +2736,21 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
   var ff api.Favorites
   var client = &http.Client{}
 
-  type_map := map[string]int8{"Anime": 1, "Manga": 2, "Ranobe": 3, "Person": 4, "Character": 5}
-  _, ok_type := type_map[linked_type]
-  if !ok_type { return ff, errors.New("incorrect string, try again and watch the upper case") }
+  var wg sync.WaitGroup
+  wg.Add(1)
+
+  ch := make(chan bool)
+
+  go simpleSearchBool(&wg, ch, linked_type, []string{
+    "Anime", "Manga", "Ranobe", "Person", "Character",
+  })
+  if !<-ch { return ff, errors.New("incorrect string, try again and watch the upper case") }
+
+  wg.Wait()
 
   remove, cancel := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertFavorites(linked_type, f.Id, ""), 10,
+    "favorites/" + linked_type + "/" + strconv.Itoa(f.Id), 10,
   )
   defer cancel()
 
@@ -2615,7 +2786,7 @@ func (f *FastId) FavoritesReorder(position int) (int, error) {
 
   post, cancel := NewReorderPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertFavoritesReorder(f.Id), position, 10,
+    "favorites/" + strconv.Itoa(f.Id) + "/reorder", position, 10,
   )
   defer cancel()
 
@@ -2637,7 +2808,7 @@ func (f *FastId) AddIgnoreUser() (api.IgnoreUser, error) {
 
   post, cancel := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertIgnoreUser(f.Id), 10,
+    "v2/users/" + strconv.Itoa(f.Id) + "/ignore", 10,
   )
   defer cancel()
 
@@ -2668,7 +2839,7 @@ func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, error) {
 
   remove, cancel := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertIgnoreUser(f.Id), 10,
+    "v2/users/" + strconv.Itoa(f.Id) + "/ignore", 10,
   )
   defer cancel()
 
@@ -2728,7 +2899,7 @@ func (f *FastId) SearchDialogs() ([]api.SearchDialogs, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertDialogs(f.Id), 10,
+    "dialogs/" + strconv.Itoa(f.Id), 10,
   )
   defer cancel()
 
@@ -2759,7 +2930,7 @@ func (f *FastId) DeleteDialogs() (api.FriendRequest, error) {
 
   remove, cancel := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertDialogs(f.Id), 10,
+    "dialogs/" + strconv.Itoa(f.Id), 10,
   )
   defer cancel()
 
@@ -2791,7 +2962,7 @@ func (f *FastId) UserBriefInfo() (api.Info, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertUserBriefInfo(f.Id), 10,
+    "users/" + strconv.Itoa(f.Id) + "/info", 10,
   )
   defer cancel()
 
@@ -2887,7 +3058,7 @@ func (f *FastId) SearchTopicsAnime(r Result) ([]api.Topics, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertTopicsType(f.Id, "animes") + "?" + r.OptionsClub(), 10,
+    "animes/" + strconv.Itoa(f.Id) + "/topics?" + r.OptionsClub(), 10,
   )
   defer cancel()
 
@@ -2926,7 +3097,7 @@ func (f *FastId) SearchTopicsManga(r Result) ([]api.Topics, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertTopicsType(f.Id, "mangas") + "?" + r.OptionsClub(), 10,
+    "mangas/" + strconv.Itoa(f.Id) + "/topics?" + r.OptionsClub(), 10,
   )
   defer cancel()
 
@@ -2965,7 +3136,7 @@ func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, error) {
 
   get, cancel := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    ConvertTopicsType(f.Id, "ranobe") + "?" + r.OptionsClub(), 10,
+    "ranobe/" + strconv.Itoa(f.Id) + "/topics?" + r.OptionsClub(), 10,
   )
   defer cancel()
 
@@ -3037,6 +3208,16 @@ func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
   return t, resp.StatusCode, nil
 }
 
+// FIXME: Limit always returns +1 of the given number.
+//
+// If 'Options' empty fields:
+//  - Page: 1;
+//  - Limit: 1;
+//
+// 'Options' settings:
+//  - Page: 100000 maximum;
+//  - Limit: 30 maximum;
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
@@ -3067,6 +3248,12 @@ func (c *Configuration) SearchTopicsUpdates(r Result) ([]api.TopicsUpdates, int,
   return t, resp.StatusCode, nil
 }
 
+// If 'Options' empty fields:
+//  - Limit: 1;
+//
+// 'Options' settings:
+//  - Limit: 10 maximum;
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
@@ -3107,7 +3294,7 @@ func (c *Configuration) SearchTopicsId(id int) (api.TopicsId, int, error) {
   var client = &http.Client{}
 
   get, cancel := NewGetRequestWithCancel(
-    c.Application, c.AccessToken, ConvertTopicsId(id), 10,
+    c.Application, c.AccessToken, "topics/" + strconv.Itoa(id), 10,
   )
   defer cancel()
 
@@ -3139,7 +3326,8 @@ func (c *Configuration) AddIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
   var client = &http.Client{}
 
   post, cancel := NewPostRequestWithCancel(
-    c.Application, c.AccessToken, ConvertIgnoreTopic(id), 10,
+    c.Application, c.AccessToken,
+    "v2/topics/" + strconv.Itoa(id) + "/ignore", 10,
   )
   defer cancel()
 
@@ -3171,7 +3359,8 @@ func (c *Configuration) RemoveIgnoreTopic(id int) (api.IgnoreTopic, int, error) 
   var client = &http.Client{}
 
   remove, cancel := NewDeleteRequestWithCancel(
-    c.Application, c.AccessToken, ConvertIgnoreTopic(id), 10,
+    c.Application, c.AccessToken, 
+    "v2/topics/" + strconv.Itoa(id) + "/ignore", 10,
   )
   defer cancel()
 
@@ -3239,7 +3428,7 @@ func (c *Configuration) ReadMessage(id int) (api.Messages, int, error) {
   var m api.Messages
 
   get, cancel := NewGetRequestWithCancel(
-    c.Application, c.AccessToken, ConvertMessage(id), 10,
+    c.Application, c.AccessToken, "messages/" + strconv.Itoa(id), 10,
   )
   defer cancel()
 
@@ -3319,7 +3508,7 @@ func (c *Configuration) ChangeMessage(id int, message string) (api.Messages, int
   var m api.Messages
 
   put, cancel := NewChangeMessagePutRequestWithCancel(
-    c.Application, c.AccessToken, ConvertMessage(id), message, 10,
+    c.Application, c.AccessToken, "messages/" + strconv.Itoa(id), message, 10,
   )
   defer cancel()
 
@@ -3352,7 +3541,7 @@ func (c *Configuration) DeleteMessage(id int) (int, error) {
   var client = &http.Client{}
 
   del, cancel := NewDeleteMessageDeleteRequestWithCancel(
-    c.Application, c.AccessToken, ConvertMessage(id), 10,
+    c.Application, c.AccessToken, "messages/" + strconv.Itoa(id), 10,
   )
   defer cancel()
 

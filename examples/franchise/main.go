@@ -15,53 +15,45 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
 
-  // franchise anime
+  // franchise anime.
   fast_anime, status, err := c.FastIdAnime("initial d")
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+  fa, err := fast_anime.SearchAnimeFranchise()
   if err != nil {
     fmt.Println(err)
     return
   }
-  if status == 200 {
-    fa, err := fast_anime.SearchAnimeFranchise()
-    if err != nil {
-      fmt.Println(err)
-      return
-    }
-    if len(fa.Nodes) == 0 {
-      fmt.Println("anime franchise not found")
-      return
-    }
-    for _, v := range fa.Nodes {
-      fmt.Println(v.Id, v.Name, v.Kind)
-    }
-  } else {
-    fmt.Println(status)
+  if len(fa.Nodes) == 0 {
+    fmt.Println("anime franchise not found")
+    return
+  }
+  for _, v := range fa.Nodes {
+    fmt.Println(v.Id, v.Name, v.Kind)
   }
 
-  // franchise manga
+  // franchise manga.
   fast_manga, status, err := c.FastIdManga("naruto")
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+  fm, err := fast_manga.SearchMangaFranchise()
   if err != nil {
     fmt.Println(err)
     return
   }
-  if status == 200 {
-    fm, err := fast_manga.SearchMangaFranchise()
-    if err != nil {
-      fmt.Println(err)
-      return
-    }
-    if len(fm.Nodes) == 0 {
-      fmt.Println("manga franchise not found")
-      return
-    }
-    for _, v := range fm.Nodes {
-      fmt.Println(v.Id, v.Name, v.Kind)
-    }
-  } else {
-    fmt.Println(status)
+  if len(fm.Nodes) == 0 {
+    fmt.Println("manga franchise not found")
+    return
+  }
+  for _, v := range fm.Nodes {
+    fmt.Println(v.Id, v.Name, v.Kind)
   }
 
-  // franchise ranobe
+  // franchise ranobe.
   fast_ranobe, status, err := c.FastIdRanobe("sword art")
   if status != 200 || err != nil {
     fmt.Println(status, err)

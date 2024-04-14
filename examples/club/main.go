@@ -15,10 +15,7 @@ func conf() *g.Configuration {
 // Too many examples, take turns using.
 func main() {
   c := conf()
-  // First *Options->SearchClub().
   o := &g.Options{Page: 1, Limit: 2}
-  // Second *Options->SearchClub...().
-  oo := &g.Options{Page: 1}
 
   // PART 1
   a, status, err := c.SearchClubs("milf", o)
@@ -35,13 +32,14 @@ func main() {
   }
 
   // PART 2
-  fast_spok, status, err := c.FastIdClub("Спокойные деньки")
+  fast_spok, status, err := c.FastIdClub("Ahnenerbe")
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return
   }
+
   // Finding anime titles in the club.
-  sca, err := fast_spok.SearchClubAnimes(oo)
+  sca, err := fast_spok.SearchClubAnimes(o)
   if err != nil {
     fmt.Println(err)
     return
@@ -55,7 +53,7 @@ func main() {
   }
 
   // Finding manga titles in the club.
-  scm, err := fast_spok.SearchClubMangas(oo)
+  scm, err := fast_spok.SearchClubMangas(o)
   if err != nil {
     fmt.Println(err)
     return
@@ -68,8 +66,22 @@ func main() {
     fmt.Println(v.Id, v.Name, v.Score)
   }
 
+  // Finding ranobe titles in the club.
+  scr, err := fast_spok.SearchClubRanobe(o)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if len(scr) == 0 {
+    fmt.Println("Club not found")
+    return
+  }
+  for _, v := range scr {
+    fmt.Println(v.Id, v.Name, v.Score)
+  }
+
   // Club members.
-  scmem, err := fast_spok.SearchClubMembers()
+  scmem, err := fast_spok.SearchClubMembers(o)
   if err != nil {
     fmt.Println(err)
     return
@@ -82,14 +94,8 @@ func main() {
     fmt.Println(v.Id, v.Nickname, v.Last_online_at)
   }
 
-  // PART 3
-  fast_pers, status, err := c.FastIdClub("Самые прекрасные персонажи")
-  if status != 200 || err != nil {
-    fmt.Println(status, err)
-    return
-  }
-  // Added characters in the club.
-  scc, err := fast_pers.SearchClubCharacters(oo)
+  // Club characters.
+  scc, err := fast_spok.SearchClubCharacters(o)
   if err != nil {
     fmt.Println(err)
     return
@@ -102,14 +108,14 @@ func main() {
     fmt.Println(v.Id, v.Name, v.Russian)
   }
 
-  // PART 4
-  fast_yuri, status, err := c.FastIdClub("Yuritopia")
+  fast_cude, status, err := c.FastIdClub("Кудере")
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return
   }
-  // Third-party added clubs.
-  scl, err := fast_yuri.SearchClubClubs(oo)
+
+  // Club clubs.
+  scl, err := fast_cude.SearchClubClubs(o)
   if err != nil {
     fmt.Println(err)
     return
@@ -121,8 +127,9 @@ func main() {
   for _, v := range scl {
     fmt.Println(v.Id, v.Name, v.Is_censored)
   }
-  // Added pictures in the club.
-  sci, err := fast_yuri.SearchClubImages()
+
+  // Club images.
+  sci, err := fast_cude.SearchClubImages(o)
   if err != nil {
     fmt.Println(err)
     return
@@ -135,14 +142,8 @@ func main() {
     fmt.Println(v.Id, v.Original_url, v.Can_destroy, v.User_id)
   }
 
-  // PART 5
-  // Discussion at the club.
-  fast_inter, status, err := c.FastIdClub("Интерактивы от DaHanka")
-  if status != 200 || err != nil {
-    fmt.Println(status, err)
-    return
-  }
-  sccl, err := fast_inter.SearchClubCollections(oo)
+  // Club collections.
+  sccl, err := fast_cude.SearchClubCollections(o)
   if err != nil {
     fmt.Println(err)
     return
@@ -155,7 +156,7 @@ func main() {
     fmt.Println(v.Body, v.Created_at, v.Comments_count)
   }
 
-  // PART 6
+  // PART 3
   // Join/leave from club.
   fast_faq, status, err := c.FastIdClub("FAQ - Часто задаваемые вопросы")
   if status != 200 || err != nil {
@@ -163,7 +164,7 @@ func main() {
     return
   }
   cc, err := fast_faq.ClubJoin()
-  //cc, err := fast_fqa.ClubLeave()
+  //cc, err := fast_faq.ClubLeave()
   if err != nil {
     fmt.Println(err)
     return

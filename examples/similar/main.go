@@ -15,53 +15,45 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
 
-  // similar anime
+  // Similar anime.
   fast_anime, status, err := c.FastIdAnime("vampire knight")
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+  a, err := fast_anime.SearchSimilarAnime()
   if err != nil {
     fmt.Println(err)
     return
   }
-  if status == 200 {
-    a, err := fast_anime.SearchSimilarAnime()
-    if err != nil {
-      fmt.Println(err)
-      return
-    }
-    if len(a) == 0 {
-      fmt.Println("Anime not found")
-      return
-    }
-    for _, v := range a {
-      fmt.Println(v.Name, v.Id, v.Russian)
-    }
-  } else {
-    fmt.Println(status)
+  if len(a) == 0 {
+    fmt.Println("anime not found")
+    return
+  }
+  for _, v := range a {
+    fmt.Println(v.Name, v.Id, v.Russian)
   }
 
-  // similar manga
+  // Similar manga.
   fast_manga, status, err := c.FastIdManga("initial d")
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+  m, err := fast_manga.SearchSimilarManga()
   if err != nil {
     fmt.Println(err)
     return
   }
-  if status == 200 {
-    m, err := fast_manga.SearchSimilarManga()
-    if err != nil {
-      fmt.Println(err)
-      return
-    }
-    if len(m) == 0 {
-      fmt.Println("Manga not found")
-      return
-    }
-    for _, v := range m {
-      fmt.Println(v.Name, v.Id, v.Russian)
-    }
-  } else {
-    fmt.Println(status)
+  if len(m) == 0 {
+    fmt.Println("manga not found")
+    return
+  }
+  for _, v := range m {
+    fmt.Println(v.Name, v.Id, v.Russian)
   }
 
-  // similar ranobe
+  // Similar ranobe.
   fast_ranobe, status, err := c.FastIdRanobe("sword art")
   if status != 200 || err != nil {
     fmt.Println(status, err)
@@ -73,7 +65,7 @@ func main() {
     return
   }
   if len(r) == 0 {
-    fmt.Println("Ranobe not found")
+    fmt.Println("ranobe not found")
     return
   }
   for _, v := range r {

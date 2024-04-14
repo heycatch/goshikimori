@@ -197,6 +197,20 @@ type AnimeStudios struct {
   Image         string `json:"image"`
 }
 
+type UserRate struct {
+  Id         int       `json:"id"`
+  Score      int       `json:"score"`
+  Status     string    `json:"status"`
+  Text       string    `json:"text"`
+  Episodes   int       `json:"episodes"`
+  Chapters   int       `json:"chapters"`
+  Volumes    int       `json:"volumes"`
+  Text_html  string    `json:"text_html"`
+  Rewatches  int       `json:"rewatches"`
+  Created_at time.Time `json:"created_at"`
+  Updated_at time.Time `json:"updated_at"`
+}
+
 // # Removed:
 //   Description_source: nil;
 type Anime struct {
@@ -238,7 +252,7 @@ type Anime struct {
   Studios            []AnimeStudios     `json:"studios"`
   Videos             []AnimeVideos      `json:"videos"`
   Screenshots        []AnimeScreenshots `json:"screenshots"`
-  User_rate          []UserAnimeRates   `json:"user_rate"`
+  User_rate          UserRate           `json:"user_rate"`
 }
 
 type Animes struct {
@@ -259,37 +273,37 @@ type Animes struct {
 // # Removed:
 //   Description_source: nil;
 type Manga struct {
-  Id                 int              `json:"id"`
-  Name               string           `json:"name"`
-  Russian            string           `json:"russian"`
-  Image              AnimeSize        `json:"image"`
-  Url                string           `json:"url"`
-  Kind               string           `json:"kind"`
-  Score              string           `json:"score"`
-  Status             string           `json:"status"`
-  Volumes            int              `json:"volumes"`
-  Chapters           int              `json:"chapters"`
-  Aired_on           string           `json:"aired_on"`
-  Released_on        string           `json:"released_on"`
-  English            []string         `json:"english"`
-  Japanese           []string         `json:"japanese"`
-  Synonyms           []string         `json:"synonyms"`
-  LicenseNameRu      string           `json:"license_name_ru"`
-  Description        string           `json:"description"`
-  DescriptionHTML    string           `json:"description_html"`
-  Franchise          string           `json:"franchise"`
-  Favoured           bool             `json:"favoured"`
-  Anons              bool             `json:"anons"`
-  Ongoing            bool             `json:"ongoing"`
-  Thread_id          int              `json:"thread_id"`
-  Topic_id           int              `json:"topic_id"`
-  Myanimelist_id     int              `json:"myanimelist_id"`
-  RatesScoresStats   []Stats[int]     `json:"rates_scores_stats"`
-  RatesStatusesStats []Stats[string]  `json:"rates_statuses_stats"`
-  Licensors          []string         `json:"licensors"`
-  Genres             []AnimeGenres    `json:"genres"`
-  Publishers         []Publishers     `json:"publishers"`
-  User_rate          []UserMangaRates `json:"user_rate"`
+  Id                 int             `json:"id"`
+  Name               string          `json:"name"`
+  Russian            string          `json:"russian"`
+  Image              AnimeSize       `json:"image"`
+  Url                string          `json:"url"`
+  Kind               string          `json:"kind"`
+  Score              string          `json:"score"`
+  Status             string          `json:"status"`
+  Volumes            int             `json:"volumes"`
+  Chapters           int             `json:"chapters"`
+  Aired_on           string          `json:"aired_on"`
+  Released_on        string          `json:"released_on"`
+  English            []string        `json:"english"`
+  Japanese           []string        `json:"japanese"`
+  Synonyms           []string        `json:"synonyms"`
+  LicenseNameRu      string          `json:"license_name_ru"`
+  Description        string          `json:"description"`
+  DescriptionHTML    string          `json:"description_html"`
+  Franchise          string          `json:"franchise"`
+  Favoured           bool            `json:"favoured"`
+  Anons              bool            `json:"anons"`
+  Ongoing            bool            `json:"ongoing"`
+  Thread_id          int             `json:"thread_id"`
+  Topic_id           int             `json:"topic_id"`
+  Myanimelist_id     int             `json:"myanimelist_id"`
+  RatesScoresStats   []Stats[int]    `json:"rates_scores_stats"`
+  RatesStatusesStats []Stats[string] `json:"rates_statuses_stats"`
+  Licensors          []string        `json:"licensors"`
+  Genres             []AnimeGenres   `json:"genres"`
+  Publishers         []Publishers    `json:"publishers"`
+  User_rate          UserRate        `json:"user_rate"`
 }
 
 type Mangas struct {

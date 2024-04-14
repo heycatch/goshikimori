@@ -23,7 +23,10 @@ func foundAnime() {
   if err != nil {
     fmt.Println(err)
   }
-  fmt.Println(res.Id, res.Name, res.Description, res.Released_on, res.Score)
+  fmt.Println(
+    res.Id, res.Name, res.Description, res.Released_on, res.Score,
+    res.User_rate.Score, res.User_rate.Rewatches, res.User_rate.Text,
+  )
 }
 
 func foundAnimes() {
@@ -59,7 +62,10 @@ func foundManga() {
     fmt.Println(err)
     return
   }
-  fmt.Println(res.Id, res.Name, res.Description, res.Released_on, res.Volumes, res.Chapters)
+  fmt.Println(
+    res.Id, res.Name, res.Description, res.Released_on, res.Volumes, res.Chapters,
+    res.User_rate.Score, res.User_rate.Rewatches, res.User_rate.Text,
+  )
 }
 
 func foundMangas() {
@@ -94,7 +100,10 @@ func foundRanobe() {
     fmt.Println(err)
     return
   }
-  fmt.Println(res.Id, res.Name, res.Description, res.Released_on, res.Volumes, res.Chapters)
+  fmt.Println(
+    res.Id, res.Name, res.Description, res.Released_on, res.Volumes, res.Chapters,
+    res.User_rate.Score, res.User_rate.Rewatches, res.User_rate.Text,
+  )
 }
 
 func foundRanobes() {

@@ -176,7 +176,7 @@ func markReadUnreadMessages() {
     }
   }
 
-  read, err := c.MarkReadMessages(g.IdsToStirng(ids), 1)
+  read, err := c.MarkReadMessages(g.IdsToString(ids), 1)
   if err != nil {
     fmt.Println(err)
     return

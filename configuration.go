@@ -3,6 +3,9 @@ package goshikimori
 import (
   "net/url"
   "strconv"
+  "sync"
+  "slices"
+  "strings"
 )
 
 type Configuration struct {
@@ -25,8 +28,7 @@ func Add(appname, token string) *Configuration {
 }
 
 type Options struct {
-  Order, Kind, Status, Season, Rating, Type, Target_id,
-  Target_type, Duration, Mylist, Forum, Linked_type string
+  Order, Kind, Status, Season, Rating, Type, Target_id, Target_type, Duration, Mylist, Forum, Linked_type string
   Page, Limit, Score, Linked_id int
   Censored bool
   Genre_v2 []int
@@ -44,18 +46,24 @@ type Result interface {
   OptionsUserHistory()     string
   OptionsMessages()        string
   OptionsPeople()          string
-  OptionsClubInformation() string
+  OptionsClubAnimeManga()  string
+  OptionsClubCollections() string
   OptionsTopics()          string
   OptionsTopicsHot()       string
 }
 
 // simple keyword search.
-func simpleSearch(ch chan string, target string, list []string) {
-  var temp string
-  for i := 0; i < len(list); i++ {
-    if list[i] == target { temp = list[i]; break }
-  }
-  ch <- temp
+func simpleSearchString(wg *sync.WaitGroup, ch chan string, target string, list []string) {
+  defer wg.Done()
+  i := slices.IndexFunc(list, func(s string) bool { return s == target })
+  if i == -1 { ch <- "" } else { ch <- list[i] }
+}
+
+// simple keyword search.
+func simpleSearchBool(wg *sync.WaitGroup, ch chan bool, target string, list []string) {
+  defer wg.Done()
+  i := slices.IndexFunc(list, func(s string) bool { return s == target })
+  if i == -1 { ch <- false } else { ch <- true }
 }
 
 func (o *Options) OptionsTopics() string {
@@ -66,26 +74,28 @@ func (o *Options) OptionsTopics() string {
   if o.Limit <= 0 || o.Limit >= 31 { o.Limit = 1 }
   v.Add("limit", strconv.Itoa(o.Limit))
 
-  ch := make(chan string, 2)
+  var wg sync.WaitGroup
+  wg.Add(2)
 
-  go simpleSearch(ch, o.Forum, []string{
+  ch := make(chan string)
+
+  go simpleSearchString(&wg, ch, o.Forum, []string{
     "cosplay", "animanga", "site", "games", "vn",
     "contests", "offtopic", "clubs", "my_clubs",
     "critiques", "news", "collections", "articles",
   })
   o.Forum = <-ch
-  if o.Forum == "" { o.Forum = "all" }
 
-  go simpleSearch(ch, o.Linked_type, []string{
+  go simpleSearchString(&wg, ch, o.Linked_type, []string{
     "Anime", "Manga", "Ranobe", "Character", "Person",
     "Club", "ClubPage", "Critique", "Review",
     "Contest", "CosplayGallery", "Collection", "Article",
   })
   o.Linked_type = <-ch
 
-  close(ch)
+  wg.Wait()
 
-  v.Add("forum", o.Forum)
+  if o.Forum == "" { v.Add("forum", "all") } else { v.Add("forum", o.Forum) }
   // linked_id and linked_type are only used together.
   if o.Linked_id >= 1 && o.Linked_type != "" {
     v.Add("linked_id", strconv.Itoa(o.Linked_id))
@@ -102,17 +112,19 @@ func (o *Options) OptionsMessages() string {
   if o.Limit <= 0 || o.Limit >= 101 { o.Limit = 1 }
   v.Add("limit", strconv.Itoa(o.Limit))
 
-  ch := make(chan string, 1)
+  var wg sync.WaitGroup
+  wg.Add(1)
 
-  go simpleSearch(ch, o.Type, []string{
+  ch := make(chan string)
+
+  go simpleSearchString(&wg, ch, o.Type, []string{
     "inbox", "private", "sent", "news", "notifications",
   })
   o.Type = <-ch
-  if o.Type == "" { o.Type = "news" }
 
-  close(ch)
+  wg.Wait()
 
-  v.Add("type", o.Type)
+  if o.Type == "" { v.Add("type", "news") } else { v.Add("type", o.Type) }
   return v.Encode()
 }
 
@@ -124,18 +136,20 @@ func (o *Options) OptionsUserHistory() string {
   if o.Limit <= 0 || o.Limit >= 101 { o.Limit = 1 }
   v.Add("limit", strconv.Itoa(o.Limit))
 
-  ch := make(chan string, 1)
+  var wg sync.WaitGroup
+  wg.Add(1)
 
-  go simpleSearch(ch, o.Target_type, []string{"Anime", "Manga"})
+  ch := make(chan string)
+
+  go simpleSearchString(&wg, ch, o.Target_type, []string{"Anime", "Manga"})
   o.Target_type = <-ch
-  if o.Target_type == "" { o.Target_type = "Anime" }
 
-  close(ch)
+  wg.Wait()
 
   // We get an error if we do not process the request in this way.
   // json: cannot unmarshal string into Go value of type api.UserHistory
   if o.Target_id != "" { v.Add("target_id", o.Target_id) }
-  v.Add("target_type", o.Target_type)
+  if o.Target_type == "" { v.Add("target_type", "Anime") } else { v.Add("target_type", o.Target_type) }
   return v.Encode()
 }
 
@@ -158,27 +172,30 @@ func (o *Options) OptionsAnime() string {
   v.Add("limit", strconv.Itoa(o.Limit))
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  ch := make(chan string, 7)
+  var wg sync.WaitGroup
+  wg.Add(7)
 
-  go simpleSearch(ch, o.Order, []string{
+  ch := make(chan string)
+
+  go simpleSearchString(&wg, ch, o.Order, []string{
     "id", "ranked", "kind", "popularity",
     "name", "aired_on", "episodes", "status",
   })
   o.Order = <-ch
 
-  go simpleSearch(ch, o.Kind, []string{
+  go simpleSearchString(&wg, ch, o.Kind, []string{
     "tv", "movie", "ova", "ona", "special", "music",
     "tv_13", "tv_24", "tv_48", "!tv", "!movie", "!ova",
     "!ona", "!special", "!music", "!tv_13", "!tv_24", "!tv_48",
   })
   o.Kind = <-ch
 
-  go simpleSearch(ch, o.Status, []string{
+  go simpleSearchString(&wg, ch, o.Status, []string{
     "anons", "ongoing", "released", "!anons", "!ongoing", "!released",
   })
   o.Status = <-ch
 
-  go simpleSearch(ch, o.Season, []string{
+  go simpleSearchString(&wg, ch, o.Season, []string{
     "2000_2010", "2010_2014", "2015_2019", "199x",
     "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
     "198x", "!198x", "2020_2021", "!2020_2021",
@@ -186,25 +203,25 @@ func (o *Options) OptionsAnime() string {
   })
   o.Season = <-ch
 
-  go simpleSearch(ch, o.Rating, []string{
+  go simpleSearchString(&wg, ch, o.Rating, []string{
     "none", "g", "pg", "pg_13",
     "r", "r_plus", "rx", "!g", "!pg",
     "!pg_13", "!r", "!r_plus", "!rx",
   })
   o.Rating = <-ch
 
-  go simpleSearch(ch, o.Duration, []string{
+  go simpleSearchString(&wg, ch, o.Duration, []string{
     "S", "D", "F", "!S", "!D", "!F",
   })
   o.Duration = <-ch
 
-  go simpleSearch(ch, o.Mylist, []string{
+  go simpleSearchString(&wg, ch, o.Mylist, []string{
     "planned", "watching", "rewatching",
     "completed", "on_hold", "dropped",
   })
   o.Mylist = <-ch
 
-  close(ch)
+  wg.Wait()
 
   var genre_v2 string
   genres := map[int]string{
@@ -234,9 +251,9 @@ func (o *Options) OptionsAnime() string {
   v.Add("season", o.Season)
   v.Add("rating", o.Rating)
   v.Add("duration", o.Duration)
-  v.Add("censored", strconv.FormatBool(o.Censored))
   v.Add("mylist", o.Mylist)
-  if len(genre_v2) > 0 { v.Add("genre_v2", genre_v2[:len(genre_v2)-1]) }
+  v.Add("censored", strconv.FormatBool(o.Censored))
+  if len(genre_v2) > 0 { v.Add("genre_v2", strings.TrimSuffix(genre_v2, ",")) }
   return v.Encode()
 }
 
@@ -249,28 +266,31 @@ func (o *Options) OptionsManga() string {
   v.Add("limit", strconv.Itoa(o.Limit))
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  ch := make(chan string, 5)
+  var wg sync.WaitGroup
+  wg.Add(5)
 
-  go simpleSearch(ch, o.Order, []string{
+  ch := make(chan string)
+
+  go simpleSearchString(&wg, ch, o.Order, []string{
     "id", "ranked", "kind", "popularity", "name",
     "aired_on", "volumes", "chapters", "status",
   })
   o.Order = <-ch
 
-  go simpleSearch(ch, o.Kind, []string{
+  go simpleSearchString(&wg, ch, o.Kind, []string{
     "manga", "manhwa", "manhua", "light_novel", "novel",
     "one_shot", "doujin", "!manga", "!manhwa", "!manhua",
     "!light_novel", "!novel", "!one_shot", "!doujin",
   })
   o.Kind = <-ch
 
-  go simpleSearch(ch, o.Status, []string{
+  go simpleSearchString(&wg, ch, o.Status, []string{
     "anons", "ongoing", "released", "paused", "discontinued",
     "!anons", "!ongoing", "!released", "!paused", "!discontinued",
   })
   o.Status = <-ch
 
-  go simpleSearch(ch, o.Season, []string{
+  go simpleSearchString(&wg, ch, o.Season, []string{
     "2000_2010", "2010_2014", "2015_2019", "199x",
     "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
     "198x", "!198x", "2020_2021", "!2020_2021",
@@ -278,13 +298,13 @@ func (o *Options) OptionsManga() string {
   })
   o.Season = <-ch
 
-  go simpleSearch(ch, o.Mylist, []string{
+  go simpleSearchString(&wg, ch, o.Mylist, []string{
     "planned", "watching", "rewatching",
     "completed", "on_hold", "dropped",
   })
   o.Mylist = <-ch
 
-  close(ch)
+  wg.Wait()
 
   var genre_v2 string
   genres := map[int]string{
@@ -311,9 +331,9 @@ func (o *Options) OptionsManga() string {
   v.Add("kind", o.Kind)
   v.Add("status", o.Status)
   v.Add("season", o.Season)
-  v.Add("censored", strconv.FormatBool(o.Censored))
   v.Add("mylist", o.Mylist)
-  if len(genre_v2) > 0 { v.Add("genre_v2", genre_v2[:len(genre_v2)-1]) }
+  v.Add("censored", strconv.FormatBool(o.Censored))
+  if len(genre_v2) > 0 { v.Add("genre_v2", strings.TrimSuffix(genre_v2, ",")) }
   return v.Encode()
 }
 
@@ -326,21 +346,24 @@ func (o *Options) OptionsRanobe() string {
   v.Add("limit", strconv.Itoa(o.Limit))
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  ch := make(chan string, 4)
+  var wg sync.WaitGroup
+  wg.Add(4)
 
-  go simpleSearch(ch, o.Order, []string{
+  ch := make(chan string)
+
+  go simpleSearchString(&wg, ch, o.Order, []string{
     "id", "ranked", "kind", "popularity", "name",
     "aired_on", "volumes", "chapters", "status",
   })
   o.Order = <-ch
 
-  go simpleSearch(ch, o.Status, []string{
+  go simpleSearchString(&wg, ch, o.Status, []string{
     "anons", "ongoing", "released", "paused", "discontinued",
     "!anons", "!ongoing", "!released", "!paused", "!discontinued",
   })
   o.Status = <-ch
 
-  go simpleSearch(ch, o.Season, []string{
+  go simpleSearchString(&wg, ch, o.Season, []string{
     "2000_2010", "2010_2014", "2015_2019", "199x",
     "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
     "198x", "!198x", "2020_2021", "!2020_2021",
@@ -348,13 +371,13 @@ func (o *Options) OptionsRanobe() string {
   })
   o.Season = <-ch
 
-  go simpleSearch(ch, o.Mylist, []string{
+  go simpleSearchString(&wg, ch, o.Mylist, []string{
     "planned", "watching", "rewatching",
     "completed", "on_hold", "dropped",
   })
   o.Mylist = <-ch
 
-  close(ch)
+  wg.Wait()
 
   var genre_v2 string
   genres := map[int]string{
@@ -380,9 +403,9 @@ func (o *Options) OptionsRanobe() string {
   v.Add("order", o.Order)
   v.Add("status", o.Status)
   v.Add("season", o.Season)
-  v.Add("censored", strconv.FormatBool(o.Censored))
   v.Add("mylist", o.Mylist)
-  if len(genre_v2) != 0 { v.Add("genre_v2", genre_v2[:len(genre_v2)-1]) }
+  v.Add("censored", strconv.FormatBool(o.Censored))
+  if len(genre_v2) > 0 { v.Add("genre_v2", strings.TrimSuffix(genre_v2, ",")) }
   return v.Encode()
 }
 
@@ -411,18 +434,20 @@ func (o *Options) OptionsAnimeRates() string {
   if o.Limit <= 0 || o.Limit >= 5001 { o.Limit = 1 }
   v.Add("limit", strconv.Itoa(o.Limit))
 
-  ch := make(chan string, 1)
+  var wg sync.WaitGroup
+  wg.Add(1)
 
-  go simpleSearch(ch, o.Status, []string{
+  ch := make(chan string)
+
+  go simpleSearchString(&wg, ch, o.Status, []string{
     "planned", "watching", "rewatching",
     "completed", "on_hold", "dropped",
   })
   o.Status = <-ch
-  if o.Status == "" { o.Status = "watching" }
 
-  close(ch)
+  wg.Wait()
 
-  v.Add("status", o.Status)
+  if o.Status == "" { v.Add("status", "watching") } else { v.Add("status", o.Status) }
   v.Add("censored", strconv.FormatBool(o.Censored))
   return v.Encode()
 }
@@ -441,23 +466,37 @@ func (o *Options) OptionsMangaRates() string {
 func (o *Options) OptionsPeople() string {
   v := url.Values{}
 
-  ch := make(chan string, 1)
+  var wg sync.WaitGroup
+  wg.Add(1)
 
-  go simpleSearch(ch, o.Kind, []string{"seyu", "mangaka", "producer"})
+  ch := make(chan string)
+
+  go simpleSearchString(&wg, ch, o.Kind, []string{"seyu", "mangaka", "producer"})
   o.Kind = <-ch
-  if o.Kind == "" { o.Kind = "seyu" }
 
-  close(ch)
+  wg.Wait()
 
-  v.Add("kind", o.Kind)
+  if o.Kind == "" { v.Add("kind", "seyu") } else { v.Add("kind", o.Kind) }
   return v.Encode()
 }
 
-func (o *Options) OptionsClubInformation() string {
+func (o *Options) OptionsClubAnimeManga() string {
   v := url.Values{}
 
   if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
   v.Add("page", strconv.Itoa(o.Page))
+  if o.Limit <= 0 || o.Limit >= 21 { o.Limit = 1 }
+  v.Add("limit", strconv.Itoa(o.Limit))
+  return v.Encode()
+}
+
+func (o *Options) OptionsClubCollections() string {
+  v := url.Values{}
+
+  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
+  v.Add("page", strconv.Itoa(o.Page))
+  if o.Limit <= 0 || o.Limit >= 5 { o.Limit = 1 }
+  v.Add("limit", strconv.Itoa(o.Limit))
   return v.Encode()
 }
 

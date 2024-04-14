@@ -15,19 +15,15 @@ func conf() *g.Configuration {
 func main() {
   c := conf()
   f, status, err := c.SearchForums()
-  if err != nil {
-    fmt.Println(err)
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
-  if status == 200 {
-    if len(f) == 0 {
-      fmt.Println("not found forums")
-      return
-    }
-    for _, v := range f {
-      fmt.Println(v.Id, v.Position, v.Name, v.Permalink, v.Url)
-    }
-  } else {
-    fmt.Println(status)
+  if len(f) == 0 {
+    fmt.Println("not found forums")
+    return
+  }
+  for _, v := range f {
+    fmt.Println(v.Id, v.Position, v.Name, v.Permalink, v.Url)
   }
 }

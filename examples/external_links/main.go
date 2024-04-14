@@ -14,40 +14,58 @@ func conf() *g.Configuration {
 
 func main() {
   c := conf()
-  fast, status, err := c.FastIdAnime("initial d")
+  // Anime external links.
+  fast_anime, status, err := c.FastIdAnime("initial d")
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+  fra, err := fast_anime.SearchAnimeExternalLinks()
   if err != nil {
     fmt.Println(err)
     return
   }
-  if status == 200 {
-    fra, err := fast.SearchAnimeExternalLinks()
-    if err != nil {
-      fmt.Println(err)
-      return
-    }
-    if len(fra) == 0 {
-      fmt.Println("external links not found")
-      return
-    }
-    for _, v := range fra {
-      fmt.Println(v.Id, v.Kind, v.Url, v.Source, v.Entry_type)
-    }
-
-    fmt.Println()
-
-    frm, err := fast.SearchMangaExternalLinks()
-    if err != nil {
-      fmt.Println(err)
-      return
-    }
-    if len(frm) == 0 {
-      fmt.Println("external links not found")
-      return
-    }
-    for _, v := range frm {
-      fmt.Println(v.Id, v.Kind, v.Url, v.Source, v.Entry_type)
-    }
-  } else {
-    fmt.Println(status)
+  if len(fra) == 0 {
+    fmt.Println("external links not found")
+    return
+  }
+  for _, v := range fra {
+    fmt.Println(v.Id, v.Kind, v.Url, v.Source, v.Entry_type)
+  }
+  // Manga external links.
+  fast_manga, status, err := c.FastIdManga("initial d")
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+  frm, err := fast_manga.SearchMangaExternalLinks()
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if len(frm) == 0 {
+    fmt.Println("external links not found")
+    return
+  }
+  for _, v := range frm {
+    fmt.Println(v.Id, v.Kind, v.Url, v.Source, v.Entry_type)
+  }
+  // Ranobe external links.
+  fast_ranobe, status, err := c.FastIdRanobe("Ookami to Koushinryou")
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
+    return
+  }
+  frr, err := fast_ranobe.SearchRanobeExternalLinks()
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  if len(frr) == 0 {
+    fmt.Println("external links not found")
+    return
+  }
+  for _, v := range frr {
+    fmt.Println(v.Id, v.Kind, v.Url, v.Source, v.Entry_type)
   }
 }

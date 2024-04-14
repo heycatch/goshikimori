@@ -441,35 +441,35 @@ func TestOptionsPeople(t *testing.T) {
 
 func TestOptionsClubInformation(t *testing.T) {
   empty := Options{}
-  if empty.OptionsClubInformation() == "page=1" {
+  if empty.OptionsClubAnimeManga() == "limit=1&page=1" {
     t.Log("Empty OptionsClubInformation passed")
   } else {
     t.Error("Empty OptionsClubInformation failed")
   }
 
-  big := Options{Page: 100002}
-  if big.OptionsClubInformation() == "page=1" {
+  big := Options{Page: 100002, Limit: 22}
+  if big.OptionsClubAnimeManga() == "limit=1&page=1" {
     t.Log("Big OptionsClubInformation passed")
   } else {
     t.Error("Big OptionsClubInformation failed")
   }
 
-  zero := Options{Page: 0}
-  if zero.OptionsClubInformation() == "page=1" {
+  zero := Options{Page: 0, Limit: 0}
+  if zero.OptionsClubAnimeManga() == "limit=1&page=1" {
     t.Log("Zero OptionsClubInformation passed")
   } else {
     t.Error("Zero OptionsClubInformation failed")
   }
 
-  negative := Options{Page: -1}
-  if negative.OptionsClubInformation() == "page=1" {
+  negative := Options{Page: -1, Limit: -1}
+  if negative.OptionsClubAnimeManga() == "limit=1&page=1" {
     t.Log("Negative OptionsClubInformation passed")
   } else {
     t.Error("Negative OptionsClubInformation failed")
   }
 
-  normal := Options{Page: 1337}
-  if normal.OptionsClubInformation() == "page=1337" {
+  normal := Options{Page: 1337, Limit: 5}
+  if normal.OptionsClubAnimeManga() == "limit=5&page=1337" {
     t.Log("Normal OptionsClubInformation passed")
   } else {
     t.Error("Normal OptionsClubInformation failed")
