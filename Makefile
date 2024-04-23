@@ -23,6 +23,7 @@ docker-start:
 
 test:
 	go test -v
+	go test -v ./search
 	go vet .
 
 run:
