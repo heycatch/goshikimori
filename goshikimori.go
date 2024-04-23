@@ -20,6 +20,7 @@ import (
   "sync"
 
   "github.com/heycatch/goshikimori/api"
+  "github.com/heycatch/goshikimori/search"
 )
 
 const site string = "shikimori.one/api"
@@ -2689,17 +2690,17 @@ func (f *FastId) FavoritesCreate(linked_type string, kind string) (api.Favorites
   var wg sync.WaitGroup
   wg.Add(2)
 
-  ch := make(chan bool)
+  ch := make(chan int)
 
-  go simpleSearchBool(&wg, ch, linked_type, []string{
+  go search.IntegerWithChan(&wg, ch, linked_type, []string{
     "Anime", "Manga", "Ranobe", "Person", "Character",
   })
-  if !<-ch { return fa, errors.New("incorrect string, try again and watch the upper case") }
+  if <-ch == -1 { return fa, errors.New("incorrect string, try again and watch the upper case") }
 
-  go simpleSearchBool(&wg, ch, kind, []string{
+  go search.IntegerWithChan(&wg, ch, kind, []string{
     "common", "seyu", "mangaka", "producer", "person",
   })
-  if !<-ch { kind = "" }
+  if <-ch == -1 { kind = "" }
 
   wg.Wait()
 
@@ -2739,12 +2740,12 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
   var wg sync.WaitGroup
   wg.Add(1)
 
-  ch := make(chan bool)
+  ch := make(chan int)
 
-  go simpleSearchBool(&wg, ch, linked_type, []string{
+  go search.IntegerWithChan(&wg, ch, linked_type, []string{
     "Anime", "Manga", "Ranobe", "Person", "Character",
   })
-  if !<-ch { return ff, errors.New("incorrect string, try again and watch the upper case") }
+  if <-ch == -1 { return ff, errors.New("incorrect string, try again and watch the upper case") }
 
   wg.Wait()
 

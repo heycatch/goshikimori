@@ -4,8 +4,9 @@ import (
   "net/url"
   "strconv"
   "sync"
-  "slices"
   "strings"
+
+  "github.com/heycatch/goshikimori/search"
 )
 
 type Configuration struct {
@@ -52,20 +53,6 @@ type Result interface {
   OptionsTopicsHot()       string
 }
 
-// simple keyword search.
-func simpleSearchString(wg *sync.WaitGroup, ch chan string, target string, list []string) {
-  defer wg.Done()
-  i := slices.IndexFunc(list, func(s string) bool { return s == target })
-  if i == -1 { ch <- "" } else { ch <- list[i] }
-}
-
-// simple keyword search.
-func simpleSearchBool(wg *sync.WaitGroup, ch chan bool, target string, list []string) {
-  defer wg.Done()
-  i := slices.IndexFunc(list, func(s string) bool { return s == target })
-  if i == -1 { ch <- false } else { ch <- true }
-}
-
 func (o *Options) OptionsTopics() string {
   v := url.Values{}
 
@@ -79,14 +66,14 @@ func (o *Options) OptionsTopics() string {
 
   ch := make(chan string)
 
-  go simpleSearchString(&wg, ch, o.Forum, []string{
+  go search.StringWithChan(&wg, ch, o.Forum, []string{
     "cosplay", "animanga", "site", "games", "vn",
     "contests", "offtopic", "clubs", "my_clubs",
     "critiques", "news", "collections", "articles",
   })
   o.Forum = <-ch
 
-  go simpleSearchString(&wg, ch, o.Linked_type, []string{
+  go search.StringWithChan(&wg, ch, o.Linked_type, []string{
     "Anime", "Manga", "Ranobe", "Character", "Person",
     "Club", "ClubPage", "Critique", "Review",
     "Contest", "CosplayGallery", "Collection", "Article",
@@ -117,7 +104,7 @@ func (o *Options) OptionsMessages() string {
 
   ch := make(chan string)
 
-  go simpleSearchString(&wg, ch, o.Type, []string{
+  go search.StringWithChan(&wg, ch, o.Type, []string{
     "inbox", "private", "sent", "news", "notifications",
   })
   o.Type = <-ch
@@ -141,7 +128,7 @@ func (o *Options) OptionsUserHistory() string {
 
   ch := make(chan string)
 
-  go simpleSearchString(&wg, ch, o.Target_type, []string{"Anime", "Manga"})
+  go search.StringWithChan(&wg, ch, o.Target_type, []string{"Anime", "Manga"})
   o.Target_type = <-ch
 
   wg.Wait()
@@ -177,25 +164,25 @@ func (o *Options) OptionsAnime() string {
 
   ch := make(chan string)
 
-  go simpleSearchString(&wg, ch, o.Order, []string{
+  go search.StringWithChan(&wg, ch, o.Order, []string{
     "id", "ranked", "kind", "popularity",
     "name", "aired_on", "episodes", "status",
   })
   o.Order = <-ch
 
-  go simpleSearchString(&wg, ch, o.Kind, []string{
+  go search.StringWithChan(&wg, ch, o.Kind, []string{
     "tv", "movie", "ova", "ona", "special", "music",
     "tv_13", "tv_24", "tv_48", "!tv", "!movie", "!ova",
     "!ona", "!special", "!music", "!tv_13", "!tv_24", "!tv_48",
   })
   o.Kind = <-ch
 
-  go simpleSearchString(&wg, ch, o.Status, []string{
+  go search.StringWithChan(&wg, ch, o.Status, []string{
     "anons", "ongoing", "released", "!anons", "!ongoing", "!released",
   })
   o.Status = <-ch
 
-  go simpleSearchString(&wg, ch, o.Season, []string{
+  go search.StringWithChan(&wg, ch, o.Season, []string{
     "2000_2010", "2010_2014", "2015_2019", "199x",
     "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
     "198x", "!198x", "2020_2021", "!2020_2021",
@@ -203,19 +190,19 @@ func (o *Options) OptionsAnime() string {
   })
   o.Season = <-ch
 
-  go simpleSearchString(&wg, ch, o.Rating, []string{
+  go search.StringWithChan(&wg, ch, o.Rating, []string{
     "none", "g", "pg", "pg_13",
     "r", "r_plus", "rx", "!g", "!pg",
     "!pg_13", "!r", "!r_plus", "!rx",
   })
   o.Rating = <-ch
 
-  go simpleSearchString(&wg, ch, o.Duration, []string{
+  go search.StringWithChan(&wg, ch, o.Duration, []string{
     "S", "D", "F", "!S", "!D", "!F",
   })
   o.Duration = <-ch
 
-  go simpleSearchString(&wg, ch, o.Mylist, []string{
+  go search.StringWithChan(&wg, ch, o.Mylist, []string{
     "planned", "watching", "rewatching",
     "completed", "on_hold", "dropped",
   })
@@ -271,26 +258,26 @@ func (o *Options) OptionsManga() string {
 
   ch := make(chan string)
 
-  go simpleSearchString(&wg, ch, o.Order, []string{
+  go search.StringWithChan(&wg, ch, o.Order, []string{
     "id", "ranked", "kind", "popularity", "name",
     "aired_on", "volumes", "chapters", "status",
   })
   o.Order = <-ch
 
-  go simpleSearchString(&wg, ch, o.Kind, []string{
+  go search.StringWithChan(&wg, ch, o.Kind, []string{
     "manga", "manhwa", "manhua", "light_novel", "novel",
     "one_shot", "doujin", "!manga", "!manhwa", "!manhua",
     "!light_novel", "!novel", "!one_shot", "!doujin",
   })
   o.Kind = <-ch
 
-  go simpleSearchString(&wg, ch, o.Status, []string{
+  go search.StringWithChan(&wg, ch, o.Status, []string{
     "anons", "ongoing", "released", "paused", "discontinued",
     "!anons", "!ongoing", "!released", "!paused", "!discontinued",
   })
   o.Status = <-ch
 
-  go simpleSearchString(&wg, ch, o.Season, []string{
+  go search.StringWithChan(&wg, ch, o.Season, []string{
     "2000_2010", "2010_2014", "2015_2019", "199x",
     "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
     "198x", "!198x", "2020_2021", "!2020_2021",
@@ -298,7 +285,7 @@ func (o *Options) OptionsManga() string {
   })
   o.Season = <-ch
 
-  go simpleSearchString(&wg, ch, o.Mylist, []string{
+  go search.StringWithChan(&wg, ch, o.Mylist, []string{
     "planned", "watching", "rewatching",
     "completed", "on_hold", "dropped",
   })
@@ -351,19 +338,19 @@ func (o *Options) OptionsRanobe() string {
 
   ch := make(chan string)
 
-  go simpleSearchString(&wg, ch, o.Order, []string{
+  go search.StringWithChan(&wg, ch, o.Order, []string{
     "id", "ranked", "kind", "popularity", "name",
     "aired_on", "volumes", "chapters", "status",
   })
   o.Order = <-ch
 
-  go simpleSearchString(&wg, ch, o.Status, []string{
+  go search.StringWithChan(&wg, ch, o.Status, []string{
     "anons", "ongoing", "released", "paused", "discontinued",
     "!anons", "!ongoing", "!released", "!paused", "!discontinued",
   })
   o.Status = <-ch
 
-  go simpleSearchString(&wg, ch, o.Season, []string{
+  go search.StringWithChan(&wg, ch, o.Season, []string{
     "2000_2010", "2010_2014", "2015_2019", "199x",
     "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
     "198x", "!198x", "2020_2021", "!2020_2021",
@@ -371,7 +358,7 @@ func (o *Options) OptionsRanobe() string {
   })
   o.Season = <-ch
 
-  go simpleSearchString(&wg, ch, o.Mylist, []string{
+  go search.StringWithChan(&wg, ch, o.Mylist, []string{
     "planned", "watching", "rewatching",
     "completed", "on_hold", "dropped",
   })
@@ -439,7 +426,7 @@ func (o *Options) OptionsAnimeRates() string {
 
   ch := make(chan string)
 
-  go simpleSearchString(&wg, ch, o.Status, []string{
+  go search.StringWithChan(&wg, ch, o.Status, []string{
     "planned", "watching", "rewatching",
     "completed", "on_hold", "dropped",
   })
@@ -471,7 +458,7 @@ func (o *Options) OptionsPeople() string {
 
   ch := make(chan string)
 
-  go simpleSearchString(&wg, ch, o.Kind, []string{"seyu", "mangaka", "producer"})
+  go search.StringWithChan(&wg, ch, o.Kind, []string{"seyu", "mangaka", "producer"})
   o.Kind = <-ch
 
   wg.Wait()

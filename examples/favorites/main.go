@@ -21,7 +21,7 @@ func main() {
   }
   // add/remove favorites anime.
   fa, err := fast_anime.FavoritesCreate("Anime", "")
-  //f, err := fast_anime.FavoritesDelete("Anime")
+  //fa, err := fast_anime.FavoritesDelete("Anime")
   if err != nil {
     fmt.Println(err)
     return
@@ -35,7 +35,7 @@ func main() {
     return
   }
   fm, err := fast_manga.FavoritesCreate("Manga", "")
-  //f, err := fast_manga.FavoritesDelete("Manga")
+  //fm, err := fast_manga.FavoritesDelete("Manga")
   if err != nil {
     fmt.Println(err)
     return
@@ -49,7 +49,7 @@ func main() {
     return
   }
   fr, err := fast_ranobe.FavoritesCreate("Ranobe", "")
-  //fr, err := fast_ranobe.FavoritesDelete("Ranobe", "")
+  //fr, err := fast_ranobe.FavoritesDelete("Ranobe")
   if err != nil {
     fmt.Println(err)
     return
