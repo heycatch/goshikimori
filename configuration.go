@@ -19,17 +19,31 @@ type FastId struct {
   Err  error
 }
 
+func (f *FastId) GetFastId() int { return f.Id }
+
+// To create a custom id.
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/custom_fastid
+func (c *Configuration) SetFastId(id int) *FastId {
+  return &FastId{Id: id, Conf: *c, Err: nil}
+}
+
+func (c *Configuration) GetConfiguration() (string, string) { return c.Application, c.AccessToken }
+
 // You need to enter the application and the private key.
 //
 // To register the application, follow the link from [OAuth].
 //
 // [OAuth]: https://github.com/heycatch/goshikimori#shikimori-documentation
-func Add(appname, token string) *Configuration {
+func SetConfiguration(appname, token string) *Configuration {
   return &Configuration{Application: appname, AccessToken: token}
 }
 
 type Options struct {
-  Order, Kind, Status, Season, Rating, Type, Target_id, Target_type, Duration, Mylist, Forum, Linked_type string
+  Order, Kind, Status, Season, Rating, Type, Target_id,
+  Target_type, Duration, Mylist, Forum, Linked_type string
   Page, Limit, Score, Linked_id int
   Censored bool
   Genre_v2 []int

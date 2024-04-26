@@ -2,18 +2,19 @@ package main
 
 import (
   "fmt"
+
   g "github.com/heycatch/goshikimori"
 )
 
-func conf() *g.Configuration {
-  return g.Add(
+func config() *g.Configuration {
+  return g.SetConfiguration(
     "APPLICATION_NAME",
     "PRIVATE_KEY",
   )
 }
 
 func main() {
-  c := conf()
+  c := config()
   result, status, err := c.ActiveUsers()
   if err != nil {
     fmt.Println(err)

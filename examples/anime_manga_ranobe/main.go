@@ -2,18 +2,19 @@ package main
 
 import (
   "fmt"
+
   g "github.com/heycatch/goshikimori"
 )
 
-func conf() *g.Configuration {
-  return g.Add(
+func config() *g.Configuration {
+  return g.SetConfiguration(
     "APPLICATION_NAME",
     "PRIVATE_KEY",
   )
 }
 
 func foundAnime() {
-  c := conf()
+  c := config()
   fast, status, err := c.FastIdAnime("initial d first stage")
   if status != 200 || err != nil {
     fmt.Println(status, err)
@@ -30,7 +31,7 @@ func foundAnime() {
 }
 
 func foundAnimes() {
-  c := conf()
+  c := config()
   o := &g.Options{
     Page: 1, Limit: 5, Order: "", Kind: "", Status: "released",
     Season: "199x", Rating: "", Duration: "",
@@ -51,7 +52,7 @@ func foundAnimes() {
 }
 
 func foundManga() {
-  c := conf()
+  c := config()
   fast, status, err := c.FastIdManga("initial d")
   if status != 200 || err != nil {
     fmt.Println(status, err)
@@ -69,7 +70,7 @@ func foundManga() {
 }
 
 func foundMangas() {
-  c := conf()
+  c := config()
   o := &g.Options{
     Page: 1, Limit: 1, Order: "", Kind: "", Status: "released",
     Season: "199x", Score: 8, Censored: false, Mylist: "", Genre_v2: []int{84}, // SKIP GENRE: Genre_v2: nil,
@@ -89,7 +90,7 @@ func foundMangas() {
 }
 
 func foundRanobe() {
-  c := conf()
+  c := config()
   fast, status, err := c.FastIdRanobe("sword art")
   if status != 200 || err != nil {
     fmt.Println(status, err)
@@ -107,7 +108,7 @@ func foundRanobe() {
 }
 
 func foundRanobes() {
-  c := conf()
+  c := config()
   o := &g.Options{
     Page: 1, Limit: 10, Order: "", Status: "released",
     Season: "", Mylist: "", Genre_v2: []int{49}, // SKIP GENRE: Genre_v2: nil,

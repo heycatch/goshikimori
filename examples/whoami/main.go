@@ -2,22 +2,23 @@ package main
 
 import (
   "fmt"
+
   g "github.com/heycatch/goshikimori"
 )
 
-func conf() *g.Configuration {
-  return g.Add(
+func config() *g.Configuration {
+  return g.SetConfiguration(
     "APPLICATION_NAME",
     "PRIVATE_KEY",
   )
 }
 
 func main() {
-  c := conf()
+  c := config()
   w, status, err := c.WhoAmi()
-  if err != nil {
-    fmt.Println(err)
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
-  if status == 200 { fmt.Println(w.Nickname, w.Avatar, w.Locale, w.Last_online_at) }
+  fmt.Println(w.Nickname, w.Avatar, w.Locale, w.Last_online_at)
 }

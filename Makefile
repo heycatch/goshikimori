@@ -26,6 +26,9 @@ test:
 	go test -v ./search
 	go vet .
 
+analysis:
+	go run -gcflags=-m cmd/main.go
+
 run:
 	go run cmd/main.go
 

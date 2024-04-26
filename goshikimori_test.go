@@ -19,7 +19,7 @@ const (
   tok_test = ""
 )
 
-func conf() *Configuration { return Add(app_test, tok_test) }
+func conf() *Configuration { return SetConfiguration(app_test, tok_test) }
 
 func (s *StatusBar) NewOption(start, end int) {
   s.Cur = start

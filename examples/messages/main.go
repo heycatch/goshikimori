@@ -2,18 +2,19 @@ package main
 
 import (
   "fmt"
+
   g "github.com/heycatch/goshikimori"
 )
 
-func conf() *g.Configuration {
-  return g.Add(
+func config() *g.Configuration {
+  return g.SetConfiguration(
     "APPLICATION_NAME",
     "PRIVATE_KEY",
   )
 }
 
 func main() {
-  c := conf()
+  c := config()
   // show user messages
   fast, status, err := c.FastIdUser("arctica")
   if status != 200 || err != nil {

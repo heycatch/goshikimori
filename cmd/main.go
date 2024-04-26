@@ -10,7 +10,7 @@ import (
 )
 
 func conf() *g.Configuration {
-  return g.Add(
+  return g.SetConfiguration(
     "",
     "",
   )

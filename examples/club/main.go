@@ -2,11 +2,12 @@ package main
 
 import (
   "fmt"
+
   g "github.com/heycatch/goshikimori"
 )
 
-func conf() *g.Configuration {
-  return g.Add(
+func config() *g.Configuration {
+  return g.SetConfiguration(
     "APPLICATION_NAME",
     "PRIVATE_KEY",
   )
@@ -14,7 +15,7 @@ func conf() *g.Configuration {
 
 // Too many examples, take turns using.
 func main() {
-  c := conf()
+  c := config()
   o := &g.Options{Page: 1, Limit: 2}
 
   // PART 1

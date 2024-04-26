@@ -2,18 +2,19 @@ package main
 
 import (
   "fmt"
+
   g "github.com/heycatch/goshikimori"
 )
 
-func conf() *g.Configuration {
-  return g.Add(
+func config() *g.Configuration {
+  return g.SetConfiguration(
     "APPLICATION_NAME",
     "PRIVATE_KEY",
   )
 }
 
 func readMessage() {
-  c := conf()
+  c := config()
   // method #1. find my id and read inbox.
   fast, status, err := c.FastIdUser("arctica")
   if status != 200 || err != nil {
@@ -79,7 +80,7 @@ func readMessage() {
 }
 
 func sendMessage() {
-  c := conf()
+  c := config()
   me, status, err := c.WhoAmi()
   if status != 200 || err != nil {
     fmt.Println(status, err)
@@ -100,7 +101,7 @@ func sendMessage() {
 }
 
 func changeMesage() {
-  c := conf()
+  c := config()
   d, status, err := c.Dialogs()
   if status != 200 || err != nil {
     fmt.Println(status, err)
@@ -124,7 +125,7 @@ func changeMesage() {
 }
 
 func deleteMessage() {
-  c := conf()
+  c := config()
   d, status, err := c.Dialogs()
   if status != 200 || err != nil {
     fmt.Println(status, err)
@@ -143,7 +144,7 @@ func deleteMessage() {
 }
 
 func markReadUnreadMessages() {
-  c := conf()
+  c := config()
   var count int
 
   fast, status, err := c.FastIdUser("arctica")
@@ -185,7 +186,7 @@ func markReadUnreadMessages() {
 }
 
 func readAll() {
-  c := conf()
+  c := config()
   read, err := c.ReadAllMessages("notifications")
   if err != nil {
     fmt.Println(err)
@@ -195,7 +196,7 @@ func readAll() {
 }
 
 func deleteAll() {
-  c := conf()
+  c := config()
   del, err := c.DeleteAllMessages("notifications")
   if err != nil {
     fmt.Println(err)

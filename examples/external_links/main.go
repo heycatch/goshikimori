@@ -2,18 +2,19 @@ package main
 
 import (
   "fmt"
+
   g "github.com/heycatch/goshikimori"
 )
 
-func conf() *g.Configuration {
-  return g.Add(
+func config() *g.Configuration {
+  return g.SetConfiguration(
     "APPLICATION_NAME",
     "PRIVATE_KEY",
   )
 }
 
 func main() {
-  c := conf()
+  c := config()
   // Anime external links.
   fast_anime, status, err := c.FastIdAnime("initial d")
   if status != 200 || err != nil {
