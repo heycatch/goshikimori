@@ -30,7 +30,9 @@ func (c *Configuration) SetFastId(id int) *FastId {
   return &FastId{Id: id, Conf: *c, Err: nil}
 }
 
-func (c *Configuration) GetConfiguration() (string, string) { return c.Application, c.AccessToken }
+func (c *Configuration) GetConfiguration() (string, string) {
+  return c.Application, c.AccessToken
+}
 
 // You need to enter the application and the private key.
 //
@@ -42,8 +44,9 @@ func SetConfiguration(appname, token string) *Configuration {
 }
 
 type Options struct {
-  Order, Kind, Status, Season, Rating, Type, Target_id,
-  Target_type, Duration, Mylist, Forum, Linked_type string
+  Order, Kind, Status, Season, Rating,
+  Type, Target_id, Target_type, Duration,
+  Mylist, Forum, Linked_type string
   Page, Limit, Score, Linked_id int
   Censored bool
   Genre_v2 []int

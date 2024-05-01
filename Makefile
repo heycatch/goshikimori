@@ -26,6 +26,9 @@ test:
 	go test -v ./search
 	go vet .
 
+bench:
+	go test -bench=./concat
+
 analysis:
 	go run -gcflags=-m cmd/main.go
 

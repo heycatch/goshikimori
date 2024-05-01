@@ -4,6 +4,7 @@ import (
   "fmt"
 
   g "github.com/heycatch/goshikimori"
+  "github.com/heycatch/goshikimori/concat"
 )
 
 func config() *g.Configuration {
@@ -15,17 +16,20 @@ func config() *g.Configuration {
 
 func main() {
   c := config()
-  g, status, err := c.SearchGenres("Anime")
+  genres, status, err := c.SearchGenres("anime")
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return
   }
-  if len(g) == 0 {
+  if len(genres) == 0 {
     fmt.Println("not found genres")
     return
   }
-  for _, v := range g {
+  for _, v := range genres {
     fmt.Println(v.Id, v.Name, v.Russian, v.Kind, v.Entry_type)
   }
+  // A small map helper.
+  m := concat.GenerateGenres("Anime", genres)
+  fmt.Println(m)
 }
 

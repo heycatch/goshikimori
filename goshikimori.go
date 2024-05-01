@@ -23,8 +23,6 @@ import (
   "github.com/heycatch/goshikimori/search"
 )
 
-const site string = "shikimori.one/api"
-
 // Name: user name.
 //
 // Search by user is case sensitive.
@@ -36,9 +34,12 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
   var u api.Users
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "users/" + url.QueryEscape(name), 10,
   )
+  if err != nil {
+    return u, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -80,10 +81,13 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, er
   var u []api.Users
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "users?search=" + url.QueryEscape(name) + "&" + r.OptionsUsers(), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -119,10 +123,13 @@ func (f *FastId) SearchUserFriends(r Result) ([]api.UserFriends, error) {
   var uf []api.UserFriends
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "users/" + strconv.Itoa(f.Id) + "/friends?" + r.OptionsUsers(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -150,10 +157,13 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
   var uc []api.Clubs
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "users/" + strconv.Itoa(f.Id) + "/clubs", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -197,10 +207,13 @@ func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
   var ar []api.UserAnimeRates
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "users/" + strconv.Itoa(f.Id) + "/anime_rates?" + r.OptionsAnimeRates(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -242,10 +255,13 @@ func (f *FastId) SearchUserMangaRates(r Result) ([]api.UserMangaRates, error) {
   var mr []api.UserMangaRates
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "users/" + strconv.Itoa(f.Id) + "/manga_rates?" + r.OptionsMangaRates(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -273,10 +289,13 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
   var uf api.UserFavourites
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "users/" + strconv.Itoa(f.Id) + "/favourites", 10,
   )
+  if err != nil {
+    return uf, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -318,10 +337,13 @@ func (f *FastId) SearchUserHistory(r Result) ([]api.UserHistory, error) {
   var uh []api.UserHistory
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "users/" + strconv.Itoa(f.Id) + "/history?" + r.OptionsUserHistory(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -349,10 +371,13 @@ func (f *FastId) SearchUserBans() ([]api.Bans, error) {
   var b []api.Bans
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "users/" + strconv.Itoa(f.Id) + "/bans", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -380,9 +405,12 @@ func (c *Configuration) WhoAmi() (api.Who, int, error) {
   var w api.Who
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "users/whoami", 10,
   )
+  if err != nil {
+    return w, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -410,10 +438,13 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
   var a api.Anime
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "animes/" + strconv.Itoa(f.Id), 10,
   )
+  if err != nil {
+    return a, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -493,10 +524,13 @@ func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, 
   var a []api.Animes
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "animes?search=" + url.QueryEscape(name) + "&" + r.OptionsAnime(), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -524,10 +558,13 @@ func (f *FastId) SearchManga() (api.Manga, error) {
   var m api.Manga
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "mangas/" + strconv.Itoa(f.Id), 10,
   )
+  if err != nil {
+    return m, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -604,10 +641,13 @@ func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, 
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "mangas?search=" + url.QueryEscape(name) + "&" + r.OptionsManga(), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -635,10 +675,13 @@ func (f *FastId) SearchRanobe() (api.Manga, error) {
   var m api.Manga
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "ranobe/" + strconv.Itoa(f.Id), 10,
   )
+  if err != nil {
+    return m, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -712,10 +755,13 @@ func (c *Configuration) SearchRanobes(name string, r Result) ([]api.Mangas, int,
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "ranobe?search=" + url.QueryEscape(name) + "&" + r.OptionsRanobe(), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -743,10 +789,13 @@ func (c *Configuration) FastIdUser(name string) (*FastId, int, error) {
   var u api.Users
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "users/" + url.QueryEscape(name), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -774,10 +823,13 @@ func (c *Configuration) FastIdAnime(name string) (*FastId, int, error) {
   var a []api.Animes
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "animes?search=" + url.QueryEscape(name), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -811,10 +863,13 @@ func (c *Configuration) FastIdManga(name string) (*FastId, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "mangas?search=" + url.QueryEscape(name), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -847,10 +902,13 @@ func (c *Configuration) FastIdRanobe(name string) (*FastId, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "ranobe?search=" + url.QueryEscape(name), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -883,10 +941,13 @@ func (c *Configuration) FastIdClub(name string) (*FastId, int, error) {
   var cl []api.Clubs
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "clubs?search=" + url.QueryEscape(name), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -919,10 +980,13 @@ func (c *Configuration) FastIdCharacter(name string) (*FastId, int, error) {
   var ch []api.CharacterInfo
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "characters/search?search=" + url.QueryEscape(name), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -955,10 +1019,13 @@ func (c *Configuration) FastIdPeople(name string) (*FastId, int, error) {
   var ap []api.AllPeople
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "people/search?search=" + url.QueryEscape(name), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -991,10 +1058,13 @@ func (f *FastId) SearchAnimeScreenshots() ([]api.AnimeScreenshots, error) {
   var s []api.AnimeScreenshots
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "animes/" + strconv.Itoa(f.Id) + "/screenshots", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1022,10 +1092,13 @@ func (f *FastId) SearchAnimeFranchise() (api.Franchise, error) {
   var ff api.Franchise
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "animes/" + strconv.Itoa(f.Id) + "/franchise", 10,
   )
+  if err != nil {
+    return ff, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1052,10 +1125,13 @@ func (f *FastId) SearchMangaFranchise() (api.Franchise, error) {
   var ff api.Franchise
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "mangas/" + strconv.Itoa(f.Id) + "/franchise", 10,
   )
+  if err != nil {
+    return ff, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1082,10 +1158,13 @@ func (f *FastId) SearchRanobeFranchise() (api.Franchise, error) {
   var ff api.Franchise
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "ranobe/" + strconv.Itoa(f.Id) + "/franchise", 10,
   )
+  if err != nil {
+    return ff, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1112,10 +1191,13 @@ func (f *FastId) SearchAnimeExternalLinks() ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "animes/" + strconv.Itoa(f.Id) + "/external_links", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1142,10 +1224,13 @@ func (f *FastId) SearchMangaExternalLinks() ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "mangas/" + strconv.Itoa(f.Id) + "/external_links", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1172,10 +1257,13 @@ func (f *FastId) SearchRanobeExternalLinks() ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "ranobe/" + strconv.Itoa(f.Id) + "/external_links", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1202,10 +1290,13 @@ func (f *FastId) SearchSimilarAnime() ([]api.Animes, error) {
   var a []api.Animes
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "animes/" + strconv.Itoa(f.Id) + "/similar", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1233,10 +1324,13 @@ func (f *FastId) SearchSimilarManga() ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "mangas/" + strconv.Itoa(f.Id) + "/similar", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1264,10 +1358,13 @@ func (f *FastId) SearchSimilarRanobe() ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "ranobe/" + strconv.Itoa(f.Id) + "/similar", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1295,10 +1392,13 @@ func (f *FastId) SearchRelatedAnime() ([]api.RelatedAnimes, error) {
   var a []api.RelatedAnimes
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "animes/" + strconv.Itoa(f.Id) + "/related", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1326,10 +1426,13 @@ func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, error) {
   var m []api.RelatedMangas
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "mangas/" + strconv.Itoa(f.Id) + "/related", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1357,10 +1460,13 @@ func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, error) {
   var m []api.RelatedMangas
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "ranobe/" + strconv.Itoa(f.Id) + "/related", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1401,10 +1507,13 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
   var cl []api.Clubs
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "clubs?search=" + url.QueryEscape(name) + "&" + r.OptionsClub(), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1442,10 +1551,13 @@ func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
   var a []api.Animes
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "clubs/" + strconv.Itoa(f.Id) + "/animes?" + r.OptionsClubAnimeManga(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1483,10 +1595,13 @@ func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "clubs/" + strconv.Itoa(f.Id) + "/mangas?" + r.OptionsClubAnimeManga(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1524,10 +1639,13 @@ func (f *FastId) SearchClubRanobe(r Result) ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "clubs/" + strconv.Itoa(f.Id) + "/ranobe?" + r.OptionsClubAnimeManga(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1565,10 +1683,13 @@ func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
   var ci []api.CharacterInfo
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "clubs/" + strconv.Itoa(f.Id) + "/characters?" + r.OptionsClubAnimeManga(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1606,10 +1727,13 @@ func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
   var cc []api.Clubs
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "clubs/" + strconv.Itoa(f.Id) + "/clubs?" + r.OptionsClub(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1647,10 +1771,13 @@ func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, error) 
   var cc []api.ClubCollections
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "clubs/" + strconv.Itoa(f.Id) + "/collections?" + r.OptionsClubCollections(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1688,10 +1815,13 @@ func (f *FastId) SearchClubMembers(r Result) ([]api.UserFriends, error) {
   var uf []api.UserFriends
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "clubs/" + strconv.Itoa(f.Id) + "/members?" + r.OptionsUsers(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1729,10 +1859,13 @@ func (f *FastId) SearchClubImages(r Result) ([]api.ClubImages, error) {
   var cm []api.ClubImages
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "clubs/" + strconv.Itoa(f.Id) + "/images?" + r.OptionsUsers(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1759,10 +1892,13 @@ func (f *FastId) SearchClubImages(r Result) ([]api.ClubImages, error) {
 func (f *FastId) ClubJoin() (int, error) {
   var client = &http.Client{}
 
-  post, cancel := NewPostRequestWithCancel(
+  post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "clubs/" + strconv.Itoa(f.Id) + "/join", 10,
   )
+  if err != nil {
+    return 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(post)
@@ -1780,10 +1916,13 @@ func (f *FastId) ClubJoin() (int, error) {
 func (f *FastId) ClubLeave() (int, error) {
   var client = &http.Client{}
 
-  post, cancel := NewPostRequestWithCancel(
+  post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "clubs/" + strconv.Itoa(f.Id) + "/leave", 10,
   )
+  if err != nil {
+    return 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(post)
@@ -1807,10 +1946,13 @@ func (f *FastId) SearchAchievement() ([]api.Achievements, error) {
   var a []api.Achievements
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "achievements?user_id=" + strconv.Itoa(f.Id), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1838,10 +1980,13 @@ func (f *FastId) SearchAnimeVideos() ([]api.AnimeVideos, error) {
   var v []api.AnimeVideos
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "animes/" + strconv.Itoa(f.Id) + "/videos", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1869,10 +2014,13 @@ func (f *FastId) SearchAnimeRoles() ([]api.Roles, error) {
   var r []api.Roles
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "animes/" + strconv.Itoa(f.Id) + "/roles", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1900,10 +2048,13 @@ func (f *FastId) SearchMangaRoles() ([]api.Roles, error) {
   var r []api.Roles
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "mangas/" + strconv.Itoa(f.Id) + "/roles", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1931,10 +2082,13 @@ func (f *FastId) SearchRanobeRoles() ([]api.Roles, error) {
   var r []api.Roles
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "ranobe/" + strconv.Itoa(f.Id) + "/roles", 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -1962,9 +2116,12 @@ func (c *Configuration) SearchBans() ([]api.Bans, int, error) {
   var b []api.Bans
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "bans", 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2000,10 +2157,13 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
   var ca []api.Calendar
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "calendar?" + r.OptionsCalendar(), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2033,9 +2193,12 @@ func (c *Configuration) SearchGenres(name string) ([]api.Genres, int, error) {
   var g []api.Genres
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "genres?kind=" + name, 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2063,9 +2226,12 @@ func (c *Configuration) SearchStudios() ([]api.Studios, int, error) {
   var s []api.Studios
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "studios", 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2093,9 +2259,12 @@ func (c *Configuration) SearchPublishers() ([]api.Publishers, int, error) {
   var p []api.Publishers
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "publishers", 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2123,9 +2292,12 @@ func (c *Configuration) SearchForums() ([]api.Forums, int, error) {
   var f []api.Forums
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "forums", 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2153,10 +2325,13 @@ func (f *FastId) AddFriend() (api.FriendRequest, error) {
   var ff api.FriendRequest
   var client = &http.Client{}
 
-  post, cancel := NewPostRequestWithCancel(
+  post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "friends/" + strconv.Itoa(f.Id), 10,
   )
+  if err != nil {
+    return ff, err
+  }
   defer cancel()
 
   resp, err := client.Do(post)
@@ -2184,10 +2359,13 @@ func (f *FastId) RemoveFriend() (api.FriendRequest, error) {
   var ff api.FriendRequest
   var client = &http.Client{}
 
-  remove, cancel := NewDeleteRequestWithCancel(
+  remove, cancel, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "friends/" + strconv.Itoa(f.Id), 10,
   )
+  if err != nil {
+    return ff, err
+  }
   defer cancel()
 
   resp, err := client.Do(remove)
@@ -2217,10 +2395,13 @@ func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
   var um api.UnreadMessages
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "users/" + strconv.Itoa(f.Id) + "/unread_messages", 10,
   )
+  if err != nil {
+    return um, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2258,10 +2439,13 @@ func (f *FastId) UserMessages(r Result) ([]api.Messages, error) {
   var m []api.Messages
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "users/" + strconv.Itoa(f.Id) + "/messages?" + r.OptionsMessages(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2289,9 +2473,12 @@ func (c *Configuration) SearchConstantsAnime() (api.Constants, int, error) {
   var ca api.Constants
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "constants/anime", 10,
   )
+  if err != nil {
+    return ca, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2319,9 +2506,12 @@ func (c *Configuration) SearchConstantsManga() (api.Constants, int, error) {
   var cm api.Constants
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "constants/manga", 10,
   )
+  if err != nil {
+    return cm, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2349,9 +2539,12 @@ func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, int, e
   var ur api.ConstantsUserRate
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "constants/user_rate", 10,
   )
+  if err != nil {
+    return ur, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2379,9 +2572,12 @@ func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, int, error) {
   var cc api.ConstantsClub
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "constants/club", 10,
   )
+  if err != nil {
+    return cc, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2409,9 +2605,12 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, e
   var cs []api.ConstantsSmileys
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "constants/smileys", 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2445,10 +2644,13 @@ func (c *Configuration) RandomAnimes(limit int) ([]api.Animes, int, error) {
 
   if limit < 1 || limit > 50 { limit = 1 }
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "animes?order=random&limit=" + strconv.Itoa(limit), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2482,10 +2684,13 @@ func (c *Configuration) RandomMangas(limit int) ([]api.Mangas, int, error) {
 
   if limit < 1 || limit > 50 { limit = 1 }
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "mangas?order=random&limit=" + strconv.Itoa(limit), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2519,10 +2724,13 @@ func (c *Configuration) RandomRanobes(limit int) ([]api.Mangas, int, error) {
 
   if limit < 1 || limit > 50 { limit = 1 }
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "ranobe?order=random&limit=" + strconv.Itoa(limit), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2550,10 +2758,13 @@ func (f *FastId) SearchCharacter() (api.Character, error) {
   var ch api.Character
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "characters/" + strconv.Itoa(f.Id), 10,
   )
+  if err != nil {
+    return ch, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2583,10 +2794,13 @@ func (c *Configuration) SearchCharacters(name string) ([]api.CharacterInfo, int,
   var ci []api.CharacterInfo
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "characters/search?search=" + url.QueryEscape(name), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2614,10 +2828,13 @@ func (f *FastId) SearchPeople() (api.People, error) {
   var p api.People
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "people/" + strconv.Itoa(f.Id), 10,
   )
+  if err != nil {
+    return p, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2653,10 +2870,13 @@ func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, i
   var ap []api.AllPeople
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     "people/search?search=" + url.QueryEscape(name) + "&" + r.OptionsPeople(), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2704,10 +2924,13 @@ func (f *FastId) FavoritesCreate(linked_type string, kind string) (api.Favorites
 
   wg.Wait()
 
-  post, cancel := NewPostRequestWithCancel(
+  post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "favorites/" + linked_type + "/" + strconv.Itoa(f.Id) + "/" + kind, 10,
   )
+  if err != nil {
+    return fa, err
+  }
   defer cancel()
 
   resp, err := client.Do(post)
@@ -2749,10 +2972,13 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
 
   wg.Wait()
 
-  remove, cancel := NewDeleteRequestWithCancel(
+  remove, cancel, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "favorites/" + linked_type + "/" + strconv.Itoa(f.Id), 10,
   )
+  if err != nil {
+    return ff, err
+  }
   defer cancel()
 
   resp, err := client.Do(remove)
@@ -2785,10 +3011,13 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
 func (f *FastId) FavoritesReorder(position int) (int, error) {
   var client = &http.Client{}
 
-  post, cancel := NewReorderPostRequestWithCancel(
+  post, cancel, err := NewReorderPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "favorites/" + strconv.Itoa(f.Id) + "/reorder", position, 10,
   )
+  if err != nil {
+    return 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(post)
@@ -2807,10 +3036,13 @@ func (f *FastId) AddIgnoreUser() (api.IgnoreUser, error) {
   var i api.IgnoreUser
   var client = &http.Client{}
 
-  post, cancel := NewPostRequestWithCancel(
+  post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "v2/users/" + strconv.Itoa(f.Id) + "/ignore", 10,
   )
+  if err != nil {
+    return i, err
+  }
   defer cancel()
 
   resp, err := client.Do(post)
@@ -2838,10 +3070,13 @@ func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, error) {
   var i api.IgnoreUser
   var client = &http.Client{}
 
-  remove, cancel := NewDeleteRequestWithCancel(
+  remove, cancel, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "v2/users/" + strconv.Itoa(f.Id) + "/ignore", 10,
   )
+  if err != nil {
+    return i, err
+  }
   defer cancel()
 
   resp, err := client.Do(remove)
@@ -2869,9 +3104,12 @@ func (c *Configuration) Dialogs() ([]api.Dialogs, int, error) {
   var d []api.Dialogs
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "dialogs", 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2898,10 +3136,13 @@ func (f *FastId) SearchDialogs() ([]api.SearchDialogs, error) {
   var sd []api.SearchDialogs
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "dialogs/" + strconv.Itoa(f.Id), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2929,10 +3170,13 @@ func (f *FastId) DeleteDialogs() (api.FriendRequest, error) {
   var fr api.FriendRequest
   var client = &http.Client{}
 
-  remove, cancel := NewDeleteRequestWithCancel(
+  remove, cancel, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "dialogs/" + strconv.Itoa(f.Id), 10,
   )
+  if err != nil {
+    return fr, err
+  }
   defer cancel()
 
   resp, err := client.Do(remove)
@@ -2961,10 +3205,13 @@ func (f *FastId) UserBriefInfo() (api.Info, error) {
   var i api.Info
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "users/" + strconv.Itoa(f.Id) + "/info", 10,
   )
+  if err != nil {
+    return i, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -2989,9 +3236,12 @@ func (f *FastId) UserBriefInfo() (api.Info, error) {
 func (c *Configuration) SignOut() (string, int, error) {
   var client = &http.Client{}
 
-  post, cancel := NewPostRequestWithCancel(
+  post, cancel, err := NewPostRequestWithCancel(
     c.Application, c.AccessToken, "users/sign_out", 10,
   )
+  if err != nil {
+    return "", 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(post)
@@ -3019,9 +3269,12 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
   var ids []int
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "stats/active_users", 40,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -3057,10 +3310,13 @@ func (f *FastId) SearchTopicsAnime(r Result) ([]api.Topics, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "animes/" + strconv.Itoa(f.Id) + "/topics?" + r.OptionsClub(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -3096,10 +3352,13 @@ func (f *FastId) SearchTopicsManga(r Result) ([]api.Topics, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "mangas/" + strconv.Itoa(f.Id) + "/topics?" + r.OptionsClub(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -3135,10 +3394,13 @@ func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     "ranobe/" + strconv.Itoa(f.Id) + "/topics?" + r.OptionsClub(), 10,
   )
+  if err != nil {
+    return nil, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -3186,9 +3448,12 @@ func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "topics?" + r.OptionsTopics(), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -3226,9 +3491,12 @@ func (c *Configuration) SearchTopicsUpdates(r Result) ([]api.TopicsUpdates, int,
   var t []api.TopicsUpdates
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "topics/updates?" + r.OptionsClub(), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -3262,9 +3530,12 @@ func (c *Configuration) SearchTopicsHot(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "topics/hot?" + r.OptionsTopicsHot(), 10,
   )
+  if err != nil {
+    return nil, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -3294,9 +3565,12 @@ func (c *Configuration) SearchTopicsId(id int) (api.TopicsId, int, error) {
   var t api.TopicsId
   var client = &http.Client{}
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "topics/" + strconv.Itoa(id), 10,
   )
+  if err != nil {
+    return t, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -3326,10 +3600,13 @@ func (c *Configuration) AddIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
   var i api.IgnoreTopic
   var client = &http.Client{}
 
-  post, cancel := NewPostRequestWithCancel(
+  post, cancel, err := NewPostRequestWithCancel(
     c.Application, c.AccessToken,
     "v2/topics/" + strconv.Itoa(id) + "/ignore", 10,
   )
+  if err != nil {
+    return i, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(post)
@@ -3359,10 +3636,13 @@ func (c *Configuration) RemoveIgnoreTopic(id int) (api.IgnoreTopic, int, error) 
   var i api.IgnoreTopic
   var client = &http.Client{}
 
-  remove, cancel := NewDeleteRequestWithCancel(
+  remove, cancel, err := NewDeleteRequestWithCancel(
     c.Application, c.AccessToken, 
     "v2/topics/" + strconv.Itoa(id) + "/ignore", 10,
   )
+  if err != nil {
+    return i, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(remove)
@@ -3392,9 +3672,12 @@ func (c *Configuration) SearchGraphql(schema string) (api.GraphQL, int, error) {
   var client = &http.Client{}
   var g api.GraphQL
 
-  post, cancel := NewPostRequestWithCancel(
+  post, cancel, err := NewPostRequestWithCancel(
     c.Application, c.AccessToken, schema, 10,
   )
+  if err != nil {
+    return g, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(post)
@@ -3428,9 +3711,12 @@ func (c *Configuration) ReadMessage(id int) (api.Messages, int, error) {
   var client = &http.Client{}
   var m api.Messages
 
-  get, cancel := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken, "messages/" + strconv.Itoa(id), 10,
   )
+  if err != nil {
+    return m, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(get)
@@ -3470,9 +3756,12 @@ func (c *Configuration) SendMessage(from_id, to_id int, message string) (api.Mes
   var client = &http.Client{}
   var m api.Messages
 
-  post, cancel := NewSendMessagePostRequestWithCancel(
+  post, cancel, err := NewSendMessagePostRequestWithCancel(
     c.Application, c.AccessToken, "messages", message, from_id, to_id, 10,
   )
+  if err != nil {
+    return m, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(post)
@@ -3508,9 +3797,12 @@ func (c *Configuration) ChangeMessage(id int, message string) (api.Messages, int
   var client = &http.Client{}
   var m api.Messages
 
-  put, cancel := NewChangeMessagePutRequestWithCancel(
+  put, cancel, err := NewChangeMessagePutRequestWithCancel(
     c.Application, c.AccessToken, "messages/" + strconv.Itoa(id), message, 10,
   )
+  if err != nil {
+    return m, 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(put)
@@ -3541,9 +3833,12 @@ func (c *Configuration) ChangeMessage(id int, message string) (api.Messages, int
 func (c *Configuration) DeleteMessage(id int) (int, error) {
   var client = &http.Client{}
 
-  del, cancel := NewDeleteMessageDeleteRequestWithCancel(
+  del, cancel, err := NewDeleteMessageDeleteRequestWithCancel(
     c.Application, c.AccessToken, "messages/" + strconv.Itoa(id), 10,
   )
+  if err != nil {
+    return 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(del)
@@ -3571,9 +3866,12 @@ func (c *Configuration) DeleteMessage(id int) (int, error) {
 func (c *Configuration) MarkReadMessages(ids string, is_read int) (int, error) {
   var client = &http.Client{}
 
-  post, cancel := NewMarkReadPostRequestWithCancel(
+  post, cancel, err := NewMarkReadPostRequestWithCancel(
     c.Application, c.AccessToken, "messages/mark_read", ids, is_read, 10,
   )
+  if err != nil {
+    return 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(post)
@@ -3583,6 +3881,56 @@ func (c *Configuration) MarkReadMessages(ids string, is_read int) (int, error) {
   defer resp.Body.Close()
 
   return resp.StatusCode, nil
+}
+
+// Name: unread message type.
+//
+// 'Name' settings:
+//  - messages
+//  - news
+//  - notifications
+//
+// Empty array to be filled with ids for messages.
+func (f *FastId) UnreadMessagesIds(name string) ([]int, error) {
+  var um api.UnreadMessages
+  var client = &http.Client{}
+
+  get, cancel, err := NewGetRequestWithCancel(
+    f.Conf.Application, f.Conf.AccessToken,
+    "users/" + strconv.Itoa(f.Id) + "/unread_messages", 10,
+  )
+  if err != nil {
+    return nil, err
+  }
+  defer cancel()
+
+  resp, err := client.Do(get)
+  if err != nil {
+    return nil, err
+  }
+  defer resp.Body.Close()
+
+  data, err := io.ReadAll(resp.Body)
+  if err != nil {
+    return nil, err
+  }
+
+  if err := json.Unmarshal(data, &um); err != nil {
+    return nil, err
+  }
+
+  switch name {
+  case "messages":
+    if um.Messages == 0 { return nil, errors.New("unread messages not found") }
+    return make([]int, um.Messages), nil
+  case "news":
+    if um.News == 0 { return nil, errors.New("unread news not found") }
+    return make([]int, um.News), nil
+  case "notifications":
+    if um.Notifications == 0 { return nil, errors.New("unread notifications not found") }
+    return make([]int, um.Notifications), nil
+  default: return nil, errors.New("wrong name... try messages, news or notifications")
+  }
 }
 
 // Name: type in the mail.
@@ -3599,9 +3947,12 @@ func (c *Configuration) MarkReadMessages(ids string, is_read int) (int, error) {
 func (c *Configuration) ReadAllMessages(name string) (int, error) {
   var client = &http.Client{}
 
-  post, cancel := NewReadDeleteAllPostRequestWithCancel(
+  post, cancel, err := NewReadDeleteAllPostRequestWithCancel(
     c.Application, c.AccessToken, "messages/read_all", name, 10,
   )
+  if err != nil {
+    return 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(post)
@@ -3627,9 +3978,12 @@ func (c *Configuration) ReadAllMessages(name string) (int, error) {
 func (c *Configuration) DeleteAllMessages(name string) (int, error) {
   var client = &http.Client{}
 
-  post, cancel := NewReadDeleteAllPostRequestWithCancel(
+  post, cancel, err := NewReadDeleteAllPostRequestWithCancel(
     c.Application, c.AccessToken, "messages/delete_all", name, 10,
   )
+  if err != nil {
+    return 0, err
+  }
   defer cancel()
 
   resp, err := client.Do(post)

@@ -4,7 +4,8 @@
 Небольшая библиотека для взаимодействия с шикимори, написанная на языке golang.
 * Работа с API происходит только через `OAuth2`.
 * Никаких зависимостей от других библиотек.
-* Для тестов и сборки используется утилита GNU [make](https://www.gnu.org/software/make/manual/make.html).
+* Для тестов и сборки используется утилита
+GNU [make](https://www.gnu.org/software/make/manual/make.html).
 
 ### Установка
 ```bash
@@ -16,6 +17,10 @@ go get github.com/heycatch/goshikimori
 
 ### Документация
 Также доступна поддержка **godoc**.
+
+Или вы можете использовать страницу с официального
+[сайта](https://pkg.go.dev/github.com/heycatch/goshikimori) Go pkg.\
+**P.S.** документация обновляется с опозданием.
 ```bash
 # Способ #1: Используя докер.
 git clone git@github.com:heycatch/goshikimori.git && cd goshikimori

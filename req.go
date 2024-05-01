@@ -1,131 +1,191 @@
 package goshikimori
 
 import (
-  "fmt"
-  "net/http"
-  "context"
-  "time"
   "bytes"
+  "context"
+  "strconv"
+  "net/http"
+  "time"
+
+  "github.com/heycatch/goshikimori/concat"
 )
 
+const site string = "https://shikimori.one/api/"
+
 func NewGetRequestWithCancel(application, accessToken, search string,
-    number time.Duration) (*http.Request, context.CancelFunc) {
-  custom_url := fmt.Sprintf("https://%s/%s", site, search)
-  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second) // number->10seconds
-  req, _ := http.NewRequestWithContext(ctx, http.MethodGet, custom_url, nil)
+    number time.Duration) (*http.Request, context.CancelFunc, error) {
+  // In requests I set the time to 10 seconds.
+  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
+  req, err := http.NewRequestWithContext(
+    ctx, http.MethodGet, concat.Url(site, search), nil,
+  )
+  if err != nil {
+    return req, cancel, err
+  }
   req.Header.Add("User-Agent", application)
-  req.Header.Add("Authorization", "Bearer " + accessToken)
-  return req, cancel
+  req.Header.Add("Authorization", concat.Bearer(accessToken))
+  return req, cancel, nil
 }
 
 // To work correctly with the POST method,
 // make sure that your application has all the necessary permissions.
 func NewPostRequestWithCancel(application, accessToken, search string,
-    number time.Duration) (*http.Request, context.CancelFunc) {
-  custom_url := fmt.Sprintf("https://%s/%s", site, search)
-  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second) // number->10seconds
-  req, _ := http.NewRequestWithContext(ctx, http.MethodPost, custom_url, nil)
+    number time.Duration) (*http.Request, context.CancelFunc, error) {
+  // In requests I set the time to 10 seconds.
+  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
+  req, err := http.NewRequestWithContext(
+    ctx, http.MethodPost, concat.Url(site, search), nil,
+  )
+  if err != nil {
+    return req, cancel, err
+  }
   req.Header.Add("User-Agent", application)
-  req.Header.Add("Authorization", "Bearer " + accessToken)
+  req.Header.Add("Authorization", concat.Bearer(accessToken))
   req.Header.Set("Content-Type", "application/json")
-  return req, cancel
+  return req, cancel, nil
 }
 
 // Reorder: POST request. To work correctly with the POST method,
 // make sure that your application has all the necessary permissions.
 func NewReorderPostRequestWithCancel(application, accessToken, search string,
-    position int, number time.Duration) (*http.Request, context.CancelFunc) {
-  custom_url := fmt.Sprintf("https://%s/%s", site, search)
-  data := []byte(fmt.Sprintf(`{"new_index": "%d"}`, position))
-  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second) // number->10seconds
-  req, _ := http.NewRequestWithContext(ctx, http.MethodPost, custom_url, bytes.NewBuffer(data))
+    position int, number time.Duration) (*http.Request, context.CancelFunc, error) {
+  // In requests I set the time to 10 seconds.
+  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
+  req, err := http.NewRequestWithContext(
+    ctx, http.MethodPost, concat.Url(site, search),
+    bytes.NewBuffer(concat.DataBuffer(
+      []string{"{\"new_index\": ", "\"", strconv.Itoa(position), "\"", "}"},
+    )),
+  )
+  if err != nil {
+    return req, cancel, err
+  }
   req.Header.Add("User-Agent", application)
-  req.Header.Add("Authorization", "Bearer " + accessToken)
+  req.Header.Add("Authorization", concat.Bearer(accessToken))
   req.Header.Set("Content-Type", "application/json")
-  return req, cancel
+  return req, cancel, nil
 }
 
 // Mark order messages: POST request. To work correctly with the POST method,
 // make sure that your application has all the necessary permissions.
 func NewMarkReadPostRequestWithCancel(application, accessToken, search, ids string,
-    is_read int, number time.Duration) (*http.Request, context.CancelFunc) {
-  custom_url := fmt.Sprintf("https://%s/%s", site, search)
-  data := []byte(fmt.Sprintf(`{"ids": "%s", "is_read": "%d"}`, ids, is_read))
-  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second) // number->10seconds
-  req, _ := http.NewRequestWithContext(ctx, http.MethodPost, custom_url, bytes.NewBuffer(data))
+    is_read int, number time.Duration) (*http.Request, context.CancelFunc, error) {
+  // In requests I set the time to 10 seconds.
+  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
+  req, err := http.NewRequestWithContext(
+    ctx, http.MethodPost, concat.Url(site, search),
+    bytes.NewBuffer(concat.DataBuffer([]string{
+      "{\"ids\": ", "\"", ids, "\"", ", ", "\"is_read\": ",
+      "\"", strconv.Itoa(is_read), "\"", "}",
+    })),
+  )
+  if err != nil {
+    return req, cancel, err
+  }
   req.Header.Add("User-Agent", application)
-  req.Header.Add("Authorization", "Bearer " + accessToken)
+  req.Header.Add("Authorization", concat.Bearer(accessToken))
   req.Header.Set("Content-Type", "application/json")
-  return req, cancel
+  return req, cancel, nil
 }
 
 // Read/Delete all messages: POST request. To work correctly with the POST method,
 // make sure that your application has all the necessary permissions.
 func NewReadDeleteAllPostRequestWithCancel(application, accessToken, search, name string,
-    number time.Duration) (*http.Request, context.CancelFunc) {
-  custom_url := fmt.Sprintf("https://%s/%s", site, search)
-  data := []byte(fmt.Sprintf(`{"frontend": "false", "type": "%s"}`, name))
-  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second) // number->10seconds
-  req, _ := http.NewRequestWithContext(ctx, http.MethodPost, custom_url, bytes.NewBuffer(data))
+    number time.Duration) (*http.Request, context.CancelFunc, error) {
+  // In requests I set the time to 10 seconds.
+  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
+  req, err := http.NewRequestWithContext(
+    ctx, http.MethodPost, concat.Url(site, search),
+    bytes.NewBuffer(concat.DataCopy(
+      26 + len(name),
+      []string{"{\"frontend\": ", "\"false\", ", "\"type\": ", "\"", name, "\"", "}"},
+    )),
+  )
+  if err != nil {
+    return req, cancel, err
+  }
   req.Header.Add("User-Agent", application)
-  req.Header.Add("Authorization", "Bearer " + accessToken)
+  req.Header.Add("Authorization", concat.Bearer(accessToken))
   req.Header.Set("Content-Type", "application/json")
-  return req, cancel
+  return req, cancel, nil
 }
 
 // Send message: POST request. To work correctly with the POST method,
 // make sure that your application has all the necessary permissions.
 func NewSendMessagePostRequestWithCancel(application, accessToken, search, body string,
-    from_id, to_id int, number time.Duration) (*http.Request, context.CancelFunc) {
-  custom_url := fmt.Sprintf("https://%s/%s", site, search)
-  data := []byte(fmt.Sprintf(
-    `{"frontend": "false",
-    "message": {"body": "%s", "from_id": "%d", "kind": "Private", "to_id": "%d"}}`,
-    body, from_id, to_id),
+    from_id, to_id int, number time.Duration) (*http.Request, context.CancelFunc, error) {
+  // In requests I set the time to 10 seconds.
+  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
+  req, err := http.NewRequestWithContext(
+    ctx, http.MethodPost, concat.Url(site, search),
+    bytes.NewBuffer(concat.DataBuffer([]string{
+      "{\"frontend\": \"false\", \"message\": {\"body\": \"", body,
+      "\", \"from_id\": \"", strconv.Itoa(from_id),
+      "\", \"kind\": \"Private\", \"to_id\": \"", strconv.Itoa(to_id), "\"}}",
+    })),
   )
-  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second) // number->10seconds
-  req, _ := http.NewRequestWithContext(ctx, http.MethodPost, custom_url, bytes.NewBuffer(data))
+  if err != nil {
+    return req, cancel, err
+  }
   req.Header.Add("User-Agent", application)
-  req.Header.Add("Authorization", "Bearer " + accessToken)
+  req.Header.Add("Authorization", concat.Bearer(accessToken))
   req.Header.Set("Content-Type", "application/json")
-  return req, cancel
+  return req, cancel, nil
 }
 
 // Change message. To work correctly with the PUT method,
 // make sure that your application has all the necessary permissions.
 func NewChangeMessagePutRequestWithCancel(application, accessToken, search, body string,
-    number time.Duration) (*http.Request, context.CancelFunc) {
-  custom_url := fmt.Sprintf("https://%s/%s", site, search)
-  data := []byte(fmt.Sprintf(`{"frontend": "false", "message": {"body": "%s"}}`, body))
-  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second) // number->10seconds
-  req, _ := http.NewRequestWithContext(ctx, http.MethodPut, custom_url, bytes.NewBuffer(data))
+    number time.Duration) (*http.Request, context.CancelFunc, error) {
+  // In requests I set the time to 10 seconds.
+  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
+  req, err := http.NewRequestWithContext(
+    ctx, http.MethodPut, concat.Url(site, search),
+    bytes.NewBuffer(concat.DataCopy(
+      43 + len(body),
+      []string{"{\"frontend\": \"false\", \"message\": {\"body\": \"", body, "\"}}"},
+    )),
+  )
+  if err != nil {
+    return req, cancel, err
+  }
   req.Header.Add("User-Agent", application)
-  req.Header.Add("Authorization", "Bearer " + accessToken)
+  req.Header.Add("Authorization", concat.Bearer(accessToken))
   req.Header.Set("Content-Type", "application/json")
-  return req, cancel
+  return req, cancel, nil
 }
 
 // Delete message. To work correctly with the DELETE method,
 // make sure that your application has all the necessary permissions.
 func NewDeleteMessageDeleteRequestWithCancel(application, accessToken, search string,
-    number time.Duration) (*http.Request, context.CancelFunc) {
-  custom_url := fmt.Sprintf("https://%s/%s", site, search)
-  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second) // number->10seconds
-  req, _ := http.NewRequestWithContext(ctx, http.MethodDelete, custom_url, nil)
+    number time.Duration) (*http.Request, context.CancelFunc, error) {
+  // In requests I set the time to 10 seconds.
+  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
+  req, err := http.NewRequestWithContext(
+    ctx, http.MethodDelete, concat.Url(site, search), nil,
+  )
+  if err != nil {
+    return req, cancel, err
+  }
   req.Header.Add("User-Agent", application)
-  req.Header.Add("Authorization", "Bearer " + accessToken)
+  req.Header.Add("Authorization", concat.Bearer(accessToken))
   req.Header.Set("Content-Type", "application/json")
-  return req, cancel
+  return req, cancel, nil
 }
 
 // To work correctly with the DELETE method,
 // make sure that your application has all the necessary permissions.
 func NewDeleteRequestWithCancel(application, accessToken, search string,
-    number time.Duration) (*http.Request, context.CancelFunc) {
-  custom_url := fmt.Sprintf("https://%s/%s", site, search)
-  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second) // number->10seconds
-  req, _ := http.NewRequestWithContext(ctx, http.MethodDelete, custom_url, nil)
+    number time.Duration) (*http.Request, context.CancelFunc, error) {
+  // In requests I set the time to 10 seconds.
+  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
+  req, err := http.NewRequestWithContext(
+    ctx, http.MethodDelete, concat.Url(site, search), nil,
+  )
+  if err != nil {
+    return req, cancel, err
+  }
   req.Header.Add("User-Agent", application)
-  req.Header.Add("Authorization", "Bearer " + accessToken)
-  return req, cancel
+  req.Header.Add("Authorization", concat.Bearer(accessToken))
+  return req, cancel, nil
 }

@@ -9,7 +9,7 @@ import (
   g "github.com/heycatch/goshikimori"
 )
 
-func conf() *g.Configuration {
+func config() *g.Configuration {
   return g.SetConfiguration(
     "",
     "",
@@ -17,14 +17,18 @@ func conf() *g.Configuration {
 }
 
 func main() {
-  c := conf()
+  c := config()
   w, _, err := c.WhoAmi()
   if err != nil {
     fmt.Println(err)
     return
   }
 
-  req, cancel := g.NewGetRequestWithCancel(c.Application, c.AccessToken, "whoami", 10)
+  req, cancel, err := g.NewGetRequestWithCancel(c.Application, c.AccessToken, "whoami", 10)
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
   defer cancel()
   dump, err := httputil.DumpRequestOut(req, true)
   if err != nil {

@@ -4,6 +4,7 @@ import (
   "fmt"
 
   g "github.com/heycatch/goshikimori"
+  "github.com/heycatch/goshikimori/concat"
 )
 
 func config() *g.Configuration {
@@ -177,7 +178,7 @@ func markReadUnreadMessages() {
     }
   }
 
-  read, err := c.MarkReadMessages(g.IdsToString(ids), 1)
+  read, err := c.MarkReadMessages(concat.IdsToString(ids), 1)
   if err != nil {
     fmt.Println(err)
     return

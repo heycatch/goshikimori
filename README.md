@@ -4,7 +4,8 @@
 A small library for interacting with shikimori, written in golang.
 * Work with API occurs only through `OAuth2`.
 * No dependencies on other libraries.
-* The GNU [make](https://www.gnu.org/software/make/manual/make.html) utility is used for tests and builds.
+* The GNU [make](https://www.gnu.org/software/make/manual/make.html)
+utility is used for tests and builds.
 
 ### Install
 ```bash
@@ -15,7 +16,11 @@ go get github.com/heycatch/goshikimori
 * [Click her](https://github.com/heycatch/goshikimori/tree/master/examples)
 
 ### Documentation
-**godoc** support is also available.
+**Godoc** support is also available.
+
+Or you can use the page from the official Go pkg
+[website](https://pkg.go.dev/github.com/heycatch/goshikimori).\
+**P.S.** documentation is late in updating.
 ```bash
 # Method #1: Use docker.
 git clone git@github.com:heycatch/goshikimori.git && cd goshikimori
