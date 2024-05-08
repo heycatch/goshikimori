@@ -10,15 +10,11 @@ import (
   "github.com/heycatch/goshikimori/concat"
 )
 
-const site string = "https://shikimori.one/api/"
-
 func NewGetRequestWithCancel(application, accessToken, search string,
     number time.Duration) (*http.Request, context.CancelFunc, error) {
   // In requests I set the time to 10 seconds.
   ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
-  req, err := http.NewRequestWithContext(
-    ctx, http.MethodGet, concat.Url(site, search), nil,
-  )
+  req, err := http.NewRequestWithContext(ctx, http.MethodGet, search, nil)
   if err != nil {
     return req, cancel, err
   }
@@ -33,9 +29,7 @@ func NewPostRequestWithCancel(application, accessToken, search string,
     number time.Duration) (*http.Request, context.CancelFunc, error) {
   // In requests I set the time to 10 seconds.
   ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
-  req, err := http.NewRequestWithContext(
-    ctx, http.MethodPost, concat.Url(site, search), nil,
-  )
+  req, err := http.NewRequestWithContext(ctx, http.MethodPost, search, nil)
   if err != nil {
     return req, cancel, err
   }
@@ -52,7 +46,7 @@ func NewReorderPostRequestWithCancel(application, accessToken, search string,
   // In requests I set the time to 10 seconds.
   ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
   req, err := http.NewRequestWithContext(
-    ctx, http.MethodPost, concat.Url(site, search),
+    ctx, http.MethodPost, search,
     bytes.NewBuffer(concat.DataBuffer(
       []string{"{\"new_index\": ", "\"", strconv.Itoa(position), "\"", "}"},
     )),
@@ -73,7 +67,7 @@ func NewMarkReadPostRequestWithCancel(application, accessToken, search, ids stri
   // In requests I set the time to 10 seconds.
   ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
   req, err := http.NewRequestWithContext(
-    ctx, http.MethodPost, concat.Url(site, search),
+    ctx, http.MethodPost, search,
     bytes.NewBuffer(concat.DataBuffer([]string{
       "{\"ids\": ", "\"", ids, "\"", ", ", "\"is_read\": ",
       "\"", strconv.Itoa(is_read), "\"", "}",
@@ -95,9 +89,9 @@ func NewReadDeleteAllPostRequestWithCancel(application, accessToken, search, nam
   // In requests I set the time to 10 seconds.
   ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
   req, err := http.NewRequestWithContext(
-    ctx, http.MethodPost, concat.Url(site, search),
+    ctx, http.MethodPost, search,
     bytes.NewBuffer(concat.DataCopy(
-      26 + len(name),
+      33 + len(name),
       []string{"{\"frontend\": ", "\"false\", ", "\"type\": ", "\"", name, "\"", "}"},
     )),
   )
@@ -117,7 +111,7 @@ func NewSendMessagePostRequestWithCancel(application, accessToken, search, body 
   // In requests I set the time to 10 seconds.
   ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
   req, err := http.NewRequestWithContext(
-    ctx, http.MethodPost, concat.Url(site, search),
+    ctx, http.MethodPost, search,
     bytes.NewBuffer(concat.DataBuffer([]string{
       "{\"frontend\": \"false\", \"message\": {\"body\": \"", body,
       "\", \"from_id\": \"", strconv.Itoa(from_id),
@@ -140,9 +134,9 @@ func NewChangeMessagePutRequestWithCancel(application, accessToken, search, body
   // In requests I set the time to 10 seconds.
   ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
   req, err := http.NewRequestWithContext(
-    ctx, http.MethodPut, concat.Url(site, search),
+    ctx, http.MethodPut, search,
     bytes.NewBuffer(concat.DataCopy(
-      43 + len(body),
+      46 + len(body),
       []string{"{\"frontend\": \"false\", \"message\": {\"body\": \"", body, "\"}}"},
     )),
   )
@@ -161,9 +155,7 @@ func NewDeleteMessageDeleteRequestWithCancel(application, accessToken, search st
     number time.Duration) (*http.Request, context.CancelFunc, error) {
   // In requests I set the time to 10 seconds.
   ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
-  req, err := http.NewRequestWithContext(
-    ctx, http.MethodDelete, concat.Url(site, search), nil,
-  )
+  req, err := http.NewRequestWithContext(ctx, http.MethodDelete, search, nil)
   if err != nil {
     return req, cancel, err
   }
@@ -179,9 +171,7 @@ func NewDeleteRequestWithCancel(application, accessToken, search string,
     number time.Duration) (*http.Request, context.CancelFunc, error) {
   // In requests I set the time to 10 seconds.
   ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
-  req, err := http.NewRequestWithContext(
-    ctx, http.MethodDelete, concat.Url(site, search), nil,
-  )
+  req, err := http.NewRequestWithContext(ctx, http.MethodDelete, search, nil)
   if err != nil {
     return req, cancel, err
   }

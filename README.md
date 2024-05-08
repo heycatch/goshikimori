@@ -52,3 +52,7 @@ http://localhost:1337/pkg/github.com/heycatch/goshikimori/
 * [API v1](https://shikimori.one/api/doc/1.0)
 * [API v2](https://shikimori.one/api/doc/2.0)
 * [OAuth2](https://shikimori.one/oauth)
+
+### Feedback
+* Private message the [website](https://shikimori.one/arctica).
+* Open [issue](https://github.com/heycatch/goshikimori/issues).

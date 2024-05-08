@@ -31,12 +31,11 @@ func NekoSliceToString(slice []string) string {
 }
 
 // Quick creation of a url.
-func Url(site, search string) string {
+func Url(max_len int, slice []string) string {
   var offset int
-  res := make([]byte, len(site) + len(search))
-  array := [2]string{site, search}
-  for i := range array {
-    offset += copy(res[offset:], []byte(array[i]))
+  res := make([]byte, max_len)
+  for i := range slice {
+    offset += copy(res[offset:], []byte(slice[i]))
   }
   return *(*string)(unsafe.Pointer(&res))
 }
@@ -60,9 +59,9 @@ func DataBuffer(slice []string) []byte {
 }
 
 // Converting a slice to a []byte using a copy.
-func DataCopy(part int, slice []string) []byte {
+func DataCopy(max_len int, slice []string) []byte {
   var offset int
-  res := make([]byte, part + len(slice))
+  res := make([]byte, max_len)
   for i := range slice {
     offset += copy(res[offset:], []byte(slice[i]))
   }

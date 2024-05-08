@@ -24,6 +24,7 @@ docker-start:
 test:
 	go test -v
 	go test -v ./search
+	go test -v ./concat
 	go vet .
 
 bench:

@@ -9,11 +9,6 @@ import (
   "github.com/heycatch/goshikimori/graphql"
 )
 
-type StatusBar struct {
-  Percent, Cur, Total int
-  Rate, Graph string
-}
-
 const (
   app_test = ""
   tok_test = ""
@@ -21,35 +16,11 @@ const (
 
 func conf() *Configuration { return SetConfiguration(app_test, tok_test) }
 
-func (s *StatusBar) NewOption(start, end int) {
-  s.Cur = start
-  s.Total = end
-  s.Percent = s.getPercent()
-
-  if s.Graph == "" { s.Graph = "#" }
-
-  for i := 0; i < s.Percent; i += 1 { s.Rate += s.Graph }
-}
-
-func (s *StatusBar) getPercent() int {
-  return int((float32(s.Cur) / float32(s.Total)) * 100)
-}
-
-func (s *StatusBar) Play(cur int) {
-  s.Cur = cur
-  last := s.Percent
-  s.Percent = s.getPercent()
-
-  if s.Percent != last && s.Percent%2 == 0 { s.Rate += s.Graph }
-
-  fmt.Printf("\r[%-5s]%3d%% %8d/%d", s.Rate, s.Percent, s.Cur, s.Total)
-}
-
 func TestConfiguration(t *testing.T) {
   if app_test != "" && tok_test != "" {
     t.Logf("Found: %s and %s", app_test, tok_test)
   } else {
-    t.Error("Not found application or key")
+    t.Error("Not found application or token")
     os.Exit(1)
   }
 }
@@ -100,12 +71,12 @@ func TestMangas(t *testing.T) {
   }
 }
 
-func TestClub(t *testing.T) {
+func TestClubs(t *testing.T) {
   c := conf()
   o := &Options{Page: 1, Limit: 1}
-  r, _, _ := c.SearchClubs("milf thred", o)
+  clubs, _, _ := c.SearchClubs("milf", o)
 
-  for _, v := range r {
+  for _, v := range clubs {
     if v.Is_censored == true {
       t.Logf("Best club: %s - found", v.Name)
     } else {
@@ -118,9 +89,9 @@ func TestAchievements(t *testing.T) {
   fmt.Println("Too many requests at once, waiting 5 seconds...")
 
   var s StatusBar
-  s.NewOption(0, 5)
+  s.newOption(0, 5)
   for i := 0; i <= 5; i++ {
-    s.Play(i)
+    s.play(i)
     time.Sleep(1 * time.Second)
   }
 
@@ -158,9 +129,9 @@ func TestUserUnreadMessages(t *testing.T) {
   fmt.Println("Too many requests at once, waiting 5 seconds...")
 
   var s StatusBar
-  s.NewOption(0, 5)
+  s.newOption(0, 5)
   for i := 0; i <= 5; i++ {
-    s.Play(i)
+    s.play(i)
     time.Sleep(1 * time.Second)
   }
 
@@ -207,35 +178,23 @@ func TestConstantsManga(t *testing.T) {
   }
 }
 
-func TestPeople(t *testing.T) {
+func TestAnimeGraphql(t *testing.T) {
   fmt.Println("Too many requests at once, waiting 5 seconds...")
 
   var s StatusBar
-  s.NewOption(0, 5)
+  s.newOption(0, 5)
   for i := 0; i <= 5; i++ {
-    s.Play(i)
+    s.play(i)
     time.Sleep(1 * time.Second)
   }
 
   c := conf()
-  fast, _, _ := c.FastIdPeople("Aya Hirano")
-  p, _ := fast.SearchPeople()
-
-  if p.Id == 4 || p.Job_title == "Сэйю"  {
-    t.Logf("%s - found", p.Name)
-  } else {
-    t.Error("People not found")
-  }
-}
-
-func TestAnimeGraphql(t *testing.T) {
-  c := conf()
-  s, _ := graphql.AnimeSchema(
+  sch, _ := graphql.AnimeSchema(
     graphql.Values("id", "malId", "name", "rating", "kind", "episodes"),
     "initial d first stage",
     1, 1, "", "", "", "", "", "", "", false, nil,
   )
-  a, _, _ := c.SearchGraphql(s)
+  a, _, _ := c.SearchGraphql(sch)
 
   for _, v := range a.Data.Animes {
     if v.Id == "185" && v.MalId == "185" && v.Rating == "pg_13" && v.Kind == "tv" && v.Episodes == 26 {
