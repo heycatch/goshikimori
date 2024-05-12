@@ -3,10 +3,9 @@ package goshikimori
 import (
   "net/url"
   "strconv"
-  "sync"
-  "strings"
 
   "github.com/heycatch/goshikimori/search"
+  "github.com/heycatch/goshikimori/concat"
 )
 
 type Configuration struct {
@@ -70,356 +69,322 @@ type Result interface {
   OptionsTopicsHot()       string
 }
 
+// V2 implementation of OptionsTopics().
+//
+// BenchmarkTopicsV1-4   203890   6134 ns/op   488 B/op   14 allocs/op
+//
+// BenchmarkTopicsV2-4   745861   1884 ns/op   280 B/op   10 allocs/op
 func (o *Options) OptionsTopics() string {
   v := url.Values{}
 
-  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
-  v.Add("page", strconv.Itoa(o.Page))
-  if o.Limit <= 0 || o.Limit >= 31 { o.Limit = 1 }
-  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Page <= 1 || o.Page >= 100001 {
+    v.Add("page", "1")
+  } else {
+    v.Add("page", strconv.Itoa(o.Page))
+  }
+  if o.Limit <= 1 || o.Limit >= 31 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
 
-  var wg sync.WaitGroup
-  wg.Add(2)
-
-  ch := make(chan string)
-
-  go search.StringWithChan(&wg, ch, o.Forum, []string{
+  search.LinearComplexity(&o.Forum, "all", []string{
     "cosplay", "animanga", "site", "games", "vn",
     "contests", "offtopic", "clubs", "my_clubs",
     "critiques", "news", "collections", "articles",
   })
-  o.Forum = <-ch
+  v.Add("forum", o.Forum)
 
-  go search.StringWithChan(&wg, ch, o.Linked_type, []string{
+  search.LinearComplexity(&o.Linked_type, "", []string{
     "Anime", "Manga", "Ranobe", "Character", "Person",
     "Club", "ClubPage", "Critique", "Review",
     "Contest", "CosplayGallery", "Collection", "Article",
   })
-  o.Linked_type = <-ch
-
-  wg.Wait()
-
-  if o.Forum == "" { v.Add("forum", "all") } else { v.Add("forum", o.Forum) }
   // linked_id and linked_type are only used together.
   if o.Linked_id >= 1 && o.Linked_type != "" {
     v.Add("linked_id", strconv.Itoa(o.Linked_id))
     v.Add("linked_type", o.Linked_type)
   }
+
   return v.Encode()
 }
 
+// V2 implementation of OptionsMessages().
+//
+// BenchmarkMessagesV1-4    471354   2375 ns/op   312 B/op   10 allocs/op
+//
+// BenchmarkMessagesV2-4   1000000   1092 ns/op   152 B/op    7 allocs/op
 func (o *Options) OptionsMessages() string {
   v := url.Values{}
 
-  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
-  v.Add("page", strconv.Itoa(o.Page))
-  if o.Limit <= 0 || o.Limit >= 101 { o.Limit = 1 }
-  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Page <= 1 || o.Page >= 100001 {
+    v.Add("page", "1")
+  } else {
+    v.Add("page", strconv.Itoa(o.Page))
+  }
+  if o.Limit <= 1 || o.Limit >= 101 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
 
-  var wg sync.WaitGroup
-  wg.Add(1)
-
-  ch := make(chan string)
-
-  go search.StringWithChan(&wg, ch, o.Type, []string{
+  search.LinearComplexity(&o.Type, "news", []string{
     "inbox", "private", "sent", "news", "notifications",
   })
-  o.Type = <-ch
+  v.Add("type", o.Type)
 
-  wg.Wait()
-
-  if o.Type == "" { v.Add("type", "news") } else { v.Add("type", o.Type) }
   return v.Encode()
 }
 
+// V2 implementation of OptionsUserHistory().
+//
+// BenchmarkUserHistoryV1-4   453085   3211 ns/op   408 B/op   12 allocs/op
+//
+// BenchmarkUserHistoryV2-4   949827   2529 ns/op   248 B/op    9 allocs/op
+//
+// TODO: convert target_id from string to int?
 func (o *Options) OptionsUserHistory() string {
   v := url.Values{}
 
-  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
-  v.Add("page", strconv.Itoa(o.Page))
-  if o.Limit <= 0 || o.Limit >= 101 { o.Limit = 1 }
-  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Page <= 1 || o.Page >= 100001 {
+    v.Add("page", "1")
+  } else {
+    v.Add("page", strconv.Itoa(o.Page))
+  }
+  if o.Limit <= 1 || o.Limit >= 101 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
 
-  var wg sync.WaitGroup
-  wg.Add(1)
-
-  ch := make(chan string)
-
-  go search.StringWithChan(&wg, ch, o.Target_type, []string{"Anime", "Manga"})
-  o.Target_type = <-ch
-
-  wg.Wait()
+  search.LinearComplexity(&o.Target_type, "Anime", []string{"Anime", "Manga"})
+  v.Add("target_type", o.Target_type)
 
   // We get an error if we do not process the request in this way.
   // json: cannot unmarshal string into Go value of type api.UserHistory
   if o.Target_id != "" { v.Add("target_id", o.Target_id) }
-  if o.Target_type == "" { v.Add("target_type", "Anime") } else { v.Add("target_type", o.Target_type) }
+
   return v.Encode()
 }
 
 func (o *Options) OptionsUsers() string {
   v := url.Values{}
 
-  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
-  v.Add("page", strconv.Itoa(o.Page))
-  if o.Limit <= 0 || o.Limit >= 101 { o.Limit = 1 }
-  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Page <= 1 || o.Page >= 100001 {
+    v.Add("page", "1")
+  } else {
+    v.Add("page", strconv.Itoa(o.Page))
+  }
+  if o.Limit <= 1 || o.Limit >= 101 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
+
   return v.Encode()
 }
 
+// V2 implementation of OptionsAnime().
+//
+// BenchmarkAnimeV1-4   74109   16041 ns/op   4053 B/op   32 allocs/op
+//
+// BenchmarkAnimeV2-4   210667   7592 ns/op   1687 B/op   22 allocs/op
 func (o *Options) OptionsAnime() string {
   v := url.Values{}
 
-  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
-  v.Add("page", strconv.Itoa(o.Page))
-  if o.Limit <= 0 || o.Limit >= 51 { o.Limit = 1 }
-  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Page <= 1 || o.Page >= 100001 {
+    v.Add("page", "1")
+  } else {
+    v.Add("page", strconv.Itoa(o.Page))
+  }
+  if o.Limit <= 1 || o.Limit >= 51 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  var wg sync.WaitGroup
-  wg.Add(7)
-
-  ch := make(chan string)
-
-  go search.StringWithChan(&wg, ch, o.Order, []string{
+  search.LinearComplexity(&o.Order, "", []string{
     "id", "ranked", "kind", "popularity",
     "name", "aired_on", "episodes", "status",
   })
-  o.Order = <-ch
+  v.Add("order", o.Order)
 
-  go search.StringWithChan(&wg, ch, o.Kind, []string{
+  search.LinearComplexity(&o.Kind, "", []string{
     "tv", "movie", "ova", "ona", "special", "music",
     "tv_13", "tv_24", "tv_48", "!tv", "!movie", "!ova",
     "!ona", "!special", "!music", "!tv_13", "!tv_24", "!tv_48",
   })
-  o.Kind = <-ch
+  v.Add("kind", o.Kind)
 
-  go search.StringWithChan(&wg, ch, o.Status, []string{
+  search.LinearComplexity(&o.Status, "", []string{
     "anons", "ongoing", "released", "!anons", "!ongoing", "!released",
   })
-  o.Status = <-ch
+  v.Add("status", o.Status)
 
-  go search.StringWithChan(&wg, ch, o.Season, []string{
+  search.LinearComplexity(&o.Season, "", []string{
     "2000_2010", "2010_2014", "2015_2019", "199x",
     "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
     "198x", "!198x", "2020_2021", "!2020_2021",
     "2022", "!2022", "2023", "!2023",
   })
-  o.Season = <-ch
+  v.Add("season", o.Season)
 
-  go search.StringWithChan(&wg, ch, o.Rating, []string{
+  search.LinearComplexity(&o.Rating, "", []string{
     "none", "g", "pg", "pg_13",
     "r", "r_plus", "rx", "!g", "!pg",
     "!pg_13", "!r", "!r_plus", "!rx",
   })
-  o.Rating = <-ch
+  v.Add("rating", o.Rating)
 
-  go search.StringWithChan(&wg, ch, o.Duration, []string{
+  search.LinearComplexity(&o.Duration, "", []string{
     "S", "D", "F", "!S", "!D", "!F",
   })
-  o.Duration = <-ch
+  v.Add("duration", o.Duration)
 
-  go search.StringWithChan(&wg, ch, o.Mylist, []string{
+  search.LinearComplexity(&o.Mylist, "", []string{
     "planned", "watching", "rewatching",
     "completed", "on_hold", "dropped",
   })
-  o.Mylist = <-ch
-
-  wg.Wait()
-
-  var genre_v2 string
-  genres := map[int]string{
-    1: "1-Action", 2: "2-Adventure", 3: "3-Cars", 4: "4-Comedy",
-    5: "5-Dementia", 6: "6-Demons", 7: "7-Mystery", 8: "8-Drama",
-    9: "9-Ecchi", 10: "10-Fantasy", 11: "11-Game", 12: "12-Hentai",
-    13: "13-Historical", 14: "14-Horror", 15: "15-Kids", 16: "16-Magic",
-    17: "17-Martial Arts", 18: "18-Mecha", 19: "19-Music", 20: "20-Parody",
-    21: "21-Samurai", 22: "22-Romance", 23: "23-School",
-    24: "24-Sci-Fi", 25: "25-Shoujo", 26: "26-Shoujo Ai", 27: "27-Shounen",
-    28: "28-Shounen Ai", 29: "29-Space", 30: "30-Sports", 31: "31-Super Power",
-    32: "32-Vampire", 33: "33-Yaoi", 34: "34-Yuri", 35: "35-Harem",
-    36: "36-Slice of Life", 37: "37-Supernatural", 38: "38-Military",
-    39: "39-Police", 40: "40-Psychological", 41: "41-Thriller",
-    42: "42-Seinen", 43: "43-Josei",
-    539: "539-Erotica", 541: "541-Work Life", 543: "543-Gourmet",
-  }
-  for i := 0; i < len(o.Genre_v2); i++ {
-    _, ok := genres[o.Genre_v2[i]]; if ok {
-      genre_v2 += genres[o.Genre_v2[i]] + ","
-    }
-  }
-
-  v.Add("order", o.Order)
-  v.Add("kind", o.Kind)
-  v.Add("status", o.Status)
-  v.Add("season", o.Season)
-  v.Add("rating", o.Rating)
-  v.Add("duration", o.Duration)
   v.Add("mylist", o.Mylist)
+
+  genre := concat.MapGenresAnime(o.Genre_v2)
+  if genre != "" { v.Add("genre_v2", genre) }
+
   v.Add("censored", strconv.FormatBool(o.Censored))
-  if len(genre_v2) > 0 { v.Add("genre_v2", strings.TrimSuffix(genre_v2, ",")) }
+
   return v.Encode()
 }
 
+// V2 implementation of OptionsManga().
+//
+// BenchmarkMangaV1-4    99231   13817 ns/op   3662 B/op   27 allocs/op
+//
+// BenchmarkMangaV2-4   250736    5868 ns/op   1351 B/op   19 allocs/op
 func (o *Options) OptionsManga() string {
   v := url.Values{}
 
-  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
-  v.Add("page", strconv.Itoa(o.Page))
-  if o.Limit <= 0 || o.Limit >= 51 { o.Limit = 1 }
-  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Page <= 1 || o.Page >= 100001 {
+    v.Add("page", "1")
+  } else {
+    v.Add("page", strconv.Itoa(o.Page))
+  }
+  if o.Limit <= 1 || o.Limit >= 51 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  var wg sync.WaitGroup
-  wg.Add(5)
-
-  ch := make(chan string)
-
-  go search.StringWithChan(&wg, ch, o.Order, []string{
+  search.LinearComplexity(&o.Order, "", []string{
     "id", "ranked", "kind", "popularity", "name",
     "aired_on", "volumes", "chapters", "status",
   })
-  o.Order = <-ch
+  v.Add("order", o.Order)
 
-  go search.StringWithChan(&wg, ch, o.Kind, []string{
+  search.LinearComplexity(&o.Kind, "",[]string{
     "manga", "manhwa", "manhua", "light_novel", "novel",
     "one_shot", "doujin", "!manga", "!manhwa", "!manhua",
     "!light_novel", "!novel", "!one_shot", "!doujin",
   })
-  o.Kind = <-ch
+  v.Add("kind", o.Kind)
 
-  go search.StringWithChan(&wg, ch, o.Status, []string{
+  search.LinearComplexity(&o.Status, "",[]string{
     "anons", "ongoing", "released", "paused", "discontinued",
     "!anons", "!ongoing", "!released", "!paused", "!discontinued",
   })
-  o.Status = <-ch
+  v.Add("status", o.Status)
 
-  go search.StringWithChan(&wg, ch, o.Season, []string{
+  search.LinearComplexity(&o.Season, "", []string{
     "2000_2010", "2010_2014", "2015_2019", "199x",
     "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
     "198x", "!198x", "2020_2021", "!2020_2021",
     "2022", "!2022", "2023", "!2023",
   })
-  o.Season = <-ch
+  v.Add("season", o.Season)
 
-  go search.StringWithChan(&wg, ch, o.Mylist, []string{
+  search.LinearComplexity(&o.Mylist, "", []string{
     "planned", "watching", "rewatching",
     "completed", "on_hold", "dropped",
   })
-  o.Mylist = <-ch
-
-  wg.Wait()
-
-  var genre_v2 string
-  genres := map[int]string{
-    46: "46-Mystery", 47: "47-Shounen",
-    48: "48-Supernatural", 49: "49-Comedy", 50: "50-Drama", 51: "51-Ecchi",
-    52: "52-Seinen", 53: "53-Sci-Fi", 54: "54-Slice of Life", 55: "55-Shounen Ai",
-    56: "56-Action", 57: "57-Fantasy", 58: "58-Magic", 59: "59-Hentai",
-    60: "60-School", 61: "61-Doujinshi", 62: "62-Romance", 63: "63-Shoujo",
-    64: "64-Vampire", 65: "65-Yaoi", 66: "66-Martial Arts", 67: "67-Psychological",
-    68: "68-Adventure", 69: "69-Historical", 70: "70-Military", 71: "71-Harem",
-    72: "72-Demons", 73: "73-Shoujo Ai", 74: "74-Gender Bender", 75: "75-Yuri",
-    76: "76-Sports", 77: "77-Kids", 78: "78-Music", 79: "79-Game", 80: "80-Horror",
-    81: "81-Thriller", 82: "82-Super Power", 83: "83-Mecha", 84: "84-Cars",
-    85: "85-Space", 86: "86-Parody", 87: "87-Josei", 88: "88-Samurai", 89: "89-Police",
-    90: "90-Dementia", 540: "540-Erotica", 542: "542-Work Life", 544: "544-Gourmet",
-  }
-  for i := 0; i < len(o.Genre_v2); i++ {
-    _, ok := genres[o.Genre_v2[i]]; if ok {
-      genre_v2 += genres[o.Genre_v2[i]] + ","
-    }
-  }
-
-  v.Add("order", o.Order)
-  v.Add("kind", o.Kind)
-  v.Add("status", o.Status)
-  v.Add("season", o.Season)
   v.Add("mylist", o.Mylist)
+
+  genre := concat.MapGenresManga(o.Genre_v2)
+  if genre != "" { v.Add("genre_v2", genre) }
+
   v.Add("censored", strconv.FormatBool(o.Censored))
-  if len(genre_v2) > 0 { v.Add("genre_v2", strings.TrimSuffix(genre_v2, ",")) }
+
   return v.Encode()
 }
 
+// V2 implementation of OptionsRanobe().
+//
+// BenchmarkRanobeV1-4   116786   10772 ns/op   2847 B/op   23 allocs/op
+//
+// BenchmarkRanobeV2-4   448850    4633 ns/op    584 B/op   16 allocs/op
 func (o *Options) OptionsRanobe() string {
   v := url.Values{}
 
-  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
-  v.Add("page", strconv.Itoa(o.Page))
-  if o.Limit <= 0 || o.Limit >= 51 { o.Limit = 1 }
-  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Page <= 1 || o.Page >= 100001 {
+    v.Add("page", "1")
+  } else {
+    v.Add("page", strconv.Itoa(o.Page))
+  }
+  if o.Limit <= 1 || o.Limit >= 51 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  var wg sync.WaitGroup
-  wg.Add(4)
-
-  ch := make(chan string)
-
-  go search.StringWithChan(&wg, ch, o.Order, []string{
+  search.LinearComplexity(&o.Order, "", []string{
     "id", "ranked", "kind", "popularity", "name",
     "aired_on", "volumes", "chapters", "status",
   })
-  o.Order = <-ch
+  v.Add("order", o.Order)
 
-  go search.StringWithChan(&wg, ch, o.Status, []string{
+  search.LinearComplexity(&o.Status, "", []string{
     "anons", "ongoing", "released", "paused", "discontinued",
     "!anons", "!ongoing", "!released", "!paused", "!discontinued",
   })
-  o.Status = <-ch
+  v.Add("status", o.Status)
 
-  go search.StringWithChan(&wg, ch, o.Season, []string{
+  search.LinearComplexity(&o.Season, "", []string{
     "2000_2010", "2010_2014", "2015_2019", "199x",
     "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
     "198x", "!198x", "2020_2021", "!2020_2021",
     "2022", "!2022", "2023", "!2023",
   })
-  o.Season = <-ch
+  v.Add("season", o.Season)
 
-  go search.StringWithChan(&wg, ch, o.Mylist, []string{
+  search.LinearComplexity(&o.Mylist, "", []string{
     "planned", "watching", "rewatching",
     "completed", "on_hold", "dropped",
   })
-  o.Mylist = <-ch
-
-  wg.Wait()
-
-  var genre_v2 string
-  genres := map[int]string{
-    46: "46-Mystery", 47: "47-Shounen",
-    48: "48-Supernatural", 49: "49-Comedy", 50: "50-Drama", 51: "51-Ecchi",
-    52: "52-Seinen", 53: "53-Sci-Fi", 54: "54-Slice of Life", 55: "55-Shounen Ai",
-    56: "56-Action", 57: "57-Fantasy", 58: "58-Magic", 59: "59-Hentai",
-    60: "60-School", 61: "61-Doujinshi", 62: "62-Romance", 63: "63-Shoujo",
-    64: "64-Vampire", 65: "65-Yaoi", 66: "66-Martial Arts", 67: "67-Psychological",
-    68: "68-Adventure", 69: "69-Historical", 70: "70-Military", 71: "71-Harem",
-    72: "72-Demons", 73: "73-Shoujo Ai", 74: "74-Gender Bender", 75: "75-Yuri",
-    76: "76-Sports", 77: "77-Kids", 78: "78-Music", 79: "79-Game", 80: "80-Horror",
-    81: "81-Thriller", 82: "82-Super Power", 83: "83-Mecha", 84: "84-Cars",
-    85: "85-Space", 86: "86-Parody", 87: "87-Josei", 88: "88-Samurai", 89: "89-Police",
-    90: "90-Dementia", 540: "540-Erotica", 542: "542-Work Life", 544: "544-Gourmet",
-  }
-  for i := 0; i < len(o.Genre_v2); i++ {
-    _, ok := genres[o.Genre_v2[i]]; if ok {
-      genre_v2 += genres[o.Genre_v2[i]] + ","
-    }
-  }
-
-  v.Add("order", o.Order)
-  v.Add("status", o.Status)
-  v.Add("season", o.Season)
   v.Add("mylist", o.Mylist)
+
+  genre := concat.MapGenresManga(o.Genre_v2)
+  if genre != "" { v.Add("genre_v2", genre) }
+
   v.Add("censored", strconv.FormatBool(o.Censored))
-  if len(genre_v2) > 0 { v.Add("genre_v2", strings.TrimSuffix(genre_v2, ",")) }
+
   return v.Encode()
 }
 
 func (o *Options) OptionsClub() string {
   v := url.Values{}
 
-  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
-  v.Add("page", strconv.Itoa(o.Page))
-  if o.Limit <= 0 || o.Limit >= 31 { o.Limit = 1 }
-  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Page <= 1 || o.Page >= 100001 {
+    v.Add("page", "1")
+  } else {
+    v.Add("page", strconv.Itoa(o.Page))
+  }
+  if o.Limit <= 1 || o.Limit >= 31 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
+
   return v.Encode()
 }
 
@@ -427,87 +392,119 @@ func (o *Options) OptionsCalendar() string {
   v := url.Values{}
 
   v.Add("censored", strconv.FormatBool(o.Censored))
+
   return v.Encode()
 }
 
+// V2 implementation of AnimeRates().
+//
+// BenchmarkRanobe-4   406456   3327 ns/op   408 B/op   12 allocs/op
+//
+// BenchmarkRanobe-4   958911   2595 ns/op   248 B/op    9 allocs/op
 func (o *Options) OptionsAnimeRates() string {
   v := url.Values{}
 
-  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
-  v.Add("page", strconv.Itoa(o.Page))
-  if o.Limit <= 0 || o.Limit >= 5001 { o.Limit = 1 }
-  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Page <= 1 || o.Page >= 100001 {
+    v.Add("page", "1")
+  } else {
+    v.Add("page", strconv.Itoa(o.Page))
+  }
+  if o.Limit <= 1 || o.Limit >= 5001 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
 
-  var wg sync.WaitGroup
-  wg.Add(1)
-
-  ch := make(chan string)
-
-  go search.StringWithChan(&wg, ch, o.Status, []string{
+  search.LinearComplexity(
+    &o.Status, "watching", []string{
     "planned", "watching", "rewatching",
     "completed", "on_hold", "dropped",
   })
-  o.Status = <-ch
+  v.Add("status", o.Status)
 
-  wg.Wait()
-
-  if o.Status == "" { v.Add("status", "watching") } else { v.Add("status", o.Status) }
   v.Add("censored", strconv.FormatBool(o.Censored))
+
   return v.Encode()
 }
 
 func (o *Options) OptionsMangaRates() string {
   v := url.Values{}
 
-  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
-  v.Add("page", strconv.Itoa(o.Page))
-  if o.Limit <= 0 || o.Limit >= 5001 { o.Limit = 1 }
-  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Page <= 1 || o.Page >= 100001 {
+    v.Add("page", "1")
+  } else {
+    v.Add("page", strconv.Itoa(o.Page))
+  }
+  if o.Limit <= 1 || o.Limit >= 5001 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
+
   v.Add("censored", strconv.FormatBool(o.Censored))
+
   return v.Encode()
 }
 
+// V2 implementation of OptionsPeople().
+//
+// BenchmarkPeopleV1-4    537405    1929 ns/op   216 B/op   7 allocs/op
+//
+// BenchmarkPeopleV2-4   1936758   797.7 ns/op    56 B/op   4 allocs/op
 func (o *Options) OptionsPeople() string {
   v := url.Values{}
 
-  var wg sync.WaitGroup
-  wg.Add(1)
+  search.LinearComplexity(
+    &o.Kind, "seyu",
+    []string{"seyu", "mangaka", "producer"},
+  )
+  v.Add("kind", o.Kind)
 
-  ch := make(chan string)
-
-  go search.StringWithChan(&wg, ch, o.Kind, []string{"seyu", "mangaka", "producer"})
-  o.Kind = <-ch
-
-  wg.Wait()
-
-  if o.Kind == "" { v.Add("kind", "seyu") } else { v.Add("kind", o.Kind) }
   return v.Encode()
 }
 
 func (o *Options) OptionsClubAnimeManga() string {
   v := url.Values{}
 
-  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
-  v.Add("page", strconv.Itoa(o.Page))
-  if o.Limit <= 0 || o.Limit >= 21 { o.Limit = 1 }
-  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Page <= 1 || o.Page >= 100001 {
+    v.Add("page", "1")
+  } else {
+    v.Add("page", strconv.Itoa(o.Page))
+  }
+  if o.Limit <= 1 || o.Limit >= 21 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
+
   return v.Encode()
 }
 
 func (o *Options) OptionsClubCollections() string {
   v := url.Values{}
 
-  if o.Page <= 0 || o.Page >= 100001 { o.Page = 1 }
-  v.Add("page", strconv.Itoa(o.Page))
-  if o.Limit <= 0 || o.Limit >= 5 { o.Limit = 1 }
-  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Page <= 1 || o.Page >= 100001 {
+    v.Add("page", "1")
+  } else {
+    v.Add("page", strconv.Itoa(o.Page))
+  }
+  if o.Limit <= 1 || o.Limit >= 5 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
+
   return v.Encode()
 }
 
 func (o *Options) OptionsTopicsHot() string {
   v := url.Values{}
 
-  if o.Limit <= 0 || o.Limit >= 11 { o.Limit = 1 }
-  v.Add("limit", strconv.Itoa(o.Limit))
+  if o.Limit <= 1 || o.Limit >= 11 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
+
   return v.Encode()
 }

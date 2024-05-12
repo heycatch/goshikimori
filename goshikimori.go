@@ -16,7 +16,6 @@ import (
   "encoding/json"
   "errors"
   "strconv"
-  "sync"
 
   "github.com/heycatch/goshikimori/api"
   "github.com/heycatch/goshikimori/search"
@@ -3289,22 +3288,13 @@ func (f *FastId) FavoritesCreate(linked_type string, kind string) (api.Favorites
   var fa api.Favorites
   var client = &http.Client{}
 
-  var wg sync.WaitGroup
-  wg.Add(2)
-
-  ch := make(chan int)
-
-  go search.IntegerWithChan(&wg, ch, linked_type, []string{
+  if search.IndexInSlice(linked_type, []string{
     "Anime", "Manga", "Ranobe", "Person", "Character",
-  })
-  if <-ch == -1 { return fa, errors.New("incorrect string, try again and watch the upper case") }
+  }) == -1 { return fa, errors.New("incorrect string, try again and watch the upper case") }
 
-  go search.IntegerWithChan(&wg, ch, kind, []string{
+  if search.IndexInSlice(kind, []string{
     "common", "seyu", "mangaka", "producer", "person",
-  })
-  if <-ch == -1 { kind = "" }
-
-  wg.Wait()
+  }) == -1 { kind = "" }
 
   // 26(site) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id) + 1(/) + ?(kind)
   str_id := strconv.Itoa(f.Id)
@@ -3348,17 +3338,9 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
   var ff api.Favorites
   var client = &http.Client{}
 
-  var wg sync.WaitGroup
-  wg.Add(1)
-
-  ch := make(chan int)
-
-  go search.IntegerWithChan(&wg, ch, linked_type, []string{
+  if search.IndexInSlice(linked_type, []string{
     "Anime", "Manga", "Ranobe", "Person", "Character",
-  })
-  if <-ch == -1 { return ff, errors.New("incorrect string, try again and watch the upper case") }
-
-  wg.Wait()
+  }) == -1 { return ff, errors.New("incorrect string, try again and watch the upper case") }
 
   // 26(site) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id)
   str_id := strconv.Itoa(f.Id)

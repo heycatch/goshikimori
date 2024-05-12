@@ -10,6 +10,32 @@ import (
   "github.com/heycatch/goshikimori/api"
 )
 
+// TODO: remove duplicates.
+// Anime value map search.
+func MapGenresAnime(slice []int) string {
+  var res bytes.Buffer
+  for i := 0; i < len(slice); i++ {
+    _, ok := api.GenreAnime[slice[i]]; if ok {
+      res.WriteString(api.GenreAnime[slice[i]])
+      res.WriteString(",")
+    }
+  }
+  return strings.TrimSuffix(res.String(), ",")
+}
+
+// TODO: remove duplicates.
+// Manga value map search.
+func MapGenresManga(slice []int) string {
+  var res bytes.Buffer
+  for i := 0; i < len(slice); i++ {
+    _, ok := api.GenreManga[slice[i]]; if ok {
+      res.WriteString(api.GenreManga[slice[i]])
+      res.WriteString(",")
+    }
+  }
+  return strings.TrimSuffix(res.String(), ",")
+}
+
 // Convert a slice with an ids into a string.
 func IdsToString(slice []int) string {
   var res bytes.Buffer

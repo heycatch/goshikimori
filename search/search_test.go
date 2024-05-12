@@ -1,106 +1,67 @@
 package search
 
-import (
-  "testing"
-  "sync"
-)
+import "testing"
 
-func TestIntegerWithoutChan(t *testing.T) {
-  if IntegerWithoutChan("", []string{"one", "two", "three"}) == -1 {
-    t.Log("Empty target IntegerWithoutChan passed")
+func TestIndexSlice(t *testing.T) {
+  if IndexInSlice("", []string{"one", "two", "three"}) == -1 {
+    t.Log("Empty target IndexSlice passed")
   } else {
-    t.Error("Empty target IntegerWithoutChan failed")
+    t.Error("Empty target IndexSlice failed")
   }
 
-  if IntegerWithoutChan("bob", []string{""}) == -1 {
-    t.Log("Empty list IntegerWithoutChan passed")
+  if IndexInSlice("bob", []string{""}) == -1 {
+    t.Log("Empty list IndexSlice passed")
   } else {
-    t.Error("Empty list IntegerWithoutChan failed")
+    t.Error("Empty list IndexSlice failed")
   }
 
-  if IntegerWithoutChan("bob", []string{"-1", "-1", "-1", "-1"}) == -1 {
-    t.Log("Broken list IntegerWithoutChan passed")
+  if IndexInSlice("bob", []string{"-1", "-1", "-1", "-1"}) == -1 {
+    t.Log("Broken list IndexSlice passed")
   } else {
-    t.Error("Broken list IntegerWithoutChan failed")
+    t.Error("Broken list IndexSlcie failed")
   }
 
-  if IntegerWithoutChan("bob", []string{"one", "two", "bob", "three"}) == 2 {
-    t.Log("Normal IntegerWithoutChan passed")
+  if IndexInSlice("bob", []string{"one", "two", "bob", "three"}) == 2 {
+    t.Log("Normal IndexSlice passed")
   } else {
-    t.Error("Normal IntegerWithoutChan failed")
+    t.Error("Normal IndexSlice failed")
   }
 }
 
-func TestIntegerWithChan(t *testing.T) {
-  var wg sync.WaitGroup
-  wg.Add(4)
+func TestLinearComplexity(t *testing.T) {
+  type LinearTemp struct {
+    Empty_string, Empty_list, Negative_numbers, Normal string
+  }
+  var l LinearTemp
 
-  ch := make(chan int)
-
-  go IntegerWithChan(&wg, ch, "", []string{"one", "two", "three"})
-  if <-ch == -1 {
-    t.Log("Empty target IntegerWithChan passed")
+  LinearComplexity(&l.Empty_string, "", []string{"one", "two", "three"})
+  if l.Empty_string == "" {
+    t.Log("Empty string LinearComplexity passed")
   } else {
-    t.Error("Empty target IntegerWithChan failed")
+    t.Error("Empty string LinearComplexity passed")
   }
 
-  go IntegerWithChan(&wg, ch, "bob", []string{""})
-  if <-ch == -1 {
-    t.Log("Empty list IntegerWithChan passed")
+  l.Empty_list = "bob"
+  LinearComplexity(&l.Empty_list, "", []string{""})
+  if l.Empty_list == "" {
+    t.Log("Empty list LinearComplexity passed")
   } else {
-    t.Error("Empty list IntegerWithChan failed")
+    t.Error("Empty list LinearComplexity failed")
   }
 
-  go IntegerWithChan(&wg, ch, "bob", []string{"-1", "-1", "-1", "-1"})
-  if <-ch == -1 {
-    t.Log("Broken list IntegerWithChan passed")
+  l.Negative_numbers = "bob"
+  LinearComplexity(&l.Negative_numbers, "", []string{"-1", "-1", "-1"})
+  if l.Negative_numbers == "" {
+    t.Log("Broken list LinearComplexity passed")
   } else {
-    t.Error("Broken list IntegerWithChan failed")
+    t.Error("Broken list LinearComplexity failed")
   }
 
-  go IntegerWithChan(&wg, ch, "bob", []string{"one", "two", "bob", "three"})
-  if <-ch == 2 {
-    t.Log("Normal IntegerWithChan passed")
+  l.Normal = "bob"
+  LinearComplexity(&l.Normal, "", []string{"one", "two", "bob", "three"})
+  if l.Normal == "bob" {
+    t.Log("Normal LinearComplexity passed")
   } else {
-    t.Error("Normal IntegerWithChan failed")
+    t.Error("Normal LinearComplexity failed")
   }
-
-  wg.Wait()
-}
-
-func TestStringWithChan(t *testing.T) {
-  var wg sync.WaitGroup
-  wg.Add(4)
-
-  ch := make(chan string)
-
-  go StringWithChan(&wg, ch, "", []string{"one", "two", "three"})
-  if <-ch == "" {
-    t.Log("Empty target StringWithChan passed")
-  } else {
-    t.Error("Empty target StringWithChan failed")
-  }
-
-  go StringWithChan(&wg, ch, "bob", []string{""})
-  if <-ch == "" {
-    t.Log("Empty list StringWithChan passed")
-  } else {
-    t.Error("Empty list StringWithChan failed")
-  }
-
-  go StringWithChan(&wg, ch, "bob", []string{"-1", "-1", "-1", "-1"})
-  if <-ch == "" {
-    t.Log("Broken list StringWithChan passed")
-  } else {
-    t.Error("Broken list StringWithChan failed")
-  }
-
-  go StringWithChan(&wg, ch, "bob", []string{"one", "two", "bob", "three"})
-  if <-ch == "bob" {
-    t.Log("Normal StringWithChan passed")
-  } else {
-    t.Error("Normal StringWithChan failed")
-  }
-
-  wg.Wait()
 }

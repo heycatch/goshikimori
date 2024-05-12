@@ -139,3 +139,14 @@ func BenchmarkDataChangeMessageOld(b *testing.B) {
   }
   b.StopTimer()
 }
+
+// BenchmarkGenresV1-4   1338148    1003 ns/op   200 B/op   5 allocs/op
+// BenchmarkGenresV2-4   2062106   583.6 ns/op   128 B/op   2 allocs/op
+func BenchmarkGenres(b *testing.B) {
+  b.StartTimer()
+  for i := 0; i < b.N; i++ {
+    _ = MapGenresAnime([]int{2, 14, 10, 31, 12})
+    //_ = MapGenresManga([]int{49, 59, 51, 82, 73})
+  }
+  b.StopTimer()
+}
