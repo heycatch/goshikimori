@@ -1684,6 +1684,8 @@ func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, error) {
   return m, nil
 }
 
+// FIXME: Limit always returns +1 of the given number.
+//
 // Name: club name.
 //
 // If 'Options' empty fields:
@@ -1694,8 +1696,6 @@ func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, error) {
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
 //  - Search: default search;
-//
-// If we set the limit=1, we will still have 2 results.
 //
 // More information can be found in the [example].
 //

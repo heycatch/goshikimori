@@ -56,3 +56,8 @@ http://localhost:1337/pkg/github.com/heycatch/goshikimori/
 ### Feedback
 * Private message the [website](https://shikimori.one/arctica).
 * Open [issue](https://github.com/heycatch/goshikimori/issues).
+```bash
+# Current tasks and problems in the code can be viewed in the terminal using the command.
+git grep TODO
+git grep FIXME
+```

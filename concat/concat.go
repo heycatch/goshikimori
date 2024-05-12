@@ -1,7 +1,6 @@
 package concat
 
 import (
-  "fmt"
   "bytes"
   "unsafe"
   "strconv"
@@ -10,7 +9,8 @@ import (
   "github.com/heycatch/goshikimori/api"
 )
 
-// TODO: remove duplicates.
+// TODO: duplicate check.
+//
 // Anime value map search.
 func MapGenresAnime(slice []int) string {
   var res bytes.Buffer
@@ -23,7 +23,8 @@ func MapGenresAnime(slice []int) string {
   return strings.TrimSuffix(res.String(), ",")
 }
 
-// TODO: remove duplicates.
+// TODO: duplicate check.
+//
 // Manga value map search.
 func MapGenresManga(slice []int) string {
   var res bytes.Buffer
@@ -77,14 +78,31 @@ func Bearer(token string) string {
   return *(*string)(unsafe.Pointer(&res))
 }
 
-// Converting a slice to a []byte using a bytes.Buffer.
+/* Converting a slice to a []byte using a bytes.Buffer.
+
+BenchmarkDataSendMessageV1-4   1574340   721.4 ns/op   160 B/op   4 allocs/op   1.910s
+BenchmarkDataBufferV2-4   	   3007321   524.3 ns/op   200 B/op   4 allocs/op   1.985s
+
+BenchmarkDataReorderV1-4   4893867   253.0 ns/op   32 B/op   2 allocs/op   1.492s
+BenchmarkDataBufferV2-4    6330697   204.8 ns/op   72 B/op   2 allocs/op   1.489s
+
+BenchmarkDataMarkReadV1-4   3413079   411.1 ns/op   80 B/op   2 allocs/op   1.765s
+BenchmarkDataBufferV2-4     7376164   189.7 ns/op   64 B/op   1 allocs/op   1.572s
+*/
 func DataBuffer(slice []string) []byte {
   var res bytes.Buffer
   for i := range slice { res.WriteString(slice[i]) }
   return res.Bytes()
 }
 
-// Converting a slice to a []byte using a copy.
+/* Converting a slice to a []byte using a copy.
+
+BenchmarkDataChangeMessageV1-4   4111257   310.7 ns/op   96 B/op   2 allocs/op   1.579s
+BenchmarkDataCopyV2-4            14183776  88.33 ns/op   80 B/op   1 allocs/op   1.343s
+
+BenchmarkDataReadDeleteV1-4   4201455   262.7 ns/op   64 B/op   2 allocs/op   1.400s
+BenchmarkDataCopyV2-4         9057472   123.5 ns/op   48 B/op   1 allocs/op   1.259s
+*/
 func DataCopy(max_len int, slice []string) []byte {
   var offset int
   res := make([]byte, max_len)
@@ -111,45 +129,4 @@ func GenerateGenres(name string, genres []api.Genres) map[int]string {
     }
   }
   return data
-}
-
-/* Below are examples of the old implementation.
-
-   Needed ONLY for benchmarks.
-   You dont even have to look.
-*/
-func idsToStringOld(slice []int) string {
-  var res string
-  for i := 0; i < len(slice); i++ {
-    if slice[i] != 0 { res += strconv.Itoa(slice[i]) + "," }
-  }
-  return strings.TrimSuffix(res, ",")
-}
-
-func urlOld(site, search string) string {
-  return fmt.Sprintf("%s%s", site, search)
-}
-
-func dataReorderOld(postion int) []byte {
-  return []byte(fmt.Sprintf("{\"new_index\": \"%d\"}", postion))
-}
-
-func dataMarkReadOld(ids string, is_read int) []byte {
-  return []byte(fmt.Sprintf(`{"ids": "%s", "is_read": "%d"}`, ids, is_read))
-}
-
-func dataReadDeleteOld(name string) []byte {
-  return []byte(fmt.Sprintf(`{"frontend": "false", "type": "%s"}`, name))
-}
-
-func dataSendMessageOld(body string, from_id, to_id int) []byte {
-  return []byte(fmt.Sprintf(
-    `{"frontend": "false", "message": {"body": "%s",
-    "from_id": "%d", "kind": "Private", "to_id": "%d"}}`,
-    body, from_id, to_id,
-  ))
-}
-
-func dataChangeMessageOld(body string) []byte {
-  return []byte(fmt.Sprintf(`{"frontend": "false", "message": {"body": "%s"}}`, body))
 }

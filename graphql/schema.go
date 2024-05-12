@@ -366,3 +366,5 @@ func PeopleSchema(values string, name string, options ...interface{}) (string, e
 
   return fmt.Sprintf(`graphql?query={people(search: "%s"%s){%s}}`, name, parameterOptions, values), nil
 }
+
+// TODO: create query with variables.
