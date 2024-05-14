@@ -188,7 +188,7 @@ func (o *Options) OptionsUsers() string {
 //
 // BenchmarkAnimeV1-4   74109   16041 ns/op   4053 B/op   32 allocs/op
 //
-// BenchmarkAnimeV2-4   210667   7592 ns/op   1687 B/op   22 allocs/op
+// BenchmarkAnimeV2-4   198708   6785 ns/op   1727 B/op   22 allocs/op
 func (o *Options) OptionsAnime() string {
   v := url.Values{}
 
@@ -260,7 +260,7 @@ func (o *Options) OptionsAnime() string {
 //
 // BenchmarkMangaV1-4    99231   13817 ns/op   3662 B/op   27 allocs/op
 //
-// BenchmarkMangaV2-4   250736    5868 ns/op   1351 B/op   19 allocs/op
+// BenchmarkMangaV2-4   228412   5485 ns/op    1391 B/op   20 allocs/op
 func (o *Options) OptionsManga() string {
   v := url.Values{}
 
@@ -321,7 +321,7 @@ func (o *Options) OptionsManga() string {
 //
 // BenchmarkRanobeV1-4   116786   10772 ns/op   2847 B/op   23 allocs/op
 //
-// BenchmarkRanobeV2-4   448850    4633 ns/op    584 B/op   16 allocs/op
+// BenchmarkRanobeV2-4   341701    3751 ns/op    616 B/op   17 allocs/op
 func (o *Options) OptionsRanobe() string {
   v := url.Values{}
 

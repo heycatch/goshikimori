@@ -54,6 +54,24 @@ func TestDataCopy(t *testing.T) {
   }
 }
 
+func TestMapGenresAnime(t *testing.T) {
+  if MapGenresAnime([]int{2, 14, 10, 88, 31, 12, 2, 539, 10, 31, 29}) ==
+      "2-Adventure,14-Horror,10-Fantasy,31-Super Power,12-Hentai,539-Erotica,29-Space" {
+    t.Log("MapGenresAnime passed")
+  } else {
+    t.Error("MapGenresAnime failed")
+  }
+}
+
+func TestMapGenresManga(t *testing.T) {
+  if MapGenresManga([]int{49, 58, 66, 45, 49, 540, 78, 78, 85, 88, 63}) ==
+      "49-Comedy,58-Magic,66-Martial Arts,540-Erotica,78-Music,85-Space,88-Samurai,63-Shoujo" {
+    t.Log("MapGenresManga passed")
+  } else {
+    t.Error("MapGenresManga failed")
+  }
+}
+
 // BenchmarkIdsToStringOld-4   1760985   688.7 ns/op   120 B/op   10 allocs/op   1.906s
 // BenchmarkIdsToString-4      2245165   491.6 ns/op   116 B/op   7 allocs/op    1.648s
 func BenchmarkIdsToString(b *testing.B) {
@@ -74,13 +92,13 @@ func BenchmarkUrl(b *testing.B) {
   b.StopTimer()
 }
 
-// BenchmarkGenresV1-4   1338148    1003 ns/op   200 B/op   5 allocs/op
-// BenchmarkGenresV2-4   2062106   583.6 ns/op   128 B/op   2 allocs/op
+// BenchmarkGenresV1-4   1338148   1003 ns/op    200 B/op   5 allocs/op
+// BenchmarkGenresV2-4   2110065   625.0 ns/op   112 B/op   2 allocs/op
 func BenchmarkGenres(b *testing.B) {
   b.StartTimer()
   for i := 0; i < b.N; i++ {
-    _ = MapGenresAnime([]int{2, 14, 10, 31, 12})
-    //_ = MapGenresManga([]int{49, 59, 51, 82, 73})
+    _ = MapGenresAnime([]int{2, 14, 10, 10, 12})
+    //_ = MapGenresManga([]int{49, 59, 51, 51, 73})
   }
   b.StopTimer()
 }

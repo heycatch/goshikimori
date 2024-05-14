@@ -9,31 +9,49 @@ import (
   "github.com/heycatch/goshikimori/api"
 )
 
-// TODO: duplicate check.
-//
+// Write key to slice and check for duplicates.
+func checkForDuplicates(target int, slice []int) bool {
+  for i := 0; i < 50; i++ {
+    if slice[i] == target { return false }
+  }
+  return true
+}
+
 // Anime value map search.
 func MapGenresAnime(slice []int) string {
   var res bytes.Buffer
+  var count int
+  tempSlice := make([]int, 50)
+
   for i := 0; i < len(slice); i++ {
-    _, ok := api.GenreAnime[slice[i]]; if ok {
+    _, ok := api.GenreAnime[slice[i]]
+    if ok && checkForDuplicates(slice[i], tempSlice) {
       res.WriteString(api.GenreAnime[slice[i]])
       res.WriteString(",")
+      tempSlice[count] = slice[i]
+      count++
     }
   }
+
   return strings.TrimSuffix(res.String(), ",")
 }
 
-// TODO: duplicate check.
-//
 // Manga value map search.
 func MapGenresManga(slice []int) string {
   var res bytes.Buffer
+  var count int
+  tempSlice := make([]int, 50)
+
   for i := 0; i < len(slice); i++ {
-    _, ok := api.GenreManga[slice[i]]; if ok {
+    _, ok := api.GenreManga[slice[i]]
+    if ok && checkForDuplicates(slice[i], tempSlice) {
       res.WriteString(api.GenreManga[slice[i]])
       res.WriteString(",")
+      tempSlice[count] = slice[i]
+      count++
     }
   }
+
   return strings.TrimSuffix(res.String(), ",")
 }
 
