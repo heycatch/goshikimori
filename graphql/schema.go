@@ -1,7 +1,7 @@
 package graphql
 
 import (
-  "fmt"
+  "bytes"
   "errors"
   "strings"
   "strconv"
@@ -48,7 +48,7 @@ import (
 //  - birthOn{year month day date} deceasedOn{year month day date}
 //  - poster{id originalUrl mainUrl}
 func Values(input ...string) string {
-  var res string
+  var res bytes.Buffer
 
   // We always return 1, even if the slice is empty.
   // But we are not allowed to return an empty value,
@@ -56,9 +56,12 @@ func Values(input ...string) string {
   if len(input) == 1 && len(strings.TrimSpace(input[0])) == 0 { return "id" }
 
   // TODO: add keyword checks and the keyword is "full" to add everything.
-  for i := 0; i < len(input); i++ { res += input[i] + " " }
+  for i := 0; i < len(input); i++ {
+    res.WriteString(input[i])
+    res.WriteString(" ")
+  }
 
-  return res
+  return res.String()
 }
 
 // Values: parameters we want to receive from the server.
@@ -109,36 +112,56 @@ func Values(input ...string) string {
 //
 // [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
 func AnimeSchema(values string, name string, options ...interface{}) (string, error) {
-  var parameterOptions string
+  var parameterOptions bytes.Buffer
 
   for i, option := range options {
     switch i {
     case 0:
       page, ok := option.(int)
-      if ok && page >= 1 { parameterOptions += ", page: " + strconv.Itoa(page) }
+      if ok && page >= 1 {
+        parameterOptions.WriteString(", page: ")
+        parameterOptions.WriteString(strconv.Itoa(page))
+      }
     case 1:
       limit, ok := option.(int)
-      if ok && limit >= 1 && limit <= 50 { parameterOptions += ", limit: " + strconv.Itoa(limit) }
+      if ok && limit >= 1 && limit <= 50 {
+        parameterOptions.WriteString(", limit: ")
+        parameterOptions.WriteString(strconv.Itoa(limit))
+      }
     case 2:
       score, ok := option.(int)
-      if ok && score >= 1 && score <= 9 { parameterOptions += ", score: " + strconv.Itoa(score) }
+      if ok && score >= 1 && score <= 9 {
+        parameterOptions.WriteString(", score: ")
+        parameterOptions.WriteString(strconv.Itoa(score))
+      }
     case 3:
       order, ok := option.(string)
       if ok && search.IndexInSlice(order, []string{
         "id", "ranked", "kind", "popularity", "name", "aired_on", "episodes", "status",
-      }) != -1 { parameterOptions += ", order: " + order }
+      }) != -1 {
+        parameterOptions.WriteString(", order: ")
+        parameterOptions.WriteString(order)
+      }
     case 4:
       kind, ok := option.(string)
       if ok && search.IndexInSlice(kind, []string{
         "tv", "movie", "ova", "ona", "special", "music",
         "tv_13", "tv_24", "tv_48", "!tv", "!movie",
         "!ova", "!ona", "!special", "!music", "!tv_13", "!tv_24", "!tv_48",
-      }) != -1 { parameterOptions += ", kind: " + `"` + kind + `"` }
+      }) != -1 {
+        parameterOptions.WriteString(", kind: \"")
+        parameterOptions.WriteString(kind)
+        parameterOptions.WriteString("\"")
+      }
     case 5:
       status, ok := option.(string)
       if ok && search.IndexInSlice(status, []string{
         "anons", "ongoing", "released", "!anons", "!ongoing", "!released",
-      }) != -1 { parameterOptions += ", status: " + `"` + status + `"` }
+      }) != -1 {
+        parameterOptions.WriteString(", status: \"")
+        parameterOptions.WriteString(status)
+        parameterOptions.WriteString("\"")
+      }
     case 6:
       season, ok := option.(string)
       if ok && search.IndexInSlice(season, []string{
@@ -146,38 +169,66 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
         "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
         "198x", "!198x", "2020_2021", "!2020_2021",
         "2022", "!2022", "2023", "!2023",
-      }) != -1 { parameterOptions += ", season: " + `"` + season + `"` }
+      }) != -1 {
+        parameterOptions.WriteString(", season: \"")
+        parameterOptions.WriteString(season)
+        parameterOptions.WriteString("\"")
+      }
     case 7:
       duration, ok := option.(string)
       if ok && search.IndexInSlice(duration, []string{
         "S", "D", "F", "!S", "!D", "!F",
-      }) != -1 { parameterOptions += ", duration: " + `"` + duration + `"` }
+      }) != -1 {
+        parameterOptions.WriteString(", duration: \"")
+        parameterOptions.WriteString(duration)
+        parameterOptions.WriteString("\"")
+      }
     case 8:
       rating, ok := option.(string)
       if ok && search.IndexInSlice(rating, []string{
         "none", "g", "pg", "pg_13", "r", "r_plus", "rx",
         "!g", "!pg", "!pg_13", "!r", "!r_plus", "!rx",
-      }) != -1 { parameterOptions += ", rating: " + `"` + rating + `"` }
+      }) != -1 {
+        parameterOptions.WriteString(", rating: \"")
+        parameterOptions.WriteString(rating)
+        parameterOptions.WriteString("\"")
+      }
     case 9:
       mylist, ok := option.(string)
       if ok && search.IndexInSlice(mylist, []string{
         "planned", "watching", "rewatching", "completed", "on_hold", "dropped",
-      }) != -1 { parameterOptions += ", mylist: " + `"` + mylist + `"` }
+      }) != -1 {
+        parameterOptions.WriteString(", mylist: \"")
+        parameterOptions.WriteString(mylist)
+        parameterOptions.WriteString("\"")
+      }
     case 10:
       censored, ok := option.(bool)
-      if ok { parameterOptions += ", censored: " + strconv.FormatBool(censored) }
+      if ok {
+        parameterOptions.WriteString(", censored: ")
+        parameterOptions.WriteString(strconv.FormatBool(censored))
+      }
     case 11:
       genres_v2, ok_genre_v2 := option.([]int)
       genre := concat.MapGenresAnime(genres_v2)
-      if ok_genre_v2 && genre != "" { parameterOptions += ", genre: " + `"` + genre + `"` }
+      if ok_genre_v2 && genre != "" {
+        parameterOptions.WriteString(", genre: \"")
+        parameterOptions.WriteString(genre)
+        parameterOptions.WriteString("\"")
+      }
     default:
       return "", errors.New("one of the parameters is entered incorrectly, check sequence or spelling errors")
     }
   }
 
-  return fmt.Sprintf(`graphql?query={animes(search: "%s"%s){%s}}`, name, parameterOptions, values), nil
+  // 36(graphql?query={animes(search: " "){}}) + ?(name) + ?(paramterOptions) + ?(value)
+  max_len := 36 + len(name) + len(parameterOptions.String()) + len(values)
+  return concat.Url(max_len, []string{
+    "graphql?query={animes(search: \"", name, "\"",
+    parameterOptions.String(), ")",
+    "{", values, "}}",
+  }), nil
 }
-
 
 // Values: parameters we want to receive from the server.
 //
@@ -224,38 +275,58 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
 //
 // [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
 func MangaSchema(values string, name string, options ...interface{}) (string, error) {
-  var parameterOptions string
+  var parameterOptions bytes.Buffer
 
   for i, option := range options {
     switch i {
     case 0:
       page, ok := option.(int)
-      if ok && page >= 1 { parameterOptions += ", page: " + strconv.Itoa(page) }
+      if ok && page >= 1 {
+        parameterOptions.WriteString(", page: ")
+        parameterOptions.WriteString(strconv.Itoa(page))
+      }
     case 1:
       limit, ok := option.(int)
-      if ok && limit >= 1 && limit <= 50 { parameterOptions += ", limit: " + strconv.Itoa(limit) }
+      if ok && limit >= 1 && limit <= 50 {
+        parameterOptions.WriteString(", limit: ")
+        parameterOptions.WriteString(strconv.Itoa(limit))
+      }
     case 2:
       score, ok := option.(int)
-      if ok && score >= 1 && score <= 9 { parameterOptions += ", score: " + strconv.Itoa(score) }
+      if ok && score >= 1 && score <= 9 {
+        parameterOptions.WriteString(", score: ")
+        parameterOptions.WriteString(strconv.Itoa(score))
+      }
     case 3:
       order, ok := option.(string)
       if ok && search.IndexInSlice(order, []string{
         "id", "ranked", "kind", "popularity",
         "name", "aired_on", "volumes", "chapters", "status",
-      }) != -1 { parameterOptions += ", order: " + order }
+      }) != -1 {
+        parameterOptions.WriteString(", order: ")
+        parameterOptions.WriteString(order)
+      }
     case 4:
       kind, ok := option.(string)
       if ok && search.IndexInSlice(kind, []string {
         "manga", "manhwa", "manhua", "light_novel", "novel",
         "one_shot", "doujin", "!manga", "!manhwa", "!manhua",
         "!light_novel", "!novel", "!one_shot", "!doujin",
-      }) != -1 { parameterOptions += ", kind: " + `"` + kind + `"` }
+      }) != -1 {
+        parameterOptions.WriteString(", kind: \"")
+        parameterOptions.WriteString(kind)
+        parameterOptions.WriteString("\"")
+      }
     case 5:
       status, ok := option.(string)
       if ok && search.IndexInSlice(status, []string{
         "anons", "ongoing", "released", "paused", "discontinued",
         "!anons", "!ongoing", "!released", "!paused", "!discontinued",
-      }) != -1 { parameterOptions += ", status: " + `"` + status + `"` }
+      }) != -1 {
+        parameterOptions.WriteString(", status: \"")
+        parameterOptions.WriteString(status)
+        parameterOptions.WriteString("\"")
+      }
     case 6:
       season, ok := option.(string)
       if ok && search.IndexInSlice(season, []string{
@@ -263,25 +334,46 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
         "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
         "198x", "!198x", "2020_2021", "!2020_2021",
         "2022", "!2022", "2023", "!2023",
-      }) != -1 { parameterOptions += ", season: " + `"` + season + `"` }
+      }) != -1 {
+        parameterOptions.WriteString(", season: \"")
+        parameterOptions.WriteString(season)
+        parameterOptions.WriteString("\"")
+      }
     case 7:
       mylist, ok := option.(string)
       if ok && search.IndexInSlice(mylist, []string{
         "planned", "watching", "rewatching", "completed", "on_hold", "dropped",
-      }) != -1 { parameterOptions += ", mylist: " + `"` + mylist + `"` }
+      }) != -1 {
+        parameterOptions.WriteString(", mylist: \"")
+        parameterOptions.WriteString(mylist)
+        parameterOptions.WriteString("\"")
+      }
     case 8:
       censored, ok := option.(bool)
-      if ok { parameterOptions += ", censored: " + strconv.FormatBool(censored) }
+      if ok {
+        parameterOptions.WriteString(", censored: ")
+        parameterOptions.WriteString(strconv.FormatBool(censored))
+      }
     case 9:
       genres_v2, ok_genre_v2 := option.([]int)
       genre := concat.MapGenresManga(genres_v2)
-      if ok_genre_v2 && genre != "" { parameterOptions += ", genre: " + `"` + genre + `"` }
+      if ok_genre_v2 && genre != "" {
+        parameterOptions.WriteString(", genre: \"")
+        parameterOptions.WriteString(genre)
+        parameterOptions.WriteString("\"")
+      }
     default:
       return "", errors.New("one of the parameters is entered incorrectly, check sequence or spelling errors")
     }
   }
 
-  return fmt.Sprintf(`graphql?query={mangas(search: "%s"%s){%s}}`, name, parameterOptions, values), nil
+  // 36(graphql?query={mangas(search: " "){}}) + ?(name) + ?(paramterOptions) + ?(value)
+  max_len := 36 + len(name) + len(parameterOptions.String()) + len(values)
+  return concat.Url(max_len, []string{
+    "graphql?query={mangas(search: \"", name, "\"",
+    parameterOptions.String(), ")",
+    "{", values, "}}",
+  }), nil
 }
 
 // Values: parameters we want to receive from the server.
@@ -300,22 +392,34 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
 //
 // [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
 func CharacterSchema(values string, name string, options ...interface{}) (string, error) {
-  var parameterOptions string
+  var parameterOptions bytes.Buffer
 
   for i, option := range options {
     switch i {
     case 0:
       page, ok := option.(int)
-      if ok && page >= 1 { parameterOptions += ", page: " +  strconv.Itoa(page) }
+      if ok && page >= 1 {
+        parameterOptions.WriteString(", page: ")
+        parameterOptions.WriteString(strconv.Itoa(page))
+      }
     case 1:
       limit, ok := option.(int)
-      if ok && limit >= 1 && limit <= 50 { parameterOptions += ", limit: " + strconv.Itoa(limit) }
+      if ok && limit >= 1 && limit <= 50 {
+        parameterOptions.WriteString(", limit: ")
+        parameterOptions.WriteString(strconv.Itoa(limit))
+      }
     default:
       return "", errors.New("one of the parameters is entered incorrectly, check sequence or spelling errors")
     }
   }
 
-  return fmt.Sprintf(`graphql?query={characters(search: "%s"%s){%s}}`, name, parameterOptions, values), nil
+  // 40(graphql?query={characters(search: " "){}}) + ?(name) + ?(paramterOptions) + ?(value)
+  max_len := 40 + len(name) + len(parameterOptions.String()) + len(values)
+  return concat.Url(max_len, []string{
+    "graphql?query={characters(search: \"", name, "\"",
+    parameterOptions.String(), ")",
+    "{", values, "}}",
+  }), nil
 }
 
 // Values: parameters we want to receive from the server.
@@ -340,31 +444,52 @@ func CharacterSchema(values string, name string, options ...interface{}) (string
 //
 // [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
 func PeopleSchema(values string, name string, options ...interface{}) (string, error) {
-  var parameterOptions string
+  var parameterOptions bytes.Buffer
 
   for i, option := range options {
     switch i {
     case 0:
       page, ok := option.(int)
-      if ok && page >= 1 { parameterOptions += ", page: " + strconv.Itoa(page) }
+      if ok && page >= 1 {
+        parameterOptions.WriteString(", page: ")
+        parameterOptions.WriteString(strconv.Itoa(page))
+      }
     case 1:
       limit, ok := option.(int)
-      if ok && limit >= 1 && limit <= 50 { parameterOptions += ", limit: " + strconv.Itoa(limit) }
+      if ok && limit >= 1 && limit <= 50 {
+        parameterOptions.WriteString(", limit: ")
+        parameterOptions.WriteString(strconv.Itoa(limit))
+      }
     case 2:
       seyu, ok := option.(bool)
-      if ok { parameterOptions += ", isSeyu: " + strconv.FormatBool(seyu) }
+      if ok {
+        parameterOptions.WriteString(", isSeyu: ")
+        parameterOptions.WriteString(strconv.FormatBool(seyu))
+      }
     case 3:
       mangaka, ok := option.(bool)
-      if ok { parameterOptions += ", isMangaka: " + strconv.FormatBool(mangaka) }
+      if ok {
+        parameterOptions.WriteString(", isMangaka: ")
+        parameterOptions.WriteString(strconv.FormatBool(mangaka))
+      }
     case 4:
       producer, ok := option.(bool)
-      if ok { parameterOptions += ", isProducer: " + strconv.FormatBool(producer) }
+      if ok {
+        parameterOptions.WriteString(", isProducer: ")
+        parameterOptions.WriteString(strconv.FormatBool(producer))
+      }
     default:
       return "", errors.New("one of the parameters is entered incorrectly, check sequence or spelling errors")
     }
   }
 
-  return fmt.Sprintf(`graphql?query={people(search: "%s"%s){%s}}`, name, parameterOptions, values), nil
+  // 36(graphql?query={people(search: " "){}}) + ?(name) + ?(paramterOptions) + ?(value)
+  max_len := 36 + len(name) + len(parameterOptions.String()) + len(values)
+  return concat.Url(max_len, []string{
+    "graphql?query={people(search: \"", name, "\"",
+    parameterOptions.String(), ")",
+    "{", values, "}}",
+  }), nil
 }
 
 // TODO: create query with variables.
