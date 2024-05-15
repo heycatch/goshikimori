@@ -16,30 +16,49 @@ func config() *g.Configuration {
 func main() {
   c := config()
 
-  a, status, err := c.RandomAnimes(5)
+  a, status, err := c.RandomAnimes(&g.Options{
+    Limit: 5, Score: 5, Kind: "tv", Status: "released",
+    Season: "", Rating: "", Duration: "", Mylist: "",
+    Censored: false, Genre_v2: []int{10, 539},
+  })
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return
   }
   for _, v := range a {
-    fmt.Println(v.Id, v.Name, v.Score, v.Status)
+    fmt.Println(
+      v.Id, v.Name, v.Score,
+      v.Status, v.Released_on, v.Url,
+    )
   }
 
-  m, status, err := c.RandomMangas(5)
+  m, status, err := c.RandomMangas(&g.Options{
+    Limit: 5, Score: 8, Kind: "manga", Status: "released",
+    Mylist: "", Season: "", Censored: false, Genre_v2: nil,
+  })
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return
   }
   for _, v := range m {
-    fmt.Println(v.Id, v.Name, v.Score, v.Chapters, v.Volumes)
+    fmt.Println(
+      v.Id, v.Name, v.Score, v.Chapters,
+      v.Volumes, v.Released_on, v.Url,
+    )
   }
 
-  r, status, err := c.RandomRanobes(5)
+  r, status, err := c.RandomRanobes(&g.Options{
+    Limit: 5, Score: 8, Status: "released", Mylist: "",
+    Season: "", Censored: false, Genre_v2: nil,
+  })
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return
   }
   for _, v := range r {
-    fmt.Println(v.Id, v.Name, v.Score, v.Chapters, v.Volumes)
+    fmt.Println(
+      v.Id, v.Name, v.Score, v.Chapters,
+      v.Volumes, v.Released_on, v.Url,
+    )
   }
 }

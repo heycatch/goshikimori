@@ -67,6 +67,9 @@ type Result interface {
   OptionsClubCollections() string
   OptionsTopics()          string
   OptionsTopicsHot()       string
+  OptionsRandomAnime()     string
+  OptionsRandomManga()     string
+  OptionsRandomRanobe()    string
 }
 
 // V2 implementation of OptionsTopics().
@@ -505,6 +508,145 @@ func (o *Options) OptionsTopicsHot() string {
   } else {
     v.Add("limit", strconv.Itoa(o.Limit))
   }
+
+  return v.Encode()
+}
+
+func (o *Options) OptionsRandomAnime() string {
+  v := url.Values{}
+
+  if o.Limit <= 1 || o.Limit >= 51 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
+  if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
+
+  search.LinearComplexity(&o.Kind, "", []string{
+    "tv", "movie", "ova", "ona", "special", "music",
+    "tv_13", "tv_24", "tv_48", "!tv", "!movie", "!ova",
+    "!ona", "!special", "!music", "!tv_13", "!tv_24", "!tv_48",
+  })
+  v.Add("kind", o.Kind)
+
+  search.LinearComplexity(&o.Status, "", []string{
+    "anons", "ongoing", "released", "!anons", "!ongoing", "!released",
+  })
+  v.Add("status", o.Status)
+
+  search.LinearComplexity(&o.Season, "", []string{
+    "2000_2010", "2010_2014", "2015_2019", "199x",
+    "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
+    "198x", "!198x", "2020_2021", "!2020_2021",
+    "2022", "!2022", "2023", "!2023",
+  })
+  v.Add("season", o.Season)
+
+  search.LinearComplexity(&o.Rating, "", []string{
+    "none", "g", "pg", "pg_13",
+    "r", "r_plus", "rx", "!g", "!pg",
+    "!pg_13", "!r", "!r_plus", "!rx",
+  })
+  v.Add("rating", o.Rating)
+
+  search.LinearComplexity(&o.Duration, "", []string{
+    "S", "D", "F", "!S", "!D", "!F",
+  })
+  v.Add("duration", o.Duration)
+
+  search.LinearComplexity(&o.Mylist, "", []string{
+    "planned", "watching", "rewatching",
+    "completed", "on_hold", "dropped",
+  })
+  v.Add("mylist", o.Mylist)
+
+  genre := concat.MapGenresAnime(o.Genre_v2)
+  if genre != "" { v.Add("genre_v2", genre) }
+
+  v.Add("censored", strconv.FormatBool(o.Censored))
+
+  return v.Encode()
+}
+
+func (o *Options) OptionsRandomManga() string {
+  v := url.Values{}
+
+  if o.Limit <= 1 || o.Limit >= 51 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
+  if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
+
+  search.LinearComplexity(&o.Kind, "",[]string{
+    "manga", "manhwa", "manhua", "light_novel", "novel",
+    "one_shot", "doujin", "!manga", "!manhwa", "!manhua",
+    "!light_novel", "!novel", "!one_shot", "!doujin",
+  })
+  v.Add("kind", o.Kind)
+
+  search.LinearComplexity(&o.Status, "",[]string{
+    "anons", "ongoing", "released", "paused", "discontinued",
+    "!anons", "!ongoing", "!released", "!paused", "!discontinued",
+  })
+  v.Add("status", o.Status)
+
+  search.LinearComplexity(&o.Season, "", []string{
+    "2000_2010", "2010_2014", "2015_2019", "199x",
+    "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
+    "198x", "!198x", "2020_2021", "!2020_2021",
+    "2022", "!2022", "2023", "!2023",
+  })
+  v.Add("season", o.Season)
+
+  search.LinearComplexity(&o.Mylist, "", []string{
+    "planned", "watching", "rewatching",
+    "completed", "on_hold", "dropped",
+  })
+  v.Add("mylist", o.Mylist)
+
+  genre := concat.MapGenresManga(o.Genre_v2)
+  if genre != "" { v.Add("genre_v2", genre) }
+
+  v.Add("censored", strconv.FormatBool(o.Censored))
+
+  return v.Encode()
+}
+
+func (o *Options) OptionsRandomRanobe() string {
+  v := url.Values{}
+
+  if o.Limit <= 1 || o.Limit >= 51 {
+    v.Add("limit", "1")
+  } else {
+    v.Add("limit", strconv.Itoa(o.Limit))
+  }
+  if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
+
+  search.LinearComplexity(&o.Status, "",[]string{
+    "anons", "ongoing", "released", "paused", "discontinued",
+    "!anons", "!ongoing", "!released", "!paused", "!discontinued",
+  })
+  v.Add("status", o.Status)
+
+  search.LinearComplexity(&o.Season, "", []string{
+    "2000_2010", "2010_2014", "2015_2019", "199x",
+    "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
+    "198x", "!198x", "2020_2021", "!2020_2021",
+    "2022", "!2022", "2023", "!2023",
+  })
+  v.Add("season", o.Season)
+
+  search.LinearComplexity(&o.Mylist, "", []string{
+    "planned", "watching", "rewatching",
+    "completed", "on_hold", "dropped",
+  })
+  v.Add("mylist", o.Mylist)
+
+  genre := concat.MapGenresManga(o.Genre_v2)
+  if genre != "" { v.Add("genre_v2", genre) }
+
+  v.Add("censored", strconv.FormatBool(o.Censored))
 
   return v.Encode()
 }

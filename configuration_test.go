@@ -216,7 +216,7 @@ func TestOptionsAnime(t *testing.T) {
   normal := Options{
     Page: 2, Limit: 12, Order: "id", Kind: "tv", Status: "released",
     Season: "199x", Score: 8, Rating: "r", Duration: "D",
-    Censored: true, Mylist: "watching", Genre_v2: []int{539},
+    Censored: true, Mylist: "watching", Genre_v2: []int{539, 539},
   }
   if normal.OptionsAnime() == "censored=true&duration=D&genre_v2=539-Erotica&kind=tv&limit=12&mylist=watching&order=id&page=2&rating=r&score=8&season=199x&status=released" {
     t.Log("Normal OptionsAnime passed")
@@ -266,12 +266,62 @@ func TestOptionsManga(t *testing.T) {
 
   normal := Options{
     Page: 4, Limit: 5, Order: "id", Kind: "manga", Status: "anons",
-    Season: "198x", Score: 7, Censored: true, Mylist: "planned", Genre_v2: []int{540},
+    Season: "198x", Score: 7, Censored: true, Mylist: "planned", Genre_v2: []int{540, 540},
   }
   if normal.OptionsManga() == "censored=true&genre_v2=540-Erotica&kind=manga&limit=5&mylist=planned&order=id&page=4&score=7&season=198x&status=anons" {
     t.Log("Normal OptionsManga passed")
   } else {
     t.Error("Normal OptionsManga failed")
+  }
+}
+
+func TestOptionsRanobe(t *testing.T) {
+  empty := Options{}
+  if empty.OptionsRanobe() == "censored=false&limit=1&mylist=&order=&page=1&season=&status=" {
+    t.Log("Empty OptionsRanobe passed")
+  } else {
+    t.Error("Empty OptionsRanobe failed")
+  }
+
+  big := Options{
+    Page: 100002, Limit: 52, Order: "111111111", Status: "111111111",
+    Season: "1111111111", Score: 1111111111,
+    Censored: false, Mylist: "11111111111111", Genre_v2: []int{111111111111},
+  }
+  if big.OptionsRanobe() == "censored=false&limit=1&mylist=&order=&page=1&season=&status=" {
+    t.Log("Big OptionsRanobe passed")
+  } else {
+    t.Error("Big OptionsRanobe failed")
+  }
+
+  zero := Options{
+    Page: 0, Limit: 0, Order: "0", Status: "0",
+    Season: "0", Score: 0, Censored: false, Mylist: "0", Genre_v2: []int{0},
+  }
+  if zero.OptionsRanobe() == "censored=false&limit=1&mylist=&order=&page=1&season=&status=" {
+    t.Log("Zero OptionsRanobe passed")
+  } else {
+    t.Error("Zero OptionsRanobe failed")
+  }
+
+  negative := Options{
+    Page: -1, Limit: -1, Order: "-1", Status: "-1",
+    Season: "-1", Score: -1, Censored: false, Mylist: "-1", Genre_v2: []int{-1},
+  }
+  if negative.OptionsRanobe() == "censored=false&limit=1&mylist=&order=&page=1&season=&status=" {
+    t.Log("Negative OptionsRanobe passed")
+  } else {
+    t.Error("Negative OptionsRanobe failed")
+  }
+
+  normal := Options{
+    Page: 4, Limit: 5, Order: "id", Status: "anons",
+    Season: "198x", Score: 7, Censored: true, Mylist: "planned", Genre_v2: []int{540, 540},
+  }
+  if normal.OptionsRanobe() == "censored=true&genre_v2=540-Erotica&limit=5&mylist=planned&order=id&page=4&score=7&season=198x&status=anons" {
+    t.Log("Normal OptionsRanobe passed")
+  } else {
+    t.Error("Normal OptionsRanobe failed")
   }
 }
 
@@ -473,5 +523,158 @@ func TestOptionsClubInformation(t *testing.T) {
     t.Log("Normal OptionsClubInformation passed")
   } else {
     t.Error("Normal OptionsClubInformation failed")
+  }
+}
+
+func TestOptionsRandomAnime(t *testing.T) {
+  empty := Options{}
+  if empty.OptionsRandomAnime() == "censored=false&duration=&kind=&limit=1&mylist=&rating=&season=&status=" {
+    t.Log("Empty OptionsRandomAnime passed")
+  } else {
+    t.Error("Empty OptionsRandomAnime failed")
+  }
+
+  big := Options{
+    Limit: 52, Kind: "11111111", Status: "111111111",
+    Season: "1111111111", Score: 111111111111, Rating: "10", Mylist: "11111111111",
+    Duration: "11111111111111", Censored: false, Genre_v2: []int{111111111},
+  }
+  if big.OptionsRandomAnime() == "censored=false&duration=&kind=&limit=1&mylist=&rating=&season=&status=" {
+    t.Log("Big OptionsRandomAnime passed")
+  } else {
+    t.Error("Big OptionsRandomAnime failed")
+  }
+
+  zero := Options{
+    Limit: 0, Kind: "0", Status: "0",
+    Season: "0", Score: 0, Rating: "0", Duration: "0",
+    Mylist: "0", Censored: false, Genre_v2: []int{0},
+  }
+  if zero.OptionsRandomAnime() == "censored=false&duration=&kind=&limit=1&mylist=&rating=&season=&status=" {
+    t.Log("Zero OptionsRandomAnime passed")
+  } else {
+    t.Error("Zero OptionsRandomAnime failed")
+  }
+
+  negative := Options{
+    Limit: -1, Kind: "-1", Status: "-1", Mylist: "-1",
+    Season: "-1", Score: -1, Rating: "-1", Duration: "-1",
+    Censored: false, Genre_v2: []int{-1},
+  }
+  if negative.OptionsRandomAnime() == "censored=false&duration=&kind=&limit=1&mylist=&rating=&season=&status=" {
+    t.Log("Negative OptionsRandomAnime passed")
+  } else {
+    t.Error("Negative OptionsRandomAnime failed")
+  }
+
+  normal := Options{
+    Limit: 12, Kind: "tv", Status: "released", Mylist: "on_hold",
+    Season: "199x", Score: 8, Rating: "r", Duration: "D",
+    Censored: true, Genre_v2: []int{539, 539},
+  }
+  if normal.OptionsRandomAnime() == "censored=true&duration=D&genre_v2=539-Erotica&kind=tv&limit=12&mylist=on_hold&rating=r&score=8&season=199x&status=released" {
+    t.Log("Normal OptionsRandomAnime passed")
+  } else {
+    t.Error("Normal OptionsRandomAnime failed")
+  }
+}
+
+func TestOptionsRandomManga(t *testing.T) {
+  empty := Options{}
+  if empty.OptionsRandomManga() == "censored=false&kind=&limit=1&mylist=&season=&status=" {
+    t.Log("Empty OptionsRandomManga passed")
+  } else {
+    t.Error("Empty OptionsRandomManga failed")
+  }
+
+  big := Options{
+    Limit: 52, Kind: "11111111", Status: "111111111",
+    Season: "1111111111", Score: 1111111111,
+    Censored: false, Mylist: "11111111111111", Genre_v2: []int{111111111111},
+  }
+  if big.OptionsRandomManga() == "censored=false&kind=&limit=1&mylist=&season=&status=" {
+    t.Log("Big OptionsRandomManga passed")
+  } else {
+    t.Error("Big OptionsRandomManga failed")
+  }
+
+  zero := Options{
+    Limit: 0, Kind: "0", Status: "0",
+    Season: "0", Score: 0, Censored: false, Mylist: "0", Genre_v2: []int{0},
+  }
+  if zero.OptionsRandomManga() == "censored=false&kind=&limit=1&mylist=&season=&status=" {
+    t.Log("Zero OptionsRandomManga passed")
+  } else {
+    t.Error("Zero OptionsRandomManga failed")
+  }
+
+  negative := Options{
+    Limit: -1, Kind: "-1", Status: "-1",
+    Season: "-1", Score: -1, Censored: false, Mylist: "-1", Genre_v2: []int{-1},
+  }
+  if negative.OptionsRandomManga() == "censored=false&kind=&limit=1&mylist=&season=&status=" {
+    t.Log("Negative OptionsRandomManga passed")
+  } else {
+    t.Error("Negative OptionsRandomManga failed")
+  }
+
+  normal := Options{
+    Limit: 5, Kind: "manga", Status: "anons",
+    Season: "198x", Score: 7, Censored: true, Mylist: "planned", Genre_v2: []int{540, 540},
+  }
+  if normal.OptionsRandomManga() == "censored=true&genre_v2=540-Erotica&kind=manga&limit=5&mylist=planned&score=7&season=198x&status=anons" {
+    t.Log("Normal OptionsRandomManga passed")
+  } else {
+    t.Error("Normal OptionsRandomManga failed")
+  }
+}
+
+func TestOptionsRandomRanobe(t *testing.T) {
+  empty := Options{}
+  if empty.OptionsRandomRanobe() == "censored=false&limit=1&mylist=&season=&status=" {
+    t.Log("Empty OptionsRandomRanobe passed")
+  } else {
+    t.Error("Empty OptionsRandomRanobe failed")
+  }
+
+  big := Options{
+    Limit: 52, Status: "111111111",
+    Season: "1111111111", Score: 1111111111,
+    Censored: false, Mylist: "11111111111111", Genre_v2: []int{111111111111},
+  }
+  if big.OptionsRandomRanobe() == "censored=false&limit=1&mylist=&season=&status=" {
+    t.Log("Big OptionsRandomRanobe passed")
+  } else {
+    t.Error("Big OptionsRandomRanobe failed")
+  }
+
+  zero := Options{
+    Limit: 0, Status: "0",
+    Season: "0", Score: 0, Censored: false, Mylist: "0", Genre_v2: []int{0},
+  }
+  if zero.OptionsRandomRanobe() == "censored=false&limit=1&mylist=&season=&status=" {
+    t.Log("Zero OptionsRandomRanobe passed")
+  } else {
+    t.Error("Zero OptionsRandomRanobe failed")
+  }
+
+  negative := Options{
+    Limit: -1, Status: "-1",
+    Season: "-1", Score: -1, Censored: false, Mylist: "-1", Genre_v2: []int{-1},
+  }
+  if negative.OptionsRandomRanobe() == "censored=false&limit=1&mylist=&season=&status=" {
+    t.Log("Negative OptionsRandomRanobe passed")
+  } else {
+    t.Error("Negative OptionsRandomRanobe failed")
+  }
+
+  normal := Options{
+    Limit: 5, Status: "anons",
+    Season: "198x", Score: 7, Censored: true, Mylist: "planned", Genre_v2: []int{540, 540},
+  }
+  if normal.OptionsRandomRanobe() == "censored=true&genre_v2=540-Erotica&limit=5&mylist=planned&score=7&season=198x&status=anons" {
+    t.Log("Normal OptionsRandomRanobe passed")
+  } else {
+    t.Error("Normal OptionsRandomRanobe failed")
   }
 }

@@ -2974,27 +2974,54 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, e
   return cs, resp.StatusCode, nil
 }
 
-// Limit: number of results obtained;
+// If 'Options' empty fields:
+//  - Limit: 1;
+//  - Kind: empty field;
+//  - Status: empty field;
+//  - Season: empty field;
+//  - Score: empty field;
+//  - Duration: empty field;
+//  - Rating: empty field;
+//  - Censored: false;
+//  - Mylist: empty field;
+//  - Genre_v2: empty field;
 //
-// Minimum: 1; Maximum: 50;
+// 'Options' settings:
+//  - Limit: 50 maximum;
+//  - Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48, !tv, !movie, !ova, !ona, !special, !music, !tv_13, !tv_24, !tv_48;
+//  - Status: anons, ongoing, released, !anons, !ongoing, !released;
+//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//  - Score: 1-9 maximum;
+//  - Duration: S, D, F, !S, !D, !F;
+//  - Rating: none, g, pg, pg_13, r, r_plus, rx, !g, !pg, !pg_13, !r, !r_plus, !rx;
+//  - Censored: true(string), false(string);
+//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
+//  - Genre_v2: id search. Below is a list of all available genres by id:
+//
+//  > 1 (Action); 2 (Adventure); 3 (Cars); 4 (Comedy); 5 (Dementia); 6 (Demons); 7 (Mystery);
+//  8 (Drama); 9 (Ecchi); 10 (Fantasy); 11 (Game); 12 (Hentai); 13 (Historical); 14 (Horror);
+//  15 (Kids); 16 (Magic); 17 (Martial Arts); 18 (Mecha); 19 (Music); 20 (Parody); 21 (Samurai);
+//  22 (Romance); 23 (School); 24 (Sci-Fi); 25 (Shoujo); 26 (Shoujo Ai); 27 (Shounen); 28 (Shounen Ai);
+//  29 (Space); 30 (Sports); 31 (Super Power); 32 (Vampire); 33 (Yaoi); 34 (Yuri); 35 (Harem);
+//  36 (Slice of Life); 37 (Supernatural); 38 (Military); 39 (Police); 40 (Psychological);
+//  41 (Thriller); 42 (Seinen); 43 (Josei); 539 (Erotica); 541 (Work Life); 543 (Gourmet);
+//
+// Set to true to discard hentai, yaoi and yuri.
 //
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/random
-func (c *Configuration) RandomAnimes(limit int) ([]api.Animes, int, error) {
+func (c *Configuration) RandomAnimes(r Result) ([]api.Animes, int, error) {
   var a []api.Animes
   var client = &http.Client{}
 
-  if limit < 1 || limit > 50 { limit = 1 }
-
-  // 26(site) + 26(animes?order=random&limit=) + ?(limit)
-  str_limit := strconv.Itoa(limit)
-  max_len := 52 + len(str_limit)
+  // 26(site) + 20(animes?order=random&) + ?(Result)
+  max_len := 46 + len(r.OptionsRandomAnime())
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     concat.Url(max_len, []string{
-      site, "animes?order=random&limit=", str_limit,
+      site, "animes?order=random&", r.OptionsRandomAnime(),
     }), 10,
   )
   if err != nil {
@@ -3020,27 +3047,51 @@ func (c *Configuration) RandomAnimes(limit int) ([]api.Animes, int, error) {
   return a, resp.StatusCode, nil
 }
 
-// Limit: number of results obtained;
+// If 'Options' empty fields:
+//  - Limit: 1;
+//  - Kind: empty field;
+//  - Status: empty field;
+//  - Season: empty field;
+//  - Score: empty field;
+//  - Censored: false;
+//  - Mylist: empty field;
+//  - Genre_v2: empty field;
 //
-// Minimum: 1; Maximum: 50;
+// 'Options' settings:
+//  - Limit: 50 maximum;
+//  - Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin, !manga, !manhwa, !manhua, !light_novel, !novel, !one_shot, !doujin;
+//  - Status: anons, ongoing, released, paused, discontinued, !anons, !ongoing, !released, !paused, !discontinued;
+//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//  - Score: 1-9 maximum;
+//  - Censored: true(string), false(string);
+//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
+//  - Genre_v2: id search. Below is a list of all available genres by id:
+//
+//  > 46 (Mystery); 47 (Shounen); 48 (Supernatural);
+//  49 (Comedy); 50 (Drama); 51 (Ecchi); 52 (Seinen); 53 (Sci-Fi); 54 (Slice of Life); 55 (Shounen Ai);
+//  56 (Action); 57 (Fantasy); 58 (Magic); 59 (Hentai); 60 (School); 61 (Doujinshi); 62 (Romance);
+//  63 (Shoujo); 64 (Vampire); 65 (Yaoi); 66 (Martial Arts); 67 (Psychological); 68 (Adventure);
+//  69 (Historical); 70 (Military); 71 (Harem); 72 (Demons); 73 (Shoujo Ai); 74 (Gender Bender);
+//  75 (Yuri); 76 (Sports); 77 (Kids); 78 (Music); 79 (Game); 80 (Horror); 81 (Thriller);
+//  82 (Super Power); 83 (Mecha); 84 (Cars); 85 (Space); 86 (Parody); 87 (Josei); 88 (Samurai);
+//  89 (Police); 90 (Dementia); 540 (Erotica); 542 (Work Life); 544 (Gourmet);
+//
+// Set to true to discard hentai, yaoi and yuri.
 //
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/random
-func (c *Configuration) RandomMangas(limit int) ([]api.Mangas, int, error) {
+func (c *Configuration) RandomMangas(r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  if limit < 1 || limit > 50 { limit = 1 }
-
-  // 26(site) + 26(mangas?order=random&limit=) + ?(limit)
-  str_limit := strconv.Itoa(limit)
-  max_len := 52 + len(str_limit)
+  // 26(site) + 20(mangas?order=random&) + ?(Result)
+  max_len := 46 + len(r.OptionsRandomManga())
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     concat.Url(max_len, []string{
-      site, "mangas?order=random&limit=", str_limit,
+      site, "mangas?order=random&", r.OptionsRandomManga(),
     }), 10,
   )
   if err != nil {
@@ -3066,27 +3117,49 @@ func (c *Configuration) RandomMangas(limit int) ([]api.Mangas, int, error) {
   return m, resp.StatusCode, nil
 }
 
-// Limit: number of results obtained;
+// If 'Options' empty fields:
+//  - Limit: 1;
+//  - Status: empty field;
+//  - Season: empty field;
+//  - Score: empty field;
+//  - Censored: false;
+//  - Mylist: empty field;
+//  - Genre_v2: empty field;
 //
-// Minimum: 1; Maximum: 50;
+// 'Options' settings:
+//  - Limit: 50 maximum;
+//  - Status: anons, ongoing, released, paused, discontinued, !anons, !ongoing, !released, !paused, !discontinued;
+//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//  - Score: 1-9 maximum;
+//  - Censored: true(string), false(string);
+//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
+//  - Genre_v2: id search. Below is a list of all available genres by id:
+//
+//  > 46 (Mystery); 47 (Shounen); 48 (Supernatural);
+//  49 (Comedy); 50 (Drama); 51 (Ecchi); 52 (Seinen); 53 (Sci-Fi); 54 (Slice of Life); 55 (Shounen Ai);
+//  56 (Action); 57 (Fantasy); 58 (Magic); 59 (Hentai); 60 (School); 61 (Doujinshi); 62 (Romance);
+//  63 (Shoujo); 64 (Vampire); 65 (Yaoi); 66 (Martial Arts); 67 (Psychological); 68 (Adventure);
+//  69 (Historical); 70 (Military); 71 (Harem); 72 (Demons); 73 (Shoujo Ai); 74 (Gender Bender);
+//  75 (Yuri); 76 (Sports); 77 (Kids); 78 (Music); 79 (Game); 80 (Horror); 81 (Thriller);
+//  82 (Super Power); 83 (Mecha); 84 (Cars); 85 (Space); 86 (Parody); 87 (Josei); 88 (Samurai);
+//  89 (Police); 90 (Dementia); 540 (Erotica); 542 (Work Life); 544 (Gourmet);
+//
+// Set to true to discard hentai, yaoi and yuri.
 //
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/random
-func (c *Configuration) RandomRanobes(limit int) ([]api.Mangas, int, error) {
+func (c *Configuration) RandomRanobes(r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  if limit < 1 || limit > 50 { limit = 1 }
-
-  // 26(site) + 26(ranobe?order=random&limit=) + ?(limit)
-  str_limit := strconv.Itoa(limit)
-  max_len := 52 + len(str_limit)
+  // 26(site) + 20(ranobe?order=random&) + ?(Result)
+  max_len := 46 + len(r.OptionsRandomRanobe())
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     concat.Url(max_len, []string{
-      site, "ranobe?order=random&limit=", str_limit,
+      site, "ranobe?order=random&", r.OptionsRandomRanobe(),
     }), 10,
   )
   if err != nil {
