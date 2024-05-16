@@ -1,0 +1,23 @@
+name: goshikimori
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup golang
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.2'
+      - name: Neko tests
+        run: go test -v -run TestNekoSearch
+      - name: Cyrillic tests
+        run: go test -v -run TestLanguageCheck
+      - name: Configuration tests
+        run: go test -v configuration_test.go configuration.go
+      - name: Concatination tests
+        run: go test -v ./concat
+      - name: Search test
+        run: go test -v ./search
