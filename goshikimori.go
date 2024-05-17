@@ -35,12 +35,10 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
   var u api.Users
   var client = &http.Client{}
 
-  // 26(site) + 6(users/) + ?(name)
-  max_len := 32 + len(name)
-
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "users/", name}), 10,
+    // 26(site) + 6(users/) + ?(name)
+    concat.Url(32+len(name), []string{site, "users/", name}), 10,
   )
   if err != nil {
     return u, 0, err
@@ -86,13 +84,13 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, er
   var u []api.Users
   var client = &http.Client{}
 
-  // 26(site) + 13(users?search=) + ?(name) + 1(&) + ?(Result)
-  max_len := 40 + len(name) + len(r.OptionsUsers())
+  opt := r.OptionsUsers()
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{
-      site, "users?search=", name, "&", r.OptionsUsers(),
+    // 26(site) + 13(users?search=) + ?(name) + 1(&) + ?(Result)
+    concat.Url(40+len(name)+len(opt), []string{
+      site, "users?search=", name, "&", opt,
     }), 10,
   )
   if err != nil {
@@ -134,13 +132,14 @@ func (f *FastId) SearchUserFriends(r Result) ([]api.UserFriends, error) {
   var client = &http.Client{}
 
   // 26(site) + 6(users/) + ?(id) + 9(/friends?) + ?(Result)
+  opt := r.OptionsUsers()
   str_id := strconv.Itoa(f.Id)
-  max_len := 41 + len(str_id) + len(r.OptionsUsers())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "users/", str_id, "/friends?" + r.OptionsUsers(),
+    // 26(site) + 6(users/) + ?(id) + 9(/friends?) + ?(Result)
+    concat.Url(41+len(str_id)+len(opt), []string{
+      site, "users/", str_id, "/friends?" + opt,
     }), 10,
   )
   if err != nil {
@@ -173,13 +172,12 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
   var uc []api.Clubs
   var client = &http.Client{}
 
-  // 26(site) + 6(users/) + ?(id) + 6(/clubs)
   str_id := strconv.Itoa(f.Id)
-  max_len := 38 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 6(users/) + ?(id) + 6(/clubs)
+    concat.Url(38+len(str_id), []string{
       site, "users/", str_id, "/clubs",
     }), 10,
   )
@@ -229,14 +227,14 @@ func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
   var ar []api.UserAnimeRates
   var client = &http.Client{}
 
-  // 26(site) + 6(users/) + ?(id) + 13(/anime_rates?) + ?(Result)
+  opt := r.OptionsAnimeRates()
   str_id := strconv.Itoa(f.Id)
-  max_len := 45 + len(str_id) + len(r.OptionsAnimeRates())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "users/", str_id, "/anime_rates?" + r.OptionsAnimeRates(),
+    // 26(site) + 6(users/) + ?(id) + 13(/anime_rates?) + ?(Result)
+    concat.Url(45+len(str_id)+len(opt), []string{
+      site, "users/", str_id, "/anime_rates?" + opt,
     }), 10,
   )
   if err != nil {
@@ -283,14 +281,14 @@ func (f *FastId) SearchUserMangaRates(r Result) ([]api.UserMangaRates, error) {
   var mr []api.UserMangaRates
   var client = &http.Client{}
 
-  // 26(site) + 6(users/) + ?(id) + 13(/manga_rates?) + ?(Result)
+  opt := r.OptionsMangaRates()
   str_id := strconv.Itoa(f.Id)
-  max_len := 45 + len(str_id) + len(r.OptionsMangaRates())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "users/", str_id, "/manga_rates?" + r.OptionsMangaRates(),
+    // 26(site) + 6(users/) + ?(id) + 13(/manga_rates?) + ?(Result)
+    concat.Url(45+len(str_id)+len(opt), []string{
+      site, "users/", str_id, "/manga_rates?" + opt,
     }), 10,
   )
   if err != nil {
@@ -323,13 +321,12 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
   var uf api.UserFavourites
   var client = &http.Client{}
 
-  // 26(site) + 6(users/) + ?(id) + 11(/favourites)
   str_id := strconv.Itoa(f.Id)
-  max_len := 43 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 6(users/) + ?(id) + 11(/favourites)
+    concat.Url(43+len(str_id), []string{
       site, "users/", str_id, "/favourites",
     }), 10,
   )
@@ -377,14 +374,14 @@ func (f *FastId) SearchUserHistory(r Result) ([]api.UserHistory, error) {
   var uh []api.UserHistory
   var client = &http.Client{}
 
-  // 26(site) + 6(users/) + ?(id) + 9(/history?) + ?(Result)
+  opt := r.OptionsUserHistory()
   str_id := strconv.Itoa(f.Id)
-  max_len := 41 + len(str_id) + len(r.OptionsUserHistory())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "users/", str_id, "/history?", r.OptionsUserHistory(),
+    // 26(site) + 6(users/) + ?(id) + 9(/history?) + ?(Result)
+    concat.Url(41+len(str_id)+len(opt), []string{
+      site, "users/", str_id, "/history?", opt,
     }), 10,
   )
   if err != nil {
@@ -417,13 +414,12 @@ func (f *FastId) SearchUserBans() ([]api.Bans, error) {
   var b []api.Bans
   var client = &http.Client{}
 
-  // 26(site) + 6(users/) + ?(id) + 5(/bans)
   str_id := strconv.Itoa(f.Id)
-  max_len := 37 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 6(users/) + ?(id) + 5(/bans)
+    concat.Url(37+len(str_id), []string{
       site, "users/", str_id, "/bans",
     }), 10,
   )
@@ -494,13 +490,12 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
   var a api.Anime
   var client = &http.Client{}
 
-  // 26(site) + 7(animes/) + ?(id)
   str_id := strconv.Itoa(f.Id)
-  max_len := 33 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(animes/) + ?(id)
+    concat.Url(33+len(str_id), []string{
       site, "animes/", str_id,
     }), 10,
   )
@@ -586,13 +581,13 @@ func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, 
   var a []api.Animes
   var client = &http.Client{}
 
-  // 26(site) + 14(animes?search=) + ?(name) + 1(&) + ?(Result)
-  max_len := 41 + len(name) + len(r.OptionsAnime())
+  opt := r.OptionsAnime()
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{
-      site, "animes?search=", name, "&", r.OptionsAnime(),
+    // 26(site) + 14(animes?search=) + ?(name) + 1(&) + ?(Result)
+    concat.Url(41+len(name)+len(opt), []string{
+      site, "animes?search=", name, "&", opt,
     }), 10,
   )
   if err != nil {
@@ -625,13 +620,12 @@ func (f *FastId) SearchManga() (api.Manga, error) {
   var m api.Manga
   var client = &http.Client{}
 
-  // 26(site) + 7(mangas/) + ?(id)
   str_id := strconv.Itoa(f.Id)
-  max_len := 33 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(mangas/) + ?(id)
+    concat.Url(33+len(str_id), []string{
       site, "mangas/", str_id,
     }), 10,
   )
@@ -714,13 +708,13 @@ func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, 
   var m []api.Mangas
   var client = &http.Client{}
 
-  // 26(site) + 14(mangas?search=) + ?(name) + 1(&) + ?(Result)
-  max_len := 41 + len(name) + len(r.OptionsManga())
+  opt := r.OptionsManga()
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{
-      site, "mangas?search=", name, "&", r.OptionsManga(),
+    // 26(site) + 14(mangas?search=) + ?(name) + 1(&) + ?(Result)
+    concat.Url(41+len(name)+len(opt), []string{
+      site, "mangas?search=", name, "&", opt,
     }), 10,
   )
   if err != nil {
@@ -753,13 +747,12 @@ func (f *FastId) SearchRanobe() (api.Manga, error) {
   var m api.Manga
   var client = &http.Client{}
 
-  // 26(site) + 7(ranobe/) + ?(id)
   str_id := strconv.Itoa(f.Id)
-  max_len := 33 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(ranobe/) + ?(id)
+    concat.Url(33+len(str_id), []string{
       site, "ranobe/", str_id,
     }), 10,
   )
@@ -839,13 +832,13 @@ func (c *Configuration) SearchRanobes(name string, r Result) ([]api.Mangas, int,
   var m []api.Mangas
   var client = &http.Client{}
 
-  // 26(site) + 14(ranobe?search=) + ?(name) + 1(&) + ?(Result)
-  max_len := 41 + len(name) + len(r.OptionsRanobe())
+  opt := r.OptionsRanobe()
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{
-      site, "ranobe?search=", name, "&", r.OptionsRanobe(),
+    // 26(site) + 14(ranobe?search=) + ?(name) + 1(&) + ?(Result)
+    concat.Url(41+len(name)+len(opt), []string{
+      site, "ranobe?search=", name, "&", opt,
     }), 10,
   )
   if err != nil {
@@ -878,14 +871,10 @@ func (c *Configuration) FastIdUser(name string) (*FastId, int, error) {
   var u api.Users
   var client = &http.Client{}
 
-  // 26(site) + 6(users/) + ?(name)
-  max_len := 32 + len(name)
-
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{
-      site, "users/", name,
-    }), 10,
+    // 26(site) + 6(users/) + ?(name)
+    concat.Url(32+len(name), []string{site, "users/", name,}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -917,12 +906,10 @@ func (c *Configuration) FastIdAnime(name string) (*FastId, int, error) {
   var a []api.Animes
   var client = &http.Client{}
 
-  // 26(site) + 14(animes?search=) + ?(name)
-  max_len := 40 + len(name)
-
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "animes?search=", name}), 10,
+    // 26(site) + 14(animes?search=) + ?(name)
+    concat.Url(40+len(name), []string{site, "animes?search=", name}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -960,12 +947,10 @@ func (c *Configuration) FastIdManga(name string) (*FastId, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  // 26(site) + 14(mangas?search=) + ?(name)
-  max_len := 40 + len(name)
-
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "mangas?search=", name}), 10,
+    // 26(site) + 14(mangas?search=) + ?(name)
+    concat.Url(40+len(name), []string{site, "mangas?search=", name}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -1002,12 +987,10 @@ func (c *Configuration) FastIdRanobe(name string) (*FastId, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  // 26(site) + 14(ranobe?search=) + ?(name)
-  max_len := 40 + len(name)
-
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "ranobe?search=", name}), 10,
+    // 26(site) + 14(ranobe?search=) + ?(name)
+    concat.Url(40+len(name), []string{site, "ranobe?search=", name}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -1044,12 +1027,10 @@ func (c *Configuration) FastIdClub(name string) (*FastId, int, error) {
   var cl []api.Clubs
   var client = &http.Client{}
 
-  // 26(site) + 13(clubs?search=) + ?(name)
-  max_len := 39 + len(name)
-
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "clubs?search=", name}), 10,
+    // 26(site) + 13(clubs?search=) + ?(name)
+    concat.Url(39+len(name), []string{site, "clubs?search=", name}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -1086,12 +1067,10 @@ func (c *Configuration) FastIdCharacter(name string) (*FastId, int, error) {
   var ch []api.CharacterInfo
   var client = &http.Client{}
 
-  // 26(site) + 25(characters/search?search=) + ?(name)
-  max_len := 51 + len(name)
-
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 25(characters/search?search=) + ?(name)
+    concat.Url(51+len(name), []string{
       site, "characters/search?search=", name,
     }), 10,
   )
@@ -1133,12 +1112,10 @@ func (c *Configuration) FastIdPeople(name string) (*FastId, int, error) {
   var ap []api.AllPeople
   var client = &http.Client{}
 
-  // 26(site) + 21(people/search?search=) + ?(name)
-  max_len := 47 + len(name)
-
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 21(people/search?search=) + ?(name)
+    concat.Url(47+len(name), []string{
       site, "people/search?search=", languageCheck(name),
     }), 10,
   )
@@ -1177,13 +1154,12 @@ func (f *FastId) SearchAnimeScreenshots() ([]api.AnimeScreenshots, error) {
   var s []api.AnimeScreenshots
   var client = &http.Client{}
 
-  // 26(site) + 7(animes/) + ?(id) + 12(/screenshots)
   str_id := strconv.Itoa(f.Id)
-  max_len := 45 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(animes/) + ?(id) + 12(/screenshots)
+    concat.Url(45+len(str_id), []string{
       site, "animes/", str_id, "/screenshots",
     }), 10,
   )
@@ -1217,13 +1193,12 @@ func (f *FastId) SearchAnimeFranchise() (api.Franchise, error) {
   var ff api.Franchise
   var client = &http.Client{}
 
-  // 26(site) + 7(animes/) + ?(id) + 10(/franchise)
   str_id := strconv.Itoa(f.Id)
-  max_len := 43 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(animes/) + ?(id) + 10(/franchise)
+    concat.Url(43+len(str_id), []string{
       site, "animes/", str_id, "/franchise",
     }), 10,
   )
@@ -1256,13 +1231,12 @@ func (f *FastId) SearchMangaFranchise() (api.Franchise, error) {
   var ff api.Franchise
   var client = &http.Client{}
 
-  // 26(site) + 7(mangas/) + ?(id) + 10(/franchise)
   str_id := strconv.Itoa(f.Id)
-  max_len := 43 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(mangas/) + ?(id) + 10(/franchise)
+    concat.Url(43+len(str_id), []string{
       site, "mangas/", str_id, "/franchise",
     }), 10,
   )
@@ -1295,13 +1269,12 @@ func (f *FastId) SearchRanobeFranchise() (api.Franchise, error) {
   var ff api.Franchise
   var client = &http.Client{}
 
-  // 26(site) + 7(ranobe/) + ?(id) + 10(/franchise)
   str_id := strconv.Itoa(f.Id)
-  max_len := 43 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(ranobe/) + ?(id) + 10(/franchise)
+    concat.Url(43+len(str_id), []string{
       site, "ranobe/", str_id, "/franchise",
     }), 10,
   )
@@ -1334,13 +1307,12 @@ func (f *FastId) SearchAnimeExternalLinks() ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
   var client = &http.Client{}
 
-  // 26(site) + 7(animes/) + ?(id) + 15(/external_links)
   str_id := strconv.Itoa(f.Id)
-  max_len := 48 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(animes/) + ?(id) + 15(/external_links)
+    concat.Url(48+len(str_id), []string{
       site, "animes/", str_id, "/external_links",
     }), 10,
   )
@@ -1373,13 +1345,12 @@ func (f *FastId) SearchMangaExternalLinks() ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
   var client = &http.Client{}
 
-  // 26(site) + 7(mangas/) + ?(id) + 15(/external_links)
   str_id := strconv.Itoa(f.Id)
-  max_len := 48 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(mangas/) + ?(id) + 15(/external_links)
+    concat.Url(48+len(str_id), []string{
       site, "mangas/", str_id, "/external_links",
     }), 10,
   )
@@ -1412,13 +1383,12 @@ func (f *FastId) SearchRanobeExternalLinks() ([]api.ExternalLinks, error) {
   var el []api.ExternalLinks
   var client = &http.Client{}
 
-  // 26(site) + 7(ranobe/) + ?(id) + 15(/external_links)
   str_id := strconv.Itoa(f.Id)
-  max_len := 48 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(ranobe/) + ?(id) + 15(/external_links)
+    concat.Url(48+len(str_id), []string{
       site, "ranobe/", str_id, "/external_links",
     }), 10,
   )
@@ -1451,13 +1421,12 @@ func (f *FastId) SearchSimilarAnime() ([]api.Animes, error) {
   var a []api.Animes
   var client = &http.Client{}
 
-  // 26(site) + 7(animes/) + ?(id) + 8(/similar)
   str_id := strconv.Itoa(f.Id)
-  max_len := 41 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(animes/) + ?(id) + 8(/similar)
+    concat.Url(41+len(str_id), []string{
       site, "animes/", str_id, "/similar",
     }), 10,
   )
@@ -1491,13 +1460,12 @@ func (f *FastId) SearchSimilarManga() ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  // 26(site) + 7(mangas/) + ?(id) + 8(/similar)
   str_id := strconv.Itoa(f.Id)
-  max_len := 41 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(mangas/) + ?(id) + 8(/similar)
+    concat.Url(41+len(str_id), []string{
       site, "mangas/", str_id, "/similar",
     }), 10,
   )
@@ -1531,13 +1499,12 @@ func (f *FastId) SearchSimilarRanobe() ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  // 26(site) + 7(ranobe/) + ?(id) + 8(/similar)
   str_id := strconv.Itoa(f.Id)
-  max_len := 41 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(ranobe/) + ?(id) + 8(/similar)
+    concat.Url(41+len(str_id), []string{
       site, "ranobe/", str_id, "/similar",
     }), 10,
   )
@@ -1571,13 +1538,12 @@ func (f *FastId) SearchRelatedAnime() ([]api.RelatedAnimes, error) {
   var a []api.RelatedAnimes
   var client = &http.Client{}
 
-  // 26(site) + 7(animes/) + ?(id) + 8(/related)
   str_id := strconv.Itoa(f.Id)
-  max_len := 41 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(animes/) + ?(id) + 8(/related)
+    concat.Url(41+len(str_id), []string{
       site, "animes/", str_id, "/related",
     }), 10,
   )
@@ -1611,13 +1577,12 @@ func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, error) {
   var m []api.RelatedMangas
   var client = &http.Client{}
 
-  // 26(site) + 7(mangas/) + ?(id) + 8(/related)
   str_id := strconv.Itoa(f.Id)
-  max_len := 41 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(mangas/) + ?(id) + 8(/related)
+    concat.Url(41+len(str_id), []string{
       site, "mangas/", str_id, "/related",
     }), 10,
   )
@@ -1651,13 +1616,12 @@ func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, error) {
   var m []api.RelatedMangas
   var client = &http.Client{}
 
-  // 26(site) + 7(ranobe/) + ?(id) + 8(/related)
   str_id := strconv.Itoa(f.Id)
-  max_len := 41 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(ranobe/) + ?(id) + 8(/related)
+    concat.Url(41+len(str_id), []string{
       site, "ranobe/", str_id, "/related",
     }), 10,
   )
@@ -1704,13 +1668,13 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
   var cl []api.Clubs
   var client = &http.Client{}
 
-  // 26(site) + 13(clubs?search=) + ?(name) + 1(&) + ?(Result)
-  max_len := 40 + len(name) + len(r.OptionsClub())
+  opt := r.OptionsClub()
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{
-      site, "clubs?search=", name, "&", r.OptionsClub(),
+    // 26(site) + 13(clubs?search=) + ?(name) + 1(&) + ?(Result)
+    concat.Url(40+len(name)+len(opt), []string{
+      site, "clubs?search=", name, "&", opt,
     }), 10,
   )
   if err != nil {
@@ -1753,14 +1717,14 @@ func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
   var a []api.Animes
   var client = &http.Client{}
 
-  // 26(site) + 6(clubs/) + ?(id) + 8(/animes?) + ?(Result)
+  opt := r.OptionsClubAnimeManga()
   str_id := strconv.Itoa(f.Id)
-  max_len := 40 + len(str_id) + len(r.OptionsClubAnimeManga())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "clubs/", str_id, "/animes?", r.OptionsClubAnimeManga(),
+    // 26(site) + 6(clubs/) + ?(id) + 8(/animes?) + ?(Result)
+    concat.Url(40+len(str_id)+len(opt), []string{
+      site, "clubs/", str_id, "/animes?", opt,
     }), 10,
   )
   if err != nil {
@@ -1803,14 +1767,14 @@ func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  // 26(site) + 6(clubs/) + ?(id) + 8(/mangas?) + ?(Result)
+  opt := r.OptionsClubAnimeManga()
   str_id := strconv.Itoa(f.Id)
-  max_len := 40 + len(str_id) + len(r.OptionsClubAnimeManga())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "clubs/", str_id, "/mangas?", r.OptionsClubAnimeManga(),
+    // 26(site) + 6(clubs/) + ?(id) + 8(/mangas?) + ?(Result)
+    concat.Url(40+len(str_id)+len(opt), []string{
+      site, "clubs/", str_id, "/mangas?", opt,
     }), 10,
   )
   if err != nil {
@@ -1853,14 +1817,14 @@ func (f *FastId) SearchClubRanobe(r Result) ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  // 26(site) + 6(clubs/) + ?(id) + 8(/ranobe?) + ?(Result)
+  opt := r.OptionsClubAnimeManga()
   str_id := strconv.Itoa(f.Id)
-  max_len := 40 + len(str_id) + len(r.OptionsClubAnimeManga())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "clubs/", str_id, "/ranobe?", r.OptionsClubAnimeManga(),
+    // 26(site) + 6(clubs/) + ?(id) + 8(/ranobe?) + ?(Result)
+    concat.Url(40+len(str_id)+len(opt), []string{
+      site, "clubs/", str_id, "/ranobe?", opt,
     }), 10,
   )
   if err != nil {
@@ -1903,14 +1867,14 @@ func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
   var ci []api.CharacterInfo
   var client = &http.Client{}
 
-  // 26(site) + 6(clubs/) + ?(id) + 12(/characters?) + ?(Result)
+  opt := r.OptionsClubAnimeManga()
   str_id := strconv.Itoa(f.Id)
-  max_len := 44 + len(str_id) + len(r.OptionsClubAnimeManga())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "clubs/", str_id, "/characters?", r.OptionsClubAnimeManga(),
+    // 26(site) + 6(clubs/) + ?(id) + 12(/characters?) + ?(Result)
+    concat.Url(44+len(str_id)+len(opt), []string{
+      site, "clubs/", str_id, "/characters?", opt,
     }), 10,
   )
   if err != nil {
@@ -1953,14 +1917,14 @@ func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
   var cc []api.Clubs
   var client = &http.Client{}
 
-  // 26(site) + 6(clubs/) + ?(id) + 7(/clubs?) + ?(Result)
+  opt := r.OptionsClub()
   str_id := strconv.Itoa(f.Id)
-  max_len := 39 + len(str_id) + len(r.OptionsClub())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "clubs/", str_id, "/clubs?", r.OptionsClub(),
+    // 26(site) + 6(clubs/) + ?(id) + 7(/clubs?) + ?(Result)
+    concat.Url(39+len(str_id)+len(opt), []string{
+      site, "clubs/", str_id, "/clubs?", opt,
     }), 10,
   )
   if err != nil {
@@ -2003,14 +1967,14 @@ func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, error) 
   var cc []api.ClubCollections
   var client = &http.Client{}
 
-  // 26(site) + 6(clubs/) + ?(id) + 13(/collections?) + ?(Result)
+  opt := r.OptionsClubCollections()
   str_id := strconv.Itoa(f.Id)
-  max_len := 45 + len(str_id) + len(r.OptionsClubCollections())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "clubs/", str_id, "/collections?", r.OptionsClubCollections(),
+    // 26(site) + 6(clubs/) + ?(id) + 13(/collections?) + ?(Result)
+    concat.Url(45+len(str_id)+len(opt), []string{
+      site, "clubs/", str_id, "/collections?", opt,
     }), 10,
   )
   if err != nil {
@@ -2053,14 +2017,14 @@ func (f *FastId) SearchClubMembers(r Result) ([]api.UserFriends, error) {
   var uf []api.UserFriends
   var client = &http.Client{}
 
-  // 26(site) + 6(clubs/) + ?(id) + 9(/members?) + ?(Result)
+  opt := r.OptionsUsers()
   str_id := strconv.Itoa(f.Id)
-  max_len := 41 + len(str_id) + len(r.OptionsUsers())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "clubs/", str_id, "/members?", r.OptionsUsers(),
+    // 26(site) + 6(clubs/) + ?(id) + 9(/members?) + ?(Result)
+    concat.Url(41+len(str_id)+len(opt), []string{
+      site, "clubs/", str_id, "/members?", opt,
     }), 10,
   )
   if err != nil {
@@ -2103,14 +2067,14 @@ func (f *FastId) SearchClubImages(r Result) ([]api.ClubImages, error) {
   var cm []api.ClubImages
   var client = &http.Client{}
 
-  // 26(site) + 6(clubs/) + ?(id) + 8(/images?) + ?(Result)
+  opt := r.OptionsUsers()
   str_id := strconv.Itoa(f.Id)
-  max_len := 40 + len(str_id) + len(r.OptionsUsers())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "clubs/", str_id, "/images?", r.OptionsUsers(),
+    // 26(site) + 6(clubs/) + ?(id) + 8(/images?) + ?(Result)
+    concat.Url(40+len(str_id)+len(opt), []string{
+      site, "clubs/", str_id, "/images?", opt,
     }), 10,
   )
   if err != nil {
@@ -2142,13 +2106,12 @@ func (f *FastId) SearchClubImages(r Result) ([]api.ClubImages, error) {
 func (f *FastId) ClubJoin() (int, error) {
   var client = &http.Client{}
 
-  // 26(site) + 6(clubs/) + ?(id) + 5(/join)
   str_id := strconv.Itoa(f.Id)
-  max_len := 37 + len(str_id)
 
   post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 6(clubs/) + ?(id) + 5(/join)
+    concat.Url(37+len(str_id), []string{
       site, "clubs/", str_id, "/join",
     }), 10,
   )
@@ -2172,13 +2135,12 @@ func (f *FastId) ClubJoin() (int, error) {
 func (f *FastId) ClubLeave() (int, error) {
   var client = &http.Client{}
 
-  // 26(site) + 6(clubs/) + ?(id) + 6(/leave)
   str_id := strconv.Itoa(f.Id)
-  max_len := 38 + len(str_id)
 
   post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 6(clubs/) + ?(id) + 6(/leave)
+    concat.Url(38+len(str_id), []string{
       site, "clubs/", str_id, "/leave",
     }), 10,
   )
@@ -2208,13 +2170,12 @@ func (f *FastId) SearchAchievement() ([]api.Achievements, error) {
   var a []api.Achievements
   var client = &http.Client{}
 
-  // 26(site) + 21(achievements?user_id=) + ?(id)
   str_id := strconv.Itoa(f.Id)
-  max_len := 47 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 21(achievements?user_id=) + ?(id)
+    concat.Url(47+len(str_id), []string{
       site, "achievements?user_id=", str_id,
     }), 10,
   )
@@ -2248,13 +2209,11 @@ func (f *FastId) SearchAnimeVideos() ([]api.AnimeVideos, error) {
   var v []api.AnimeVideos
   var client = &http.Client{}
 
-  // 26(site) + 7(animes/) + ?(id) + 7(/videos)
   str_id := strconv.Itoa(f.Id)
-  max_len := 40 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    concat.Url(40+len(str_id), []string{
       site, "animes/", str_id, "/videos",
     }), 10,
   )
@@ -2288,13 +2247,12 @@ func (f *FastId) SearchAnimeRoles() ([]api.Roles, error) {
   var r []api.Roles
   var client = &http.Client{}
 
-  // 26(site) + 7(animes/) + ?(id) + 6(/roles)
   str_id := strconv.Itoa(f.Id)
-  max_len := 39 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(animes/) + ?(id) + 6(/roles)
+    concat.Url(39+len(str_id), []string{
       site, "animes/", str_id, "/roles",
     }), 10,
   )
@@ -2328,13 +2286,12 @@ func (f *FastId) SearchMangaRoles() ([]api.Roles, error) {
   var r []api.Roles
   var client = &http.Client{}
 
-  // 26(site) + 7(mangas/) + ?(id) + 6(/roles)
   str_id := strconv.Itoa(f.Id)
-  max_len := 39 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(mangas/) + ?(id) + 6(/roles)
+    concat.Url(39+len(str_id), []string{
       site, "mangas/", str_id, "/roles",
     }), 10,
   )
@@ -2368,13 +2325,12 @@ func (f *FastId) SearchRanobeRoles() ([]api.Roles, error) {
   var r []api.Roles
   var client = &http.Client{}
 
-  // 26(site) + 7(ranobe/) + ?(id) + 6(/roles)
   str_id := strconv.Itoa(f.Id)
-  max_len := 39 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(ranobe/) + ?(id) + 6(/roles)
+    concat.Url(39+len(str_id), []string{
       site, "ranobe/", str_id, "/roles",
     }), 10,
   )
@@ -2451,13 +2407,13 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
   var ca []api.Calendar
   var client = &http.Client{}
 
-  // 26(site) + 9(calendar?) + ?(Result)
-  max_len := 35 + len(r.OptionsCalendar())
+  opt := r.OptionsCalendar()
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{
-      site, "calendar?", r.OptionsCalendar(),
+    // 26(site) + 9(calendar?) + ?(Result)
+    concat.Url(35+len(opt), []string{
+      site, "calendar?", opt,
     }), 10,
   )
   if err != nil {
@@ -2492,12 +2448,11 @@ func (c *Configuration) SearchGenres(name string) ([]api.Genres, int, error) {
   var g []api.Genres
   var client = &http.Client{}
 
-  // 26(site) + 12(genres?kind=) + ?(name)
-  max_len := 38 + len(name)
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "genres?kind=", name}), 10,
+    // 26(site) + 12(genres?kind=) + ?(name)
+    concat.Url(38+len(name), []string{site, "genres?kind=", name}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -2634,13 +2589,12 @@ func (f *FastId) AddFriend() (api.FriendRequest, error) {
   var ff api.FriendRequest
   var client = &http.Client{}
 
-  // 26(site) + 8(friends/) + ?(id)
   str_id := strconv.Itoa(f.Id)
-  max_len := 34 + len(str_id)
 
   post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 8(friends/) + ?(id)
+    concat.Url(34+len(str_id), []string{
       site, "friends/", str_id,
     }), 10,
   )
@@ -2674,13 +2628,12 @@ func (f *FastId) RemoveFriend() (api.FriendRequest, error) {
   var ff api.FriendRequest
   var client = &http.Client{}
 
-  // 26(site) + 8(friends/) + ?(id)
   str_id := strconv.Itoa(f.Id)
-  max_len := 34 + len(str_id)
 
   remove, cancel, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 8(friends/) + ?(id)
+    concat.Url(34+len(str_id), []string{
       site, "friends/", str_id,
     }), 10,
   )
@@ -2716,13 +2669,12 @@ func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
   var um api.UnreadMessages
   var client = &http.Client{}
 
-  // 26(site) + 6(users/) + ?(id) + 16(/unread_messages)
   str_id := strconv.Itoa(f.Id)
-  max_len := 48 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 6(users/) + ?(id) + 16(/unread_messages)
+    concat.Url(48+len(str_id), []string{
       site, "users/", str_id, "/unread_messages",
     }), 10,
   )
@@ -2766,14 +2718,14 @@ func (f *FastId) UserMessages(r Result) ([]api.Messages, error) {
   var m []api.Messages
   var client = &http.Client{}
 
-  // 26(site) + 6(users/) + ?(id) + 10(/messages?) + ?(Result)
+  opt := r.OptionsMessages()
   str_id := strconv.Itoa(f.Id)
-  max_len := 42 + len(str_id) + len(r.OptionsMessages())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "users/", str_id, "/messages?", r.OptionsMessages(),
+    // 26(site) + 6(users/) + ?(id) + 10(/messages?) + ?(Result)
+    concat.Url(42+len(str_id)+len(opt), []string{
+      site, "users/", str_id, "/messages?", opt,
     }), 10,
   )
   if err != nil {
@@ -3015,13 +2967,13 @@ func (c *Configuration) RandomAnimes(r Result) ([]api.Animes, int, error) {
   var a []api.Animes
   var client = &http.Client{}
 
-  // 26(site) + 20(animes?order=random&) + ?(Result)
-  max_len := 46 + len(r.OptionsRandomAnime())
+  opt := r.OptionsRandomAnime()
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{
-      site, "animes?order=random&", r.OptionsRandomAnime(),
+    // 26(site) + 20(animes?order=random&) + ?(Result)
+    concat.Url(46+len(opt), []string{
+      site, "animes?order=random&", opt,
     }), 10,
   )
   if err != nil {
@@ -3085,13 +3037,13 @@ func (c *Configuration) RandomMangas(r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  // 26(site) + 20(mangas?order=random&) + ?(Result)
-  max_len := 46 + len(r.OptionsRandomManga())
+  opt := r.OptionsRandomManga()
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{
-      site, "mangas?order=random&", r.OptionsRandomManga(),
+    // 26(site) + 20(mangas?order=random&) + ?(Result)
+    concat.Url(46+len(opt), []string{
+      site, "mangas?order=random&", opt,
     }), 10,
   )
   if err != nil {
@@ -3153,13 +3105,13 @@ func (c *Configuration) RandomRanobes(r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  // 26(site) + 20(ranobe?order=random&) + ?(Result)
-  max_len := 46 + len(r.OptionsRandomRanobe())
+  opt := r.OptionsRandomRanobe()
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{
-      site, "ranobe?order=random&", r.OptionsRandomRanobe(),
+    // 26(site) + 20(ranobe?order=random&) + ?(Result)
+    concat.Url(46+len(opt), []string{
+      site, "ranobe?order=random&", opt,
     }), 10,
   )
   if err != nil {
@@ -3192,13 +3144,12 @@ func (f *FastId) SearchCharacter() (api.Character, error) {
   var ch api.Character
   var client = &http.Client{}
 
-  // 26(site) + 11(characters/) + ?(id)
   str_id := strconv.Itoa(f.Id)
-  max_len := 37 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 11(characters/) + ?(id)
+    concat.Url(37+len(str_id), []string{
       site, "characters/", str_id,
     }), 10,
   )
@@ -3234,12 +3185,10 @@ func (c *Configuration) SearchCharacters(name string) ([]api.CharacterInfo, int,
   var ci []api.CharacterInfo
   var client = &http.Client{}
 
-  // 26(site) + 25(characters/search?search=) + ?(name)
-  max_len := 51 + len(name)
-
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "characters/search?search=", name}), 10,
+    // 26(site) + 25(characters/search?search=) + ?(name)
+    concat.Url(51+len(name), []string{site, "characters/search?search=", name}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -3271,13 +3220,12 @@ func (f *FastId) SearchPeople() (api.People, error) {
   var p api.People
   var client = &http.Client{}
 
-  // 26(site) + 7(people/) + ?(id)
   str_id := strconv.Itoa(f.Id)
-  max_len := 33 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 7(people/) + ?(id)
+    concat.Url(33+len(str_id), []string{
       site, "people/", str_id,
     }), 10,
   )
@@ -3319,13 +3267,12 @@ func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, i
   var ap []api.AllPeople
   var client = &http.Client{}
 
-  // 26(site) + 21(people/search?search=) + ?(name) + 1(&) + ?(Result)
-  max_len := 48 + len(name) + len(r.OptionsPeople())
+  opt := r.OptionsPeople()
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{
-      site, "people/search?search=", name, "&", r.OptionsPeople(),
+    concat.Url(48+len(name)+len(opt), []string{
+      site, "people/search?search=", name, "&", opt,
     }), 10,
   )
   if err != nil {
@@ -3363,19 +3310,20 @@ func (f *FastId) FavoritesCreate(linked_type string, kind string) (api.Favorites
 
   if search.IndexInSlice(linked_type, []string{
     "Anime", "Manga", "Ranobe", "Person", "Character",
-  }) == -1 { return fa, errors.New("incorrect string, try again and watch the upper case") }
+  }) == -1 {
+    return fa, errors.New("incorrect string, try again and watch the upper case")
+  }
 
   if search.IndexInSlice(kind, []string{
     "common", "seyu", "mangaka", "producer", "person",
   }) == -1 { kind = "" }
 
-  // 26(site) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id) + 1(/) + ?(kind)
   str_id := strconv.Itoa(f.Id)
-  max_len := 38 + len(linked_type) + len(str_id) + len(kind)
 
   post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id) + 1(/) + ?(kind)
+    concat.Url(38+len(linked_type)+len(str_id)+len(kind), []string{
       site, "favorites/", linked_type, "/", str_id, "/", kind,
     }), 10,
   )
@@ -3413,15 +3361,16 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
 
   if search.IndexInSlice(linked_type, []string{
     "Anime", "Manga", "Ranobe", "Person", "Character",
-  }) == -1 { return ff, errors.New("incorrect string, try again and watch the upper case") }
+  }) == -1 {
+    return ff, errors.New("incorrect string, try again and watch the upper case")
+  }
 
-  // 26(site) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id)
   str_id := strconv.Itoa(f.Id)
-  max_len := 37 + len(linked_type) + len(str_id)
 
   remove, cancel, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id)
+    concat.Url(37+len(linked_type)+len(str_id), []string{
       site, "favorites/", linked_type, "/", str_id,
     }), 10,
   )
@@ -3460,13 +3409,12 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
 func (f *FastId) FavoritesReorder(position int) (int, error) {
   var client = &http.Client{}
 
-  // 26(site) + 10(favorites/) + ?(id) + 8(/reorder)
   str_id := strconv.Itoa(f.Id)
-  max_len := 44 + len(str_id)
 
   post, cancel, err := NewReorderPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 10(favorites/) + ?(id) + 8(/reorder)
+    concat.Url(44+len(str_id), []string{
       site, "favorites/", str_id, "/reorder",
     }), position, 10,
   )
@@ -3491,13 +3439,12 @@ func (f *FastId) AddIgnoreUser() (api.IgnoreUser, error) {
   var i api.IgnoreUser
   var client = &http.Client{}
 
-  // 26(site) + 9(v2/users/) + ?(id) + 7(/ignore)
   str_id := strconv.Itoa(f.Id)
-  max_len := 42 + len(str_id)
 
   post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 9(v2/users/) + ?(id) + 7(/ignore)
+    concat.Url(42+len(str_id), []string{
       site, "v2/users/", str_id, "/ignore",
     }), 10,
   )
@@ -3531,13 +3478,12 @@ func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, error) {
   var i api.IgnoreUser
   var client = &http.Client{}
 
-  // 26(site) + 9(v2/users/) + ?(id) + 7(/ignore)
   str_id := strconv.Itoa(f.Id)
-  max_len := 42 + len(str_id)
 
   remove, cancel, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 9(v2/users/) + ?(id) + 7(/ignore)
+    concat.Url(42+len(str_id), []string{
       site, "v2/users/", str_id, "/ignore",
     }), 10,
   )
@@ -3607,13 +3553,14 @@ func (f *FastId) SearchDialogs() ([]api.SearchDialogs, error) {
   var sd []api.SearchDialogs
   var client = &http.Client{}
 
-  // 26(site) + 8(dialogs/) + ?(id)
   str_id := strconv.Itoa(f.Id)
-  max_len := 34 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{site, "dialogs/", str_id}), 10,
+    // 26(site) + 8(dialogs/) + ?(id)
+    concat.Url(34+len(str_id), []string{
+      site, "dialogs/", str_id,
+    }), 10,
   )
   if err != nil {
     return nil, err
@@ -3647,13 +3594,14 @@ func (f *FastId) DeleteDialogs() (api.FriendRequest, error) {
   var fr api.FriendRequest
   var client = &http.Client{}
 
-  // 26(site) + 8(dialogs/) + ?(id)
   str_id := strconv.Itoa(f.Id)
-  max_len := 34 + len(str_id)
 
   remove, cancel, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{site, "dialogs/", str_id}), 10,
+    // 26(site) + 8(dialogs/) + ?(id)
+    concat.Url(34+len(str_id), []string{
+      site, "dialogs/", str_id,
+    }), 10,
   )
   if err != nil {
     return fr, err
@@ -3686,13 +3634,12 @@ func (f *FastId) UserBriefInfo() (api.Info, error) {
   var i api.Info
   var client = &http.Client{}
 
-  // 26(site) + 6(users/) + ?(id) + 5(/info)
   str_id := strconv.Itoa(f.Id)
-  max_len := 37 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 6(users/) + ?(id) + 5(/info)
+    concat.Url(37+len(str_id), []string{
       site, "users/", str_id, "/info",
     }), 10,
   )
@@ -3805,14 +3752,14 @@ func (f *FastId) SearchTopicsAnime(r Result) ([]api.Topics, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  // 26(site) + 7(animes/) + ?(id) + 8(/topics?) + ?(Result)
+  opt := r.OptionsClub()
   str_id := strconv.Itoa(f.Id)
-  max_len := 41 + len(str_id) + len(r.OptionsClub())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "animes/", str_id, "/topics?", r.OptionsClub(),
+    // 26(site) + 7(animes/) + ?(id) + 8(/topics?) + ?(Result)
+    concat.Url(41+len(str_id)+len(opt), []string{
+      site, "animes/", str_id, "/topics?", opt,
     }), 10,
   )
   if err != nil {
@@ -3853,14 +3800,14 @@ func (f *FastId) SearchTopicsManga(r Result) ([]api.Topics, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  // 26(site) + 7(mangas/) + ?(id) + 8(/topics?) + ?(Result)
+  opt := r.OptionsClub()
   str_id := strconv.Itoa(f.Id)
-  max_len := 41 + len(str_id) + len(r.OptionsClub())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "mangas/", str_id, "/topics?", r.OptionsClub(),
+    // 26(site) + 7(mangas/) + ?(id) + 8(/topics?) + ?(Result)
+    concat.Url(41+len(str_id)+len(opt), []string{
+      site, "mangas/", str_id, "/topics?", opt,
     }), 10,
   )
   if err != nil {
@@ -3901,14 +3848,14 @@ func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  // 26(site) + 7(ranobe/) + ?(id) + 8(/topics?) + ?(Result)
+  opt := r.OptionsClub()
   str_id := strconv.Itoa(f.Id)
-  max_len := 41 + len(str_id) + len(r.OptionsClub())
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
-      site, "ranobe/", str_id, "/topics?", r.OptionsClub(),
+    // 26(site) + 7(ranobe/) + ?(id) + 8(/topics?) + ?(Result)
+    concat.Url(41+len(str_id)+len(opt), []string{
+      site, "ranobe/", str_id, "/topics?", opt,
     }), 10,
   )
   if err != nil {
@@ -3961,12 +3908,12 @@ func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  // 26(site) + 7(topics?) + ?(Result)
-  max_len := 33 + len(r.OptionsTopics())
+  opt := r.OptionsTopics()
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "topics?", r.OptionsTopics()}), 10,
+    // 26(site) + 7(topics?) + ?(Result)
+    concat.Url(33+len(opt), []string{site, "topics?", opt}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -4008,12 +3955,12 @@ func (c *Configuration) SearchTopicsUpdates(r Result) ([]api.TopicsUpdates, int,
   var t []api.TopicsUpdates
   var client = &http.Client{}
 
-  // 26(site) + 15(topics/updates?) + ?(Result)
-  max_len := 41 + len(r.OptionsClub())
+  opt := r.OptionsClub()
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "topics/updates?", r.OptionsClub()}), 10,
+    // 26(site) + 15(topics/updates?) + ?(Result)
+    concat.Url(41+len(opt), []string{site, "topics/updates?", opt}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -4051,12 +3998,12 @@ func (c *Configuration) SearchTopicsHot(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  // 26(site) + 11(topics/hot?) + ?(Result)
-  max_len := 37 + len(r.OptionsTopicsHot())
+  opt := r.OptionsTopicsHot()
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "topics/hot?", r.OptionsTopicsHot()}), 10,
+    // 26(site) + 11(topics/hot?) + ?(Result)
+    concat.Url(37+len(opt), []string{site, "topics/hot?", opt}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -4090,13 +4037,12 @@ func (c *Configuration) SearchTopicsId(id int) (api.TopicsId, int, error) {
   var t api.TopicsId
   var client = &http.Client{}
 
-  // 26(site) + 7(topics/) + ?(id)
   str_id := strconv.Itoa(id)
-  max_len := 33 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "topics/", str_id}), 10,
+    // 26(site) + 7(topics/) + ?(id)
+    concat.Url(33+len(str_id), []string{site, "topics/", str_id}), 10,
   )
   if err != nil {
     return t, 0, err
@@ -4130,13 +4076,14 @@ func (c *Configuration) AddIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
   var i api.IgnoreTopic
   var client = &http.Client{}
 
-  // 26(site) + 10(v2/topics/) + ?(id) + 7(/ignore)
   str_id := strconv.Itoa(id)
-  max_len := 43 + len(str_id)
 
   post, cancel, err := NewPostRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "v2/topics/", str_id, "/ignore"}), 10,
+    // 26(site) + 10(v2/topics/) + ?(id) + 7(/ignore)
+    concat.Url(43+len(str_id), []string{
+      site, "v2/topics/", str_id, "/ignore",
+    }), 10,
   )
   if err != nil {
     return i, 0, err
@@ -4170,13 +4117,14 @@ func (c *Configuration) RemoveIgnoreTopic(id int) (api.IgnoreTopic, int, error) 
   var i api.IgnoreTopic
   var client = &http.Client{}
 
-  // 26(site) + 10(v2/topics/) + ?(id) + 7(/ignore)
   str_id := strconv.Itoa(id)
-  max_len := 43 + len(str_id)
 
   remove, cancel, err := NewDeleteRequestWithCancel(
-    c.Application, c.AccessToken, 
-    concat.Url(max_len, []string{site, "v2/topics/", str_id, "/ignore"}), 10,
+    c.Application, c.AccessToken,
+    // 26(site) + 10(v2/topics/) + ?(id) + 7(/ignore)
+    concat.Url(43+len(str_id), []string{
+      site, "v2/topics/", str_id, "/ignore",
+    }), 10,
   )
   if err != nil {
     return i, 0, err
@@ -4210,12 +4158,10 @@ func (c *Configuration) SearchGraphql(schema string) (api.GraphQL, int, error) {
   var client = &http.Client{}
   var g api.GraphQL
 
-  // 26(site) + ?(schema)
-  max_len := 26 + len(schema)
-
   post, cancel, err := NewPostRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, schema}), 10,
+    // 26(site) + ?(schema)
+    concat.Url(26+len(schema), []string{site, schema}), 10,
   )
   if err != nil {
     return g, 0, err
@@ -4253,13 +4199,12 @@ func (c *Configuration) ReadMessage(id int) (api.Messages, int, error) {
   var client = &http.Client{}
   var m api.Messages
 
-  // 26(site) + 9(messages/) + ?(id)
   str_id := strconv.Itoa(id)
-  max_len := 35 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "messages/", str_id}), 10,
+    // 26(site) + 9(messages/) + ?(id)
+    concat.Url(35+len(str_id), []string{site, "messages/", str_id}), 10,
   )
   if err != nil {
     return m, 0, err
@@ -4306,8 +4251,7 @@ func (c *Configuration) SendMessage(from_id, to_id int, message string) (api.Mes
   post, cancel, err := NewSendMessagePostRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(site) + 8(messages)
-    concat.Url(34, []string{site, "messages"}),
-    message, from_id, to_id, 10,
+    concat.Url(34, []string{site, "messages"}), message, from_id, to_id, 10,
   )
   if err != nil {
     return m, 0, err
@@ -4347,13 +4291,12 @@ func (c *Configuration) ChangeMessage(id int, message string) (api.Messages, int
   var client = &http.Client{}
   var m api.Messages
 
-  // 26(site) + 9(messages/) + ?(id)
   str_id := strconv.Itoa(id)
-  max_len := 35 + len(str_id)
 
   put, cancel, err := NewChangeMessagePutRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "messages/", str_id}), message, 10,
+    // 26(site) + 9(messages/) + ?(id)
+    concat.Url(35+len(str_id), []string{site, "messages/", str_id}), message, 10,
   )
   if err != nil {
     return m, 0, err
@@ -4388,13 +4331,12 @@ func (c *Configuration) ChangeMessage(id int, message string) (api.Messages, int
 func (c *Configuration) DeleteMessage(id int) (int, error) {
   var client = &http.Client{}
 
-  // 26(site) + 9(messages/) + ?(id)
   str_id := strconv.Itoa(id)
-  max_len := 35 + len(str_id)
 
   del, cancel, err := NewDeleteMessageDeleteRequestWithCancel(
     c.Application, c.AccessToken,
-    concat.Url(max_len, []string{site, "messages/", str_id}), 10,
+    // 26(site) + 9(messages/) + ?(id)
+    concat.Url(35+len(str_id), []string{site, "messages/", str_id}), 10,
   )
   if err != nil {
     return 0, err
@@ -4459,13 +4401,12 @@ func (f *FastId) UnreadMessagesIds(name string) ([]int, error) {
   var um api.UnreadMessages
   var client = &http.Client{}
 
-  // 26(site) + 6(users/) + ?(id) + 16(/unread_messages)
   str_id := strconv.Itoa(f.Id)
-  max_len := 48 + len(str_id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    concat.Url(max_len, []string{
+    // 26(site) + 6(users/) + ?(id) + 16(/unread_messages)
+    concat.Url(48+len(str_id), []string{
       site, "users/", str_id, "/unread_messages",
     }), 10,
   )
