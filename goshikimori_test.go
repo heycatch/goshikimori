@@ -1,9 +1,8 @@
 package goshikimori
 
 import (
-  "os"
   "fmt"
-  "time"
+  "os"
   "testing"
 
   "github.com/heycatch/goshikimori/graphql"
@@ -89,11 +88,8 @@ func TestAchievements(t *testing.T) {
   fmt.Println("Too many requests at once, waiting 5 seconds...")
 
   var s StatusBar
-  s.newOption(0, 5)
-  for i := 0; i <= 5; i++ {
-    s.play(i)
-    time.Sleep(1 * time.Second)
-  }
+  s.settings(5, "#", 1)
+  s.run()
 
   c := conf()
   fast, _, _ := c.FastIdUser("arctica")
@@ -129,11 +125,8 @@ func TestUserUnreadMessages(t *testing.T) {
   fmt.Println("Too many requests at once, waiting 5 seconds...")
 
   var s StatusBar
-  s.newOption(0, 5)
-  for i := 0; i <= 5; i++ {
-    s.play(i)
-    time.Sleep(1 * time.Second)
-  }
+  s.settings(5, "#", 1)
+  s.run()
 
   c := conf()
   fast, _, _ := c.FastIdUser("arctica")
@@ -182,11 +175,8 @@ func TestAnimeGraphql(t *testing.T) {
   fmt.Println("Too many requests at once, waiting 5 seconds...")
 
   var s StatusBar
-  s.newOption(0, 5)
-  for i := 0; i <= 5; i++ {
-    s.play(i)
-    time.Sleep(1 * time.Second)
-  }
+  s.settings(5, "#", 1)
+  s.run()
 
   c := conf()
   sch, _ := graphql.AnimeSchema(
