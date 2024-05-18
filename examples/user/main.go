@@ -88,8 +88,7 @@ func main() {
     fmt.Println(v.Id, v.Name, v.Russian, v.Image)
   }
   // user history
-  // NOTES: Target_id - Anime.id or Manga.id; convert to a string to search the history point-by-point.
-  ouh := &g.Options{Page: 1, Limit: 10, Target_id: "", Target_type: "Anime"}
+  ouh := &g.Options{Page: 1, Limit: 10, Target_id: 0, Target_type: "Anime"}
   uh, err := fast.SearchUserHistory(ouh)
   if err != nil || len(uh) == 0 {
     fmt.Println(err)

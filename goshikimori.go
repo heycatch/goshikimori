@@ -359,12 +359,12 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
 //  - Page: 1;
 //  - Limit: 1;
 //  - Target_type: Anime;
-//  - Target_id: option is hidden if empty;
+//  - Target_id: 0;
 //
 // 'Options' settings:
 //  - Page: 100000 maximum.
 //  - Limit: 100 maximum.
-//  - Target_id: id anime/manga in string format.
+//  - Target_id: id anime/manga/ranobe.
 //  - Target_type: Anime, Manga.
 //
 // More information can be found in the [example].
@@ -3704,8 +3704,8 @@ func (c *Configuration) SignOut() (string, int, error) {
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/active_users
 func (c *Configuration) ActiveUsers() ([]int, int, error) {
-  var ids []int
   var client = &http.Client{}
+  ids := make([]int, 0)
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
@@ -3721,17 +3721,17 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
 
   resp, err := client.Do(get)
   if err != nil {
-    return ids, resp.StatusCode, err
+    return nil, resp.StatusCode, err
   }
   defer resp.Body.Close()
 
   data, err := io.ReadAll(resp.Body)
   if err != nil {
-    return ids, resp.StatusCode, err
+    return nil, resp.StatusCode, err
   }
 
   if err := json.Unmarshal(data, &ids); err != nil {
-    return ids, resp.StatusCode, err
+    return nil, resp.StatusCode, err
   }
 
   return ids, resp.StatusCode, nil

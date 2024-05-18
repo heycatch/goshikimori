@@ -106,28 +106,28 @@ func TestOptionsUserHistory(t *testing.T) {
     t.Error("Empty OptionsUserHistory failed")
   }
 
-  big := Options{Page: 100002, Limit: 102, Target_id: "", Target_type: "11111111111111"}
+  big := Options{Page: 100002, Limit: 102, Target_type: "11111111111111"}
   if big.OptionsUserHistory() == "limit=1&page=1&target_type=Anime" {
     t.Log("Big OptionsUserHistory passed")
   } else {
     t.Error("Big OptionsUserHistory failed")
   }
 
-  zero := Options{Page: 0, Limit: 0, Target_id: "", Target_type: "0"}
+  zero := Options{Page: 0, Limit: 0, Target_id: 0, Target_type: "0"}
   if zero.OptionsUserHistory() == "limit=1&page=1&target_type=Anime" {
     t.Log("Zero OptionsUserHistory passed")
   } else {
     t.Error("Zero OptionsUserHistory failed")
   }
 
-  negative := Options{Page: -1, Limit: -1, Target_id: "", Target_type: "-1"}
+  negative := Options{Page: -1, Limit: -1, Target_id: -1, Target_type: "-1"}
   if negative.OptionsUserHistory() == "limit=1&page=1&target_type=Anime" {
     t.Log("Negative OptionsUserHistory passed")
   } else {
     t.Error("Negative OptionsUserHistory failed")
   }
 
-  normal := Options{Page: 3, Limit: 20, Target_id: "1337", Target_type: "Manga"}
+  normal := Options{Page: 3, Limit: 20, Target_id: 1337, Target_type: "Manga"}
   if normal.OptionsUserHistory() == "limit=20&page=3&target_id=1337&target_type=Manga" {
     t.Log("Zero OptionsUserHistory passed")
   } else {

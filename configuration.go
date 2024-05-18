@@ -44,9 +44,9 @@ func SetConfiguration(appname, token string) *Configuration {
 
 type Options struct {
   Order, Kind, Status, Season, Rating,
-  Type, Target_id, Target_type, Duration,
-  Mylist, Forum, Linked_type string
-  Page, Limit, Score, Linked_id int
+  Type, Target_type, Duration, Mylist,
+  Forum, Linked_type string
+  Page, Limit, Score, Linked_id, Target_id int
   Censored bool
   Genre_v2 []int
 }
@@ -144,8 +144,6 @@ func (o *Options) OptionsMessages() string {
 // BenchmarkUserHistoryV1-4   453085   3211 ns/op   408 B/op   12 allocs/op
 //
 // BenchmarkUserHistoryV2-4   949827   2529 ns/op   248 B/op    9 allocs/op
-//
-// TODO: convert target_id from string to int?
 func (o *Options) OptionsUserHistory() string {
   v := url.Values{}
 
@@ -163,9 +161,7 @@ func (o *Options) OptionsUserHistory() string {
   search.LinearComplexity(&o.Target_type, "Anime", []string{"Anime", "Manga"})
   v.Add("target_type", o.Target_type)
 
-  // We get an error if we do not process the request in this way.
-  // json: cannot unmarshal string into Go value of type api.UserHistory
-  if o.Target_id != "" { v.Add("target_id", o.Target_id) }
+  if o.Target_id > 0 { v.Add("target_id", strconv.Itoa(o.Target_id)) }
 
   return v.Encode()
 }
