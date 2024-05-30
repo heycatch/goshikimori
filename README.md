@@ -15,7 +15,7 @@ go get github.com/heycatch/goshikimori
 ### Examples
 * [Click her](https://github.com/heycatch/goshikimori/tree/master/examples)
 
-### Documentation
+### GODOC / GOPKG documentation
 **Godoc** support is also available.
 
 Or you can use the page from the official Go pkg
@@ -28,7 +28,7 @@ make docker-build
 make docker-start
 
 # Open in browser.
-http://localhost:1337/pkg/github.com/heycatch/goshikimori/
+http://localhost:1337/pkg/github.com/heycatch/goshikimori
 ```
 ```bash
 # Method #2(Linux): Install godoc.
@@ -44,7 +44,7 @@ git clone git@github.com:heycatch/goshikimori.git && cd goshikimori
 make doc
 
 # Open in browser.
-http://localhost:1337/pkg/github.com/heycatch/goshikimori/
+http://localhost:1337/pkg/github.com/heycatch/goshikimori
 ```
 
 ### Shikimori documentation
@@ -54,7 +54,7 @@ http://localhost:1337/pkg/github.com/heycatch/goshikimori/
 * [OAuth2](https://shikimori.one/oauth)
 
 ### Feedback
-* Private message the [website](https://shikimori.one/arctica).
+* Private message on the [website](https://shikimori.one/arctica).
 * Open [issue](https://github.com/heycatch/goshikimori/issues).
 ```bash
 # Current tasks and problems in the code can be viewed in the terminal using the command.

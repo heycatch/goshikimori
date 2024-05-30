@@ -15,7 +15,7 @@ go get github.com/heycatch/goshikimori
 ### Готовые примеры
 * [Нажать сюда](https://github.com/heycatch/goshikimori/tree/master/examples)
 
-### Документация
+### Документация GODOC / GOPKG
 Также доступна поддержка **godoc**.
 
 Или вы можете использовать страницу с официального
@@ -28,7 +28,7 @@ make docker-build
 make docker-start
 
 # Открыть в браузере.
-http://localhost:1337/pkg/github.com/heycatch/goshikimori/
+http://localhost:1337/pkg/github.com/heycatch/goshikimori
 ```
 ```bash
 # Способ #2(Linux): Установка godoc.
@@ -44,7 +44,7 @@ git clone git@github.com:heycatch/goshikimori.git && cd goshikimori
 make doc
 
 # Открыть в браузере.
-http://localhost:1337/pkg/github.com/heycatch/goshikimori/
+http://localhost:1337/pkg/github.com/heycatch/goshikimori
 ```
 
 ### Документация шикимори
