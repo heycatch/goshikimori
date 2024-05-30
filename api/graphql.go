@@ -152,11 +152,11 @@ type CharacterRolesGraphQL struct {
 
 // If the Anime or Manga is not found, nil is returned.
 type RelatedGraphQL struct {
-  Id         string     `json:"id"`
-  Anime      ObjectInfo `json:"anime"`
-  Manga      ObjectInfo `json:"manga"`
-  RelationRu string     `json:"relationRu"`
-  RelationEn string     `json:"relationEn"`
+  Id           string     `json:"id"`
+  Anime        ObjectInfo `json:"anime"`
+  Manga        ObjectInfo `json:"manga"`
+  RelationKind string     `json:"relationKind"`
+  RelationText string     `json:"relationText"`
 }
 
 type ObjectInfo struct {

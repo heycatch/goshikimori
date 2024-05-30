@@ -18,7 +18,7 @@ import (
 //  - studios{id name imageUrl}
 //  - personRoles{id rolesRu rolesEn person{id name poster{id}}}
 //  - characterRoles{id rolesRu rolesEn character{id name poster{id}}}
-//  - related{id anime{id name} manga{id name} relationRu relationEn}
+//  - related{id anime{id name} manga{id name} relationKind relationText}
 //  - videos{id url name kind}
 //  - screenshots{id originalUrl x166Url x332Url}
 //  - scoresStats{score count}
@@ -33,7 +33,7 @@ import (
 //  - publishers{id name}
 //  - personRoles{id rolesRu rolesEn person{id name poster{id}}}
 //  - characterRoles{id rolesRu rolesEn character{id name poster{id}}}
-//  - related{id anime{id name} manga{id name} relationRu relationEn}
+//  - related{id anime{id name} manga{id name} relationKind relationText}
 //  - scoresStats{score count}
 //  - statusesStats{status count}
 //  - description descriptionHtml descriptionSource
