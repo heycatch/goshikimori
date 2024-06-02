@@ -21,14 +21,23 @@ func main() {
     fmt.Println(err)
     return
   }
+  brief, err := fast.UserBriefInfo()
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  fmt.Println(brief.Id, brief.Nickname)
 
   // Getting an id.
-  fmt.Println(fast.Id)
-  // Additional option for receiving id.
-  fmt.Println(fast.GetFastId())
+  fmt.Println(fast.Id) // fmt.Println(fast.GetFastId())
   // Quick id change.
-  new_id := c.SetFastId(1337)
-  fmt.Println(new_id.Id)
+  new_fast := c.SetFastId(1) // fmt.Println(new_fast.Id)
+  new_brief, err := new_fast.UserBriefInfo()
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+  fmt.Println(new_brief.Id, new_brief.Nickname)
 
   // Getting configuration.
   fmt.Println(c.GetConfiguration())
