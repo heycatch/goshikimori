@@ -18,17 +18,29 @@ type FastId struct {
   Err  error
 }
 
+// Getting an id(anime, manga, ranobe, user, person, group).
+//
+// More information can be found in the [example1] and [example2].
+//
+// [example1]: https://github.com/heycatch/goshikimori/blob/master/examples/custom_fastid
+// [example2]: https://github.com/heycatch/goshikimori/blob/master/examples/getter_setter
 func (f *FastId) GetFastId() int { return f.Id }
 
-// To create a custom id.
+// To create a custom id(anime, manga, ranobe, user, person, group).
 //
-// More information can be found in the [example].
+// More information can be found in the [example1] and [example2].
 //
-// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/custom_fastid
+// [example1]: https://github.com/heycatch/goshikimori/blob/master/examples/custom_fastid
+// [example2]: https://github.com/heycatch/goshikimori/blob/master/examples/getter_setter
 func (c *Configuration) SetFastId(id int) *FastId {
   return &FastId{Id: id, Conf: *c, Err: nil}
 }
 
+// Getting the configuration.
+//
+// More information can be found in the [example].
+//
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/getter_setter
 func (c *Configuration) GetConfiguration() (string, string) {
   return c.Application, c.AccessToken
 }
@@ -37,7 +49,10 @@ func (c *Configuration) GetConfiguration() (string, string) {
 //
 // To register the application, follow the link from [OAuth].
 //
+// More information can be found in the [example].
+//
 // [OAuth]: https://github.com/heycatch/goshikimori#shikimori-documentation
+// [example]: https://github.com/heycatch/goshikimori/blob/master/examples/getter_setter
 func SetConfiguration(appname, token string) *Configuration {
   return &Configuration{Application: appname, AccessToken: token}
 }
