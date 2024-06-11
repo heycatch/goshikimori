@@ -96,31 +96,14 @@ func Bearer(token string) string {
   return *(*string)(unsafe.Pointer(&res))
 }
 
-/* Converting a slice to a []byte using a bytes.Buffer.
-
-BenchmarkDataSendMessageV1-4   1574340   721.4 ns/op   160 B/op   4 allocs/op   1.910s
-BenchmarkDataBufferV2-4   	   3007321   524.3 ns/op   200 B/op   4 allocs/op   1.985s
-
-BenchmarkDataReorderV1-4   4893867   253.0 ns/op   32 B/op   2 allocs/op   1.492s
-BenchmarkDataBufferV2-4    6330697   204.8 ns/op   72 B/op   2 allocs/op   1.489s
-
-BenchmarkDataMarkReadV1-4   3413079   411.1 ns/op   80 B/op   2 allocs/op   1.765s
-BenchmarkDataBufferV2-4     7376164   189.7 ns/op   64 B/op   1 allocs/op   1.572s
-*/
+// Converting a slice to a []byte using a bytes.Buffer.
 func DataBuffer(slice []string) []byte {
   var res bytes.Buffer
   for i := range slice { res.WriteString(slice[i]) }
   return res.Bytes()
 }
 
-/* Converting a slice to a []byte using a copy.
-
-BenchmarkDataChangeMessageV1-4   4111257   310.7 ns/op   96 B/op   2 allocs/op   1.579s
-BenchmarkDataCopyV2-4            14183776  88.33 ns/op   80 B/op   1 allocs/op   1.343s
-
-BenchmarkDataReadDeleteV1-4   4201455   262.7 ns/op   64 B/op   2 allocs/op   1.400s
-BenchmarkDataCopyV2-4         9057472   123.5 ns/op   48 B/op   1 allocs/op   1.259s
-*/
+// Converting a slice to a []byte using a copy.
 func DataCopy(max_len int, slice []string) []byte {
   var offset int
   res := make([]byte, max_len)

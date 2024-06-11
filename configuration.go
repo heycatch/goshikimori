@@ -87,11 +87,85 @@ type Result interface {
   OptionsRandomRanobe()    string
 }
 
-// V2 implementation of OptionsTopics().
-//
-// BenchmarkTopicsV1-4   203890   6134 ns/op   488 B/op   14 allocs/op
-//
-// BenchmarkTopicsV2-4   745861   1884 ns/op   280 B/op   10 allocs/op
+var (
+  topic_forum = []string{
+    "cosplay", "animanga", "site", "games", "vn",
+    "contests", "offtopic", "clubs", "my_clubs",
+    "critiques", "news", "collections", "articles",
+  }
+
+  topic_linkedType = []string{
+    "Anime", "Manga", "Ranobe", "Character", "Person",
+    "Club", "ClubPage", "Critique", "Review",
+    "Contest", "CosplayGallery", "Collection", "Article",
+  }
+
+  message_type = []string{
+    "inbox", "private", "sent", "news", "notifications",
+  }
+
+  userHistory_targetType = []string{"Anime", "Manga"}
+
+  anime_order = []string {
+    "id", "ranked", "kind", "popularity",
+    "name", "aired_on", "episodes", "status",
+  }
+
+  anime_kind = []string{
+    "tv", "movie", "ova", "ona", "special",
+    "music", "tv_13", "tv_24",
+    "tv_48", "!tv", "!movie", "!ova",
+    "!ona", "!special", "!music",
+    "!tv_13", "!tv_24", "!tv_48",
+  }
+
+  anime_status = []string{
+    "anons", "ongoing", "released",
+    "!anons", "!ongoing", "!released",
+  }
+
+  anime_season = []string{
+    "2000_2010", "2010_2014", "2015_2019", "199x",
+    "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
+    "198x", "!198x", "2020_2021", "!2020_2021",
+    "2022", "!2022", "2023", "!2023",
+  }
+
+  anime_rating = []string{
+    "none", "g", "pg", "pg_13",
+    "r", "r_plus", "rx", "!g", "!pg",
+    "!pg_13", "!r", "!r_plus", "!rx",
+  }
+
+  anime_duration = []string{
+    "S", "D", "F", "!S", "!D", "!F",
+  }
+
+  anime_mylist = []string{
+    "planned", "watching", "rewatching",
+    "completed", "on_hold", "dropped",
+  }
+
+
+  manga_order = []string{
+    "id", "ranked", "kind", "popularity", "name",
+    "aired_on", "volumes", "chapters", "status",
+  }
+
+  manga_kind = []string{
+    "manga", "manhwa", "manhua", "light_novel", "novel",
+    "one_shot", "doujin", "!manga", "!manhwa", "!manhua",
+    "!light_novel", "!novel", "!one_shot", "!doujin",
+  }
+
+  manga_status = []string{
+    "anons", "ongoing", "released", "paused", "discontinued",
+    "!anons", "!ongoing", "!released", "!paused", "!discontinued",
+  }
+
+  people_kind = &[]string{"seyu", "mangaka", "producer"}
+)
+
 func (o *Options) OptionsTopics() string {
   v := url.Values{}
 
@@ -106,18 +180,9 @@ func (o *Options) OptionsTopics() string {
     v.Add("limit", strconv.Itoa(o.Limit))
   }
 
-  search.LinearComplexity(&o.Forum, "all", []string{
-    "cosplay", "animanga", "site", "games", "vn",
-    "contests", "offtopic", "clubs", "my_clubs",
-    "critiques", "news", "collections", "articles",
-  })
+  search.LinearComplexity(&o.Forum, "all", topic_forum)
   v.Add("forum", o.Forum)
-
-  search.LinearComplexity(&o.Linked_type, "", []string{
-    "Anime", "Manga", "Ranobe", "Character", "Person",
-    "Club", "ClubPage", "Critique", "Review",
-    "Contest", "CosplayGallery", "Collection", "Article",
-  })
+  search.LinearComplexity(&o.Linked_type, "", topic_linkedType)
   // linked_id and linked_type are only used together.
   if o.Linked_id >= 1 && o.Linked_type != "" {
     v.Add("linked_id", strconv.Itoa(o.Linked_id))
@@ -127,11 +192,6 @@ func (o *Options) OptionsTopics() string {
   return v.Encode()
 }
 
-// V2 implementation of OptionsMessages().
-//
-// BenchmarkMessagesV1-4    471354   2375 ns/op   312 B/op   10 allocs/op
-//
-// BenchmarkMessagesV2-4   1000000   1092 ns/op   152 B/op    7 allocs/op
 func (o *Options) OptionsMessages() string {
   v := url.Values{}
 
@@ -146,19 +206,12 @@ func (o *Options) OptionsMessages() string {
     v.Add("limit", strconv.Itoa(o.Limit))
   }
 
-  search.LinearComplexity(&o.Type, "news", []string{
-    "inbox", "private", "sent", "news", "notifications",
-  })
+  search.LinearComplexity(&o.Type, "news", message_type)
   v.Add("type", o.Type)
 
   return v.Encode()
 }
 
-// V2 implementation of OptionsUserHistory().
-//
-// BenchmarkUserHistoryV1-4   453085   3211 ns/op   408 B/op   12 allocs/op
-//
-// BenchmarkUserHistoryV2-4   949827   2529 ns/op   248 B/op    9 allocs/op
 func (o *Options) OptionsUserHistory() string {
   v := url.Values{}
 
@@ -173,7 +226,7 @@ func (o *Options) OptionsUserHistory() string {
     v.Add("limit", strconv.Itoa(o.Limit))
   }
 
-  search.LinearComplexity(&o.Target_type, "Anime", []string{"Anime", "Manga"})
+  search.LinearComplexity(&o.Target_type, "Anime", userHistory_targetType)
   v.Add("target_type", o.Target_type)
 
   if o.Target_id > 0 { v.Add("target_id", strconv.Itoa(o.Target_id)) }
@@ -198,11 +251,6 @@ func (o *Options) OptionsUsers() string {
   return v.Encode()
 }
 
-// V2 implementation of OptionsAnime().
-//
-// BenchmarkAnimeV1-4   74109   16041 ns/op   4053 B/op   32 allocs/op
-//
-// BenchmarkAnimeV2-4   198708   6785 ns/op   1727 B/op   22 allocs/op
 func (o *Options) OptionsAnime() string {
   v := url.Values{}
 
@@ -218,48 +266,19 @@ func (o *Options) OptionsAnime() string {
   }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  search.LinearComplexity(&o.Order, "", []string{
-    "id", "ranked", "kind", "popularity",
-    "name", "aired_on", "episodes", "status",
-  })
+  search.LinearComplexity(&o.Order, "", anime_order)
   v.Add("order", o.Order)
-
-  search.LinearComplexity(&o.Kind, "", []string{
-    "tv", "movie", "ova", "ona", "special", "music",
-    "tv_13", "tv_24", "tv_48", "!tv", "!movie", "!ova",
-    "!ona", "!special", "!music", "!tv_13", "!tv_24", "!tv_48",
-  })
+  search.LinearComplexity(&o.Kind, "", anime_kind)
   v.Add("kind", o.Kind)
-
-  search.LinearComplexity(&o.Status, "", []string{
-    "anons", "ongoing", "released", "!anons", "!ongoing", "!released",
-  })
+  search.LinearComplexity(&o.Status, "", anime_status)
   v.Add("status", o.Status)
-
-  search.LinearComplexity(&o.Season, "", []string{
-    "2000_2010", "2010_2014", "2015_2019", "199x",
-    "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
-    "198x", "!198x", "2020_2021", "!2020_2021",
-    "2022", "!2022", "2023", "!2023",
-  })
+  search.LinearComplexity(&o.Season, "", anime_season)
   v.Add("season", o.Season)
-
-  search.LinearComplexity(&o.Rating, "", []string{
-    "none", "g", "pg", "pg_13",
-    "r", "r_plus", "rx", "!g", "!pg",
-    "!pg_13", "!r", "!r_plus", "!rx",
-  })
+  search.LinearComplexity(&o.Rating, "", anime_rating)
   v.Add("rating", o.Rating)
-
-  search.LinearComplexity(&o.Duration, "", []string{
-    "S", "D", "F", "!S", "!D", "!F",
-  })
+  search.LinearComplexity(&o.Duration, "", anime_duration)
   v.Add("duration", o.Duration)
-
-  search.LinearComplexity(&o.Mylist, "", []string{
-    "planned", "watching", "rewatching",
-    "completed", "on_hold", "dropped",
-  })
+  search.LinearComplexity(&o.Mylist, "", anime_mylist)
   v.Add("mylist", o.Mylist)
 
   genre := concat.MapGenresAnime(o.Genre_v2)
@@ -270,11 +289,6 @@ func (o *Options) OptionsAnime() string {
   return v.Encode()
 }
 
-// V2 implementation of OptionsManga().
-//
-// BenchmarkMangaV1-4    99231   13817 ns/op   3662 B/op   27 allocs/op
-//
-// BenchmarkMangaV2-4   228412   5485 ns/op    1391 B/op   20 allocs/op
 func (o *Options) OptionsManga() string {
   v := url.Values{}
 
@@ -290,37 +304,15 @@ func (o *Options) OptionsManga() string {
   }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  search.LinearComplexity(&o.Order, "", []string{
-    "id", "ranked", "kind", "popularity", "name",
-    "aired_on", "volumes", "chapters", "status",
-  })
+  search.LinearComplexity(&o.Order, "", manga_order)
   v.Add("order", o.Order)
-
-  search.LinearComplexity(&o.Kind, "",[]string{
-    "manga", "manhwa", "manhua", "light_novel", "novel",
-    "one_shot", "doujin", "!manga", "!manhwa", "!manhua",
-    "!light_novel", "!novel", "!one_shot", "!doujin",
-  })
+  search.LinearComplexity(&o.Kind, "", manga_kind)
   v.Add("kind", o.Kind)
-
-  search.LinearComplexity(&o.Status, "",[]string{
-    "anons", "ongoing", "released", "paused", "discontinued",
-    "!anons", "!ongoing", "!released", "!paused", "!discontinued",
-  })
+  search.LinearComplexity(&o.Status, "", manga_status)
   v.Add("status", o.Status)
-
-  search.LinearComplexity(&o.Season, "", []string{
-    "2000_2010", "2010_2014", "2015_2019", "199x",
-    "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
-    "198x", "!198x", "2020_2021", "!2020_2021",
-    "2022", "!2022", "2023", "!2023",
-  })
+  search.LinearComplexity(&o.Season, "", anime_season)
   v.Add("season", o.Season)
-
-  search.LinearComplexity(&o.Mylist, "", []string{
-    "planned", "watching", "rewatching",
-    "completed", "on_hold", "dropped",
-  })
+  search.LinearComplexity(&o.Mylist, "", anime_mylist)
   v.Add("mylist", o.Mylist)
 
   genre := concat.MapGenresManga(o.Genre_v2)
@@ -331,11 +323,6 @@ func (o *Options) OptionsManga() string {
   return v.Encode()
 }
 
-// V2 implementation of OptionsRanobe().
-//
-// BenchmarkRanobeV1-4   116786   10772 ns/op   2847 B/op   23 allocs/op
-//
-// BenchmarkRanobeV2-4   341701    3751 ns/op    616 B/op   17 allocs/op
 func (o *Options) OptionsRanobe() string {
   v := url.Values{}
 
@@ -351,30 +338,13 @@ func (o *Options) OptionsRanobe() string {
   }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  search.LinearComplexity(&o.Order, "", []string{
-    "id", "ranked", "kind", "popularity", "name",
-    "aired_on", "volumes", "chapters", "status",
-  })
+  search.LinearComplexity(&o.Order, "", manga_order)
   v.Add("order", o.Order)
-
-  search.LinearComplexity(&o.Status, "", []string{
-    "anons", "ongoing", "released", "paused", "discontinued",
-    "!anons", "!ongoing", "!released", "!paused", "!discontinued",
-  })
+  search.LinearComplexity(&o.Status, "", manga_status)
   v.Add("status", o.Status)
-
-  search.LinearComplexity(&o.Season, "", []string{
-    "2000_2010", "2010_2014", "2015_2019", "199x",
-    "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
-    "198x", "!198x", "2020_2021", "!2020_2021",
-    "2022", "!2022", "2023", "!2023",
-  })
+  search.LinearComplexity(&o.Season, "", anime_season)
   v.Add("season", o.Season)
-
-  search.LinearComplexity(&o.Mylist, "", []string{
-    "planned", "watching", "rewatching",
-    "completed", "on_hold", "dropped",
-  })
+  search.LinearComplexity(&o.Mylist, "", anime_mylist)
   v.Add("mylist", o.Mylist)
 
   genre := concat.MapGenresManga(o.Genre_v2)
@@ -410,11 +380,6 @@ func (o *Options) OptionsCalendar() string {
   return v.Encode()
 }
 
-// V2 implementation of AnimeRates().
-//
-// BenchmarkRanobe-4   406456   3327 ns/op   408 B/op   12 allocs/op
-//
-// BenchmarkRanobe-4   958911   2595 ns/op   248 B/op    9 allocs/op
 func (o *Options) OptionsAnimeRates() string {
   v := url.Values{}
 
@@ -430,10 +395,8 @@ func (o *Options) OptionsAnimeRates() string {
   }
 
   search.LinearComplexity(
-    &o.Status, "watching", []string{
-    "planned", "watching", "rewatching",
-    "completed", "on_hold", "dropped",
-  })
+    &o.Status, "watching", anime_mylist,
+  )
   v.Add("status", o.Status)
 
   v.Add("censored", strconv.FormatBool(o.Censored))
@@ -460,17 +423,11 @@ func (o *Options) OptionsMangaRates() string {
   return v.Encode()
 }
 
-// V2 implementation of OptionsPeople().
-//
-// BenchmarkPeopleV1-4    537405    1929 ns/op   216 B/op   7 allocs/op
-//
-// BenchmarkPeopleV2-4   1936758   797.7 ns/op    56 B/op   4 allocs/op
 func (o *Options) OptionsPeople() string {
   v := url.Values{}
 
   search.LinearComplexity(
-    &o.Kind, "seyu",
-    []string{"seyu", "mangaka", "producer"},
+    &o.Kind, "seyu", *people_kind,
   )
   v.Add("kind", o.Kind)
 
@@ -533,42 +490,17 @@ func (o *Options) OptionsRandomAnime() string {
   }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  search.LinearComplexity(&o.Kind, "", []string{
-    "tv", "movie", "ova", "ona", "special", "music",
-    "tv_13", "tv_24", "tv_48", "!tv", "!movie", "!ova",
-    "!ona", "!special", "!music", "!tv_13", "!tv_24", "!tv_48",
-  })
+  search.LinearComplexity(&o.Kind, "", anime_kind)
   v.Add("kind", o.Kind)
-
-  search.LinearComplexity(&o.Status, "", []string{
-    "anons", "ongoing", "released", "!anons", "!ongoing", "!released",
-  })
+  search.LinearComplexity(&o.Status, "", anime_status)
   v.Add("status", o.Status)
-
-  search.LinearComplexity(&o.Season, "", []string{
-    "2000_2010", "2010_2014", "2015_2019", "199x",
-    "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
-    "198x", "!198x", "2020_2021", "!2020_2021",
-    "2022", "!2022", "2023", "!2023",
-  })
+  search.LinearComplexity(&o.Season, "", anime_season)
   v.Add("season", o.Season)
-
-  search.LinearComplexity(&o.Rating, "", []string{
-    "none", "g", "pg", "pg_13",
-    "r", "r_plus", "rx", "!g", "!pg",
-    "!pg_13", "!r", "!r_plus", "!rx",
-  })
+  search.LinearComplexity(&o.Rating, "", anime_rating)
   v.Add("rating", o.Rating)
-
-  search.LinearComplexity(&o.Duration, "", []string{
-    "S", "D", "F", "!S", "!D", "!F",
-  })
+  search.LinearComplexity(&o.Duration, "", anime_duration)
   v.Add("duration", o.Duration)
-
-  search.LinearComplexity(&o.Mylist, "", []string{
-    "planned", "watching", "rewatching",
-    "completed", "on_hold", "dropped",
-  })
+  search.LinearComplexity(&o.Mylist, "", anime_mylist)
   v.Add("mylist", o.Mylist)
 
   genre := concat.MapGenresAnime(o.Genre_v2)
@@ -589,31 +521,13 @@ func (o *Options) OptionsRandomManga() string {
   }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  search.LinearComplexity(&o.Kind, "",[]string{
-    "manga", "manhwa", "manhua", "light_novel", "novel",
-    "one_shot", "doujin", "!manga", "!manhwa", "!manhua",
-    "!light_novel", "!novel", "!one_shot", "!doujin",
-  })
+  search.LinearComplexity(&o.Kind, "", manga_kind)
   v.Add("kind", o.Kind)
-
-  search.LinearComplexity(&o.Status, "",[]string{
-    "anons", "ongoing", "released", "paused", "discontinued",
-    "!anons", "!ongoing", "!released", "!paused", "!discontinued",
-  })
+  search.LinearComplexity(&o.Status, "", manga_status)
   v.Add("status", o.Status)
-
-  search.LinearComplexity(&o.Season, "", []string{
-    "2000_2010", "2010_2014", "2015_2019", "199x",
-    "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
-    "198x", "!198x", "2020_2021", "!2020_2021",
-    "2022", "!2022", "2023", "!2023",
-  })
+  search.LinearComplexity(&o.Season, "", anime_season)
   v.Add("season", o.Season)
-
-  search.LinearComplexity(&o.Mylist, "", []string{
-    "planned", "watching", "rewatching",
-    "completed", "on_hold", "dropped",
-  })
+  search.LinearComplexity(&o.Mylist, "", anime_mylist)
   v.Add("mylist", o.Mylist)
 
   genre := concat.MapGenresManga(o.Genre_v2)
@@ -634,24 +548,11 @@ func (o *Options) OptionsRandomRanobe() string {
   }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
 
-  search.LinearComplexity(&o.Status, "",[]string{
-    "anons", "ongoing", "released", "paused", "discontinued",
-    "!anons", "!ongoing", "!released", "!paused", "!discontinued",
-  })
+  search.LinearComplexity(&o.Status, "", manga_status)
   v.Add("status", o.Status)
-
-  search.LinearComplexity(&o.Season, "", []string{
-    "2000_2010", "2010_2014", "2015_2019", "199x",
-    "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
-    "198x", "!198x", "2020_2021", "!2020_2021",
-    "2022", "!2022", "2023", "!2023",
-  })
+  search.LinearComplexity(&o.Season, "", anime_status)
   v.Add("season", o.Season)
-
-  search.LinearComplexity(&o.Mylist, "", []string{
-    "planned", "watching", "rewatching",
-    "completed", "on_hold", "dropped",
-  })
+  search.LinearComplexity(&o.Mylist, "", anime_mylist)
   v.Add("mylist", o.Mylist)
 
   genre := concat.MapGenresManga(o.Genre_v2)

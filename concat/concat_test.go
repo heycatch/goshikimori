@@ -72,8 +72,6 @@ func TestMapGenresManga(t *testing.T) {
   }
 }
 
-// BenchmarkIdsToStringOld-4   1760985   688.7 ns/op   120 B/op   10 allocs/op   1.906s
-// BenchmarkIdsToString-4      2245165   491.6 ns/op   116 B/op   7 allocs/op    1.648s
 func BenchmarkIdsToString(b *testing.B) {
   b.StartTimer()
   for i := 0; i < b.N; i++ {
@@ -82,8 +80,6 @@ func BenchmarkIdsToString(b *testing.B) {
   b.StopTimer()
 }
 
-// BenchmarkUrlOld-4   4291356   313.9 ns/op   80 B/op   3 allocs/op   1.636s
-// BenchmarkUrl-4     15332547	 82.20 ns/op   48 B/op	 1 allocs/op   1.345s
 func BenchmarkUrl(b *testing.B) {
   b.StartTimer()
   for i := 0; i < b.N; i++ {
@@ -92,8 +88,6 @@ func BenchmarkUrl(b *testing.B) {
   b.StopTimer()
 }
 
-// BenchmarkGenresV1-4   1338148   1003 ns/op    200 B/op   5 allocs/op
-// BenchmarkGenresV2-4   2110065   625.0 ns/op   112 B/op   2 allocs/op
 func BenchmarkGenres(b *testing.B) {
   b.StartTimer()
   for i := 0; i < b.N; i++ {
