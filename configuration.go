@@ -550,7 +550,7 @@ func (o *Options) OptionsRandomRanobe() string {
 
   search.LinearComplexity(&o.Status, "", manga_status)
   v.Add("status", o.Status)
-  search.LinearComplexity(&o.Season, "", anime_status)
+  search.LinearComplexity(&o.Season, "", anime_season)
   v.Add("season", o.Season)
   search.LinearComplexity(&o.Mylist, "", anime_mylist)
   v.Add("mylist", o.Mylist)
