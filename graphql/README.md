@@ -1,8 +1,8 @@
-### EN | [RU](https://github.com/heycatch/goshikimori/blob/master/graphql/README_ru.md)
+## [EN](https://github.com/heycatch/goshikimori/blob/master/graphql/README_en.md) | RU
 
-## At the moment, the GraphQL API is stated as experimental.
+### На данный момент API GraphQL заявлен как экспериментальный.
 
-Next, let's look at an examples:
+Далее рассмотрим на примерах:
 ```golang
 package main
 
@@ -23,24 +23,25 @@ func conf() *goshikimori.Configuration {
 func main() {
   c := conf()
 
-  // The first parameter is the values of the anime; values: "id", "name", "score", "episodes", "airedOn{year month day date}".
-  // The second parameter is the name of the anime; name: "initial d".
-  // Now let's move on to the interface:
+  // Первым параметром идет перечисление значений которые мы хотим получить
+  // от сервера; values: "id", "name", "score", "episodes", "airedOn{year month day date}".
+  // Вторым параметром идет название аниме; name: "initial d".
+  // Теперь переходим к интерфейсу:
   //    1)  page: 1;
   //    2)  limit: 5;
   //    3)  score: 8;
-  //    4)  order: ""; skipped;
+  //    4)  order: ""; пропустил;
   //    5)  kind: "tv";
   //    6)  status: "released";
-  //    7)  season: ""; skipped;
-  //    8)  duration: ""; skipped;
+  //    7)  season: ""; пропустил;
+  //    8)  duration: ""; пропустил;
   //    9)  rating: "pg_13";
-  //    10) mylist: ""; skipped;
+  //    10) mylist: ""; пропустил;
   //    11) censored: false;
-  //    12) genre: nil; skipped
+  //    12) genre: nil; пропустил;
   //
-  // The available values can be found in the function description: graphql.Values();
-  // The available interface parameters can be found in the function description: graphql.AnimeSchema();
+  // Про доступные значения можно почитать в описании функции: graphql.Values();
+  // Про доступные параметры интерфейса можно почитать в описании функции: graphql.AnimeSchema();
   schema, err := graphql.AnimeSchema(
     graphql.Values("id", "name", "score", "episodes", "airedOn{year month day date}"),
     "initial d",
@@ -57,9 +58,9 @@ func main() {
     return
   }
 
-  // Here you can track errors received during server response.
+  // Тут можно отслеживать ошибки полученные при ответе сервера.
   fmt.Println(a.Errors)
-  // Standard output of our search, nothing new.
+  // Стандартный вывод нашего поиска, ничего нового.
   for _, v := range a.Data.Animes {
     fmt.Println(
       v.Id, v.Name, v.Score, v.Episodes, v.AiredOn.Year,
@@ -88,22 +89,23 @@ func conf() *goshikimori.Configuration {
 func main() {
   c := conf()
 
-  // The first parameter is the values of the manga; values: "id", "name", "score", "volumes", "chapters", "releasedOn{year}".
-  // The second parameter is the name of the manga; name: "initial d".
-  // Now let's move on to the interface:
+  // Первым параметром идет перечисление значений которые мы хотим получить
+  // от сервера; values: "id", "name", "score", "volumes", "chapters", "releasedOn{year}".
+  // Вторым параметром идет название манги; name: "initial d".
+  // Теперь переходим к интерфейсу:
   //    1) page: 1;
   //    2) limit: 1;
   //    3) score: 8;
-  //    4) order: ""; skipped;
+  //    4) order: ""; пропустил;
   //    5) kind: "manga";
   //    6) status: "released";
-  //    7) season: ""; skipped;
-  //    8) mylist: ""; skipped;
+  //    7) season: ""; пропустил;
+  //    8) mylist: ""; пропустил;
   //    9) censored: false;
-  //    10) genre: nil; skipped;
+  //    10) genre: nil; пропустил;
   //
-  // The available values can be found in the function description: graphql.Values();
-  // The available interface parameters can be found in the function description: graphql.MangaSchema();
+  // Про доступные значения можно почитать в описании функции: graphql.Values();
+  // Про доступные параметры интерфейса можно почитать в описании функции: graphql.MangaSchema();
   schema, err := graphql.MangaSchema(
     graphql.Values("id", "name", "score", "volumes", "chapters", "releasedOn{year}"),
     "initial d",
@@ -120,9 +122,9 @@ func main() {
     return
   }
 
-  // Here you can track errors received during server response.
+  // Тут можно отслеживать ошибки полученные при ответе сервера.
   fmt.Println(m.Errors)
-  // Standard output of our search, nothing new.
+  // Стандартный вывод нашего поиска, ничего нового.
   for _, v := range m.Data.Mangas {
     fmt.Println(v.Id, v.Name, v.Score, v.Volumes, v.Chapters, v.ReleasedOn.Year)
   }
@@ -148,14 +150,15 @@ func conf() *goshikimori.Configuration {
 func main() {
   c := conf()
 
-  // The first parameter is the values of the character; values: "id", "name", "russian", "url", "description".
-  // The second parameter is the name of the character; name: "onizuka".
-  // Now let's move on to the interface:
+  // Первым параметром идет перечисление значений которые мы хотим получить
+  // от сервера; values: "id", "name", "russian", "url", "description"".
+  // Вторым параметром идет название персонажа; name: "onizuka".
+  // Теперь переходим к интерфейсу:
   //    1) page: 1;
   //    2) limit: 2;
   //
-  // The available values can be found in the function description: graphql.Values();
-  // The available interface parameters can be found in the function description: graphql.CharacterSchema();
+  // Про доступные значения можно почитать в описании функции: graphql.Values();
+  // Про доступные параметры интерфейса можно почитать в описании функции: graphql.CharacterSchema();
   schema, err := graphql.CharacterSchema(
     graphql.Values("id", "name", "russian", "url", "description"),
     "onizuka",
@@ -172,9 +175,9 @@ func main() {
     return
   }
 
-  // Here you can track errors received during server response.
+  // Тут можно отслеживать ошибки полученные при ответе сервера.
   fmt.Println(ch.Errors)
-  // Standard output of our search, nothing new.
+  // Стандартный вывод нашего поиска, ничего нового.
   for _, v := range ch.Data.Characters {
     fmt.Println(v.Id, v.Name, v.Russian, v.Url, v.Description)
   }
@@ -200,18 +203,18 @@ func conf() *goshikimori.Configuration {
 func main() {
   c := conf()
 
-  // The first parameter is the values of the people; values: "id", "name", "russian", "url",
-  // "website", "birthOn{year month day date}".
-  // The second parameter is the name of the people; name: "satsuki".
-  // Now let's move on to the interface:
+  // Первым параметром идет перечисление значений которые мы хотим получить
+  // от сервера; values: "id", "name", "russian", "url", "website", "birthOn{year month day date}".
+  // Вторым параметром идет имя человека; name: "satsuki".
+  // Теперь переходим к интерфейсу:
   //    1) page: 1;
   //    2) limit: 2;
   //    3) isSeyu: true;
   //    4) isMangaka: false;
   //    5) isProducer: false;
   //
-  // The available values can be found in the function description: graphql.Values();
-  // The available interface parameters can be found in the function description: graphql.PeopleSchema();
+  // Про доступные значения можно почитать в описании функции: graphql.Values();
+  // Про доступные параметры интерфейса можно почитать в описании функции: graphql.PeopleSchema();
   schema, err := graphql.PeopleSchema(
     graphql.Values("id", "name", "russian", "url", "website", "birthOn{year month day date}"),
     "satsuki",
@@ -228,9 +231,9 @@ func main() {
     return
   }
 
-  // Here you can track errors received during server response.
+  // Тут можно отслеживать ошибки полученные при ответе сервера.
   fmt.Println(p.Errors)
-  // Standard output of our search, nothing new.
+  // Стандартный вывод нашего поиска, ничего нового.
   for _, v := range p.Data.People {
     fmt.Println(
       v.Id, v.Name, v.Russian, v.Url, v.Website,
