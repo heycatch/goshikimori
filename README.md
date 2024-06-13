@@ -1,63 +1,63 @@
-### EN | [RU](https://github.com/heycatch/goshikimori/blob/master/README_ru.md)
+## [EN](https://github.com/heycatch/goshikimori/blob/master/README_en.md) | RU
 
-### About
-A small library for interacting with shikimori, written in golang.
-* Work with API occurs only through `OAuth2`.
-* No dependencies on other libraries.
-* The GNU [make](https://www.gnu.org/software/make/manual/make.html)
-utility is used for tests and builds.
+### О проекте
+Небольшая библиотека для взаимодействия с шикимори, написанная на языке golang.
+* Работа с API происходит только через `OAuth2`.
+* Никаких зависимостей от других библиотек.
+* Для тестов и сборки используется утилита
+GNU [make](https://www.gnu.org/software/make/manual/make.html).
 
-### Install
+### Установка
 ```bash
 go get github.com/heycatch/goshikimori
 ```
 
-### Examples
-* [Click her](https://github.com/heycatch/goshikimori/tree/master/examples)
+### Готовые примеры
+* [Нажать сюда](https://github.com/heycatch/goshikimori/tree/master/examples)
 
-### GODOC / GOPKG documentation
-**Godoc** support is also available.
+### Документация GODOC / GOPKG
+Также доступна поддержка **godoc**.
 
-Or you can use the page from the official Go pkg
-[website](https://pkg.go.dev/github.com/heycatch/goshikimori).\
-**P.S.** documentation is late in updating.
+Или вы можете использовать страницу с официального
+[сайта](https://pkg.go.dev/github.com/heycatch/goshikimori) Go pkg.\
+**P.S.** документация обновляется с опозданием.
 ```bash
-# Method #1: Use docker.
+# Способ #1: Используя докер.
 git clone git@github.com:heycatch/goshikimori.git && cd goshikimori
 make docker-build
 make docker-start
 
-# Open in browser.
+# Открыть в браузере.
 http://localhost:1337/pkg/github.com/heycatch/goshikimori
 ```
 ```bash
-# Method #2(Linux): Install godoc.
+# Способ #2(Linux): Установка godoc.
 go install -v golang.org/x/tools/cmd/godoc@latest
-# Add 'export' to the file /home/$USER/.profile and reboot.
+# Добавить 'экспорт' в файл /home/$USER/.profile и перезагружаемся.
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
-# Check that the application is working properly.
+# Проверяем работоспособность.
 godoc --help
 
-# After installation or if 'godoc' is already installed.
+# После установки или если 'godoc' уже установлен.
 git clone git@github.com:heycatch/goshikimori.git && cd goshikimori
 make doc
 
-# Open in browser.
+# Открыть в браузере.
 http://localhost:1337/pkg/github.com/heycatch/goshikimori
 ```
 
-### Shikimori documentation
+### Документация шикимори
 * [GraphQL](https://shikimori.one/api/doc/graphql)
 * [API v1](https://shikimori.one/api/doc/1.0)
 * [API v2](https://shikimori.one/api/doc/2.0)
 * [OAuth2](https://shikimori.one/oauth)
 
-### Feedback
-* Private message on the [website](https://shikimori.one/arctica).
-* Open [issue](https://github.com/heycatch/goshikimori/issues).
+## Обратная связь
+* Написать в личные сообщения на [сайте](https://shikimori.one/arctica).
+* Открыть [проблему](https://github.com/heycatch/goshikimori/issues).
 ```bash
-# Current tasks and problems in the code can be viewed in the terminal using the command.
+# Текущие задачи и проблемы в коде можно посмотреть в терминале с помощью команды.
 git grep TODO
 git grep FIXME
 ```

@@ -163,7 +163,7 @@ var (
     "!anons", "!ongoing", "!released", "!paused", "!discontinued",
   }
 
-  people_kind = &[]string{"seyu", "mangaka", "producer"}
+  people_kind = []string{"seyu", "mangaka", "producer"}
 )
 
 func (o *Options) OptionsTopics() string {
@@ -427,7 +427,7 @@ func (o *Options) OptionsPeople() string {
   v := url.Values{}
 
   search.LinearComplexity(
-    &o.Kind, "seyu", *people_kind,
+    &o.Kind, "seyu", people_kind,
   )
   v.Add("kind", o.Kind)
 
