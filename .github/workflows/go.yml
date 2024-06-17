@@ -16,6 +16,6 @@ jobs:
       - name: Cyrillic tests
         run: go test -v -run TestLanguageCheck
       - name: Configuration tests
-        run: go test -v configuration_test.go configuration.go
+        run: go test -v configuration_test.go configuration.go constants.go
       - name: Concatination tests
         run: go test -v ./concat
