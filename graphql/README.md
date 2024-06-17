@@ -40,10 +40,10 @@ func main() {
   //    11) censored: false;
   //    12) genre: nil; пропустил;
   //
-  // Про доступные значения можно почитать в описании функции: graphql.Values();
-  // Про доступные параметры интерфейса можно почитать в описании функции: graphql.AnimeSchema();
-  schema, err := graphql.AnimeSchema(
-    graphql.Values("id", "name", "score", "episodes", "airedOn{year month day date}"),
+  // Про доступные значения можно почитать в описании функции: graph.Values();
+  // Про доступные параметры интерфейса можно почитать в описании функции: graph.AnimeSchema();
+  schema, err := graph.AnimeSchema(
+    graph.Values("id", "name", "score", "episodes", "airedOn{year month day date}"),
     "initial d", 1, 5, 8, "", shiki.ANIME_KIND_TV,
     shiki.ANIME_STATUS_RELEASED, "", "", shiki.ANIME_RATING_PG_13, "", false, nil,
   )
@@ -104,8 +104,8 @@ func main() {
   //    9) censored: false;
   //    10) genre: nil; пропустил;
   //
-  // Про доступные значения можно почитать в описании функции: graphql.Values();
-  // Про доступные параметры интерфейса можно почитать в описании функции: graphql.MangaSchema();
+  // Про доступные значения можно почитать в описании функции: graph.Values();
+  // Про доступные параметры интерфейса можно почитать в описании функции: graph.MangaSchema();
   schema, err := graph.MangaSchema(
     graph.Values("id", "name", "score", "volumes", "chapters", "releasedOn{year}"),
     "liar game", 1, 1, 8, "", shiki.MANGA_KIND_MANGA, shiki.MANGA_STATUS_RELEASED,
@@ -157,8 +157,8 @@ func main() {
   //    1) page: 1;
   //    2) limit: 2;
   //
-  // Про доступные значения можно почитать в описании функции: graphql.Values();
-  // Про доступные параметры интерфейса можно почитать в описании функции: graphql.CharacterSchema();
+  // Про доступные значения можно почитать в описании функции: graph.Values();
+  // Про доступные параметры интерфейса можно почитать в описании функции: graph.CharacterSchema();
   schema, err := graph.CharacterSchema(
     graph.Values("id", "name", "russian", "url", "description"),
     "onizuka", 1, 2,
@@ -212,8 +212,8 @@ func main() {
   //    4) isMangaka: false;
   //    5) isProducer: false;
   //
-  // Про доступные значения можно почитать в описании функции: graphql.Values();
-  // Про доступные параметры интерфейса можно почитать в описании функции: graphql.PeopleSchema();
+  // Про доступные значения можно почитать в описании функции: graph.Values();
+  // Про доступные параметры интерфейса можно почитать в описании функции: graph.PeopleSchema();
   schema, err := graph.PeopleSchema(
     graph.Values("id", "name", "russian", "url", "website", "birthOn{year month day date}"),
     "satsuki", 1, 1, true, false, false,

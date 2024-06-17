@@ -39,8 +39,8 @@ func main() {
   //    11) censored: false;
   //    12) genre: nil; skipped
   //
-  // The available values can be found in the function description: graphql.Values();
-  // The available interface parameters can be found in the function description: graphql.AnimeSchema();
+  // The available values can be found in the function description: graph.Values();
+  // The available interface parameters can be found in the function description: graph.AnimeSchema();
   schema, err := graph.AnimeSchema(
     graph.Values("id", "name", "score", "episodes", "airedOn{year month day date}"),
     "initial d", 1, 5, 8, "", shiki.ANIME_KIND_TV,
@@ -102,8 +102,8 @@ func main() {
   //    9) censored: false;
   //    10) genre: nil; skipped;
   //
-  // The available values can be found in the function description: graphql.Values();
-  // The available interface parameters can be found in the function description: graphql.MangaSchema();
+  // The available values can be found in the function description: graph.Values();
+  // The available interface parameters can be found in the function description: graph.MangaSchema();
   schema, err := graph.MangaSchema(
     graph.Values("id", "name", "score", "volumes", "chapters", "releasedOn{year}"),
     "liar game", 1, 1, 8, "", shiki.MANGA_KIND_MANGA, shiki.MANGA_STATUS_RELEASED,
@@ -154,8 +154,8 @@ func main() {
   //    1) page: 1;
   //    2) limit: 2;
   //
-  // The available values can be found in the function description: graphql.Values();
-  // The available interface parameters can be found in the function description: graphql.CharacterSchema();
+  // The available values can be found in the function description: graph.Values();
+  // The available interface parameters can be found in the function description: graph.CharacterSchema();
   schema, err := graph.CharacterSchema(
     graph.Values("id", "name", "russian", "url", "description"),
     "onizuka", 1, 2,
@@ -209,8 +209,8 @@ func main() {
   //    4) isMangaka: false;
   //    5) isProducer: false;
   //
-  // The available values can be found in the function description: graphql.Values();
-  // The available interface parameters can be found in the function description: graphql.PeopleSchema();
+  // The available values can be found in the function description: graph.Values();
+  // The available interface parameters can be found in the function description: graph.PeopleSchema();
   schema, err := graph.PeopleSchema(
     graph.Values("id", "name", "russian", "url", "website", "birthOn{year month day date}"),
     "satsuki", 1, 1, true, false, false,
