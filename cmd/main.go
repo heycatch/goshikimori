@@ -1,3 +1,4 @@
+// It's a testing place, there's nothing interesting here.
 package main
 
 import (

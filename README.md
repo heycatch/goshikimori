@@ -60,4 +60,5 @@ http://localhost:1337/pkg/github.com/heycatch/goshikimori
 # Текущие задачи и проблемы в коде можно посмотреть в терминале с помощью команды.
 git grep TODO
 git grep FIXME
+git grep NOTES
 ```

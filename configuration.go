@@ -112,6 +112,7 @@ func (o *Options) OptionsMessages() string {
 
   if o.Page >= 1 && o.Page <= 100000 { v.Add("page", strconv.Itoa(o.Page)) }
   if o.Limit >= 1 && o.Limit <= 100 { v.Add("limit", strconv.Itoa(o.Limit)) }
+  // The type is required.
   if o.Type == "" { v.Add("type", MESSAGE_TYPE_NEWS) } else { v.Add("type", o.Type) }
 
   return v.Encode()

@@ -199,6 +199,7 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
 //  - Page: 100000 maximum;
 //  - Limit: 5000 maximum;
 //  - Censored: true, false;
+//
 //  - Status:
 //
 //  > MY_LIST_PLANNED, MY_LIST_WATCHING, MY_LIST_REWATCHING,
@@ -340,6 +341,7 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
 //  - Page: 100000 maximum;
 //  - Limit: 100 maximum;
 //  - Target_id: id anime/manga/ranobe;
+//
 //  - Target_type:
 //
 //  > TARGET_TYPE_ANIME, TARGET_TYPE_MANGA;
@@ -501,10 +503,6 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 
 // Name: anime name.
 //
-// Exclamation mark(!) indicates ignore.
-//
-// If you use the 'order' parameter, you don't need to enter the name of the anime.
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 50 maximum;
@@ -657,10 +655,6 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 
 // Name: manga name.
 //
-// Exclamation mark(!) indicates ignore.
-//
-// If you use the 'order' parameter, you don't need to enter the name of the manga.
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 50 maximum;
@@ -797,10 +791,6 @@ func (f *FastId) SearchRanobe() (api.Manga, error) {
 }
 
 // Name: ranobe name.
-//
-// Exclamation mark(!) indicates ignore.
-//
-// If you use the 'order' parameter, you don't need to enter the name of the ranobe.
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
@@ -3896,6 +3886,7 @@ func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, error) {
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
+//
 //  - Forum:
 //
 //  > TOPIC_FORUM_ALL, TOPIC_FORUM_COSPLAY, TOPIC_FORUM_ANIMANGA, TOPIC_FORUM_SITE,
@@ -3919,8 +3910,6 @@ func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
-//
-// TODO: Add implementation of creating/updating/deleting a topic. This is not needed at this stage.
 func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
   var client = &http.Client{}
