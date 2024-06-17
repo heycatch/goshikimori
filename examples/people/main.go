@@ -16,7 +16,7 @@ func config() *g.Configuration {
 func main() {
   c := config()
   // Search peoples.
-  o := &g.Options{Kind: "seyu"}
+  o := &g.Options{Kind: g.PEOPLE_KIND_SEYU}
   sp, status, err := c.SearchPeoples("Aya Hirano", o)
   if status != 200 || err != nil {
     fmt.Println(status, err)

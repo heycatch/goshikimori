@@ -57,7 +57,7 @@ func main() {
     fmt.Println(v.Id, v.Nickname, v.Last_online_at)
   }
   // search anime and manga rates
-  oar := &g.Options{Page: 1, Limit: 5, Status: "completed", Censored: true}
+  oar := &g.Options{Page: 1, Limit: 5, Status: g.MY_LIST_COMPLETED, Censored: true}
   ar, err := fast.SearchUserAnimeRates(oar)
   if err != nil || len(ar) == 0 {
     fmt.Println(err)
@@ -88,7 +88,7 @@ func main() {
     fmt.Println(v.Id, v.Name, v.Russian, v.Image)
   }
   // user history
-  ouh := &g.Options{Page: 1, Limit: 10, Target_id: 0, Target_type: "Anime"}
+  ouh := &g.Options{Page: 1, Limit: 10, Target_id: 33206, Target_type: g.TARGET_TYPE_ANIME}
   uh, err := fast.SearchUserHistory(ouh)
   if err != nil || len(uh) == 0 {
     fmt.Println(err)

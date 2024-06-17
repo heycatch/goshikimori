@@ -17,7 +17,8 @@ func main() {
   c := config()
 
   a, status, err := c.RandomAnimes(&g.Options{
-    Limit: 5, Score: 5, Kind: "tv", Status: "released",
+    Limit: 5, Score: 5, Kind: g.ANIME_KIND_TV,
+    Status: g.ANIME_STATUS_RELEASED,
     Season: "", Rating: "", Duration: "", Mylist: "",
     Censored: false, Genre_v2: []int{10, 539},
   })
@@ -33,7 +34,8 @@ func main() {
   }
 
   m, status, err := c.RandomMangas(&g.Options{
-    Limit: 5, Score: 8, Kind: "manga", Status: "released",
+    Limit: 5, Score: 8, Kind: g.MANGA_KIND_MANGA,
+    Status: g.MANGA_STATUS_RELEASED,
     Mylist: "", Season: "", Censored: false, Genre_v2: nil,
   })
   if status != 200 || err != nil {
@@ -48,7 +50,7 @@ func main() {
   }
 
   r, status, err := c.RandomRanobes(&g.Options{
-    Limit: 5, Score: 8, Status: "released", Mylist: "",
+    Limit: 5, Score: 8, Status: g.MANGA_STATUS_RELEASED, Mylist: "",
     Season: "", Censored: false, Genre_v2: nil,
   })
   if status != 200 || err != nil {

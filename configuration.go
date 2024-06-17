@@ -4,7 +4,6 @@ import (
   "net/url"
   "strconv"
 
-  "github.com/heycatch/goshikimori/search"
   "github.com/heycatch/goshikimori/concat"
 )
 
@@ -67,122 +66,38 @@ type Options struct {
 }
 
 type Result interface {
-  OptionsAnime()           string
-  OptionsManga()           string
-  OptionsRanobe()          string
-  OptionsUsers()           string
-  OptionsClub()            string
-  OptionsCalendar()        string
-  OptionsAnimeRates()      string
-  OptionsMangaRates()      string
-  OptionsUserHistory()     string
-  OptionsMessages()        string
-  OptionsPeople()          string
-  OptionsClubAnimeManga()  string
-  OptionsClubCollections() string
-  OptionsTopics()          string
-  OptionsTopicsHot()       string
-  OptionsRandomAnime()     string
-  OptionsRandomManga()     string
-  OptionsRandomRanobe()    string
+  OptionsOnlyPageLimit(int, int) string
+  OptionsAnime()                 string
+  OptionsManga()                 string
+  OptionsRanobe()                string
+  OptionsCalendar()              string
+  OptionsAnimeRates()            string
+  OptionsMangaRates()            string
+  OptionsUserHistory()           string
+  OptionsMessages()              string
+  OptionsPeople()                string
+  OptionsTopics()                string
+  OptionsTopicsHot()             string
+  OptionsRandomAnime()           string
+  OptionsRandomManga()           string
+  OptionsRandomRanobe()          string
 }
 
-var (
-  topic_forum = []string{
-    "cosplay", "animanga", "site", "games", "vn",
-    "contests", "offtopic", "clubs", "my_clubs",
-    "critiques", "news", "collections", "articles",
-  }
+func (o *Options) OptionsOnlyPageLimit(page, limit int) string {
+  v := url.Values{}
 
-  topic_linkedType = []string{
-    "Anime", "Manga", "Ranobe", "Character", "Person",
-    "Club", "ClubPage", "Critique", "Review",
-    "Contest", "CosplayGallery", "Collection", "Article",
-  }
+  if o.Page >= 1 && o.Page <= page { v.Add("page", strconv.Itoa(o.Page)) }
+  if o.Limit >= 1 && o.Limit <= limit { v.Add("limit", strconv.Itoa(o.Limit)) }
 
-  message_type = []string{
-    "inbox", "private", "sent", "news", "notifications",
-  }
-
-  userHistory_targetType = []string{"Anime", "Manga"}
-
-  anime_order = []string {
-    "id", "ranked", "kind", "popularity",
-    "name", "aired_on", "episodes", "status",
-  }
-
-  anime_kind = []string{
-    "tv", "movie", "ova", "ona", "special",
-    "music", "tv_13", "tv_24",
-    "tv_48", "!tv", "!movie", "!ova",
-    "!ona", "!special", "!music",
-    "!tv_13", "!tv_24", "!tv_48",
-  }
-
-  anime_status = []string{
-    "anons", "ongoing", "released",
-    "!anons", "!ongoing", "!released",
-  }
-
-  anime_season = []string{
-    "2000_2010", "2010_2014", "2015_2019", "199x",
-    "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
-    "198x", "!198x", "2020_2021", "!2020_2021",
-    "2022", "!2022", "2023", "!2023",
-  }
-
-  anime_rating = []string{
-    "none", "g", "pg", "pg_13",
-    "r", "r_plus", "rx", "!g", "!pg",
-    "!pg_13", "!r", "!r_plus", "!rx",
-  }
-
-  anime_duration = []string{
-    "S", "D", "F", "!S", "!D", "!F",
-  }
-
-  anime_mylist = []string{
-    "planned", "watching", "rewatching",
-    "completed", "on_hold", "dropped",
-  }
-
-
-  manga_order = []string{
-    "id", "ranked", "kind", "popularity", "name",
-    "aired_on", "volumes", "chapters", "status",
-  }
-
-  manga_kind = []string{
-    "manga", "manhwa", "manhua", "light_novel", "novel",
-    "one_shot", "doujin", "!manga", "!manhwa", "!manhua",
-    "!light_novel", "!novel", "!one_shot", "!doujin",
-  }
-
-  manga_status = []string{
-    "anons", "ongoing", "released", "paused", "discontinued",
-    "!anons", "!ongoing", "!released", "!paused", "!discontinued",
-  }
-
-  people_kind = []string{"seyu", "mangaka", "producer"}
-)
+  return v.Encode()
+}
 
 func (o *Options) OptionsTopics() string {
   v := url.Values{}
 
-  if o.Page <= 1 || o.Page >= 100001 {
-    v.Add("page", "1")
-  } else {
-    v.Add("page", strconv.Itoa(o.Page))
-  }
-  if o.Limit <= 1 || o.Limit >= 31 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
-
-  search.LinearComplexity(&o.Forum, "all", topic_forum)
-  v.Add("forum", o.Forum)
-  search.LinearComplexity(&o.Linked_type, "", topic_linkedType)
+  if o.Page >= 1 && o.Page <= 100000 { v.Add("page", strconv.Itoa(o.Page)) }
+  if o.Limit >= 1 && o.Limit <= 30 { v.Add("limit", strconv.Itoa(o.Limit)) }
+  if o.Forum != "" { v.Add("forum", o.Forum) }
   // linked_id and linked_type are only used together.
   if o.Linked_id >= 1 && o.Linked_type != "" {
     v.Add("linked_id", strconv.Itoa(o.Linked_id))
@@ -195,19 +110,9 @@ func (o *Options) OptionsTopics() string {
 func (o *Options) OptionsMessages() string {
   v := url.Values{}
 
-  if o.Page <= 1 || o.Page >= 100001 {
-    v.Add("page", "1")
-  } else {
-    v.Add("page", strconv.Itoa(o.Page))
-  }
-  if o.Limit <= 1 || o.Limit >= 101 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
-
-  search.LinearComplexity(&o.Type, "news", message_type)
-  v.Add("type", o.Type)
+  if o.Page >= 1 && o.Page <= 100000 { v.Add("page", strconv.Itoa(o.Page)) }
+  if o.Limit >= 1 && o.Limit <= 100 { v.Add("limit", strconv.Itoa(o.Limit)) }
+  if o.Type == "" { v.Add("type", MESSAGE_TYPE_NEWS) } else { v.Add("type", o.Type) }
 
   return v.Encode()
 }
@@ -215,38 +120,10 @@ func (o *Options) OptionsMessages() string {
 func (o *Options) OptionsUserHistory() string {
   v := url.Values{}
 
-  if o.Page <= 1 || o.Page >= 100001 {
-    v.Add("page", "1")
-  } else {
-    v.Add("page", strconv.Itoa(o.Page))
-  }
-  if o.Limit <= 1 || o.Limit >= 101 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
-
-  search.LinearComplexity(&o.Target_type, "Anime", userHistory_targetType)
-  v.Add("target_type", o.Target_type)
-
+  if o.Page >= 1 && o.Page <= 100000 { v.Add("page", strconv.Itoa(o.Page)) }
+  if o.Limit >= 1 && o.Limit <= 100 { v.Add("limit", strconv.Itoa(o.Limit)) }
+  if o.Target_type != "" { v.Add("target_type", o.Target_type) }
   if o.Target_id > 0 { v.Add("target_id", strconv.Itoa(o.Target_id)) }
-
-  return v.Encode()
-}
-
-func (o *Options) OptionsUsers() string {
-  v := url.Values{}
-
-  if o.Page <= 1 || o.Page >= 100001 {
-    v.Add("page", "1")
-  } else {
-    v.Add("page", strconv.Itoa(o.Page))
-  }
-  if o.Limit <= 1 || o.Limit >= 101 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
 
   return v.Encode()
 }
@@ -254,37 +131,20 @@ func (o *Options) OptionsUsers() string {
 func (o *Options) OptionsAnime() string {
   v := url.Values{}
 
-  if o.Page <= 1 || o.Page >= 100001 {
-    v.Add("page", "1")
-  } else {
-    v.Add("page", strconv.Itoa(o.Page))
-  }
-  if o.Limit <= 1 || o.Limit >= 51 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
+  if o.Page >= 1 && o.Page <= 100000 { v.Add("page", strconv.Itoa(o.Page)) }
+  if o.Limit >= 1 && o.Limit <= 50 { v.Add("limit", strconv.Itoa(o.Limit)) }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
-
-  search.LinearComplexity(&o.Order, "", anime_order)
-  v.Add("order", o.Order)
-  search.LinearComplexity(&o.Kind, "", anime_kind)
-  v.Add("kind", o.Kind)
-  search.LinearComplexity(&o.Status, "", anime_status)
-  v.Add("status", o.Status)
-  search.LinearComplexity(&o.Season, "", anime_season)
-  v.Add("season", o.Season)
-  search.LinearComplexity(&o.Rating, "", anime_rating)
-  v.Add("rating", o.Rating)
-  search.LinearComplexity(&o.Duration, "", anime_duration)
-  v.Add("duration", o.Duration)
-  search.LinearComplexity(&o.Mylist, "", anime_mylist)
-  v.Add("mylist", o.Mylist)
+  if o.Order != "" { v.Add("order", o.Order) }
+  if o.Kind != "" { v.Add("kind", o.Kind) }
+  if o.Status != "" { v.Add("status", o.Status) }
+  if o.Season != "" { v.Add("season", o.Season) }
+  if o.Rating != "" { v.Add("rating", o.Rating) }
+  if o.Duration != "" { v.Add("duration", o.Duration) }
+  if o.Mylist != "" { v.Add("mylist", o.Mylist) }
+  v.Add("censored", strconv.FormatBool(o.Censored))
 
   genre := concat.MapGenresAnime(o.Genre_v2)
   if genre != "" { v.Add("genre_v2", genre) }
-
-  v.Add("censored", strconv.FormatBool(o.Censored))
 
   return v.Encode()
 }
@@ -292,33 +152,18 @@ func (o *Options) OptionsAnime() string {
 func (o *Options) OptionsManga() string {
   v := url.Values{}
 
-  if o.Page <= 1 || o.Page >= 100001 {
-    v.Add("page", "1")
-  } else {
-    v.Add("page", strconv.Itoa(o.Page))
-  }
-  if o.Limit <= 1 || o.Limit >= 51 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
+  if o.Page >= 1 && o.Page <= 100000 { v.Add("page", strconv.Itoa(o.Page)) }
+  if o.Limit >= 1 && o.Limit <= 50 { v.Add("limit", strconv.Itoa(o.Limit)) }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
-
-  search.LinearComplexity(&o.Order, "", manga_order)
-  v.Add("order", o.Order)
-  search.LinearComplexity(&o.Kind, "", manga_kind)
-  v.Add("kind", o.Kind)
-  search.LinearComplexity(&o.Status, "", manga_status)
-  v.Add("status", o.Status)
-  search.LinearComplexity(&o.Season, "", anime_season)
-  v.Add("season", o.Season)
-  search.LinearComplexity(&o.Mylist, "", anime_mylist)
-  v.Add("mylist", o.Mylist)
+  if o.Order != "" { v.Add("order", o.Order) }
+  if o.Kind != "" { v.Add("kind", o.Kind) }
+  if o.Status != "" { v.Add("status", o.Status) }
+  if o.Season != "" { v.Add("season", o.Season) }
+  if o.Mylist != "" { v.Add("mylist", o.Mylist) }
+  v.Add("censored", strconv.FormatBool(o.Censored))
 
   genre := concat.MapGenresManga(o.Genre_v2)
   if genre != "" { v.Add("genre_v2", genre) }
-
-  v.Add("censored", strconv.FormatBool(o.Censored))
 
   return v.Encode()
 }
@@ -326,48 +171,17 @@ func (o *Options) OptionsManga() string {
 func (o *Options) OptionsRanobe() string {
   v := url.Values{}
 
-  if o.Page <= 1 || o.Page >= 100001 {
-    v.Add("page", "1")
-  } else {
-    v.Add("page", strconv.Itoa(o.Page))
-  }
-  if o.Limit <= 1 || o.Limit >= 51 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
+  if o.Page >= 1 && o.Page <= 100000 { v.Add("page", strconv.Itoa(o.Page)) }
+  if o.Limit >= 1 && o.Limit <= 50 { v.Add("limit", strconv.Itoa(o.Limit)) }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
-
-  search.LinearComplexity(&o.Order, "", manga_order)
-  v.Add("order", o.Order)
-  search.LinearComplexity(&o.Status, "", manga_status)
-  v.Add("status", o.Status)
-  search.LinearComplexity(&o.Season, "", anime_season)
-  v.Add("season", o.Season)
-  search.LinearComplexity(&o.Mylist, "", anime_mylist)
-  v.Add("mylist", o.Mylist)
+  if o.Order != "" { v.Add("order", o.Order) }
+  if o.Status != "" { v.Add("status", o.Status) }
+  if o.Season != "" { v.Add("season", o.Season) }
+  if o.Mylist != "" { v.Add("mylist", o.Mylist) }
+  v.Add("censored", strconv.FormatBool(o.Censored))
 
   genre := concat.MapGenresManga(o.Genre_v2)
   if genre != "" { v.Add("genre_v2", genre) }
-
-  v.Add("censored", strconv.FormatBool(o.Censored))
-
-  return v.Encode()
-}
-
-func (o *Options) OptionsClub() string {
-  v := url.Values{}
-
-  if o.Page <= 1 || o.Page >= 100001 {
-    v.Add("page", "1")
-  } else {
-    v.Add("page", strconv.Itoa(o.Page))
-  }
-  if o.Limit <= 1 || o.Limit >= 31 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
 
   return v.Encode()
 }
@@ -383,41 +197,20 @@ func (o *Options) OptionsCalendar() string {
 func (o *Options) OptionsAnimeRates() string {
   v := url.Values{}
 
-  if o.Page <= 1 || o.Page >= 100001 {
-    v.Add("page", "1")
-  } else {
-    v.Add("page", strconv.Itoa(o.Page))
-  }
-  if o.Limit <= 1 || o.Limit >= 5001 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
-
-  search.LinearComplexity(
-    &o.Status, "watching", anime_mylist,
-  )
-  v.Add("status", o.Status)
-
+  if o.Page >= 1 && o.Page <= 100000 { v.Add("page", strconv.Itoa(o.Page)) }
+  if o.Limit >= 1 && o.Limit <= 5000 { v.Add("limit", strconv.Itoa(o.Limit)) }
+  if o.Status != "" { v.Add("status", o.Status) }
   v.Add("censored", strconv.FormatBool(o.Censored))
 
   return v.Encode()
 }
 
+// FIXME: The manga has no status, ranobe is missing.
 func (o *Options) OptionsMangaRates() string {
   v := url.Values{}
 
-  if o.Page <= 1 || o.Page >= 100001 {
-    v.Add("page", "1")
-  } else {
-    v.Add("page", strconv.Itoa(o.Page))
-  }
-  if o.Limit <= 1 || o.Limit >= 5001 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
-
+  if o.Page >= 1 && o.Page <= 100000 { v.Add("page", strconv.Itoa(o.Page)) }
+  if o.Limit >= 1 && o.Limit <= 5000 { v.Add("limit", strconv.Itoa(o.Limit)) }
   v.Add("censored", strconv.FormatBool(o.Censored))
 
   return v.Encode()
@@ -426,44 +219,7 @@ func (o *Options) OptionsMangaRates() string {
 func (o *Options) OptionsPeople() string {
   v := url.Values{}
 
-  search.LinearComplexity(
-    &o.Kind, "seyu", people_kind,
-  )
-  v.Add("kind", o.Kind)
-
-  return v.Encode()
-}
-
-func (o *Options) OptionsClubAnimeManga() string {
-  v := url.Values{}
-
-  if o.Page <= 1 || o.Page >= 100001 {
-    v.Add("page", "1")
-  } else {
-    v.Add("page", strconv.Itoa(o.Page))
-  }
-  if o.Limit <= 1 || o.Limit >= 21 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
-
-  return v.Encode()
-}
-
-func (o *Options) OptionsClubCollections() string {
-  v := url.Values{}
-
-  if o.Page <= 1 || o.Page >= 100001 {
-    v.Add("page", "1")
-  } else {
-    v.Add("page", strconv.Itoa(o.Page))
-  }
-  if o.Limit <= 1 || o.Limit >= 5 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
+  if o.Kind != "" { v.Add("kind", o.Kind) }
 
   return v.Encode()
 }
@@ -471,11 +227,7 @@ func (o *Options) OptionsClubCollections() string {
 func (o *Options) OptionsTopicsHot() string {
   v := url.Values{}
 
-  if o.Limit <= 1 || o.Limit >= 11 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
+  if o.Limit >= 1 && o.Limit <= 10 { v.Add("limit", strconv.Itoa(o.Limit)) }
 
   return v.Encode()
 }
@@ -483,30 +235,18 @@ func (o *Options) OptionsTopicsHot() string {
 func (o *Options) OptionsRandomAnime() string {
   v := url.Values{}
 
-  if o.Limit <= 1 || o.Limit >= 51 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
+  if o.Limit >= 1 && o.Limit <= 50 { v.Add("limit", strconv.Itoa(o.Limit)) }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
-
-  search.LinearComplexity(&o.Kind, "", anime_kind)
-  v.Add("kind", o.Kind)
-  search.LinearComplexity(&o.Status, "", anime_status)
-  v.Add("status", o.Status)
-  search.LinearComplexity(&o.Season, "", anime_season)
-  v.Add("season", o.Season)
-  search.LinearComplexity(&o.Rating, "", anime_rating)
-  v.Add("rating", o.Rating)
-  search.LinearComplexity(&o.Duration, "", anime_duration)
-  v.Add("duration", o.Duration)
-  search.LinearComplexity(&o.Mylist, "", anime_mylist)
-  v.Add("mylist", o.Mylist)
+  if o.Kind != "" { v.Add("kind", o.Kind) }
+  if o.Status != "" { v.Add("status", o.Status) }
+  if o.Season != "" { v.Add("season", o.Season) }
+  if o.Rating != "" { v.Add("rating", o.Rating) }
+  if o.Duration != "" { v.Add("duration", o.Duration) }
+  if o.Mylist != "" { v.Add("mylist", o.Mylist) }
+  v.Add("censored", strconv.FormatBool(o.Censored))
 
   genre := concat.MapGenresAnime(o.Genre_v2)
   if genre != "" { v.Add("genre_v2", genre) }
-
-  v.Add("censored", strconv.FormatBool(o.Censored))
 
   return v.Encode()
 }
@@ -514,26 +254,16 @@ func (o *Options) OptionsRandomAnime() string {
 func (o *Options) OptionsRandomManga() string {
   v := url.Values{}
 
-  if o.Limit <= 1 || o.Limit >= 51 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
+  if o.Limit >= 1 && o.Limit <= 50 { v.Add("limit", strconv.Itoa(o.Limit)) }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
-
-  search.LinearComplexity(&o.Kind, "", manga_kind)
-  v.Add("kind", o.Kind)
-  search.LinearComplexity(&o.Status, "", manga_status)
-  v.Add("status", o.Status)
-  search.LinearComplexity(&o.Season, "", anime_season)
-  v.Add("season", o.Season)
-  search.LinearComplexity(&o.Mylist, "", anime_mylist)
-  v.Add("mylist", o.Mylist)
+  if o.Kind != "" { v.Add("kind", o.Kind) }
+  if o.Status != "" { v.Add("status", o.Status) }
+  if o.Season != "" { v.Add("season", o.Season) }
+  if o.Mylist != "" { v.Add("mylist", o.Mylist) }
+  v.Add("censored", strconv.FormatBool(o.Censored))
 
   genre := concat.MapGenresManga(o.Genre_v2)
   if genre != "" { v.Add("genre_v2", genre) }
-
-  v.Add("censored", strconv.FormatBool(o.Censored))
 
   return v.Encode()
 }
@@ -541,24 +271,15 @@ func (o *Options) OptionsRandomManga() string {
 func (o *Options) OptionsRandomRanobe() string {
   v := url.Values{}
 
-  if o.Limit <= 1 || o.Limit >= 51 {
-    v.Add("limit", "1")
-  } else {
-    v.Add("limit", strconv.Itoa(o.Limit))
-  }
+  if o.Limit >= 1 && o.Limit <= 50 { v.Add("limit", strconv.Itoa(o.Limit)) }
   if o.Score >= 1 && o.Score <= 9 { v.Add("score", strconv.Itoa(o.Score)) }
-
-  search.LinearComplexity(&o.Status, "", manga_status)
-  v.Add("status", o.Status)
-  search.LinearComplexity(&o.Season, "", anime_season)
-  v.Add("season", o.Season)
-  search.LinearComplexity(&o.Mylist, "", anime_mylist)
-  v.Add("mylist", o.Mylist)
+  if o.Status != "" { v.Add("status", o.Status) }
+  if o.Season != "" { v.Add("season", o.Season) }
+  if o.Mylist != "" { v.Add("mylist", o.Mylist) }
+  v.Add("censored", strconv.FormatBool(o.Censored))
 
   genre := concat.MapGenresManga(o.Genre_v2)
   if genre != "" { v.Add("genre_v2", genre) }
-
-  v.Add("censored", strconv.FormatBool(o.Censored))
 
   return v.Encode()
 }

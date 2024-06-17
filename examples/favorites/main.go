@@ -21,7 +21,7 @@ func main() {
     return
   }
   // add/remove favorites anime.
-  fa, err := fast_anime.FavoritesCreate("Anime", "")
+  fa, err := fast_anime.FavoritesCreate(g.FAVORITES_LINKED_TYPE_ANIME, "")
   //fa, err := fast_anime.FavoritesDelete("Anime")
   if err != nil {
     fmt.Println(err)
@@ -35,7 +35,7 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  fm, err := fast_manga.FavoritesCreate("Manga", "")
+  fm, err := fast_manga.FavoritesCreate(g.FAVORITES_LINKED_TYPE_MANGA, "")
   //fm, err := fast_manga.FavoritesDelete("Manga")
   if err != nil {
     fmt.Println(err)
@@ -49,7 +49,7 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  fr, err := fast_ranobe.FavoritesCreate("Ranobe", "")
+  fr, err := fast_ranobe.FavoritesCreate(g.FAVORITES_LINKED_TYPE_RANOBE, "")
   //fr, err := fast_ranobe.FavoritesDelete("Ranobe")
   if err != nil {
     fmt.Println(err)
@@ -63,7 +63,9 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  fp, err := fast_person.FavoritesCreate("Person", "seyu")
+  fp, err := fast_person.FavoritesCreate(
+    g.FAVORITES_LINKED_TYPE_PERSON, g.FAVORITES_KIND_SEYU,
+  )
   //fp, err := fast_person.FavoritesDelete("Person")
   if err != nil {
     fmt.Println(err)
@@ -77,7 +79,7 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  fc, err := fast_character.FavoritesCreate("Character", "")
+  fc, err := fast_character.FavoritesCreate(g.FAVORITES_LINKED_TYPE_CHARACTER, "")
   //fc, err := fast_character.FavoritesDelete("Character")
   if err != nil {
     fmt.Println(err)

@@ -22,7 +22,9 @@ func readMessage() {
     fmt.Println(status, err)
     return
   }
-  messages, err := fast.UserMessages(&g.Options{Type: "inbox", Page: 1, Limit: 10})
+  messages, err := fast.UserMessages(&g.Options{
+    Type: g.MESSAGE_TYPE_INBOX, Page: 1, Limit: 10,
+  })
   if err != nil {
     fmt.Println(err)
     return
@@ -46,7 +48,7 @@ func readMessage() {
     return
   }
   for _, v := range d {
-    if v.Message.Kind == "Private" && v.Message.Body != "" {
+    if v.Message.Kind == g.MESSAGE_TYPE_PRIVATE && v.Message.Body != "" {
       message, status, err := c.ReadMessage(v.Message.Id)
       if status != 200 || err != nil {
         fmt.Println(status, err)
@@ -109,7 +111,7 @@ func changeMesage() {
     return
   }
   for _, v := range d {
-    if v.Message.Kind == "Private" && v.Message.Body != "" {
+    if v.Message.Kind == g.MESSAGE_TYPE_PRIVATE && v.Message.Body != "" {
       new_message := "changed the message from API :)"
       message, status, err := c.ChangeMessage(v.Message.Id, new_message)
       if status != 200 || err != nil {
@@ -133,7 +135,7 @@ func deleteMessage() {
     return
   }
   for _, v := range d {
-    if v.Message.Kind == "Private" && v.Message.Body != "" {
+    if v.Message.Kind == g.MESSAGE_TYPE_PRIVATE && v.Message.Body != "" {
       status, err := c.DeleteMessage(v.Message.Id)
       if status != 204 || err != nil {
         fmt.Println(status, err)
@@ -146,6 +148,7 @@ func deleteMessage() {
 
 func markReadUnreadMessages() {
   c := config()
+
   var count int
 
   fast, status, err := c.FastIdUser("arctica")
@@ -160,7 +163,9 @@ func markReadUnreadMessages() {
     return
   }
 
-  messages, err := fast.UserMessages(&g.Options{Type: "inbox", Page: 1, Limit: 10})
+  messages, err := fast.UserMessages(&g.Options{
+    Type: g.MESSAGE_TYPE_INBOX, Page: 1, Limit: 10,
+  })
   if err != nil {
     fmt.Println(err)
     return

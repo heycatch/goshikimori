@@ -117,7 +117,7 @@ func DataCopy(max_len int, slice []string) []byte {
 //
 // Name(!) must be capitalized.
 //
-// name: Anime or Manga;
+// name: GENERATE_GENRES_ANIME or GENERATE_GENRES_MANGA;
 //
 // genres: []api.Genres;
 func GenerateGenres(name string, genres []api.Genres) map[int]string {

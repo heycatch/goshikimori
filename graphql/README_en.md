@@ -9,12 +9,12 @@ package main
 import (
   "fmt"
 
-  "github.com/heycatch/goshikimori"
-  "github.com/heycatch/goshikimori/graphql"
+  shiki "github.com/heycatch/goshikimori"
+  graph "github.com/heycatch/goshikimori/graphql"
 )
 
-func conf() *goshikimori.Configuration {
-  return goshikimori.Add(
+func conf() *shiki.Configuration {
+  return shiki.Add(
     "APPLICATION_NAME",
     "PRIVATE_KEY",
   )
@@ -30,21 +30,21 @@ func main() {
   //    2)  limit: 5;
   //    3)  score: 8;
   //    4)  order: ""; skipped;
-  //    5)  kind: "tv";
-  //    6)  status: "released";
+  //    5)  kind: ANIME_KIND_TV;
+  //    6)  status: ANIME_STATUS_RELEASED;
   //    7)  season: ""; skipped;
   //    8)  duration: ""; skipped;
-  //    9)  rating: "pg_13";
+  //    9)  rating: ANIME_RATING_PG_13;
   //    10) mylist: ""; skipped;
   //    11) censored: false;
   //    12) genre: nil; skipped
   //
   // The available values can be found in the function description: graphql.Values();
   // The available interface parameters can be found in the function description: graphql.AnimeSchema();
-  schema, err := graphql.AnimeSchema(
-    graphql.Values("id", "name", "score", "episodes", "airedOn{year month day date}"),
-    "initial d",
-    1, 5, 8, "", "tv", "released", "", "", "pg_13", "", false, nil,
+  schema, err := graph.AnimeSchema(
+    graph.Values("id", "name", "score", "episodes", "airedOn{year month day date}"),
+    "initial d", 1, 5, 8, "", shiki.ANIME_KIND_TV,
+    shiki.ANIME_STATUS_RELEASED, "", "", shiki.ANIME_RATING_PG_13, "", false, nil,
   )
   if err != nil {
     fmt.Println(err)
@@ -74,12 +74,12 @@ package main
 import (
   "fmt"
 
-  "github.com/heycatch/goshikimori"
-  "github.com/heycatch/goshikimori/graphql"
+  shiki "github.com/heycatch/goshikimori"
+  graph "github.com/heycatch/goshikimori/graphql"
 )
 
-func conf() *goshikimori.Configuration {
-  return goshikimori.Add(
+func conf() *shiki.Configuration {
+  return shiki.Add(
     "APPLICATION_NAME",
     "PRIVATE_KEY",
   )
@@ -95,19 +95,19 @@ func main() {
   //    2) limit: 1;
   //    3) score: 8;
   //    4) order: ""; skipped;
-  //    5) kind: "manga";
-  //    6) status: "released";
+  //    5) kind: MANGA_KIND_MANGA;
+  //    6) status: MANGA_STATUS_RELEASED;
   //    7) season: ""; skipped;
-  //    8) mylist: ""; skipped;
+  //    8) mylist: MY_LIST_COMPLETED;
   //    9) censored: false;
   //    10) genre: nil; skipped;
   //
   // The available values can be found in the function description: graphql.Values();
   // The available interface parameters can be found in the function description: graphql.MangaSchema();
-  schema, err := graphql.MangaSchema(
-    graphql.Values("id", "name", "score", "volumes", "chapters", "releasedOn{year}"),
-    "initial d",
-    1, 1, 8, "", "manga", "released", "", "", false, nil,
+  schema, err := graph.MangaSchema(
+    graph.Values("id", "name", "score", "volumes", "chapters", "releasedOn{year}"),
+    "liar game", 1, 1, 8, "", shiki.MANGA_KIND_MANGA, shiki.MANGA_STATUS_RELEASED,
+    "", shiki.MY_LIST_COMPLETED, false, nil,
   )
   if err != nil {
     fmt.Println(err)
@@ -134,12 +134,12 @@ package main
 import (
   "fmt"
 
-  "github.com/heycatch/goshikimori"
-  "github.com/heycatch/goshikimori/graphql"
+  shiki "github.com/heycatch/goshikimori"
+  graph "github.com/heycatch/goshikimori/graphql"
 )
 
-func conf() *goshikimori.Configuration {
-  return goshikimori.Add(
+func conf() *shiki.Configuration {
+  return shiki.Add(
     "APPLICATION_NAME",
     "PRIVATE_KEY",
   )
@@ -156,10 +156,9 @@ func main() {
   //
   // The available values can be found in the function description: graphql.Values();
   // The available interface parameters can be found in the function description: graphql.CharacterSchema();
-  schema, err := graphql.CharacterSchema(
-    graphql.Values("id", "name", "russian", "url", "description"),
-    "onizuka",
-    1, 2,
+  schema, err := graph.CharacterSchema(
+    graph.Values("id", "name", "russian", "url", "description"),
+    "onizuka", 1, 2,
   )
   if err != nil {
     fmt.Println(err)
@@ -186,12 +185,12 @@ package main
 import (
   "fmt"
 
-  "github.com/heycatch/goshikimori"
-  "github.com/heycatch/goshikimori/graphql"
+  shiki "github.com/heycatch/goshikimori"
+  graph "github.com/heycatch/goshikimori/graphql"
 )
 
-func conf() *goshikimori.Configuration {
-  return goshikimori.Add(
+func conf() *shiki.Configuration {
+  return shiki.Add(
     "APPLICATION_NAME",
     "PRIVATE_KEY",
   )
@@ -212,10 +211,9 @@ func main() {
   //
   // The available values can be found in the function description: graphql.Values();
   // The available interface parameters can be found in the function description: graphql.PeopleSchema();
-  schema, err := graphql.PeopleSchema(
-    graphql.Values("id", "name", "russian", "url", "website", "birthOn{year month day date}"),
-    "satsuki",
-    1, 1, true, false, false,
+  schema, err := graph.PeopleSchema(
+    graph.Values("id", "name", "russian", "url", "website", "birthOn{year month day date}"),
+    "satsuki", 1, 1, true, false, false,
   )
   if err != nil {
     fmt.Println(err)

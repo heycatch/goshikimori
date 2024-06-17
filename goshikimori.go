@@ -18,11 +18,8 @@ import (
   "strconv"
 
   "github.com/heycatch/goshikimori/api"
-  "github.com/heycatch/goshikimori/search"
   "github.com/heycatch/goshikimori/concat"
 )
-
-const site string = "https://shikimori.one/api/"
 
 // Name: user name.
 //
@@ -37,8 +34,8 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 6(users/) + ?(name)
-    concat.Url(32+len(name), []string{site, "users/", name}), 10,
+    // 26(SITE) + 6(users/) + ?(name)
+    concat.Url(32+len(name), []string{SITE, "users/", name}), 10,
   )
   if err != nil {
     return u, 0, err
@@ -67,10 +64,6 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
 //
 // Name: user name.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 100 maximum;
@@ -84,13 +77,13 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, er
   var u []api.Users
   var client = &http.Client{}
 
-  opt := r.OptionsUsers()
+  opt := r.OptionsOnlyPageLimit(100000, 100)
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 13(users?search=) + ?(name) + 1(&) + ?(Result)
+    // 26(SITE) + 13(users?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(40+len(name)+len(opt), []string{
-      site, "users?search=", name, "&", opt,
+      SITE, "users?search=", name, "&", opt,
     }), 10,
   )
   if err != nil {
@@ -116,10 +109,6 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, er
   return u, resp.StatusCode, nil
 }
 
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 100 maximum;
@@ -131,15 +120,15 @@ func (f *FastId) SearchUserFriends(r Result) ([]api.UserFriends, error) {
   var uf []api.UserFriends
   var client = &http.Client{}
 
-  // 26(site) + 6(users/) + ?(id) + 9(/friends?) + ?(Result)
-  opt := r.OptionsUsers()
+  // 26(SITE) + 6(users/) + ?(id) + 9(/friends?) + ?(Result)
+  opt := r.OptionsOnlyPageLimit(100000, 100)
   str_id := strconv.Itoa(f.Id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(users/) + ?(id) + 9(/friends?) + ?(Result)
+    // 26(SITE) + 6(users/) + ?(id) + 9(/friends?) + ?(Result)
     concat.Url(41+len(str_id)+len(opt), []string{
-      site, "users/", str_id, "/friends?" + opt,
+      SITE, "users/", str_id, "/friends?" + opt,
     }), 10,
   )
   if err != nil {
@@ -176,9 +165,9 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(users/) + ?(id) + 6(/clubs)
+    // 26(SITE) + 6(users/) + ?(id) + 6(/clubs)
     concat.Url(38+len(str_id), []string{
-      site, "users/", str_id, "/clubs",
+      SITE, "users/", str_id, "/clubs",
     }), 10,
   )
   if err != nil {
@@ -206,17 +195,14 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
 
 // FIXME: Limit always returns +1 of the given number.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//  - Status: watching;
-//  - Censored: false;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 5000 maximum;
-//  - Status: planned, watching, rewatching, completed, on_hold, dropped;
 //  - Censored: true, false;
+//  - Status:
+//
+//  > MY_LIST_PLANNED, MY_LIST_WATCHING, MY_LIST_REWATCHING,
+//  MY_LIST_COMPLETED, MY_LIST_ON_HOLD, MY_LIST_DROPPED;
 //
 // Set to true to discard hentai, yaoi and yuri.
 //
@@ -232,9 +218,9 @@ func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(users/) + ?(id) + 13(/anime_rates?) + ?(Result)
+    // 26(SITE) + 6(users/) + ?(id) + 13(/anime_rates?) + ?(Result)
     concat.Url(45+len(str_id)+len(opt), []string{
-      site, "users/", str_id, "/anime_rates?" + opt,
+      SITE, "users/", str_id, "/anime_rates?" + opt,
     }), 10,
   )
   if err != nil {
@@ -262,11 +248,6 @@ func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
 
 // FIXME: Limit always returns +1 of the given number.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//  - Censored: false;
-//
 // 'Options' Settings:
 //  - Page: 100000 maximum;
 //  - Limit: 5000 maximum;
@@ -286,9 +267,9 @@ func (f *FastId) SearchUserMangaRates(r Result) ([]api.UserMangaRates, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(users/) + ?(id) + 13(/manga_rates?) + ?(Result)
+    // 26(SITE) + 6(users/) + ?(id) + 13(/manga_rates?) + ?(Result)
     concat.Url(45+len(str_id)+len(opt), []string{
-      site, "users/", str_id, "/manga_rates?" + opt,
+      SITE, "users/", str_id, "/manga_rates?" + opt,
     }), 10,
   )
   if err != nil {
@@ -325,9 +306,9 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(users/) + ?(id) + 11(/favourites)
+    // 26(SITE) + 6(users/) + ?(id) + 11(/favourites)
     concat.Url(43+len(str_id), []string{
-      site, "users/", str_id, "/favourites",
+      SITE, "users/", str_id, "/favourites",
     }), 10,
   )
   if err != nil {
@@ -355,17 +336,13 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
 
 // FIXME: Limit always returns +1 of the given number.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//  - Target_type: Anime;
-//  - Target_id: 0;
-//
 // 'Options' settings:
-//  - Page: 100000 maximum.
-//  - Limit: 100 maximum.
-//  - Target_id: id anime/manga/ranobe.
-//  - Target_type: Anime, Manga.
+//  - Page: 100000 maximum;
+//  - Limit: 100 maximum;
+//  - Target_id: id anime/manga/ranobe;
+//  - Target_type:
+//
+//  > TARGET_TYPE_ANIME, TARGET_TYPE_MANGA;
 //
 // More information can be found in the [example].
 //
@@ -379,9 +356,9 @@ func (f *FastId) SearchUserHistory(r Result) ([]api.UserHistory, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(users/) + ?(id) + 9(/history?) + ?(Result)
+    // 26(SITE) + 6(users/) + ?(id) + 9(/history?) + ?(Result)
     concat.Url(41+len(str_id)+len(opt), []string{
-      site, "users/", str_id, "/history?", opt,
+      SITE, "users/", str_id, "/history?", opt,
     }), 10,
   )
   if err != nil {
@@ -418,9 +395,9 @@ func (f *FastId) SearchUserBans() ([]api.Bans, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(users/) + ?(id) + 5(/bans)
+    // 26(SITE) + 6(users/) + ?(id) + 5(/bans)
     concat.Url(37+len(str_id), []string{
-      site, "users/", str_id, "/bans",
+      SITE, "users/", str_id, "/bans",
     }), 10,
   )
   if err != nil {
@@ -455,9 +432,9 @@ func (c *Configuration) WhoAmi() (api.Who, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 12(users/whoami)
+    // 26(SITE) + 12(users/whoami)
     concat.Url(38, []string{
-      site, "users/whoami",
+      SITE, "users/whoami",
     }), 10,
   )
   if err != nil {
@@ -494,9 +471,9 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(animes/) + ?(id)
+    // 26(SITE) + 7(animes/) + ?(id)
     concat.Url(33+len(str_id), []string{
-      site, "animes/", str_id,
+      SITE, "animes/", str_id,
     }), 10,
   )
   if err != nil {
@@ -528,33 +505,60 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 //
 // If you use the 'order' parameter, you don't need to enter the name of the anime.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//  - Order: empty field;
-//  - Kind: empty field;
-//  - Status: empty field;
-//  - Season: empty field;
-//  - Score: empty field;
-//  - Duration: empty field;
-//  - Rating: empty field;
-//  - Censored: false;
-//  - Mylist: empty field;
-//  - Genre_v2: empty field;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 50 maximum;
-//  - Order: id, ranked, kind, popularity, name, aired_on, episodes, status; random has been moved to a separate function, check [RandomAnime];
-//  - Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48, !tv, !movie, !ova, !ona, !special, !music, !tv_13, !tv_24, !tv_48;
-//  - Status: anons, ongoing, released, !anons, !ongoing, !released;
-//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//
+//  - Order:
+//
+//  > ANIME_ORDER_ID, ANIME_ORDER_RANKED, ANIME_ORDER_KIND,
+//  ANIME_ORDER_POPULARITY, ANIME_ORDER_NAME, ANIME_ORDER_AIRED_ON,
+//  ANIME_ORDER_EPISODES, ANIME_ORDER_STATUS;
+//
+//  - Kind:
+//
+//  > ANIME_KIND_TV, ANIME_KIND_MOVIE, ANIME_KIND_OVA, ANIME_KIND_ONA,
+//  ANIME_KIND_SPECIAL, ANIME_KIND_MUSIC, ANIME_KIND_TV_13, ANIME_KIND_TV_24,
+//  ANIME_KIND_TV_48, ANIME_KIND_TV_NOT_EQUAL, ANIME_KIND_MOVIE_NOT_EQUAL,
+//  ANIME_KIND_OVA_NOT_EQUAL, ANIME_KIND_ONA_NOT_EQUAL, ANIME_KIND_SPECIAL_NOT_EQUAL,
+//  ANIME_KIND_MUSIC_NOT_EQUAL, ANIME_KIND_TV_13_NOT_EQUAL,
+//  ANIME_KIND_TV_24_NOT_EQUAL, ANIME_KIND_TV_48_NOT_EQUAL;
+//
+//  - Status:
+//
+//  > ANIME_STATUS_ANONS, ANIME_STATUS_ONGOING, ANIME_STATUS_RELEASED,
+//  ANIME_STATUS_ANONS_NOT_EQUAL, ANIME_STATUS_ONGOING_NOT_EQUAL,
+//  ANIME_STATUS_RELEASED_NOT_EQUAL;
+//
+//  - Season:
+//
+//  > SEASON_198x, SEASON_199x, SEASON_2000_2010, SEASON_2010_2014,
+//  SEASON_2015_2019, SEASON_2020_2021, SEASON_2022, SEASON_2023,
+//  SEASON_198x_NOT_EQUAL, SEASON_199x_NOT_EQUAL, SEASON_2000_2010_NOT_EQUAL,
+//  SEASON_2010_2014_NOT_EQUAL, SEASON_2015_2019_NOT_EQUAL,
+//  SEASON_2020_2021_NOT_EQUAL, SEASON_2022_NOT_EQUAL, SEASON_2023_NOT_EQUAL;
+//
+//  - Duration:
+//
+//  > ANIME_DURATION_S, ANIME_DURATION_D, ANIME_DURATION_F,
+//  ANIME_DURATION_S_NOT_EQUAL, ANIME_DURATION_D_NOT_EQUAL,
+//  ANIME_DURATION_F_NOT_EQUAL;
+//
+//  - Rating:
+//
+//  > ANIME_RATING_NONE, ANIME_RATING_G, ANIME_RATING_PG,
+//  ANIME_RATING_PG_13, ANIME_RATING_R, ANIME_RATING_R_PLUS, ANIME_RATING_RX,
+//  ANIME_RATING_G_NOT_EQUAL, ANIME_RATING_PG_NOT_EQUAL,
+//  ANIME_RATING_PG_13_NOT_EQUAL, ANIME_RATING_R_NOT_EQUAL,
+//  ANIME_RATING_R_PLUS_NOT_EQUAL, ANIME_RATING_RX_NOT_EQUAL;
+//
+//  - Mylist:
+//
+//  > MY_LIST_PLANNED, MY_LIST_WATCHING, MY_LIST_REWATCHING,
+//  MY_LIST_COMPLETED, MY_LIST_ON_HOLD, MY_LIST_DROPPED;
+//
 //  - Score: 1-9 maximum;
-//  - Duration: S, D, F, !S, !D, !F;
-//  - Rating: none, g, pg, pg_13, r, r_plus, rx, !g, !pg, !pg_13, !r, !r_plus, !rx;
-//  - Censored: true(string), false(string);
-//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
-//  - Search: default search;
+//  - Censored: true, false;
 //  - Genre_v2: id search. Below is a list of all available genres by id:
 //
 //  > 1 (Action); 2 (Adventure); 3 (Cars); 4 (Comedy); 5 (Dementia); 6 (Demons); 7 (Mystery);
@@ -575,7 +579,6 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 //
 // More information can be found in the [example].
 //
-// [RandomAnime]: https://github.com/heycatch/goshikimori/blob/master/examples/random
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
 func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, error) {
   var a []api.Animes
@@ -585,9 +588,9 @@ func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, 
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 14(animes?search=) + ?(name) + 1(&) + ?(Result)
+    // 26(SITE) + 14(animes?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(41+len(name)+len(opt), []string{
-      site, "animes?search=", name, "&", opt,
+      SITE, "animes?search=", name, "&", opt,
     }), 10,
   )
   if err != nil {
@@ -624,9 +627,9 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(mangas/) + ?(id)
+    // 26(SITE) + 7(mangas/) + ?(id)
     concat.Url(33+len(str_id), []string{
-      site, "mangas/", str_id,
+      SITE, "mangas/", str_id,
     }), 10,
   )
   if err != nil {
@@ -658,29 +661,44 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 //
 // If you use the 'order' parameter, you don't need to enter the name of the manga.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//  - Order: empty field;
-//  - Kind: empty field;
-//  - Status: empty field;
-//  - Season: empty field;
-//  - Score: empty field;
-//  - Censored: false;
-//  - Mylist: empty field;
-//  - Genre_v2: empty field;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 50 maximum;
-//  - Order: id, ranked, kind, popularity, name, aired_on, volumes, chapters, status; random has been moved to a separate function, check [RandomManga];
-//  - Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin, !manga, !manhwa, !manhua, !light_novel, !novel, !one_shot, !doujin;
-//  - Status: anons, ongoing, released, paused, discontinued, !anons, !ongoing, !released, !paused, !discontinued;
-//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//
+//  - Order:
+//
+//  > MANGA_ORDER_ID, MANGA_ORDER_RANKED, MANGA_ORDER_KIND, MANGA_ORDER_POPULARITY,
+//  MANGA_ORDER_NAME, MANGA_ORDER_AIRED_ON, MANGA_ORDER_VOLUMES,
+//  MANGA_ORDER_CHAPTERS, MANGA_ORDER_STATUS;
+//
+//  - Kind:
+//
+//  > MANGA_KIND_MANGA, MANGA_KIND_MANHWA, MANGA_KIND_MANHUA, MANGA_KIND_LIGHT_NOVEL,
+//  MANGA_KIND_NOVEL, MANGA_KIND_ONE_SHOT, MANGA_KIND_DOUJIN, MANGA_KIND_MANGA_NOT_EQUAL,
+//  MANGA_KIND_MANHWA_NOT_EQUAL, MANGA_KIND_MANHUA_NOT_EQUAL, MANGA_KIND_LIGHT_NOVEL_NOT_EQUAL,
+//  MANGA_KIND_NOVEL_NOT_EQUAL, MANGA_KIND_ONE_SHOT_NOT_EQUAL, MANGA_KIND_DOUJIN_NOT_EQUAL;
+//
+//  - Status:
+//
+//  > MANGA_STATUS_ANONS, MANGA_STATUS_ONGOING, MANGA_STATUS_RELEASED, MANGA_STATUS_PAUSED,
+//  MANGA_STATUS_DISCONTINUED, MANGA_STATUS_ANONS_NOT_EQUAL, MANGA_STATUS_ONGOING_NOT_EQUAL,
+//  MANGA_STATUS_RELEASED_NOT_EQUAL, MANGA_STATUS_PAUSED_NOT_EQUAL, MANGA_STATUS_DISCONTINUED_NOT_EQUAL;
+//
+//  - Season:
+//
+//  > SEASON_198x, SEASON_199x, SEASON_2000_2010, SEASON_2010_2014,
+//  SEASON_2015_2019, SEASON_2020_2021, SEASON_2022, SEASON_2023,
+//  SEASON_198x_NOT_EQUAL, SEASON_199x_NOT_EQUAL, SEASON_2000_2010_NOT_EQUAL,
+//  SEASON_2010_2014_NOT_EQUAL, SEASON_2015_2019_NOT_EQUAL,
+//  SEASON_2020_2021_NOT_EQUAL, SEASON_2022_NOT_EQUAL, SEASON_2023_NOT_EQUAL;
+//
+//  - Mylist:
+//
+//  > MY_LIST_PLANNED, MY_LIST_WATCHING, MY_LIST_REWATCHING,
+//  MY_LIST_COMPLETED, MY_LIST_ON_HOLD, MY_LIST_DROPPED;
+//
 //  - Score: 1-9 maximum;
-//  - Censored: true(string), false(string);
-//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
-//  - Search: default search;
+//  - Censored: true, false;
 //  - Genre_v2: id search. Below is a list of all available genres by id:
 //
 //  > 46 (Mystery); 47 (Shounen); 48 (Supernatural);
@@ -702,7 +720,6 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 //
 // More information can be found in the [example].
 //
-// [RandomManga]: https://github.com/heycatch/goshikimori/blob/master/examples/random
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
 func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
@@ -712,9 +729,9 @@ func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, 
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 14(mangas?search=) + ?(name) + 1(&) + ?(Result)
+    // 26(SITE) + 14(mangas?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(41+len(name)+len(opt), []string{
-      site, "mangas?search=", name, "&", opt,
+      SITE, "mangas?search=", name, "&", opt,
     }), 10,
   )
   if err != nil {
@@ -751,9 +768,9 @@ func (f *FastId) SearchRanobe() (api.Manga, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(ranobe/) + ?(id)
+    // 26(SITE) + 7(ranobe/) + ?(id)
     concat.Url(33+len(str_id), []string{
-      site, "ranobe/", str_id,
+      SITE, "ranobe/", str_id,
     }), 10,
   )
   if err != nil {
@@ -785,27 +802,37 @@ func (f *FastId) SearchRanobe() (api.Manga, error) {
 //
 // If you use the 'order' parameter, you don't need to enter the name of the ranobe.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//  - Order: empty field;
-//  - Status: empty field;
-//  - Season: empty field;
-//  - Score: empty field;
-//  - Censored: false;
-//  - Mylist: empty field;
-//  - Genre_v2: empty field;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 50 maximum;
-//  - Order: id, ranked, kind, popularity, name, aired_on, volumes, chapters, status; random has been moved to a separate function, check [RandomRanobe];
-//  - Status: anons, ongoing, released, paused, discontinued, !anons, !ongoing, !released, !paused, !discontinued;
-//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//
+//  - Order:
+//
+//  > MANGA_ORDER_ID, MANGA_ORDER_RANKED, MANGA_ORDER_KIND, MANGA_ORDER_POPULARITY,
+//  MANGA_ORDER_NAME, MANGA_ORDER_AIRED_ON, MANGA_ORDER_VOLUMES,
+//  MANGA_ORDER_CHAPTERS, MANGA_ORDER_STATUS;
+//
+//  - Status:
+//
+//  > MANGA_STATUS_ANONS, MANGA_STATUS_ONGOING, MANGA_STATUS_RELEASED, MANGA_STATUS_PAUSED,
+//  MANGA_STATUS_DISCONTINUED, MANGA_STATUS_ANONS_NOT_EQUAL, MANGA_STATUS_ONGOING_NOT_EQUAL,
+//  MANGA_STATUS_RELEASED_NOT_EQUAL, MANGA_STATUS_PAUSED_NOT_EQUAL, MANGA_STATUS_DISCONTINUED_NOT_EQUAL;
+//
+//  - Season:
+//
+//  > SEASON_198x, SEASON_199x, SEASON_2000_2010, SEASON_2010_2014,
+//  SEASON_2015_2019, SEASON_2020_2021, SEASON_2022, SEASON_2023,
+//  SEASON_198x_NOT_EQUAL, SEASON_199x_NOT_EQUAL, SEASON_2000_2010_NOT_EQUAL,
+//  SEASON_2010_2014_NOT_EQUAL, SEASON_2015_2019_NOT_EQUAL,
+//  SEASON_2020_2021_NOT_EQUAL, SEASON_2022_NOT_EQUAL, SEASON_2023_NOT_EQUAL;
+//
+//  - Mylist:
+//
+//  > MY_LIST_PLANNED, MY_LIST_WATCHING, MY_LIST_REWATCHING,
+//  MY_LIST_COMPLETED, MY_LIST_ON_HOLD, MY_LIST_DROPPED;
+//
 //  - Score: 1-9 maximum;
-//  - Censored: true(string), false(string);
-//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
-//  - Search: default search;
+//  - Censored: true, false;
 //  - Genre_v2: id search. Below is a list of all available genres by id:
 //
 //  > 46 (Mystery); 47 (Shounen); 48 (Supernatural);
@@ -826,7 +853,6 @@ func (f *FastId) SearchRanobe() (api.Manga, error) {
 //
 // More information can be found in the [example].
 //
-// [RandomRanobe]: https://github.com/heycatch/goshikimori/blob/master/examples/random
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
 func (c *Configuration) SearchRanobes(name string, r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
@@ -836,9 +862,9 @@ func (c *Configuration) SearchRanobes(name string, r Result) ([]api.Mangas, int,
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 14(ranobe?search=) + ?(name) + 1(&) + ?(Result)
+    // 26(SITE) + 14(ranobe?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(41+len(name)+len(opt), []string{
-      site, "ranobe?search=", name, "&", opt,
+      SITE, "ranobe?search=", name, "&", opt,
     }), 10,
   )
   if err != nil {
@@ -873,8 +899,8 @@ func (c *Configuration) FastIdUser(name string) (*FastId, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 6(users/) + ?(name)
-    concat.Url(32+len(name), []string{site, "users/", name,}), 10,
+    // 26(SITE) + 6(users/) + ?(name)
+    concat.Url(32+len(name), []string{SITE, "users/", name,}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -908,8 +934,8 @@ func (c *Configuration) FastIdAnime(name string) (*FastId, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 14(animes?search=) + ?(name)
-    concat.Url(40+len(name), []string{site, "animes?search=", name}), 10,
+    // 26(SITE) + 14(animes?search=) + ?(name)
+    concat.Url(40+len(name), []string{SITE, "animes?search=", name}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -949,8 +975,8 @@ func (c *Configuration) FastIdManga(name string) (*FastId, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 14(mangas?search=) + ?(name)
-    concat.Url(40+len(name), []string{site, "mangas?search=", name}), 10,
+    // 26(SITE) + 14(mangas?search=) + ?(name)
+    concat.Url(40+len(name), []string{SITE, "mangas?search=", name}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -989,8 +1015,8 @@ func (c *Configuration) FastIdRanobe(name string) (*FastId, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 14(ranobe?search=) + ?(name)
-    concat.Url(40+len(name), []string{site, "ranobe?search=", name}), 10,
+    // 26(SITE) + 14(ranobe?search=) + ?(name)
+    concat.Url(40+len(name), []string{SITE, "ranobe?search=", name}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -1029,8 +1055,8 @@ func (c *Configuration) FastIdClub(name string) (*FastId, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 13(clubs?search=) + ?(name)
-    concat.Url(39+len(name), []string{site, "clubs?search=", name}), 10,
+    // 26(SITE) + 13(clubs?search=) + ?(name)
+    concat.Url(39+len(name), []string{SITE, "clubs?search=", name}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -1069,9 +1095,9 @@ func (c *Configuration) FastIdCharacter(name string) (*FastId, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 25(characters/search?search=) + ?(name)
+    // 26(SITE) + 25(characters/search?search=) + ?(name)
     concat.Url(51+len(name), []string{
-      site, "characters/search?search=", name,
+      SITE, "characters/search?search=", name,
     }), 10,
   )
   if err != nil {
@@ -1114,9 +1140,9 @@ func (c *Configuration) FastIdPeople(name string) (*FastId, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 21(people/search?search=) + ?(name)
+    // 26(SITE) + 21(people/search?search=) + ?(name)
     concat.Url(47+len(name), []string{
-      site, "people/search?search=", languageCheck(name),
+      SITE, "people/search?search=", languageCheck(name),
     }), 10,
   )
   if err != nil {
@@ -1158,9 +1184,9 @@ func (f *FastId) SearchAnimeScreenshots() ([]api.AnimeScreenshots, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(animes/) + ?(id) + 12(/screenshots)
+    // 26(SITE) + 7(animes/) + ?(id) + 12(/screenshots)
     concat.Url(45+len(str_id), []string{
-      site, "animes/", str_id, "/screenshots",
+      SITE, "animes/", str_id, "/screenshots",
     }), 10,
   )
   if err != nil {
@@ -1197,9 +1223,9 @@ func (f *FastId) SearchAnimeFranchise() (api.Franchise, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(animes/) + ?(id) + 10(/franchise)
+    // 26(SITE) + 7(animes/) + ?(id) + 10(/franchise)
     concat.Url(43+len(str_id), []string{
-      site, "animes/", str_id, "/franchise",
+      SITE, "animes/", str_id, "/franchise",
     }), 10,
   )
   if err != nil {
@@ -1235,9 +1261,9 @@ func (f *FastId) SearchMangaFranchise() (api.Franchise, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(mangas/) + ?(id) + 10(/franchise)
+    // 26(SITE) + 7(mangas/) + ?(id) + 10(/franchise)
     concat.Url(43+len(str_id), []string{
-      site, "mangas/", str_id, "/franchise",
+      SITE, "mangas/", str_id, "/franchise",
     }), 10,
   )
   if err != nil {
@@ -1273,9 +1299,9 @@ func (f *FastId) SearchRanobeFranchise() (api.Franchise, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(ranobe/) + ?(id) + 10(/franchise)
+    // 26(SITE) + 7(ranobe/) + ?(id) + 10(/franchise)
     concat.Url(43+len(str_id), []string{
-      site, "ranobe/", str_id, "/franchise",
+      SITE, "ranobe/", str_id, "/franchise",
     }), 10,
   )
   if err != nil {
@@ -1311,9 +1337,9 @@ func (f *FastId) SearchAnimeExternalLinks() ([]api.ExternalLinks, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(animes/) + ?(id) + 15(/external_links)
+    // 26(SITE) + 7(animes/) + ?(id) + 15(/external_links)
     concat.Url(48+len(str_id), []string{
-      site, "animes/", str_id, "/external_links",
+      SITE, "animes/", str_id, "/external_links",
     }), 10,
   )
   if err != nil {
@@ -1349,9 +1375,9 @@ func (f *FastId) SearchMangaExternalLinks() ([]api.ExternalLinks, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(mangas/) + ?(id) + 15(/external_links)
+    // 26(SITE) + 7(mangas/) + ?(id) + 15(/external_links)
     concat.Url(48+len(str_id), []string{
-      site, "mangas/", str_id, "/external_links",
+      SITE, "mangas/", str_id, "/external_links",
     }), 10,
   )
   if err != nil {
@@ -1387,9 +1413,9 @@ func (f *FastId) SearchRanobeExternalLinks() ([]api.ExternalLinks, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(ranobe/) + ?(id) + 15(/external_links)
+    // 26(SITE) + 7(ranobe/) + ?(id) + 15(/external_links)
     concat.Url(48+len(str_id), []string{
-      site, "ranobe/", str_id, "/external_links",
+      SITE, "ranobe/", str_id, "/external_links",
     }), 10,
   )
   if err != nil {
@@ -1425,9 +1451,9 @@ func (f *FastId) SearchSimilarAnime() ([]api.Animes, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(animes/) + ?(id) + 8(/similar)
+    // 26(SITE) + 7(animes/) + ?(id) + 8(/similar)
     concat.Url(41+len(str_id), []string{
-      site, "animes/", str_id, "/similar",
+      SITE, "animes/", str_id, "/similar",
     }), 10,
   )
   if err != nil {
@@ -1464,9 +1490,9 @@ func (f *FastId) SearchSimilarManga() ([]api.Mangas, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(mangas/) + ?(id) + 8(/similar)
+    // 26(SITE) + 7(mangas/) + ?(id) + 8(/similar)
     concat.Url(41+len(str_id), []string{
-      site, "mangas/", str_id, "/similar",
+      SITE, "mangas/", str_id, "/similar",
     }), 10,
   )
   if err != nil {
@@ -1503,9 +1529,9 @@ func (f *FastId) SearchSimilarRanobe() ([]api.Mangas, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(ranobe/) + ?(id) + 8(/similar)
+    // 26(SITE) + 7(ranobe/) + ?(id) + 8(/similar)
     concat.Url(41+len(str_id), []string{
-      site, "ranobe/", str_id, "/similar",
+      SITE, "ranobe/", str_id, "/similar",
     }), 10,
   )
   if err != nil {
@@ -1542,9 +1568,9 @@ func (f *FastId) SearchRelatedAnime() ([]api.RelatedAnimes, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(animes/) + ?(id) + 8(/related)
+    // 26(SITE) + 7(animes/) + ?(id) + 8(/related)
     concat.Url(41+len(str_id), []string{
-      site, "animes/", str_id, "/related",
+      SITE, "animes/", str_id, "/related",
     }), 10,
   )
   if err != nil {
@@ -1581,9 +1607,9 @@ func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(mangas/) + ?(id) + 8(/related)
+    // 26(SITE) + 7(mangas/) + ?(id) + 8(/related)
     concat.Url(41+len(str_id), []string{
-      site, "mangas/", str_id, "/related",
+      SITE, "mangas/", str_id, "/related",
     }), 10,
   )
   if err != nil {
@@ -1620,9 +1646,9 @@ func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(ranobe/) + ?(id) + 8(/related)
+    // 26(SITE) + 7(ranobe/) + ?(id) + 8(/related)
     concat.Url(41+len(str_id), []string{
-      site, "ranobe/", str_id, "/related",
+      SITE, "ranobe/", str_id, "/related",
     }), 10,
   )
   if err != nil {
@@ -1652,14 +1678,9 @@ func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, error) {
 //
 // Name: club name.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
-//  - Search: default search;
 //
 // More information can be found in the [example].
 //
@@ -1668,13 +1689,13 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
   var cl []api.Clubs
   var client = &http.Client{}
 
-  opt := r.OptionsClub()
+  opt := r.OptionsOnlyPageLimit(100000, 30)
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 13(clubs?search=) + ?(name) + 1(&) + ?(Result)
+    // 26(SITE) + 13(clubs?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(40+len(name)+len(opt), []string{
-      site, "clubs?search=", name, "&", opt,
+      SITE, "clubs?search=", name, "&", opt,
     }), 10,
   )
   if err != nil {
@@ -1702,10 +1723,6 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
 
 // FIXME: The limit does not work and always gives the maximum amount.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 20 maximum;
@@ -1717,14 +1734,14 @@ func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
   var a []api.Animes
   var client = &http.Client{}
 
-  opt := r.OptionsClubAnimeManga()
+  opt := r.OptionsOnlyPageLimit(100000, 20)
   str_id := strconv.Itoa(f.Id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(clubs/) + ?(id) + 8(/animes?) + ?(Result)
+    // 26(SITE) + 6(clubs/) + ?(id) + 8(/animes?) + ?(Result)
     concat.Url(40+len(str_id)+len(opt), []string{
-      site, "clubs/", str_id, "/animes?", opt,
+      SITE, "clubs/", str_id, "/animes?", opt,
     }), 10,
   )
   if err != nil {
@@ -1752,10 +1769,6 @@ func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
 
 // FIXME: The limit does not work and always gives the maximum amount.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 20 maximum;
@@ -1767,14 +1780,14 @@ func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  opt := r.OptionsClubAnimeManga()
+  opt := r.OptionsOnlyPageLimit(100000, 20)
   str_id := strconv.Itoa(f.Id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(clubs/) + ?(id) + 8(/mangas?) + ?(Result)
+    // 26(SITE) + 6(clubs/) + ?(id) + 8(/mangas?) + ?(Result)
     concat.Url(40+len(str_id)+len(opt), []string{
-      site, "clubs/", str_id, "/mangas?", opt,
+      SITE, "clubs/", str_id, "/mangas?", opt,
     }), 10,
   )
   if err != nil {
@@ -1801,10 +1814,6 @@ func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
 }
 
 // FIXME: The limit does not work and always gives the maximum amount.
-//
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
@@ -1817,14 +1826,14 @@ func (f *FastId) SearchClubRanobe(r Result) ([]api.Mangas, error) {
   var m []api.Mangas
   var client = &http.Client{}
 
-  opt := r.OptionsClubAnimeManga()
+  opt := r.OptionsOnlyPageLimit(100000, 20)
   str_id := strconv.Itoa(f.Id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(clubs/) + ?(id) + 8(/ranobe?) + ?(Result)
+    // 26(SITE) + 6(clubs/) + ?(id) + 8(/ranobe?) + ?(Result)
     concat.Url(40+len(str_id)+len(opt), []string{
-      site, "clubs/", str_id, "/ranobe?", opt,
+      SITE, "clubs/", str_id, "/ranobe?", opt,
     }), 10,
   )
   if err != nil {
@@ -1852,10 +1861,6 @@ func (f *FastId) SearchClubRanobe(r Result) ([]api.Mangas, error) {
 
 // FIXME: The limit does not work and always gives the maximum amount.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 20 maximum;
@@ -1867,14 +1872,14 @@ func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
   var ci []api.CharacterInfo
   var client = &http.Client{}
 
-  opt := r.OptionsClubAnimeManga()
+  opt := r.OptionsOnlyPageLimit(100000, 20)
   str_id := strconv.Itoa(f.Id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(clubs/) + ?(id) + 12(/characters?) + ?(Result)
+    // 26(SITE) + 6(clubs/) + ?(id) + 12(/characters?) + ?(Result)
     concat.Url(44+len(str_id)+len(opt), []string{
-      site, "clubs/", str_id, "/characters?", opt,
+      SITE, "clubs/", str_id, "/characters?", opt,
     }), 10,
   )
   if err != nil {
@@ -1902,10 +1907,6 @@ func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
 
 // FIXME: The limit does not work and always gives the maximum amount.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
@@ -1917,14 +1918,14 @@ func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
   var cc []api.Clubs
   var client = &http.Client{}
 
-  opt := r.OptionsClub()
+  opt := r.OptionsOnlyPageLimit(100000, 30)
   str_id := strconv.Itoa(f.Id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(clubs/) + ?(id) + 7(/clubs?) + ?(Result)
+    // 26(SITE) + 6(clubs/) + ?(id) + 7(/clubs?) + ?(Result)
     concat.Url(39+len(str_id)+len(opt), []string{
-      site, "clubs/", str_id, "/clubs?", opt,
+      SITE, "clubs/", str_id, "/clubs?", opt,
     }), 10,
   )
   if err != nil {
@@ -1952,10 +1953,6 @@ func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
 
 // FIXME: The limit does not work and always gives the maximum amount.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Page: 4 maximum;
@@ -1967,14 +1964,14 @@ func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, error) 
   var cc []api.ClubCollections
   var client = &http.Client{}
 
-  opt := r.OptionsClubCollections()
+  opt := r.OptionsOnlyPageLimit(100000, 4)
   str_id := strconv.Itoa(f.Id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(clubs/) + ?(id) + 13(/collections?) + ?(Result)
+    // 26(SITE) + 6(clubs/) + ?(id) + 13(/collections?) + ?(Result)
     concat.Url(45+len(str_id)+len(opt), []string{
-      site, "clubs/", str_id, "/collections?", opt,
+      SITE, "clubs/", str_id, "/collections?", opt,
     }), 10,
   )
   if err != nil {
@@ -2002,10 +1999,6 @@ func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, error) 
 
 // FIXME: Limit always returns +1 of the given number.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 100 maximum;
@@ -2017,14 +2010,14 @@ func (f *FastId) SearchClubMembers(r Result) ([]api.UserFriends, error) {
   var uf []api.UserFriends
   var client = &http.Client{}
 
-  opt := r.OptionsUsers()
+  opt := r.OptionsOnlyPageLimit(100000, 100)
   str_id := strconv.Itoa(f.Id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(clubs/) + ?(id) + 9(/members?) + ?(Result)
+    // 26(SITE) + 6(clubs/) + ?(id) + 9(/members?) + ?(Result)
     concat.Url(41+len(str_id)+len(opt), []string{
-      site, "clubs/", str_id, "/members?", opt,
+      SITE, "clubs/", str_id, "/members?", opt,
     }), 10,
   )
   if err != nil {
@@ -2052,10 +2045,6 @@ func (f *FastId) SearchClubMembers(r Result) ([]api.UserFriends, error) {
 
 // FIXME: Limit always returns +1 of the given number.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 100 maximum;
@@ -2067,14 +2056,14 @@ func (f *FastId) SearchClubImages(r Result) ([]api.ClubImages, error) {
   var cm []api.ClubImages
   var client = &http.Client{}
 
-  opt := r.OptionsUsers()
+  opt := r.OptionsOnlyPageLimit(100000, 100)
   str_id := strconv.Itoa(f.Id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(clubs/) + ?(id) + 8(/images?) + ?(Result)
+    // 26(SITE) + 6(clubs/) + ?(id) + 8(/images?) + ?(Result)
     concat.Url(40+len(str_id)+len(opt), []string{
-      site, "clubs/", str_id, "/images?", opt,
+      SITE, "clubs/", str_id, "/images?", opt,
     }), 10,
   )
   if err != nil {
@@ -2110,9 +2099,9 @@ func (f *FastId) ClubJoin() (int, error) {
 
   post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(clubs/) + ?(id) + 5(/join)
+    // 26(SITE) + 6(clubs/) + ?(id) + 5(/join)
     concat.Url(37+len(str_id), []string{
-      site, "clubs/", str_id, "/join",
+      SITE, "clubs/", str_id, "/join",
     }), 10,
   )
   if err != nil {
@@ -2139,9 +2128,9 @@ func (f *FastId) ClubLeave() (int, error) {
 
   post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(clubs/) + ?(id) + 6(/leave)
+    // 26(SITE) + 6(clubs/) + ?(id) + 6(/leave)
     concat.Url(38+len(str_id), []string{
-      site, "clubs/", str_id, "/leave",
+      SITE, "clubs/", str_id, "/leave",
     }), 10,
   )
   if err != nil {
@@ -2174,9 +2163,9 @@ func (f *FastId) SearchAchievement() ([]api.Achievements, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 21(achievements?user_id=) + ?(id)
+    // 26(SITE) + 21(achievements?user_id=) + ?(id)
     concat.Url(47+len(str_id), []string{
-      site, "achievements?user_id=", str_id,
+      SITE, "achievements?user_id=", str_id,
     }), 10,
   )
   if err != nil {
@@ -2214,7 +2203,7 @@ func (f *FastId) SearchAnimeVideos() ([]api.AnimeVideos, error) {
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     concat.Url(40+len(str_id), []string{
-      site, "animes/", str_id, "/videos",
+      SITE, "animes/", str_id, "/videos",
     }), 10,
   )
   if err != nil {
@@ -2251,9 +2240,9 @@ func (f *FastId) SearchAnimeRoles() ([]api.Roles, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(animes/) + ?(id) + 6(/roles)
+    // 26(SITE) + 7(animes/) + ?(id) + 6(/roles)
     concat.Url(39+len(str_id), []string{
-      site, "animes/", str_id, "/roles",
+      SITE, "animes/", str_id, "/roles",
     }), 10,
   )
   if err != nil {
@@ -2290,9 +2279,9 @@ func (f *FastId) SearchMangaRoles() ([]api.Roles, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(mangas/) + ?(id) + 6(/roles)
+    // 26(SITE) + 7(mangas/) + ?(id) + 6(/roles)
     concat.Url(39+len(str_id), []string{
-      site, "mangas/", str_id, "/roles",
+      SITE, "mangas/", str_id, "/roles",
     }), 10,
   )
   if err != nil {
@@ -2329,9 +2318,9 @@ func (f *FastId) SearchRanobeRoles() ([]api.Roles, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(ranobe/) + ?(id) + 6(/roles)
+    // 26(SITE) + 7(ranobe/) + ?(id) + 6(/roles)
     concat.Url(39+len(str_id), []string{
-      site, "ranobe/", str_id, "/roles",
+      SITE, "ranobe/", str_id, "/roles",
     }), 10,
   )
   if err != nil {
@@ -2366,8 +2355,8 @@ func (c *Configuration) SearchBans() ([]api.Bans, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 4(bans)
-    concat.Url(30, []string{site, "bans"}), 10,
+    // 26(SITE) + 4(bans)
+    concat.Url(30, []string{SITE, "bans"}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -2392,9 +2381,6 @@ func (c *Configuration) SearchBans() ([]api.Bans, int, error) {
   return b, resp.StatusCode, nil
 }
 
-// If 'Options' empty fields:
-//  - Censored: false;
-//
 // 'Options' settings:
 //  - Censored: true, false;
 //
@@ -2411,9 +2397,9 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 9(calendar?) + ?(Result)
+    // 26(SITE) + 9(calendar?) + ?(Result)
     concat.Url(35+len(opt), []string{
-      site, "calendar?", opt,
+      SITE, "calendar?", opt,
     }), 10,
   )
   if err != nil {
@@ -2439,7 +2425,7 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
   return ca, resp.StatusCode, nil
 }
 
-// name: anime or manga.
+// name: GENRES_ANIME or GENRES_MANGA.
 //
 // More information can be found in the [example].
 //
@@ -2451,8 +2437,8 @@ func (c *Configuration) SearchGenres(name string) ([]api.Genres, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 12(genres?kind=) + ?(name)
-    concat.Url(38+len(name), []string{site, "genres?kind=", name}), 10,
+    // 26(SITE) + 12(genres?kind=) + ?(name)
+    concat.Url(38+len(name), []string{SITE, "genres?kind=", name}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -2486,8 +2472,8 @@ func (c *Configuration) SearchStudios() ([]api.Studios, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 7(studios)
-    concat.Url(33, []string{site, "studios"}), 10,
+    // 26(SITE) + 7(studios)
+    concat.Url(33, []string{SITE, "studios"}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -2521,8 +2507,8 @@ func (c *Configuration) SearchPublishers() ([]api.Publishers, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 10(publishers)
-    concat.Url(36, []string{site, "publishers"}), 10,
+    // 26(SITE) + 10(publishers)
+    concat.Url(36, []string{SITE, "publishers"}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -2556,8 +2542,8 @@ func (c *Configuration) SearchForums() ([]api.Forums, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 6(forums)
-    concat.Url(32, []string{site, "forums"}), 10,
+    // 26(SITE) + 6(forums)
+    concat.Url(32, []string{SITE, "forums"}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -2593,9 +2579,9 @@ func (f *FastId) AddFriend() (api.FriendRequest, error) {
 
   post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 8(friends/) + ?(id)
+    // 26(SITE) + 8(friends/) + ?(id)
     concat.Url(34+len(str_id), []string{
-      site, "friends/", str_id,
+      SITE, "friends/", str_id,
     }), 10,
   )
   if err != nil {
@@ -2632,9 +2618,9 @@ func (f *FastId) RemoveFriend() (api.FriendRequest, error) {
 
   remove, cancel, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 8(friends/) + ?(id)
+    // 26(SITE) + 8(friends/) + ?(id)
     concat.Url(34+len(str_id), []string{
-      site, "friends/", str_id,
+      SITE, "friends/", str_id,
     }), 10,
   )
   if err != nil {
@@ -2673,9 +2659,9 @@ func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(users/) + ?(id) + 16(/unread_messages)
+    // 26(SITE) + 6(users/) + ?(id) + 16(/unread_messages)
     concat.Url(48+len(str_id), []string{
-      site, "users/", str_id, "/unread_messages",
+      SITE, "users/", str_id, "/unread_messages",
     }), 10,
   )
   if err != nil {
@@ -2701,15 +2687,13 @@ func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
   return um, nil
 }
 
-// If 'Options' empty fields:
-//  - Type: news;
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 100 maximum;
-//  - Type: inbox, private, sent, news, notifications;
+//  - Type:
+//
+//  > MESSAGE_TYPE_INBOX, MESSAGE_TYPE_PRIVATE, MESSAGE_TYPE_SENT,
+//  MESSAGE_TYPE_NEWS, MESSAGE_TYPE_NOTIFICATIONS;
 //
 // More information can be found in the [example].
 //
@@ -2723,9 +2707,9 @@ func (f *FastId) UserMessages(r Result) ([]api.Messages, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(users/) + ?(id) + 10(/messages?) + ?(Result)
+    // 26(SITE) + 6(users/) + ?(id) + 10(/messages?) + ?(Result)
     concat.Url(42+len(str_id)+len(opt), []string{
-      site, "users/", str_id, "/messages?", opt,
+      SITE, "users/", str_id, "/messages?", opt,
     }), 10,
   )
   if err != nil {
@@ -2760,8 +2744,8 @@ func (c *Configuration) SearchConstantsAnime() (api.Constants, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 15(constants/anime)
-    concat.Url(41, []string{site, "constants/anime"}), 10,
+    // 26(SITE) + 15(constants/anime)
+    concat.Url(41, []string{SITE, "constants/anime"}), 10,
   )
   if err != nil {
     return ca, 0, err
@@ -2795,8 +2779,8 @@ func (c *Configuration) SearchConstantsManga() (api.Constants, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 15(constants/manga)
-    concat.Url(41, []string{site, "constants/manga"}), 10,
+    // 26(SITE) + 15(constants/manga)
+    concat.Url(41, []string{SITE, "constants/manga"}), 10,
   )
   if err != nil {
     return cm, 0, err
@@ -2830,8 +2814,8 @@ func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, int, e
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 19(constants/user_rate)
-    concat.Url(45, []string{site, "constants/user_rate"}), 10,
+    // 26(SITE) + 19(constants/user_rate)
+    concat.Url(45, []string{SITE, "constants/user_rate"}), 10,
   )
   if err != nil {
     return ur, 0, err
@@ -2865,8 +2849,8 @@ func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 14(constants/club)
-    concat.Url(40, []string{site, "constants/club"}), 10,
+    // 26(SITE) + 14(constants/club)
+    concat.Url(40, []string{SITE, "constants/club"}), 10,
   )
   if err != nil {
     return cc, 0, err
@@ -2900,8 +2884,8 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, e
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 17(constants/smileys)
-    concat.Url(43, []string{site, "constants/smileys"}), 10,
+    // 26(SITE) + 17(constants/smileys)
+    concat.Url(43, []string{SITE, "constants/smileys"}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -2926,28 +2910,52 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, e
   return cs, resp.StatusCode, nil
 }
 
-// If 'Options' empty fields:
-//  - Limit: 1;
-//  - Kind: empty field;
-//  - Status: empty field;
-//  - Season: empty field;
-//  - Score: empty field;
-//  - Duration: empty field;
-//  - Rating: empty field;
-//  - Censored: false;
-//  - Mylist: empty field;
-//  - Genre_v2: empty field;
-//
 // 'Options' settings:
 //  - Limit: 50 maximum;
-//  - Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48, !tv, !movie, !ova, !ona, !special, !music, !tv_13, !tv_24, !tv_48;
-//  - Status: anons, ongoing, released, !anons, !ongoing, !released;
-//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//  - Kind:
+//
+//  > ANIME_KIND_TV, ANIME_KIND_MOVIE, ANIME_KIND_OVA, ANIME_KIND_ONA,
+//  ANIME_KIND_SPECIAL, ANIME_KIND_MUSIC, ANIME_KIND_TV_13, ANIME_KIND_TV_24,
+//  ANIME_KIND_TV_48, ANIME_KIND_TV_NOT_EQUAL, ANIME_KIND_MOVIE_NOT_EQUAL,
+//  ANIME_KIND_OVA_NOT_EQUAL, ANIME_KIND_ONA_NOT_EQUAL, ANIME_KIND_SPECIAL_NOT_EQUAL,
+//  ANIME_KIND_MUSIC_NOT_EQUAL, ANIME_KIND_TV_13_NOT_EQUAL,
+//  ANIME_KIND_TV_24_NOT_EQUAL, ANIME_KIND_TV_48_NOT_EQUAL;
+//
+//  - Status:
+//
+//  > ANIME_STATUS_ANONS, ANIME_STATUS_ONGOING, ANIME_STATUS_RELEASED,
+//  ANIME_STATUS_ANONS_NOT_EQUAL, ANIME_STATUS_ONGOING_NOT_EQUAL,
+//  ANIME_STATUS_RELEASED_NOT_EQUAL;
+//
+//  - Season:
+//
+//  > SEASON_198x, SEASON_199x, SEASON_2000_2010, SEASON_2010_2014,
+//  SEASON_2015_2019, SEASON_2020_2021, SEASON_2022, SEASON_2023,
+//  SEASON_198x_NOT_EQUAL, SEASON_199x_NOT_EQUAL, SEASON_2000_2010_NOT_EQUAL,
+//  SEASON_2010_2014_NOT_EQUAL, SEASON_2015_2019_NOT_EQUAL,
+//  SEASON_2020_2021_NOT_EQUAL, SEASON_2022_NOT_EQUAL, SEASON_2023_NOT_EQUAL;
+//
+//  - Duration:
+//
+//  > ANIME_DURATION_S, ANIME_DURATION_D, ANIME_DURATION_F,
+//  ANIME_DURATION_S_NOT_EQUAL, ANIME_DURATION_D_NOT_EQUAL,
+//  ANIME_DURATION_F_NOT_EQUAL;
+//
+//  - Rating:
+//
+//  > ANIME_RATING_NONE, ANIME_RATING_G, ANIME_RATING_PG,
+//  ANIME_RATING_PG_13, ANIME_RATING_R, ANIME_RATING_R_PLUS, ANIME_RATING_RX,
+//  ANIME_RATING_G_NOT_EQUAL, ANIME_RATING_PG_NOT_EQUAL,
+//  ANIME_RATING_PG_13_NOT_EQUAL, ANIME_RATING_R_NOT_EQUAL,
+//  ANIME_RATING_R_PLUS_NOT_EQUAL, ANIME_RATING_RX_NOT_EQUAL;
+//
+//  - Mylist:
+//
+//  > MY_LIST_PLANNED, MY_LIST_WATCHING, MY_LIST_REWATCHING,
+//  MY_LIST_COMPLETED, MY_LIST_ON_HOLD, MY_LIST_DROPPED;
+//
 //  - Score: 1-9 maximum;
-//  - Duration: S, D, F, !S, !D, !F;
-//  - Rating: none, g, pg, pg_13, r, r_plus, rx, !g, !pg, !pg_13, !r, !r_plus, !rx;
-//  - Censored: true(string), false(string);
-//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
+//  - Censored: true, false;
 //  - Genre_v2: id search. Below is a list of all available genres by id:
 //
 //  > 1 (Action); 2 (Adventure); 3 (Cars); 4 (Comedy); 5 (Dementia); 6 (Demons); 7 (Mystery);
@@ -2971,9 +2979,9 @@ func (c *Configuration) RandomAnimes(r Result) ([]api.Animes, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 20(animes?order=random&) + ?(Result)
+    // 26(SITE) + 20(animes?order=random&) + ?(Result)
     concat.Url(46+len(opt), []string{
-      site, "animes?order=random&", opt,
+      SITE, "animes?order=random&", opt,
     }), 10,
   )
   if err != nil {
@@ -2999,24 +3007,36 @@ func (c *Configuration) RandomAnimes(r Result) ([]api.Animes, int, error) {
   return a, resp.StatusCode, nil
 }
 
-// If 'Options' empty fields:
-//  - Limit: 1;
-//  - Kind: empty field;
-//  - Status: empty field;
-//  - Season: empty field;
-//  - Score: empty field;
-//  - Censored: false;
-//  - Mylist: empty field;
-//  - Genre_v2: empty field;
-//
 // 'Options' settings:
 //  - Limit: 50 maximum;
-//  - Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin, !manga, !manhwa, !manhua, !light_novel, !novel, !one_shot, !doujin;
-//  - Status: anons, ongoing, released, paused, discontinued, !anons, !ongoing, !released, !paused, !discontinued;
-//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//  - Kind:
+//
+//  > MANGA_KIND_MANGA, MANGA_KIND_MANHWA, MANGA_KIND_MANHUA, MANGA_KIND_LIGHT_NOVEL,
+//  MANGA_KIND_NOVEL, MANGA_KIND_ONE_SHOT, MANGA_KIND_DOUJIN, MANGA_KIND_MANGA_NOT_EQUAL,
+//  MANGA_KIND_MANHWA_NOT_EQUAL, MANGA_KIND_MANHUA_NOT_EQUAL, MANGA_KIND_LIGHT_NOVEL_NOT_EQUAL,
+//  MANGA_KIND_NOVEL_NOT_EQUAL, MANGA_KIND_ONE_SHOT_NOT_EQUAL, MANGA_KIND_DOUJIN_NOT_EQUAL;
+//
+//  - Status:
+//
+//  > MANGA_STATUS_ANONS, MANGA_STATUS_ONGOING, MANGA_STATUS_RELEASED, MANGA_STATUS_PAUSED,
+//  MANGA_STATUS_DISCONTINUED, MANGA_STATUS_ANONS_NOT_EQUAL, MANGA_STATUS_ONGOING_NOT_EQUAL,
+//  MANGA_STATUS_RELEASED_NOT_EQUAL, MANGA_STATUS_PAUSED_NOT_EQUAL, MANGA_STATUS_DISCONTINUED_NOT_EQUAL;
+//
+//  - Season:
+//
+//  > SEASON_198x, SEASON_199x, SEASON_2000_2010, SEASON_2010_2014,
+//  SEASON_2015_2019, SEASON_2020_2021, SEASON_2022, SEASON_2023,
+//  SEASON_198x_NOT_EQUAL, SEASON_199x_NOT_EQUAL, SEASON_2000_2010_NOT_EQUAL,
+//  SEASON_2010_2014_NOT_EQUAL, SEASON_2015_2019_NOT_EQUAL,
+//  SEASON_2020_2021_NOT_EQUAL, SEASON_2022_NOT_EQUAL, SEASON_2023_NOT_EQUAL;
+//
+//  - Mylist:
+//
+//  > MY_LIST_PLANNED, MY_LIST_WATCHING, MY_LIST_REWATCHING,
+//  MY_LIST_COMPLETED, MY_LIST_ON_HOLD, MY_LIST_DROPPED;
+//
 //  - Score: 1-9 maximum;
-//  - Censored: true(string), false(string);
-//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
+//  - Censored: true, false;
 //  - Genre_v2: id search. Below is a list of all available genres by id:
 //
 //  > 46 (Mystery); 47 (Shounen); 48 (Supernatural);
@@ -3041,9 +3061,9 @@ func (c *Configuration) RandomMangas(r Result) ([]api.Mangas, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 20(mangas?order=random&) + ?(Result)
+    // 26(SITE) + 20(mangas?order=random&) + ?(Result)
     concat.Url(46+len(opt), []string{
-      site, "mangas?order=random&", opt,
+      SITE, "mangas?order=random&", opt,
     }), 10,
   )
   if err != nil {
@@ -3069,22 +3089,29 @@ func (c *Configuration) RandomMangas(r Result) ([]api.Mangas, int, error) {
   return m, resp.StatusCode, nil
 }
 
-// If 'Options' empty fields:
-//  - Limit: 1;
-//  - Status: empty field;
-//  - Season: empty field;
-//  - Score: empty field;
-//  - Censored: false;
-//  - Mylist: empty field;
-//  - Genre_v2: empty field;
-//
 // 'Options' settings:
 //  - Limit: 50 maximum;
-//  - Status: anons, ongoing, released, paused, discontinued, !anons, !ongoing, !released, !paused, !discontinued;
-//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//  - Status:
+//
+//  > MANGA_STATUS_ANONS, MANGA_STATUS_ONGOING, MANGA_STATUS_RELEASED, MANGA_STATUS_PAUSED,
+//  MANGA_STATUS_DISCONTINUED, MANGA_STATUS_ANONS_NOT_EQUAL, MANGA_STATUS_ONGOING_NOT_EQUAL,
+//  MANGA_STATUS_RELEASED_NOT_EQUAL, MANGA_STATUS_PAUSED_NOT_EQUAL, MANGA_STATUS_DISCONTINUED_NOT_EQUAL;
+//
+//  - Season:
+//
+//  > SEASON_198x, SEASON_199x, SEASON_2000_2010, SEASON_2010_2014,
+//  SEASON_2015_2019, SEASON_2020_2021, SEASON_2022, SEASON_2023,
+//  SEASON_198x_NOT_EQUAL, SEASON_199x_NOT_EQUAL, SEASON_2000_2010_NOT_EQUAL,
+//  SEASON_2010_2014_NOT_EQUAL, SEASON_2015_2019_NOT_EQUAL,
+//  SEASON_2020_2021_NOT_EQUAL, SEASON_2022_NOT_EQUAL, SEASON_2023_NOT_EQUAL;
+//
+//  - Mylist:
+//
+//  > MY_LIST_PLANNED, MY_LIST_WATCHING, MY_LIST_REWATCHING,
+//  MY_LIST_COMPLETED, MY_LIST_ON_HOLD, MY_LIST_DROPPED;
+
 //  - Score: 1-9 maximum;
-//  - Censored: true(string), false(string);
-//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
+//  - Censored: true, false;
 //  - Genre_v2: id search. Below is a list of all available genres by id:
 //
 //  > 46 (Mystery); 47 (Shounen); 48 (Supernatural);
@@ -3109,9 +3136,9 @@ func (c *Configuration) RandomRanobes(r Result) ([]api.Mangas, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 20(ranobe?order=random&) + ?(Result)
+    // 26(SITE) + 20(ranobe?order=random&) + ?(Result)
     concat.Url(46+len(opt), []string{
-      site, "ranobe?order=random&", opt,
+      SITE, "ranobe?order=random&", opt,
     }), 10,
   )
   if err != nil {
@@ -3148,9 +3175,9 @@ func (f *FastId) SearchCharacter() (api.Character, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 11(characters/) + ?(id)
+    // 26(SITE) + 11(characters/) + ?(id)
     concat.Url(37+len(str_id), []string{
-      site, "characters/", str_id,
+      SITE, "characters/", str_id,
     }), 10,
   )
   if err != nil {
@@ -3187,8 +3214,8 @@ func (c *Configuration) SearchCharacters(name string) ([]api.CharacterInfo, int,
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 25(characters/search?search=) + ?(name)
-    concat.Url(51+len(name), []string{site, "characters/search?search=", name}), 10,
+    // 26(SITE) + 25(characters/search?search=) + ?(name)
+    concat.Url(51+len(name), []string{SITE, "characters/search?search=", name}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -3224,9 +3251,9 @@ func (f *FastId) SearchPeople() (api.People, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(people/) + ?(id)
+    // 26(SITE) + 7(people/) + ?(id)
     concat.Url(33+len(str_id), []string{
-      site, "people/", str_id,
+      SITE, "people/", str_id,
     }), 10,
   )
   if err != nil {
@@ -3251,14 +3278,14 @@ func (f *FastId) SearchPeople() (api.People, error) {
   return p, nil
 }
 
+// FIXME: Page and limit not supprted, idk why. Check later.
+//
 // Name: people name.
 //
-// If 'Options' empty fields:
-//  - Kind: seyu;
-//
 // 'Options' settings:
-//  - Page/Limit: not supported, idk why;
-//  - Kind: seyu, mangaka, producer;
+//  - Kind:
+//
+//  > PEOPLE_KIND_SEYU, PEOPLE_KIND_MANGAKA, PEOPLE_KIND_PRODUCER;
 //
 // More information can be found in the [example].
 //
@@ -3272,7 +3299,7 @@ func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, i
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     concat.Url(48+len(name)+len(opt), []string{
-      site, "people/search?search=", name, "&", opt,
+      SITE, "people/search?search=", name, "&", opt,
     }), 10,
   )
   if err != nil {
@@ -3297,9 +3324,16 @@ func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, i
   return ap, resp.StatusCode, nil
 }
 
-// Linked_type: Anime, Manga, Ranobe, Person, Character.
+// Linked_type:
 //
-// Kind(required when Linked_type is Person): common, seyu, mangaka, producer, person.
+// > FAVORITES_LINKED_TYPE_ANIME, FAVORITES_LINKED_TYPE_MANGA,
+// FAVORITES_LINKED_TYPE_RANOBE, FAVORITES_LINKED_TYPE_PERSON,
+// FAVORITES_LINKED_TYPE_CHARACTER;
+//
+// Kind(required when Linked_type is Person):
+//
+// > FAVORITES_KIND_COMMON, FAVORITES_KIND_SEYU, FAVORITES_KIND_MANGAKA,
+// FAVORITES_KIND_PRODUCER, FAVORITES_KIND_PERSON;
 //
 // More information can be found in the [example].
 //
@@ -3308,23 +3342,15 @@ func (f *FastId) FavoritesCreate(linked_type string, kind string) (api.Favorites
   var fa api.Favorites
   var client = &http.Client{}
 
-  if search.IndexInSlice(linked_type, []string{
-    "Anime", "Manga", "Ranobe", "Person", "Character",
-  }) == -1 {
-    return fa, errors.New("incorrect string, try again and watch the upper case")
-  }
-
-  if search.IndexInSlice(kind, []string{
-    "common", "seyu", "mangaka", "producer", "person",
-  }) == -1 { kind = "" }
+  if linked_type != FAVORITES_LINKED_TYPE_PERSON { kind = "" }
 
   str_id := strconv.Itoa(f.Id)
 
   post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id) + 1(/) + ?(kind)
+    // 26(SITE) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id) + 1(/) + ?(kind)
     concat.Url(38+len(linked_type)+len(str_id)+len(kind), []string{
-      site, "favorites/", linked_type, "/", str_id, "/", kind,
+      SITE, "favorites/", linked_type, "/", str_id, "/", kind,
     }), 10,
   )
   if err != nil {
@@ -3350,7 +3376,11 @@ func (f *FastId) FavoritesCreate(linked_type string, kind string) (api.Favorites
   return fa, nil
 }
 
-// Linked_type: Anime, Manga, Ranobe, Person, Character.
+// Linked_type:
+//
+// > FAVORITES_LINKED_TYPE_ANIME, FAVORITES_LINKED_TYPE_MANGA,
+// FAVORITES_LINKED_TYPE_RANOBE, FAVORITES_LINKED_TYPE_PERSON,
+// FAVORITES_LINKED_TYPE_CHARACTER;
 //
 // More information can be found in the [example].
 //
@@ -3359,19 +3389,13 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
   var ff api.Favorites
   var client = &http.Client{}
 
-  if search.IndexInSlice(linked_type, []string{
-    "Anime", "Manga", "Ranobe", "Person", "Character",
-  }) == -1 {
-    return ff, errors.New("incorrect string, try again and watch the upper case")
-  }
-
   str_id := strconv.Itoa(f.Id)
 
   remove, cancel, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id)
+    // 26(SITE) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id)
     concat.Url(37+len(linked_type)+len(str_id), []string{
-      site, "favorites/", linked_type, "/", str_id,
+      SITE, "favorites/", linked_type, "/", str_id,
     }), 10,
   )
   if err != nil {
@@ -3413,9 +3437,9 @@ func (f *FastId) FavoritesReorder(position int) (int, error) {
 
   post, cancel, err := NewReorderPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 10(favorites/) + ?(id) + 8(/reorder)
+    // 26(SITE) + 10(favorites/) + ?(id) + 8(/reorder)
     concat.Url(44+len(str_id), []string{
-      site, "favorites/", str_id, "/reorder",
+      SITE, "favorites/", str_id, "/reorder",
     }), position, 10,
   )
   if err != nil {
@@ -3443,9 +3467,9 @@ func (f *FastId) AddIgnoreUser() (api.IgnoreUser, error) {
 
   post, cancel, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 9(v2/users/) + ?(id) + 7(/ignore)
+    // 26(SITE) + 9(v2/users/) + ?(id) + 7(/ignore)
     concat.Url(42+len(str_id), []string{
-      site, "v2/users/", str_id, "/ignore",
+      SITE, "v2/users/", str_id, "/ignore",
     }), 10,
   )
   if err != nil {
@@ -3482,9 +3506,9 @@ func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, error) {
 
   remove, cancel, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 9(v2/users/) + ?(id) + 7(/ignore)
+    // 26(SITE) + 9(v2/users/) + ?(id) + 7(/ignore)
     concat.Url(42+len(str_id), []string{
-      site, "v2/users/", str_id, "/ignore",
+      SITE, "v2/users/", str_id, "/ignore",
     }), 10,
   )
   if err != nil {
@@ -3519,8 +3543,8 @@ func (c *Configuration) Dialogs() ([]api.Dialogs, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 7(dialogs)
-    concat.Url(33, []string{site, "dialogs"}), 10,
+    // 26(SITE) + 7(dialogs)
+    concat.Url(33, []string{SITE, "dialogs"}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -3557,9 +3581,9 @@ func (f *FastId) SearchDialogs() ([]api.SearchDialogs, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 8(dialogs/) + ?(id)
+    // 26(SITE) + 8(dialogs/) + ?(id)
     concat.Url(34+len(str_id), []string{
-      site, "dialogs/", str_id,
+      SITE, "dialogs/", str_id,
     }), 10,
   )
   if err != nil {
@@ -3598,9 +3622,9 @@ func (f *FastId) DeleteDialogs() (api.FriendRequest, error) {
 
   remove, cancel, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 8(dialogs/) + ?(id)
+    // 26(SITE) + 8(dialogs/) + ?(id)
     concat.Url(34+len(str_id), []string{
-      site, "dialogs/", str_id,
+      SITE, "dialogs/", str_id,
     }), 10,
   )
   if err != nil {
@@ -3619,8 +3643,8 @@ func (f *FastId) DeleteDialogs() (api.FriendRequest, error) {
     return fr, err
   }
 
-  // errors.New(...) original error message from api/v1.
   if err := json.Unmarshal(data, &fr); err != nil {
+    // Original error message from api/v1.
     return fr, errors.New("не найдено ни одного сообщения для удаления")
   }
 
@@ -3638,9 +3662,9 @@ func (f *FastId) UserBriefInfo() (api.Info, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(users/) + ?(id) + 5(/info)
+    // 26(SITE) + 6(users/) + ?(id) + 5(/info)
     concat.Url(37+len(str_id), []string{
-      site, "users/", str_id, "/info",
+      SITE, "users/", str_id, "/info",
     }), 10,
   )
   if err != nil {
@@ -3672,9 +3696,9 @@ func (c *Configuration) SignOut() (string, int, error) {
 
   post, cancel, err := NewPostRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 14(users/sign_out)
+    // 26(SITE) + 14(users/sign_out)
     concat.Url(40, []string{
-      site, "users/sign_out",
+      SITE, "users/sign_out",
     }), 10,
   )
   if err != nil {
@@ -3709,9 +3733,9 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 18(stats/active_users)
+    // 26(SITE) + 18(stats/active_users)
     concat.Url(44, []string{
-      site, "stats/active_users",
+      SITE, "stats/active_users",
     }), 40,
   )
   if err != nil {
@@ -3737,10 +3761,6 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
   return ids, resp.StatusCode, nil
 }
 
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
@@ -3752,14 +3772,14 @@ func (f *FastId) SearchTopicsAnime(r Result) ([]api.Topics, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  opt := r.OptionsClub()
+  opt := r.OptionsOnlyPageLimit(100000, 30)
   str_id := strconv.Itoa(f.Id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(animes/) + ?(id) + 8(/topics?) + ?(Result)
+    // 26(SITE) + 7(animes/) + ?(id) + 8(/topics?) + ?(Result)
     concat.Url(41+len(str_id)+len(opt), []string{
-      site, "animes/", str_id, "/topics?", opt,
+      SITE, "animes/", str_id, "/topics?", opt,
     }), 10,
   )
   if err != nil {
@@ -3785,10 +3805,6 @@ func (f *FastId) SearchTopicsAnime(r Result) ([]api.Topics, error) {
   return t, nil
 }
 
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
@@ -3800,14 +3816,14 @@ func (f *FastId) SearchTopicsManga(r Result) ([]api.Topics, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  opt := r.OptionsClub()
+  opt := r.OptionsOnlyPageLimit(100000, 30)
   str_id := strconv.Itoa(f.Id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(mangas/) + ?(id) + 8(/topics?) + ?(Result)
+    // 26(SITE) + 7(mangas/) + ?(id) + 8(/topics?) + ?(Result)
     concat.Url(41+len(str_id)+len(opt), []string{
-      site, "mangas/", str_id, "/topics?", opt,
+      SITE, "mangas/", str_id, "/topics?", opt,
     }), 10,
   )
   if err != nil {
@@ -3833,10 +3849,6 @@ func (f *FastId) SearchTopicsManga(r Result) ([]api.Topics, error) {
   return t, nil
 }
 
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
@@ -3848,14 +3860,14 @@ func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, error) {
   var t []api.Topics
   var client = &http.Client{}
 
-  opt := r.OptionsClub()
+  opt := r.OptionsOnlyPageLimit(100000, 30)
   str_id := strconv.Itoa(f.Id)
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 7(ranobe/) + ?(id) + 8(/topics?) + ?(Result)
+    // 26(SITE) + 7(ranobe/) + ?(id) + 8(/topics?) + ?(Result)
     concat.Url(41+len(str_id)+len(opt), []string{
-      site, "ranobe/", str_id, "/topics?", opt,
+      SITE, "ranobe/", str_id, "/topics?", opt,
     }), 10,
   )
   if err != nil {
@@ -3881,19 +3893,24 @@ func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, error) {
   return t, nil
 }
 
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//  - Forum: all;
-//  - Linked_id: empty field;
-//  - Linked_type: empty field;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
-//  - Forum: cosplay, animanga, site, games, vn, contests, offtopic, clubs, my_clubs, critiques, news, collections, articles;
+//  - Forum:
+//
+//  > TOPIC_FORUM_ALL, TOPIC_FORUM_COSPLAY, TOPIC_FORUM_ANIMANGA, TOPIC_FORUM_SITE,
+//  TOPIC_FORUM_GAMES, TOPIC_FORUM_VN, TOPIC_FORUM_CONTEST, TOPIC_FORUM_OFFTOPIC,
+//  TOPIC_FORUM_CLUBS, TOPIC_FORUM_MYCLUBS, TOPIC_FORUM_CRITIQUES,
+//  TOPIC_FORUM_NEWS, TOPIC_FORUM_COLLECTIONS, TOPIC_FORUM_ARTICLES;
+//
 //  - Linked_id: number without limit;
-//  - Linked_type: Anime, Manga, Ranobe, Character, Person, Club, ClubPage, Critique, Review, Contest, CosplayGallery, Collection, Article;
+//  - Linked_type:
+//
+//  > TOPIC_LINKED_TYPE_ANIME, TOPIC_LINKED_TYPE_MANGA, TOPIC_LINKED_TYPE_RANOBE,
+//  TOPIC_LINKED_TYPE_CHARACTER, TOPIC_LINKED_TYPE_PERSON, TOPIC_LINKED_TYPE_CLUB,
+//  TOPIC_LINKED_TYPE_CLUBPAGE, TOPIC_LINKED_TYPE_CRITIQUE, TOPIC_LINKED_TYPE_REVIEW,
+//  TOPIC_LINKED_TYPE_CONTEST, TOPIC_LINKED_TYPE_COSPLAYGALLYRY,
+//  TOPIC_LINKED_TYPE_COLLECTION, TOPIC_LINKED_TYPE_ARTICLE;
 //
 // REMARK: linked_id and linked_type are only used together.
 //
@@ -3912,8 +3929,8 @@ func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 7(topics?) + ?(Result)
-    concat.Url(33+len(opt), []string{site, "topics?", opt}), 10,
+    // 26(SITE) + 7(topics?) + ?(Result)
+    concat.Url(33+len(opt), []string{SITE, "topics?", opt}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -3940,10 +3957,6 @@ func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
 
 // FIXME: Limit always returns +1 of the given number.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
@@ -3955,12 +3968,12 @@ func (c *Configuration) SearchTopicsUpdates(r Result) ([]api.TopicsUpdates, int,
   var t []api.TopicsUpdates
   var client = &http.Client{}
 
-  opt := r.OptionsClub()
+  opt := r.OptionsOnlyPageLimit(100000, 30)
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 15(topics/updates?) + ?(Result)
-    concat.Url(41+len(opt), []string{site, "topics/updates?", opt}), 10,
+    // 26(SITE) + 15(topics/updates?) + ?(Result)
+    concat.Url(41+len(opt), []string{SITE, "topics/updates?", opt}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -3985,9 +3998,6 @@ func (c *Configuration) SearchTopicsUpdates(r Result) ([]api.TopicsUpdates, int,
   return t, resp.StatusCode, nil
 }
 
-// If 'Options' empty fields:
-//  - Limit: 1;
-//
 // 'Options' settings:
 //  - Limit: 10 maximum;
 //
@@ -4002,8 +4012,8 @@ func (c *Configuration) SearchTopicsHot(r Result) ([]api.Topics, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 11(topics/hot?) + ?(Result)
-    concat.Url(37+len(opt), []string{site, "topics/hot?", opt}), 10,
+    // 26(SITE) + 11(topics/hot?) + ?(Result)
+    concat.Url(37+len(opt), []string{SITE, "topics/hot?", opt}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -4041,8 +4051,8 @@ func (c *Configuration) SearchTopicsId(id int) (api.TopicsId, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 7(topics/) + ?(id)
-    concat.Url(33+len(str_id), []string{site, "topics/", str_id}), 10,
+    // 26(SITE) + 7(topics/) + ?(id)
+    concat.Url(33+len(str_id), []string{SITE, "topics/", str_id}), 10,
   )
   if err != nil {
     return t, 0, err
@@ -4080,9 +4090,9 @@ func (c *Configuration) AddIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
 
   post, cancel, err := NewPostRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 10(v2/topics/) + ?(id) + 7(/ignore)
+    // 26(SITE) + 10(v2/topics/) + ?(id) + 7(/ignore)
     concat.Url(43+len(str_id), []string{
-      site, "v2/topics/", str_id, "/ignore",
+      SITE, "v2/topics/", str_id, "/ignore",
     }), 10,
   )
   if err != nil {
@@ -4121,9 +4131,9 @@ func (c *Configuration) RemoveIgnoreTopic(id int) (api.IgnoreTopic, int, error) 
 
   remove, cancel, err := NewDeleteRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 10(v2/topics/) + ?(id) + 7(/ignore)
+    // 26(SITE) + 10(v2/topics/) + ?(id) + 7(/ignore)
     concat.Url(43+len(str_id), []string{
-      site, "v2/topics/", str_id, "/ignore",
+      SITE, "v2/topics/", str_id, "/ignore",
     }), 10,
   )
   if err != nil {
@@ -4160,8 +4170,8 @@ func (c *Configuration) SearchGraphql(schema string) (api.GraphQL, int, error) {
 
   post, cancel, err := NewPostRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + ?(schema)
-    concat.Url(26+len(schema), []string{site, schema}), 10,
+    // 26(SITE) + ?(schema)
+    concat.Url(26+len(schema), []string{SITE, schema}), 10,
   )
   if err != nil {
     return g, 0, err
@@ -4203,8 +4213,8 @@ func (c *Configuration) ReadMessage(id int) (api.Messages, int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 9(messages/) + ?(id)
-    concat.Url(35+len(str_id), []string{site, "messages/", str_id}), 10,
+    // 26(SITE) + 9(messages/) + ?(id)
+    concat.Url(35+len(str_id), []string{SITE, "messages/", str_id}), 10,
   )
   if err != nil {
     return m, 0, err
@@ -4250,8 +4260,8 @@ func (c *Configuration) SendMessage(from_id, to_id int, message string) (api.Mes
 
   post, cancel, err := NewSendMessagePostRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 8(messages)
-    concat.Url(34, []string{site, "messages"}), message, from_id, to_id, 10,
+    // 26(SITE) + 8(messages)
+    concat.Url(34, []string{SITE, "messages"}), message, from_id, to_id, 10,
   )
   if err != nil {
     return m, 0, err
@@ -4295,8 +4305,8 @@ func (c *Configuration) ChangeMessage(id int, message string) (api.Messages, int
 
   put, cancel, err := NewChangeMessagePutRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 9(messages/) + ?(id)
-    concat.Url(35+len(str_id), []string{site, "messages/", str_id}), message, 10,
+    // 26(SITE) + 9(messages/) + ?(id)
+    concat.Url(35+len(str_id), []string{SITE, "messages/", str_id}), message, 10,
   )
   if err != nil {
     return m, 0, err
@@ -4335,8 +4345,8 @@ func (c *Configuration) DeleteMessage(id int) (int, error) {
 
   del, cancel, err := NewDeleteMessageDeleteRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 9(messages/) + ?(id)
-    concat.Url(35+len(str_id), []string{site, "messages/", str_id}), 10,
+    // 26(SITE) + 9(messages/) + ?(id)
+    concat.Url(35+len(str_id), []string{SITE, "messages/", str_id}), 10,
   )
   if err != nil {
     return 0, err
@@ -4370,9 +4380,9 @@ func (c *Configuration) MarkReadMessages(ids string, is_read int) (int, error) {
 
   post, cancel, err := NewMarkReadPostRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 18(messages/mark_read)
+    // 26(SITE) + 18(messages/mark_read)
     concat.Url(44, []string{
-      site, "messages/mark_read",
+      SITE, "messages/mark_read",
     }), ids, is_read, 10,
   )
   if err != nil {
@@ -4392,9 +4402,9 @@ func (c *Configuration) MarkReadMessages(ids string, is_read int) (int, error) {
 // Name: unread message type.
 //
 // 'Name' settings:
-//  - messages
-//  - news
-//  - notifications
+//
+// > UNREAD_MESSAGES_IDS_NEWS, UNREAD_MESSAGES_IDS_MESSAGES,
+// UNREAD_MESSAGES_IDS_NOTIFICATIONS;
 //
 // Empty array to be filled with ids for messages.
 func (f *FastId) UnreadMessagesIds(name string) ([]int, error) {
@@ -4405,9 +4415,9 @@ func (f *FastId) UnreadMessagesIds(name string) ([]int, error) {
 
   get, cancel, err := NewGetRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
-    // 26(site) + 6(users/) + ?(id) + 16(/unread_messages)
+    // 26(SITE) + 6(users/) + ?(id) + 16(/unread_messages)
     concat.Url(48+len(str_id), []string{
-      site, "users/", str_id, "/unread_messages",
+      SITE, "users/", str_id, "/unread_messages",
     }), 10,
   )
   if err != nil {
@@ -4440,7 +4450,8 @@ func (f *FastId) UnreadMessagesIds(name string) ([]int, error) {
   case "notifications":
     if um.Notifications == 0 { return nil, errors.New("unread notifications not found") }
     return make([]int, um.Notifications), nil
-  default: return nil, errors.New("wrong name... try messages, news or notifications")
+  default:
+    return nil, errors.New("wrong name... try messages, news or notifications")
   }
 }
 
@@ -4449,8 +4460,8 @@ func (f *FastId) UnreadMessagesIds(name string) ([]int, error) {
 // Returns a status of 200.
 //
 // 'Name' settings:
-//  - news
-//  - notifications
+//
+// > UNREAD_MESSAGES_IDS_NEWS, UNREAD_MESSAGES_IDS_NOTIFICATIONS;
 //
 // More information can be found in the [example].
 //
@@ -4460,8 +4471,8 @@ func (c *Configuration) ReadAllMessages(name string) (int, error) {
 
   post, cancel, err := NewReadDeleteAllPostRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 17(messages/read_all)
-    concat.Url(43, []string{site, "messages/read_all"}), name, 10,
+    // 26(SITE) + 17(messages/read_all)
+    concat.Url(43, []string{SITE, "messages/read_all"}), name, 10,
   )
   if err != nil {
     return 0, err
@@ -4482,8 +4493,8 @@ func (c *Configuration) ReadAllMessages(name string) (int, error) {
 // Returns a status of 200.
 //
 // 'Name' settings:
-//  - news
-//  - notifications
+//
+// > UNREAD_MESSAGES_IDS_NEWS, UNREAD_MESSAGES_IDS_NOTIFICATIONS;
 //
 // More information can be found in the [example].
 //
@@ -4493,8 +4504,8 @@ func (c *Configuration) DeleteAllMessages(name string) (int, error) {
 
   post, cancel, err := NewReadDeleteAllPostRequestWithCancel(
     c.Application, c.AccessToken,
-    // 26(site) + 19(messages/delete_all)
-    concat.Url(45, []string{site, "messages/delete_all"}), name, 10,
+    // 26(SITE) + 19(messages/delete_all)
+    concat.Url(45, []string{SITE, "messages/delete_all"}), name, 10,
   )
   if err != nil {
     return 0, err

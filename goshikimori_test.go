@@ -5,7 +5,7 @@ import (
   "os"
   "testing"
 
-  "github.com/heycatch/goshikimori/graphql"
+  graph "github.com/heycatch/goshikimori/graphql"
 )
 
 const (
@@ -38,9 +38,8 @@ func TestUser(t *testing.T) {
 func TestAnimes(t *testing.T) {
   c := conf()
   o := &Options{
-    Page: 1, Limit: 1, Kind: "", Status: "",
-    Season: "", Score: 1, Rating: "", Duration: "",
-    Censored: false, Mylist: "", Genre_v2: nil,
+    Page: 1, Limit: 1, Score: 1,
+    Censored: false,
   }
   s, _, _ := c.SearchAnimes("Initial D", o)
 
@@ -55,10 +54,7 @@ func TestAnimes(t *testing.T) {
 
 func TestMangas(t *testing.T) {
   c := conf()
-  o := &Options{
-    Page: 1, Limit: 1, Kind: "", Status: "",
-    Season: "", Rating: "", Mylist: "", Genre_v2: nil,
-  }
+  o := &Options{Page: 1, Limit: 1}
   r, _, _ := c.SearchMangas("Initial D", o)
 
   for _, v := range r {
@@ -179,15 +175,15 @@ func TestAnimeGraphql(t *testing.T) {
   s.run()
 
   c := conf()
-  sch, _ := graphql.AnimeSchema(
-    graphql.Values("id", "malId", "name", "rating", "kind", "episodes"),
-    "initial d first stage",
-    1, 1, "", "", "", "", "", "", "", false, nil,
+  sch, _ := graph.AnimeSchema(
+    graph.Values("id", "malId", "name", "rating", "kind", "episodes"),
+    "initial d first stage", 1, 1, "", "", "", "", "", "", "", false, nil,
   )
   a, _, _ := c.SearchGraphql(sch)
 
   for _, v := range a.Data.Animes {
-    if v.Id == "185" && v.MalId == "185" && v.Rating == "pg_13" && v.Kind == "tv" && v.Episodes == 26 {
+    if v.Id == "185" && v.MalId == "185" && v.Rating == ANIME_RATING_PG_13 &&
+      v.Kind == ANIME_KIND_TV && v.Episodes == 26 {
       t.Logf("%s - found", v.Name)
     } else {
       t.Error("AnimeGraphql not found")
@@ -197,15 +193,15 @@ func TestAnimeGraphql(t *testing.T) {
 
 func TestMangaGraphQL(t *testing.T) {
   c := conf()
-  s, _ := graphql.MangaSchema(
-    graphql.Values("id", "malId", "name", "kind", "status", "volumes"),
-    "initial d",
-    1, 1, "", "", "", "", "", false, nil,
+  s, _ := graph.MangaSchema(
+    graph.Values("id", "malId", "name", "kind", "status", "volumes"),
+    "initial d", 1, 1, "", "", "", "", "", false, nil,
   )
   m, _, _ := c.SearchGraphql(s)
 
   for _, v := range m.Data.Mangas {
-    if v.Id == "375" && v.MalId == "375" && v.Kind == "manga" && v.Status == "released" && v.Volumes == 48 {
+    if v.Id == "375" && v.MalId == "375" && v.Kind == MANGA_KIND_MANGA &&
+      v.Status == MANGA_STATUS_RELEASED && v.Volumes == 48 {
       t.Logf("%s - found", v.Name)
     } else {
       t.Error("MangaGraphql not found")
@@ -215,10 +211,9 @@ func TestMangaGraphQL(t *testing.T) {
 
 func TestCharacterGraphQL(t *testing.T) {
   c := conf()
-  s, _ := graphql.CharacterSchema(
-    graphql.Values("id", "malId", "name", "isManga"),
-    "Natsuno Yuuki",
-    1, 1,
+  s, _ := graph.CharacterSchema(
+    graph.Values("id", "malId", "name", "isManga"),
+    "Natsuno Yuuki", 1, 1,
   )
   ch, _, _ := c.SearchGraphql(s)
 
@@ -233,10 +228,9 @@ func TestCharacterGraphQL(t *testing.T) {
 
 func TestPeopleGraphQL(t *testing.T) {
   c := conf()
-  s, _ := graphql.PeopleSchema(
-    graphql.Values("id", "name", "birthOn{year}"),
-    "satsuki",
-    1, 1, true, false, false,
+  s, _ := graph.PeopleSchema(
+    graph.Values("id", "name", "birthOn{year}"),
+    "satsuki", 1, 1, true, false, false,
   )
   p, _, _ := c.SearchGraphql(s)
 
@@ -251,11 +245,7 @@ func TestPeopleGraphQL(t *testing.T) {
 
 func TestAnimesUsingGenre(t *testing.T) {
   c := conf()
-  o := &Options{
-    Page: 1, Limit: 1, Kind: "", Status: "",
-    Season: "", Rating: "", Duration: "",
-    Mylist: "", Genre_v2: []int{3},
-  }
+  o := &Options{Page: 1, Limit: 1, Genre_v2: []int{3}}
   s, _, _ := c.SearchAnimes("Initial D", o)
 
   for _, v := range s {
@@ -269,10 +259,7 @@ func TestAnimesUsingGenre(t *testing.T) {
 
 func TestMangasUsingGenre(t *testing.T) {
   c := conf()
-  o := &Options{
-    Page: 1, Limit: 1, Kind: "", Status: "",
-    Season: "", Rating: "", Mylist: "", Genre_v2: []int{84},
-  }
+  o := &Options{Page: 1, Limit: 1, Genre_v2: []int{84}}
   r, _, _ := c.SearchMangas("Initial D", o)
 
   for _, v := range r {

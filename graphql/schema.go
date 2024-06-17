@@ -6,7 +6,6 @@ import (
   "strings"
   "strconv"
 
-  "github.com/heycatch/goshikimori/search"
   "github.com/heycatch/goshikimori/concat"
 )
 
@@ -72,32 +71,60 @@ func Values(input ...string) string {
 //
 // Exclamation mark(!) indicates ignore.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//  - Score: 1;
-//  - Order: empty field;
-//  - Kind: empty field;
-//  - Status: empty field;
-//  - Season: empty field;
-//  - Duration: empty field;
-//  - Rating: empty field;
-//  - Mylist: empty field;
-//  - Censored: false;
-//  - Genre_v2: empty field;
-//
 // 'Options' settings:
 //  - Page: >= 1;
 //  - Limit: 50 maximum;
-//  - Order: id, ranked, kind, popularity, name, aired_on, episodes, statust; random has been moved to a separate function, check [RandomAnime];
-//  - Kind: tv, movie, ova, ona, special, music, tv_13, tv_24, tv_48, !tv, !movie, !ova, !ona, !special, !music, !tv_13, !tv_24, !tv_48;
-//  - Status: anons, ongoing, released, !anons, !ongoing, !released;
-//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//
+//  - Order:
+//
+//  > ANIME_ORDER_ID, ANIME_ORDER_RANKED, ANIME_ORDER_KIND,
+//  ANIME_ORDER_POPULARITY, ANIME_ORDER_NAME, ANIME_ORDER_AIRED_ON,
+//  ANIME_ORDER_EPISODES, ANIME_ORDER_STATUS;
+//
+//  - Kind:
+//
+//  > ANIME_KIND_TV, ANIME_KIND_MOVIE, ANIME_KIND_OVA, ANIME_KIND_ONA,
+//  ANIME_KIND_SPECIAL, ANIME_KIND_MUSIC, ANIME_KIND_TV_13, ANIME_KIND_TV_24,
+//  ANIME_KIND_TV_48, ANIME_KIND_TV_NOT_EQUAL, ANIME_KIND_MOVIE_NOT_EQUAL,
+//  ANIME_KIND_OVA_NOT_EQUAL, ANIME_KIND_ONA_NOT_EQUAL, ANIME_KIND_SPECIAL_NOT_EQUAL,
+//  ANIME_KIND_MUSIC_NOT_EQUAL, ANIME_KIND_TV_13_NOT_EQUAL,
+//  ANIME_KIND_TV_24_NOT_EQUAL, ANIME_KIND_TV_48_NOT_EQUAL;
+//
+//  - Status:
+//
+//  > ANIME_STATUS_ANONS, ANIME_STATUS_ONGOING, ANIME_STATUS_RELEASED,
+//  ANIME_STATUS_ANONS_NOT_EQUAL, ANIME_STATUS_ONGOING_NOT_EQUAL,
+//  ANIME_STATUS_RELEASED_NOT_EQUAL;
+//
+//  - Season:
+//
+//  > SEASON_198x, SEASON_199x, SEASON_2000_2010, SEASON_2010_2014,
+//  SEASON_2015_2019, SEASON_2020_2021, SEASON_2022, SEASON_2023,
+//  SEASON_198x_NOT_EQUAL, SEASON_199x_NOT_EQUAL, SEASON_2000_2010_NOT_EQUAL,
+//  SEASON_2010_2014_NOT_EQUAL, SEASON_2015_2019_NOT_EQUAL,
+//  SEASON_2020_2021_NOT_EQUAL, SEASON_2022_NOT_EQUAL, SEASON_2023_NOT_EQUAL;
+//
+//  - Duration:
+//
+//  > ANIME_DURATION_S, ANIME_DURATION_D, ANIME_DURATION_F,
+//  ANIME_DURATION_S_NOT_EQUAL, ANIME_DURATION_D_NOT_EQUAL,
+//  ANIME_DURATION_F_NOT_EQUAL;
+//
+//  - Rating:
+//
+//  > ANIME_RATING_NONE, ANIME_RATING_G, ANIME_RATING_PG,
+//  ANIME_RATING_PG_13, ANIME_RATING_R, ANIME_RATING_R_PLUS, ANIME_RATING_RX,
+//  ANIME_RATING_G_NOT_EQUAL, ANIME_RATING_PG_NOT_EQUAL,
+//  ANIME_RATING_PG_13_NOT_EQUAL, ANIME_RATING_R_NOT_EQUAL,
+//  ANIME_RATING_R_PLUS_NOT_EQUAL, ANIME_RATING_RX_NOT_EQUAL;
+//
+//  - Mylist:
+//
+//  > MY_LIST_PLANNED, MY_LIST_WATCHING, MY_LIST_REWATCHING,
+//  MY_LIST_COMPLETED, MY_LIST_ON_HOLD, MY_LIST_DROPPED;
+//
 //  - Score: 1-9 maximum;
-//  - Duration: S, D, F, !S, !D, !F;
-//  - Rating: none, g, pg, pg_13, r, r_plus, rx, !g, !pg, !pg_13, !r, !r_plus, !rx;
 //  - Censored: true, false;
-//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
 //  - Genre_v2: id search. Below is a list of all available genres by id:
 //
 //  > 1 (Action); 2 (Adventure); 3 (Cars); 4 (Comedy); 5 (Dementia); 6 (Demons); 7 (Mystery);
@@ -136,68 +163,48 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
       }
     case 3:
       order, ok := option.(string)
-      if ok && search.IndexInSlice(order, []string{
-        "id", "ranked", "kind", "popularity", "name", "aired_on", "episodes", "status",
-      }) != -1 {
+      if ok && order != "" {
         parameterOptions.WriteString(", order: ")
         parameterOptions.WriteString(order)
       }
     case 4:
       kind, ok := option.(string)
-      if ok && search.IndexInSlice(kind, []string{
-        "tv", "movie", "ova", "ona", "special", "music",
-        "tv_13", "tv_24", "tv_48", "!tv", "!movie",
-        "!ova", "!ona", "!special", "!music", "!tv_13", "!tv_24", "!tv_48",
-      }) != -1 {
+      if ok && kind != "" {
         parameterOptions.WriteString(", kind: \"")
         parameterOptions.WriteString(kind)
         parameterOptions.WriteString("\"")
       }
     case 5:
       status, ok := option.(string)
-      if ok && search.IndexInSlice(status, []string{
-        "anons", "ongoing", "released", "!anons", "!ongoing", "!released",
-      }) != -1 {
+      if ok && status != "" {
         parameterOptions.WriteString(", status: \"")
         parameterOptions.WriteString(status)
         parameterOptions.WriteString("\"")
       }
     case 6:
       season, ok := option.(string)
-      if ok && search.IndexInSlice(season, []string{
-        "2000_2010", "2010_2014", "2015_2019", "199x",
-        "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
-        "198x", "!198x", "2020_2021", "!2020_2021",
-        "2022", "!2022", "2023", "!2023",
-      }) != -1 {
+      if ok && season != "" {
         parameterOptions.WriteString(", season: \"")
         parameterOptions.WriteString(season)
         parameterOptions.WriteString("\"")
       }
     case 7:
       duration, ok := option.(string)
-      if ok && search.IndexInSlice(duration, []string{
-        "S", "D", "F", "!S", "!D", "!F",
-      }) != -1 {
+      if ok && duration != "" {
         parameterOptions.WriteString(", duration: \"")
         parameterOptions.WriteString(duration)
         parameterOptions.WriteString("\"")
       }
     case 8:
       rating, ok := option.(string)
-      if ok && search.IndexInSlice(rating, []string{
-        "none", "g", "pg", "pg_13", "r", "r_plus", "rx",
-        "!g", "!pg", "!pg_13", "!r", "!r_plus", "!rx",
-      }) != -1 {
+      if ok && rating != "" {
         parameterOptions.WriteString(", rating: \"")
         parameterOptions.WriteString(rating)
         parameterOptions.WriteString("\"")
       }
     case 9:
       mylist, ok := option.(string)
-      if ok && search.IndexInSlice(mylist, []string{
-        "planned", "watching", "rewatching", "completed", "on_hold", "dropped",
-      }) != -1 {
+      if ok && mylist != "" {
         parameterOptions.WriteString(", mylist: \"")
         parameterOptions.WriteString(mylist)
         parameterOptions.WriteString("\"")
@@ -238,28 +245,44 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
 //
 // Exclamation mark(!) indicates ignore.
 //
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//  - Order: empty field;
-//  - Kind: empty field;
-//  - Status: empty field;
-//  - Season: empty field;
-//  - Score: empty field;
-//  - Censored: false;
-//  - Mylist: empty field;
-//  - Genre_v2: empty field;
-//
 // 'Options' settings:
 //  - Page: >= 1;
 //  - Limit: 50 maximum;
-//  - Order: id, ranked, kind, popularity, name, aired_on, volumes, chapters, status; random has been moved to a separate function, check [RandomManga];
-//  - Kind: manga, manhwa, manhua, light_novel, novel, one_shot, doujin, !manga, !manhwa, !manhua, !light_novel, !novel, !one_shot, !doujin;
-//  - Status: anons, ongoing, released, paused, discontinued, !anons, !ongoing, !released, !paused, !discontinued;
-//  - Season: 198x, 199x, 2000_2010, 2010_2014, 2015_2019, 2020_2021, 2022, 2023, !198x, !199x, !2000_2010, !2010_2014, !2015_2019, !2020_2021, !2022, !2023;
+//
+//  - Order:
+//
+//  > MANGA_ORDER_ID, MANGA_ORDER_RANKED, MANGA_ORDER_KIND, MANGA_ORDER_POPULARITY,
+//  MANGA_ORDER_NAME, MANGA_ORDER_AIRED_ON, MANGA_ORDER_VOLUMES,
+//  MANGA_ORDER_CHAPTERS, MANGA_ORDER_STATUS;
+//
+//  - Kind:
+//
+//  > MANGA_KIND_MANGA, MANGA_KIND_MANHWA, MANGA_KIND_MANHUA, MANGA_KIND_LIGHT_NOVEL,
+//  MANGA_KIND_NOVEL, MANGA_KIND_ONE_SHOT, MANGA_KIND_DOUJIN, MANGA_KIND_MANGA_NOT_EQUAL,
+//  MANGA_KIND_MANHWA_NOT_EQUAL, MANGA_KIND_MANHUA_NOT_EQUAL, MANGA_KIND_LIGHT_NOVEL_NOT_EQUAL,
+//  MANGA_KIND_NOVEL_NOT_EQUAL, MANGA_KIND_ONE_SHOT_NOT_EQUAL, MANGA_KIND_DOUJIN_NOT_EQUAL;
+//
+//  - Status:
+//
+//  > MANGA_STATUS_ANONS, MANGA_STATUS_ONGOING, MANGA_STATUS_RELEASED, MANGA_STATUS_PAUSED,
+//  MANGA_STATUS_DISCONTINUED, MANGA_STATUS_ANONS_NOT_EQUAL, MANGA_STATUS_ONGOING_NOT_EQUAL,
+//  MANGA_STATUS_RELEASED_NOT_EQUAL, MANGA_STATUS_PAUSED_NOT_EQUAL, MANGA_STATUS_DISCONTINUED_NOT_EQUAL;
+//
+//  - Season:
+//
+//  > SEASON_198x, SEASON_199x, SEASON_2000_2010, SEASON_2010_2014,
+//  SEASON_2015_2019, SEASON_2020_2021, SEASON_2022, SEASON_2023,
+//  SEASON_198x_NOT_EQUAL, SEASON_199x_NOT_EQUAL, SEASON_2000_2010_NOT_EQUAL,
+//  SEASON_2010_2014_NOT_EQUAL, SEASON_2015_2019_NOT_EQUAL,
+//  SEASON_2020_2021_NOT_EQUAL, SEASON_2022_NOT_EQUAL, SEASON_2023_NOT_EQUAL;
+//
+//  - Mylist:
+//
+//  > MY_LIST_PLANNED, MY_LIST_WATCHING, MY_LIST_REWATCHING,
+//  MY_LIST_COMPLETED, MY_LIST_ON_HOLD, MY_LIST_DROPPED;
+//
 //  - Score: 1-9 maximum;
 //  - Censored: true, false;
-//  - Mylist: planned, watching, rewatching, completed, on_hold, dropped;
 //  - Genre_v2: id search. Below is a list of all available genres by id:
 //
 //  > 46 (Mystery); 47 (Shounen); 48 (Supernatural);
@@ -299,51 +322,34 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
       }
     case 3:
       order, ok := option.(string)
-      if ok && search.IndexInSlice(order, []string{
-        "id", "ranked", "kind", "popularity",
-        "name", "aired_on", "volumes", "chapters", "status",
-      }) != -1 {
+      if ok && order != "" {
         parameterOptions.WriteString(", order: ")
         parameterOptions.WriteString(order)
       }
     case 4:
       kind, ok := option.(string)
-      if ok && search.IndexInSlice(kind, []string {
-        "manga", "manhwa", "manhua", "light_novel", "novel",
-        "one_shot", "doujin", "!manga", "!manhwa", "!manhua",
-        "!light_novel", "!novel", "!one_shot", "!doujin",
-      }) != -1 {
+      if ok && kind != "" {
         parameterOptions.WriteString(", kind: \"")
         parameterOptions.WriteString(kind)
         parameterOptions.WriteString("\"")
       }
     case 5:
       status, ok := option.(string)
-      if ok && search.IndexInSlice(status, []string{
-        "anons", "ongoing", "released", "paused", "discontinued",
-        "!anons", "!ongoing", "!released", "!paused", "!discontinued",
-      }) != -1 {
+      if ok && status != "" {
         parameterOptions.WriteString(", status: \"")
         parameterOptions.WriteString(status)
         parameterOptions.WriteString("\"")
       }
     case 6:
       season, ok := option.(string)
-      if ok && search.IndexInSlice(season, []string{
-        "2000_2010", "2010_2014", "2015_2019", "199x",
-        "!2000_2010", "!2010_2014", "!2015_2019", "!199x",
-        "198x", "!198x", "2020_2021", "!2020_2021",
-        "2022", "!2022", "2023", "!2023",
-      }) != -1 {
+      if ok && season != "" {
         parameterOptions.WriteString(", season: \"")
         parameterOptions.WriteString(season)
         parameterOptions.WriteString("\"")
       }
     case 7:
       mylist, ok := option.(string)
-      if ok && search.IndexInSlice(mylist, []string{
-        "planned", "watching", "rewatching", "completed", "on_hold", "dropped",
-      }) != -1 {
+      if ok && mylist != "" {
         parameterOptions.WriteString(", mylist: \"")
         parameterOptions.WriteString(mylist)
         parameterOptions.WriteString("\"")
@@ -379,10 +385,6 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
 // Values: parameters we want to receive from the server.
 //
 // Name: character name.
-//
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
 //
 // 'Options' settings:
 //  - Page: >= 1;
@@ -425,13 +427,6 @@ func CharacterSchema(values string, name string, options ...interface{}) (string
 // Values: parameters we want to receive from the server.
 //
 // Name: people name.
-//
-// If 'Options' empty fields:
-//  - Page: 1;
-//  - Limit: 1;
-//  - isSeyu: true;
-//  - isMangaka: true;
-//  - isProducer: true;
 //
 // 'Options' settings:
 //  - Page: >= 1;

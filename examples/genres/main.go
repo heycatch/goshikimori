@@ -16,7 +16,7 @@ func config() *g.Configuration {
 
 func main() {
   c := config()
-  genres, status, err := c.SearchGenres("anime")
+  genres, status, err := c.SearchGenres(g.GENRES_ANIME)
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return
@@ -29,7 +29,7 @@ func main() {
     fmt.Println(v.Id, v.Name, v.Russian, v.Kind, v.Entry_type)
   }
   // A small map helper.
-  m := concat.GenerateGenres("Anime", genres)
+  m := concat.GenerateGenres(g.GENERATE_GENRES_ANIME, genres)
   fmt.Println(m)
 }
 

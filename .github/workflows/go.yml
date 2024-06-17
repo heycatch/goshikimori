@@ -19,5 +19,3 @@ jobs:
         run: go test -v configuration_test.go configuration.go
       - name: Concatination tests
         run: go test -v ./concat
-      - name: Search test
-        run: go test -v ./search

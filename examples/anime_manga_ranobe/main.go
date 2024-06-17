@@ -33,9 +33,9 @@ func foundAnime() {
 func foundAnimes() {
   c := config()
   o := &g.Options{
-    Page: 1, Limit: 5, Order: "", Kind: "", Status: "released",
-    Season: "199x", Rating: "", Duration: "",
-    Mylist: "", Genre_v2: []int{3}, // SKIP GENRE: Genre_v2: nil,
+    Page: 1, Limit: 5, Order: "", Kind: "", Status: g.ANIME_STATUS_RELEASED,
+    Season: g.SEASON_199x, Rating: "", Duration: "",
+    Mylist: g.MY_LIST_COMPLETED, Genre_v2: []int{3}, // SKIP GENRE: Genre_v2: nil,
   }
   a, status, err := c.SearchAnimes("initial d", o)
   if status != 200 || err != nil {
@@ -72,8 +72,8 @@ func foundManga() {
 func foundMangas() {
   c := config()
   o := &g.Options{
-    Page: 1, Limit: 1, Order: "", Kind: "", Status: "released",
-    Season: "199x", Score: 8, Censored: false, Mylist: "", Genre_v2: []int{84}, // SKIP GENRE: Genre_v2: nil,
+    Page: 1, Limit: 1, Order: "", Kind: "", Status: g.MANGA_STATUS_RELEASED,
+    Season: g.SEASON_199x, Score: 8, Censored: false, Mylist: "", Genre_v2: []int{84}, // SKIP GENRE: Genre_v2: nil,
   }
   m, status, err := c.SearchMangas("initial d", o)
   if status != 200 || err != nil {
@@ -110,8 +110,8 @@ func foundRanobe() {
 func foundRanobes() {
   c := config()
   o := &g.Options{
-    Page: 1, Limit: 10, Order: "", Status: "released",
-    Season: "", Mylist: "", Genre_v2: []int{49}, // SKIP GENRE: Genre_v2: nil,
+    Page: 1, Limit: 10, Order: g.MANGA_ORDER_POPULARITY, Status: g.MANGA_STATUS_RELEASED,
+    Season: "", Mylist: g.MY_LIST_PLANNED, Genre_v2: []int{49}, // SKIP GENRE: Genre_v2: nil,
   }
   r, status, err := c.SearchRanobes("angel", o)
   if status != 200 || err != nil {

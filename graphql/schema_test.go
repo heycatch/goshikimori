@@ -2,6 +2,8 @@ package graphql
 
 import "testing"
 
+// Constants are not available in tests, so they are implemented manually.
+
 func TestAnimeSchema(t *testing.T) {
   pass_normal := `graphql?query={animes(search: "initial d", page: 1, limit: 1, score: 8, order: id, kind: "tv", status: "!anons", season: "199x", duration: "F", rating: "!rx", mylist: "completed", censored: false, genre: "3-Cars,4-Comedy"){id name russian english japanese score airedOn{year month day date} }}`
   normal, _ := AnimeSchema(

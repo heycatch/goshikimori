@@ -65,7 +65,7 @@ func main() {
   }
 
   // Search topics.
-  o := &g.Options{Page: 1, Limit: 1, Forum: ""}
+  o := &g.Options{Page: 1, Limit: 1, Forum: g.TOPIC_FORUM_ANIMANGA}
   t, status, err := c.SearchTopics(o)
   if status != 200 || err != nil {
     fmt.Println(status, err)
