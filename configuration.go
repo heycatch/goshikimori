@@ -44,7 +44,8 @@ func (c *Configuration) GetConfiguration() (string, string) {
   return c.Application, c.AccessToken
 }
 
-// You need to enter the application and the private key.
+// For GET requests the name of the application is sufficient.
+// A access token is required for POST/PUT/DELETE.
 //
 // To register the application, follow the link from [OAuth].
 //

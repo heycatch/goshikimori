@@ -35,7 +35,7 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 6(users/) + ?(name)
-    concat.Url(32+len(name), []string{SITE, "users/", name}), 10,
+    concat.Url(32+len(name), []string{SITE, "users/", languageCheck(name)}), 10,
   )
   if err != nil {
     return u, 0, err
@@ -83,7 +83,7 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, er
     c.Application, c.AccessToken,
     // 26(SITE) + 13(users?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(40+len(name)+len(opt), []string{
-      SITE, "users?search=", name, "&", opt,
+      SITE, "users?search=", languageCheck(name), "&", opt,
     }), 10,
   )
   if err != nil {
@@ -425,6 +425,8 @@ func (f *FastId) SearchUserBans() ([]api.Bans, error) {
   return b, nil
 }
 
+// This function with a GET request is an exception and a private key is required.
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/whoami
@@ -432,7 +434,7 @@ func (c *Configuration) WhoAmi() (api.Who, int, error) {
   var w api.Who
   var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
+  get, cancel, err := NewGetRequestWithCancelAndBearer(
     c.Application, c.AccessToken,
     // 26(SITE) + 12(users/whoami)
     concat.Url(38, []string{
@@ -588,7 +590,7 @@ func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, 
     c.Application, c.AccessToken,
     // 26(SITE) + 14(animes?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(41+len(name)+len(opt), []string{
-      SITE, "animes?search=", name, "&", opt,
+      SITE, "animes?search=", languageCheck(name), "&", opt,
     }), 10,
   )
   if err != nil {
@@ -725,7 +727,7 @@ func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, 
     c.Application, c.AccessToken,
     // 26(SITE) + 14(mangas?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(41+len(name)+len(opt), []string{
-      SITE, "mangas?search=", name, "&", opt,
+      SITE, "mangas?search=", languageCheck(name), "&", opt,
     }), 10,
   )
   if err != nil {
@@ -854,7 +856,7 @@ func (c *Configuration) SearchRanobes(name string, r Result) ([]api.Mangas, int,
     c.Application, c.AccessToken,
     // 26(SITE) + 14(ranobe?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(41+len(name)+len(opt), []string{
-      SITE, "ranobe?search=", name, "&", opt,
+      SITE, "ranobe?search=", languageCheck(name), "&", opt,
     }), 10,
   )
   if err != nil {
@@ -890,7 +892,8 @@ func (c *Configuration) FastIdUser(name string) (*FastId, int, error) {
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 6(users/) + ?(name)
-    concat.Url(32+len(name), []string{SITE, "users/", name,}), 10,
+    concat.Url(32+len(name), []string{
+      SITE, "users/", languageCheck(name)}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -925,7 +928,8 @@ func (c *Configuration) FastIdAnime(name string) (*FastId, int, error) {
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 14(animes?search=) + ?(name)
-    concat.Url(40+len(name), []string{SITE, "animes?search=", name}), 10,
+    concat.Url(40+len(name), []string{
+      SITE, "animes?search=", languageCheck(name)}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -966,7 +970,8 @@ func (c *Configuration) FastIdManga(name string) (*FastId, int, error) {
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 14(mangas?search=) + ?(name)
-    concat.Url(40+len(name), []string{SITE, "mangas?search=", name}), 10,
+    concat.Url(40+len(name), []string{
+      SITE, "mangas?search=", languageCheck(name)}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -1006,7 +1011,8 @@ func (c *Configuration) FastIdRanobe(name string) (*FastId, int, error) {
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 14(ranobe?search=) + ?(name)
-    concat.Url(40+len(name), []string{SITE, "ranobe?search=", name}), 10,
+    concat.Url(40+len(name), []string{
+      SITE, "ranobe?search=", languageCheck(name)}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -1046,7 +1052,8 @@ func (c *Configuration) FastIdClub(name string) (*FastId, int, error) {
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 13(clubs?search=) + ?(name)
-    concat.Url(39+len(name), []string{SITE, "clubs?search=", name}), 10,
+    concat.Url(39+len(name), []string{
+      SITE, "clubs?search=", languageCheck(name)}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -1087,7 +1094,7 @@ func (c *Configuration) FastIdCharacter(name string) (*FastId, int, error) {
     c.Application, c.AccessToken,
     // 26(SITE) + 25(characters/search?search=) + ?(name)
     concat.Url(51+len(name), []string{
-      SITE, "characters/search?search=", name,
+      SITE, "characters/search?search=", languageCheck(name),
     }), 10,
   )
   if err != nil {
@@ -1119,9 +1126,6 @@ func (c *Configuration) FastIdCharacter(name string) (*FastId, int, error) {
 }
 
 // Name: people name.
-//
-// NOTES: There is a conflict with a long word in Latin. Everything is fine in Cyrillic.
-// At the moment the problem has been solved by an additional check for unicode.
 //
 // Search by user is case sensitive.
 func (c *Configuration) FastIdPeople(name string) (*FastId, int, error) {
@@ -1685,7 +1689,7 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
     c.Application, c.AccessToken,
     // 26(SITE) + 13(clubs?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(40+len(name)+len(opt), []string{
-      SITE, "clubs?search=", name, "&", opt,
+      SITE, "clubs?search=", languageCheck(name), "&", opt,
     }), 10,
   )
   if err != nil {
@@ -2388,9 +2392,7 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 9(calendar?) + ?(Result)
-    concat.Url(35+len(opt), []string{
-      SITE, "calendar?", opt,
-    }), 10,
+    concat.Url(35+len(opt), []string{SITE, "calendar?", opt}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -2415,7 +2417,9 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
   return ca, resp.StatusCode, nil
 }
 
-// name: GENRES_ANIME or GENRES_MANGA.
+// Name:
+//
+// > GENRES_ANIME, GENRES_MANGA;
 //
 // More information can be found in the [example].
 //
@@ -3205,7 +3209,8 @@ func (c *Configuration) SearchCharacters(name string) ([]api.CharacterInfo, int,
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 25(characters/search?search=) + ?(name)
-    concat.Url(51+len(name), []string{SITE, "characters/search?search=", name}), 10,
+    concat.Url(51+len(name), []string{SITE,
+      "characters/search?search=", languageCheck(name)}), 10,
   )
   if err != nil {
     return nil, 0, err
@@ -3289,7 +3294,7 @@ func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, i
   get, cancel, err := NewGetRequestWithCancel(
     c.Application, c.AccessToken,
     concat.Url(48+len(name)+len(opt), []string{
-      SITE, "people/search?search=", name, "&", opt,
+      SITE, "people/search?search=", languageCheck(name), "&", opt,
     }), 10,
   )
   if err != nil {
@@ -3328,7 +3333,7 @@ func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, i
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/favorites
-func (f *FastId) FavoritesCreate(linked_type string, kind string) (api.Favorites, error) {
+func (f *FastId) FavoritesCreate(linked_type, kind string) (api.Favorites, error) {
   var fa api.Favorites
   var client = &http.Client{}
 

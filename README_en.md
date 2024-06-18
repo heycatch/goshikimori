@@ -3,8 +3,10 @@
 ### About
 A small library for interacting with shikimori, written in golang.
 * Work with API occurs only through `OAuth2`.
+And you have to start by familiarizing yourself
+with the documentation [first steps](https://github.com/heycatch/goshikimori/blob/master/examples/first_steps/README_en.md).
 * No dependencies on other libraries.
-* The GNU [make](https://www.gnu.org/software/make/manual/make.html)
+* The [GNU make](https://www.gnu.org/software/make/manual/make.html)
 utility is used for tests and builds.
 
 ### Install
@@ -51,7 +53,6 @@ http://localhost:1337/pkg/github.com/heycatch/goshikimori
 * [GraphQL](https://shikimori.one/api/doc/graphql)
 * [API v1](https://shikimori.one/api/doc/1.0)
 * [API v2](https://shikimori.one/api/doc/2.0)
-* [OAuth2](https://shikimori.one/oauth)
 
 ### Feedback
 * Private message on the [website](https://shikimori.one/arctica).

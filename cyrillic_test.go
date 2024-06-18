@@ -61,6 +61,10 @@ func TestCharacter(t *testing.T) {
 }
 
 func TestClub(t *testing.T) {
+  var s StatusBar
+  s.settings(5, "#", 1)
+  s.run()
+
   c := conf()
 
   fastc, _, _ := c.FastIdClub("Ачивки (достижения)")
@@ -115,6 +119,10 @@ func TestManga(t *testing.T) {
 }
 
 func TestAnime(t *testing.T) {
+  var s StatusBar
+  s.settings(5, "#", 1)
+  s.run()
+
   c := conf()
 
   fastc, _, _ := c.FastIdAnime("Тетрадь смерти")

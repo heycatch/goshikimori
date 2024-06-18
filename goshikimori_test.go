@@ -1,23 +1,19 @@
 package goshikimori
 
 import (
-  "fmt"
   "os"
   "testing"
 
   graph "github.com/heycatch/goshikimori/graphql"
 )
 
-const (
-  app_test = ""
-  tok_test = ""
-)
+const app_test = ""
 
-func conf() *Configuration { return SetConfiguration(app_test, tok_test) }
+func conf() *Configuration { return SetConfiguration(app_test, "") }
 
 func TestConfiguration(t *testing.T) {
-  if app_test != "" && tok_test != "" {
-    t.Logf("Found: %s and %s", app_test, tok_test)
+  if app_test != "" {
+    t.Logf("Found: %s", app_test)
   } else {
     t.Error("Not found application or token")
     os.Exit(1)
@@ -81,8 +77,6 @@ func TestClubs(t *testing.T) {
 }
 
 func TestAchievements(t *testing.T) {
-  fmt.Println("Too many requests at once, waiting 5 seconds...")
-
   var s StatusBar
   s.settings(5, "#", 1)
   s.run()
@@ -118,8 +112,6 @@ func TestAnimeVideos(t *testing.T) {
 }
 
 func TestUserUnreadMessages(t *testing.T) {
-  fmt.Println("Too many requests at once, waiting 5 seconds...")
-
   var s StatusBar
   s.settings(5, "#", 1)
   s.run()
@@ -168,8 +160,6 @@ func TestConstantsManga(t *testing.T) {
 }
 
 func TestAnimeGraphql(t *testing.T) {
-  fmt.Println("Too many requests at once, waiting 5 seconds...")
-
   var s StatusBar
   s.settings(5, "#", 1)
   s.run()

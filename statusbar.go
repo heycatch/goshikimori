@@ -1,3 +1,4 @@
+// Status bar serves to slow down requests in tests.
 package goshikimori
 
 import (
@@ -5,7 +6,6 @@ import (
   "time"
 )
 
-// Status bar serves to slow down requests in tests.
 type conv float32
 
 type StatusBar struct {
@@ -21,6 +21,8 @@ func (s *StatusBar) settings(length int, symbol string, wait time.Duration) {
 }
 
 func (s *StatusBar) run() {
+  fmt.Printf("Too many requests at once, waiting %d seconds...\n", s.Total)
+
   for i := 0; i <= s.Total; i++ {
     s.Current = i
     last := s.Percent
@@ -32,5 +34,6 @@ func (s *StatusBar) run() {
 
     time.Sleep(s.Wait * time.Second)
   }
-  fmt.Println()
+
+  fmt.Println() // Is needed to move it to a new line at the end.
 }

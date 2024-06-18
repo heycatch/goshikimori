@@ -10,7 +10,21 @@ import (
   "github.com/heycatch/goshikimori/concat"
 )
 
+// Normal GET request with User-Agent only.
 func NewGetRequestWithCancel(application, accessToken, search string,
+    number time.Duration) (*http.Request, context.CancelFunc, error) {
+  // In requests I set the time to 10 seconds.
+  ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
+  req, err := http.NewRequestWithContext(ctx, http.MethodGet, search, nil)
+  if err != nil {
+    return req, cancel, err
+  }
+  req.Header.Add("User-Agent", application)
+  return req, cancel, nil
+}
+
+// For certain GET requests where a Bearer is needed.
+func NewGetRequestWithCancelAndBearer(application, accessToken, search string,
     number time.Duration) (*http.Request, context.CancelFunc, error) {
   // In requests I set the time to 10 seconds.
   ctx, cancel := context.WithTimeout(context.Background(), number * time.Second)
