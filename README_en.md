@@ -2,7 +2,7 @@
 
 ### About
 A small library for interacting with shikimori, written in golang.
-* Work with API occurs only through `OAuth2`.
+* Work with API occurs only through `OAuth2`. \
 And you have to start by familiarizing yourself
 with the documentation [first steps](https://github.com/heycatch/goshikimori/blob/master/examples/first_steps/README_en.md).
 * No dependencies on other libraries.

@@ -21,6 +21,8 @@ import (
   "github.com/heycatch/goshikimori/concat"
 )
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Name: user name.
 //
 // Search by user is case sensitive.
@@ -61,6 +63,8 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
 }
 
 // FIXME: Limit always returns +1 of the given number.
+//
+// Only the application needs to be specified in SetConfiguration().
 //
 // Name: user name.
 //
@@ -109,6 +113,8 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, er
   return u, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 100 maximum;
@@ -154,6 +160,8 @@ func (f *FastId) SearchUserFriends(r Result) ([]api.UserFriends, error) {
   return uf, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
@@ -194,6 +202,8 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
 }
 
 // FIXME: Limit always returns +1 of the given number.
+//
+// Only the application needs to be specified in SetConfiguration().
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
@@ -249,6 +259,8 @@ func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
 
 // FIXME: Limit always returns +1 of the given number.
 //
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' Settings:
 //  - Page: 100000 maximum;
 //  - Limit: 5000 maximum;
@@ -296,6 +308,8 @@ func (f *FastId) SearchUserMangaRates(r Result) ([]api.UserMangaRates, error) {
   return mr, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
@@ -336,6 +350,8 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
 }
 
 // FIXME: Limit always returns +1 of the given number.
+//
+// Only the application needs to be specified in SetConfiguration().
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
@@ -386,6 +402,8 @@ func (f *FastId) SearchUserHistory(r Result) ([]api.UserHistory, error) {
   return uh, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
@@ -425,7 +443,7 @@ func (f *FastId) SearchUserBans() ([]api.Bans, error) {
   return b, nil
 }
 
-// This function with a GET request is an exception and a private key is required.
+// In SetConfiguration(), you must specify the application and the token.
 //
 // More information can be found in the [example].
 //
@@ -464,6 +482,8 @@ func (c *Configuration) WhoAmi() (api.Who, int, error) {
   return w, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
@@ -503,6 +523,8 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
   return a, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Name: anime name.
 //
 // 'Options' settings:
@@ -616,6 +638,8 @@ func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, 
   return a, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
@@ -655,6 +679,8 @@ func (f *FastId) SearchManga() (api.Manga, error) {
   return m, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Name: manga name.
 //
 // 'Options' settings:
@@ -753,6 +779,8 @@ func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, 
   return m, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
@@ -792,6 +820,8 @@ func (f *FastId) SearchRanobe() (api.Manga, error) {
   return m, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Name: ranobe name.
 //
 // 'Options' settings:
@@ -882,6 +912,8 @@ func (c *Configuration) SearchRanobes(name string, r Result) ([]api.Mangas, int,
   return m, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Name: user name.
 //
 // Search by user is case sensitive.
@@ -918,6 +950,8 @@ func (c *Configuration) FastIdUser(name string) (*FastId, int, error) {
   return &FastId{Id: u.Id, Conf: *c, Err: err}, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Name: anime name.
 //
 // Search by user is case sensitive.
@@ -960,6 +994,8 @@ func (c *Configuration) FastIdAnime(name string) (*FastId, int, error) {
   return &FastId{Id: a[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Name: manga name.
 //
 // Search by user is case sensitive.
@@ -1001,6 +1037,8 @@ func (c *Configuration) FastIdManga(name string) (*FastId, int, error) {
   return &FastId{Id: m[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Name: ranobe name.
 //
 // Search by user is case sensitive.
@@ -1042,6 +1080,8 @@ func (c *Configuration) FastIdRanobe(name string) (*FastId, int, error) {
   return &FastId{Id: m[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Name: club name.
 //
 // Search by user is case sensitive.
@@ -1083,6 +1123,8 @@ func (c *Configuration) FastIdClub(name string) (*FastId, int, error) {
   return &FastId{Id: cl[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Name: character name.
 //
 // Search by user is case sensitive.
@@ -1125,6 +1167,8 @@ func (c *Configuration) FastIdCharacter(name string) (*FastId, int, error) {
   return &FastId{Id: ch[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Name: people name.
 //
 // Search by user is case sensitive.
@@ -1167,6 +1211,8 @@ func (c *Configuration) FastIdPeople(name string) (*FastId, int, error) {
   return &FastId{Id: ap[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_screenshots
@@ -1206,6 +1252,8 @@ func (f *FastId) SearchAnimeScreenshots() ([]api.AnimeScreenshots, error) {
   return s, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/franchise
@@ -1244,6 +1292,8 @@ func (f *FastId) SearchAnimeFranchise() (api.Franchise, error) {
   return ff, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/franchise
@@ -1282,6 +1332,8 @@ func (f *FastId) SearchMangaFranchise() (api.Franchise, error) {
   return ff, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/franchise
@@ -1320,6 +1372,8 @@ func (f *FastId) SearchRanobeFranchise() (api.Franchise, error) {
   return ff, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/external_links
@@ -1358,6 +1412,8 @@ func (f *FastId) SearchAnimeExternalLinks() ([]api.ExternalLinks, error) {
   return el, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/external_links
@@ -1396,6 +1452,8 @@ func (f *FastId) SearchMangaExternalLinks() ([]api.ExternalLinks, error) {
   return el, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/external_links
@@ -1434,6 +1492,8 @@ func (f *FastId) SearchRanobeExternalLinks() ([]api.ExternalLinks, error) {
   return el, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/similar
@@ -1473,6 +1533,8 @@ func (f *FastId) SearchSimilarAnime() ([]api.Animes, error) {
   return a, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/similar
@@ -1512,6 +1574,8 @@ func (f *FastId) SearchSimilarManga() ([]api.Mangas, error) {
   return m, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/similar
@@ -1551,6 +1615,8 @@ func (f *FastId) SearchSimilarRanobe() ([]api.Mangas, error) {
   return m, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/related
@@ -1590,6 +1656,8 @@ func (f *FastId) SearchRelatedAnime() ([]api.RelatedAnimes, error) {
   return a, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/related
@@ -1629,6 +1697,8 @@ func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, error) {
   return m, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/related
@@ -1669,6 +1739,8 @@ func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, error) {
 }
 
 // FIXME: Limit always returns +1 of the given number.
+//
+// Only the application needs to be specified in SetConfiguration().
 //
 // Name: club name.
 //
@@ -1717,6 +1789,8 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
 
 // FIXME: The limit does not work and always gives the maximum amount.
 //
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 20 maximum;
@@ -1762,6 +1836,8 @@ func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
 }
 
 // FIXME: The limit does not work and always gives the maximum amount.
+//
+// Only the application needs to be specified in SetConfiguration().
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
@@ -1809,6 +1885,8 @@ func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
 
 // FIXME: The limit does not work and always gives the maximum amount.
 //
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 20 maximum;
@@ -1854,6 +1932,8 @@ func (f *FastId) SearchClubRanobe(r Result) ([]api.Mangas, error) {
 }
 
 // FIXME: The limit does not work and always gives the maximum amount.
+//
+// Only the application needs to be specified in SetConfiguration().
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
@@ -1901,6 +1981,8 @@ func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
 
 // FIXME: The limit does not work and always gives the maximum amount.
 //
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
@@ -1946,6 +2028,8 @@ func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
 }
 
 // FIXME: The limit does not work and always gives the maximum amount.
+//
+// Only the application needs to be specified in SetConfiguration().
 //
 // 'Options' settings:
 //  - Page: 100000 maximum;
@@ -1993,6 +2077,8 @@ func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, error) 
 
 // FIXME: Limit always returns +1 of the given number.
 //
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 100 maximum;
@@ -2039,6 +2125,8 @@ func (f *FastId) SearchClubMembers(r Result) ([]api.UserFriends, error) {
 
 // FIXME: Limit always returns +1 of the given number.
 //
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 100 maximum;
@@ -2083,6 +2171,8 @@ func (f *FastId) SearchClubImages(r Result) ([]api.ClubImages, error) {
   return cm, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
@@ -2112,6 +2202,8 @@ func (f *FastId) ClubJoin() (int, error) {
   return resp.StatusCode, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
@@ -2185,6 +2277,8 @@ func (f *FastId) SearchAchievement() ([]api.Achievements, error) {
   return a, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/video
@@ -2223,6 +2317,8 @@ func (f *FastId) SearchAnimeVideos() ([]api.AnimeVideos, error) {
   return v, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/roles
@@ -2262,6 +2358,8 @@ func (f *FastId) SearchAnimeRoles() ([]api.Roles, error) {
   return r, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/roles
@@ -2301,6 +2399,8 @@ func (f *FastId) SearchMangaRoles() ([]api.Roles, error) {
   return r, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/roles
@@ -2340,6 +2440,8 @@ func (f *FastId) SearchRanobeRoles() ([]api.Roles, error) {
   return r, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/bans
@@ -2375,6 +2477,8 @@ func (c *Configuration) SearchBans() ([]api.Bans, int, error) {
   return b, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Censored: true, false;
 //
@@ -2417,6 +2521,8 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
   return ca, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Name:
 //
 // > GENRES_ANIME, GENRES_MANGA;
@@ -2457,6 +2563,8 @@ func (c *Configuration) SearchGenres(name string) ([]api.Genres, int, error) {
   return g, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/studios
@@ -2492,6 +2600,8 @@ func (c *Configuration) SearchStudios() ([]api.Studios, int, error) {
   return s, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/publishers
@@ -2527,6 +2637,8 @@ func (c *Configuration) SearchPublishers() ([]api.Publishers, int, error) {
   return p, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/forums
@@ -2562,6 +2674,8 @@ func (c *Configuration) SearchForums() ([]api.Forums, int, error) {
   return f, resp.StatusCode, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/add_remove_friend
@@ -2601,6 +2715,8 @@ func (f *FastId) AddFriend() (api.FriendRequest, error) {
   return ff, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/add_remove_friend
@@ -2640,6 +2756,8 @@ func (f *FastId) RemoveFriend() (api.FriendRequest, error) {
   return ff, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // Show current user unread messages counts.
 //
 // More information can be found in the [example].
@@ -2681,6 +2799,8 @@ func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
   return um, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 100 maximum;
@@ -2729,6 +2849,8 @@ func (f *FastId) UserMessages(r Result) ([]api.Messages, error) {
   return m, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
@@ -2764,6 +2886,8 @@ func (c *Configuration) SearchConstantsAnime() (api.Constants, int, error) {
   return ca, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
@@ -2799,6 +2923,8 @@ func (c *Configuration) SearchConstantsManga() (api.Constants, int, error) {
   return cm, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
@@ -2834,6 +2960,8 @@ func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, int, e
   return ur, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
@@ -2869,6 +2997,8 @@ func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, int, error) {
   return cc, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
@@ -2904,6 +3034,8 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, e
   return cs, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Limit: 50 maximum;
 //  - Kind:
@@ -3001,6 +3133,8 @@ func (c *Configuration) RandomAnimes(r Result) ([]api.Animes, int, error) {
   return a, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Limit: 50 maximum;
 //  - Kind:
@@ -3083,6 +3217,8 @@ func (c *Configuration) RandomMangas(r Result) ([]api.Mangas, int, error) {
   return m, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Limit: 50 maximum;
 //  - Status:
@@ -3158,6 +3294,8 @@ func (c *Configuration) RandomRanobes(r Result) ([]api.Mangas, int, error) {
   return m, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/character
@@ -3197,6 +3335,8 @@ func (f *FastId) SearchCharacter() (api.Character, error) {
   return ch, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Name: character name.
 //
 // More information can be found in the [example].
@@ -3235,6 +3375,8 @@ func (c *Configuration) SearchCharacters(name string) ([]api.CharacterInfo, int,
   return ci, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/people
@@ -3274,6 +3416,8 @@ func (f *FastId) SearchPeople() (api.People, error) {
 }
 
 // FIXME: Page and limit not supprted, idk why. Check later.
+//
+// Only the application needs to be specified in SetConfiguration().
 //
 // Name: people name.
 //
@@ -3319,6 +3463,8 @@ func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, i
   return ap, resp.StatusCode, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // Linked_type:
 //
 // > FAVORITES_LINKED_TYPE_ANIME, FAVORITES_LINKED_TYPE_MANGA,
@@ -3371,6 +3517,8 @@ func (f *FastId) FavoritesCreate(linked_type, kind string) (api.Favorites, error
   return fa, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // Linked_type:
 //
 // > FAVORITES_LINKED_TYPE_ANIME, FAVORITES_LINKED_TYPE_MANGA,
@@ -3418,6 +3566,8 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
 
 // FIXME: https://github.com/heycatch/goshikimori/issues/14
 //
+// In SetConfiguration(), you must specify the application and the token.
+//
 // Position: a new position on the list, it starts from 0.
 //
 // You can only get a StatusCode.
@@ -3451,6 +3601,8 @@ func (f *FastId) FavoritesReorder(position int) (int, error) {
   return resp.StatusCode, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/ignore
@@ -3490,6 +3642,8 @@ func (f *FastId) AddIgnoreUser() (api.IgnoreUser, error) {
   return i, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/ignore
@@ -3529,6 +3683,8 @@ func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, error) {
   return i, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/dialogs
@@ -3563,6 +3719,8 @@ func (c *Configuration) Dialogs() ([]api.Dialogs, int, error) {
   return d, resp.StatusCode, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // When using FastIdUser()/SetFastId(), specify the user's nickname (not your own).
 //
 // More information can be found in the [example].
@@ -3604,6 +3762,8 @@ func (f *FastId) SearchDialogs() ([]api.SearchDialogs, error) {
   return sd, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // When using FastIdUser()/SetFastId(), specify the user's nickname (not your own).
 //
 // More information can be found in the [example].
@@ -3646,6 +3806,8 @@ func (f *FastId) DeleteDialogs() (api.FriendRequest, error) {
   return fr, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
@@ -3685,6 +3847,8 @@ func (f *FastId) UserBriefInfo() (api.Info, error) {
   return i, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // https://github.com/heycatch/goshikimori/issues/26
 func (c *Configuration) SignOut() (string, int, error) {
   var client = &http.Client{}
@@ -3715,6 +3879,8 @@ func (c *Configuration) SignOut() (string, int, error) {
   return string(data), resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Users having at least 1 completed animes and active during last month.
 //
 // Time to complete request increased to 40 seconds. Too big request.
@@ -3756,6 +3922,8 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
   return ids, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
@@ -3800,6 +3968,8 @@ func (f *FastId) SearchTopicsAnime(r Result) ([]api.Topics, error) {
   return t, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
@@ -3844,6 +4014,8 @@ func (f *FastId) SearchTopicsManga(r Result) ([]api.Topics, error) {
   return t, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
@@ -3888,6 +4060,8 @@ func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, error) {
   return t, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
@@ -3951,6 +4125,8 @@ func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
 
 // FIXME: Limit always returns +1 of the given number.
 //
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Page: 100000 maximum;
 //  - Limit: 30 maximum;
@@ -3992,6 +4168,8 @@ func (c *Configuration) SearchTopicsUpdates(r Result) ([]api.TopicsUpdates, int,
   return t, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // 'Options' settings:
 //  - Limit: 10 maximum;
 //
@@ -4032,6 +4210,8 @@ func (c *Configuration) SearchTopicsHot(r Result) ([]api.Topics, int, error) {
   return t, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // You can find the ID in functions such as: SearchTopics(), SearchTopicsUpdates(), SearchTopicsHot()
 //
 // More information can be found in the [example].
@@ -4071,6 +4251,8 @@ func (c *Configuration) SearchTopicsId(id int) (api.TopicsId, int, error) {
   return t, resp.StatusCode, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // You can find the ID in functions such as: SearchTopics(), SearchTopicsUpdates(), SearchTopicsHot()
 //
 // More information can be found in the [example].
@@ -4112,6 +4294,8 @@ func (c *Configuration) AddIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
   return i, resp.StatusCode, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // You can find the ID in functions such as: SearchTopics(), SearchTopicsUpdates(), SearchTopicsHot()
 //
 // More information can be found in the [example].
@@ -4153,6 +4337,8 @@ func (c *Configuration) RemoveIgnoreTopic(id int) (api.IgnoreTopic, int, error) 
   return i, resp.StatusCode, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // Schema: customized request.
 //
 // How to use and all the information you need [here].
@@ -4190,6 +4376,8 @@ func (c *Configuration) SearchGraphql(schema string) (api.GraphQL, int, error) {
   return g, resp.StatusCode, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // Id: message id.
 //
 // Ignore:
@@ -4233,6 +4421,8 @@ func (c *Configuration) ReadMessage(id int) (api.Messages, int, error) {
   return m, resp.StatusCode, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // From_id: your Id.
 //
 // To_id: the Id of the person you want to send the message to.
@@ -4280,6 +4470,8 @@ func (c *Configuration) SendMessage(from_id, to_id int, message string) (api.Mes
   return m, resp.StatusCode, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // Id: message id.
 //
 // Message: message text.
@@ -4325,6 +4517,8 @@ func (c *Configuration) ChangeMessage(id int, message string) (api.Messages, int
   return m, resp.StatusCode, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // Id: message id.
 //
 // Only status 204 is returned.
@@ -4356,6 +4550,8 @@ func (c *Configuration) DeleteMessage(id int) (int, error) {
   return resp.StatusCode, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // Ids: array of ids converted to a string.
 //
 // Is_read: mark a message as read or unread.
@@ -4393,6 +4589,8 @@ func (c *Configuration) MarkReadMessages(ids string, is_read int) (int, error) {
   return resp.StatusCode, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // Name: unread message type.
 //
 // 'Name' settings:
@@ -4449,6 +4647,8 @@ func (f *FastId) UnreadMessagesIds(name string) ([]int, error) {
   }
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // Name: type in the mail.
 //
 // Returns a status of 200.
@@ -4482,6 +4682,8 @@ func (c *Configuration) ReadAllMessages(name string) (int, error) {
   return resp.StatusCode, nil
 }
 
+// In SetConfiguration(), you must specify the application and the token.
+//
 // Name: type in the mail.
 //
 // Returns a status of 200.

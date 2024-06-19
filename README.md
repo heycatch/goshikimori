@@ -2,7 +2,7 @@
 
 ### О проекте
 Небольшая библиотека для взаимодействия с шикимори, написанная на языке golang.
-* Работа с API происходит только через `OAuth2`.
+* Работа с API происходит только через `OAuth2`. \
 И начать нужно с ознакомления документации [первые шаги](https://github.com/heycatch/goshikimori/blob/master/examples/first_steps/README.md).
 * Никаких зависимостей от других библиотек.
 * Для тестов и сборки используется утилита [GNU make](https://www.gnu.org/software/make/manual/make.html).

@@ -44,14 +44,11 @@ func (c *Configuration) GetConfiguration() (string, string) {
   return c.Application, c.AccessToken
 }
 
-// For GET requests the name of the application is sufficient.
-// A access token is required for POST/PUT/DELETE.
-//
 // To register the application, follow the link from [OAuth].
 //
 // More information can be found in the [example].
 //
-// [OAuth]: https://github.com/heycatch/goshikimori#shikimori-documentation
+// [OAuth]: https://github.com/heycatch/goshikimori/blob/master/examples/first_steps
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/getter_setter
 func SetConfiguration(appname, token string) *Configuration {
   return &Configuration{Application: appname, AccessToken: token}
