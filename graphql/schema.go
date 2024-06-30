@@ -23,6 +23,7 @@ import (
 //  - scoresStats{score count}
 //  - statusesStats{status count}
 //  - description descriptionHtml descriptionSource
+//  - chronology{...} // All the parameters described above can be added to the timeline.
 //
 // Available manga options:
 //  - id malId name russian licenseNameRu english japanese synonyms kind score status volumes chapters airedOn{year month day date} releasedOn{year month day date} url
@@ -36,6 +37,7 @@ import (
 //  - scoresStats{score count}
 //  - statusesStats{status count}
 //  - description descriptionHtml descriptionSource
+//  - chronology{...} // All the parameters described above can be added to the timeline.
 //
 // Available character options:
 //  - id malId name russian japanese synonyms url createdAt updatedAt isAnime isManga isRanobe
