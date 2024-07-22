@@ -11,8 +11,6 @@
 package goshikimori
 
 import (
-  "net/http"
-  "io"
   "encoding/json"
   "errors"
   "strconv"
@@ -32,34 +30,22 @@ import (
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
 func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
   var u api.Users
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 6(users/) + ?(name)
-    concat.Url(32+len(name), []string{SITE, "users/", languageCheck(name)}), 10,
+    concat.Url(32+len(name), []string{SITE, "users/", languageCheck(name)}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return u, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return u, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return u, resp.StatusCode, err
+    return u, status, err
   }
 
   if err := json.Unmarshal(data, &u); err != nil {
-    return u, resp.StatusCode, err
+    return u, status, err
   }
 
-  return u, resp.StatusCode, nil
+  return u, status, nil
 }
 
 // FIXME: Limit always returns +1 of the given number.
@@ -79,38 +65,25 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/users
 func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, error) {
   var u []api.Users
-  var client = &http.Client{}
 
   opt := r.OptionsOnlyPageLimit(100000, 100)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 13(users?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(40+len(name)+len(opt), []string{
       SITE, "users?search=", languageCheck(name), "&", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &u); err != nil {
-    return nil, resp.StatusCode, err
+    return u, status, err
   }
 
-  return u, resp.StatusCode, nil
+  return u, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -122,42 +95,29 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, er
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
-func (f *FastId) SearchUserFriends(r Result) ([]api.UserFriends, error) {
+func (f *FastId) SearchUserFriends(r Result) ([]api.UserFriends, int, error) {
   var uf []api.UserFriends
-  var client = &http.Client{}
 
   // 26(SITE) + 6(users/) + ?(id) + 9(/friends?) + ?(Result)
   opt := r.OptionsOnlyPageLimit(100000, 100)
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(users/) + ?(id) + 9(/friends?) + ?(Result)
     concat.Url(41+len(str_id)+len(opt), []string{
       SITE, "users/", str_id, "/friends?" + opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &uf); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return uf, nil
+  return uf, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -165,40 +125,27 @@ func (f *FastId) SearchUserFriends(r Result) ([]api.UserFriends, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
-func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
+func (f *FastId) SearchUserClubs() ([]api.Clubs, int, error) {
   var uc []api.Clubs
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(users/) + ?(id) + 6(/clubs)
     concat.Url(38+len(str_id), []string{
       SITE, "users/", str_id, "/clubs",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &uc); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return uc, nil
+  return uc, status, nil
 }
 
 // FIXME: Limit always returns +1 of the given number.
@@ -220,41 +167,28 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
-func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
+func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, int, error) {
   var ar []api.UserAnimeRates
-  var client = &http.Client{}
 
   opt := r.OptionsAnimeRates()
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(users/) + ?(id) + 13(/anime_rates?) + ?(Result)
     concat.Url(45+len(str_id)+len(opt), []string{
       SITE, "users/", str_id, "/anime_rates?" + opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &ar); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return ar, nil
+  return ar, status, nil
 }
 
 // FIXME: Limit always returns +1 of the given number.
@@ -271,41 +205,28 @@ func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
-func (f *FastId) SearchUserMangaRates(r Result) ([]api.UserMangaRates, error) {
+func (f *FastId) SearchUserMangaRates(r Result) ([]api.UserMangaRates, int, error) {
   var mr []api.UserMangaRates
-  var client = &http.Client{}
 
   opt := r.OptionsMangaRates()
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(users/) + ?(id) + 13(/manga_rates?) + ?(Result)
     concat.Url(45+len(str_id)+len(opt), []string{
       SITE, "users/", str_id, "/manga_rates?" + opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &mr); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return mr, nil
+  return mr, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -313,40 +234,27 @@ func (f *FastId) SearchUserMangaRates(r Result) ([]api.UserMangaRates, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
-func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
+func (f *FastId) SearchUserFavourites() (api.UserFavourites, int, error) {
   var uf api.UserFavourites
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(users/) + ?(id) + 11(/favourites)
     concat.Url(43+len(str_id), []string{
       SITE, "users/", str_id, "/favourites",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return uf, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return uf, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return uf, err
+    return uf, status, err
   }
 
   if err := json.Unmarshal(data, &uf); err != nil {
-    return uf, err
+    return uf, status, err
   }
 
-  return uf, nil
+  return uf, status, nil
 }
 
 // FIXME: Limit always returns +1 of the given number.
@@ -365,41 +273,28 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
-func (f *FastId) SearchUserHistory(r Result) ([]api.UserHistory, error) {
+func (f *FastId) SearchUserHistory(r Result) ([]api.UserHistory, int, error) {
   var uh []api.UserHistory
-  var client = &http.Client{}
 
   opt := r.OptionsUserHistory()
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(users/) + ?(id) + 9(/history?) + ?(Result)
     concat.Url(41+len(str_id)+len(opt), []string{
       SITE, "users/", str_id, "/history?", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &uh); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return uh, nil
+  return uh, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -407,40 +302,27 @@ func (f *FastId) SearchUserHistory(r Result) ([]api.UserHistory, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
-func (f *FastId) SearchUserBans() ([]api.Bans, error) {
+func (f *FastId) SearchUserBans() ([]api.Bans, int, error) {
   var b []api.Bans
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(users/) + ?(id) + 5(/bans)
     concat.Url(37+len(str_id), []string{
       SITE, "users/", str_id, "/bans",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &b); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return b, nil
+  return b, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -450,36 +332,22 @@ func (f *FastId) SearchUserBans() ([]api.Bans, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/whoami
 func (c *Configuration) WhoAmi() (api.Who, int, error) {
   var w api.Who
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancelAndBearer(
+  data, status, err := NewGetRequestWithCancelAndBearer(
     c.Application, c.AccessToken,
     // 26(SITE) + 12(users/whoami)
-    concat.Url(38, []string{
-      SITE, "users/whoami",
-    }), 10,
+    concat.Url(38, []string{SITE, "users/whoami"}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return w, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return w, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return w, resp.StatusCode, err
+    return w, status, err
   }
 
   if err := json.Unmarshal(data, &w); err != nil {
-    return w, resp.StatusCode, err
+    return w, status, err
   }
 
-  return w, resp.StatusCode, nil
+  return w, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -487,40 +355,27 @@ func (c *Configuration) WhoAmi() (api.Who, int, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
-func (f *FastId) SearchAnime() (api.Anime, error) {
+func (f *FastId) SearchAnime() (api.Anime, int, error) {
   var a api.Anime
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(animes/) + ?(id)
     concat.Url(33+len(str_id), []string{
       SITE, "animes/", str_id,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return a, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return a, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return a, err
+    return a, status, err
   }
 
   if err := json.Unmarshal(data, &a); err != nil {
-    return a, err
+    return a, status, err
   }
 
-  return a, nil
+  return a, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -604,38 +459,25 @@ func (f *FastId) SearchAnime() (api.Anime, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
 func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, error) {
   var a []api.Animes
-  var client = &http.Client{}
 
   opt := r.OptionsAnime()
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 14(animes?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(41+len(name)+len(opt), []string{
       SITE, "animes?search=", languageCheck(name), "&", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &a); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return a, resp.StatusCode, nil
+  return a, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -643,40 +485,27 @@ func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, 
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
-func (f *FastId) SearchManga() (api.Manga, error) {
+func (f *FastId) SearchManga() (api.Manga, int, error) {
   var m api.Manga
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(mangas/) + ?(id)
     concat.Url(33+len(str_id), []string{
       SITE, "mangas/", str_id,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return m, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return m, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return m, err
+    return m, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return m, err
+    return m, status, err
   }
 
-  return m, nil
+  return m, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -745,38 +574,25 @@ func (f *FastId) SearchManga() (api.Manga, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
 func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
-  var client = &http.Client{}
 
   opt := r.OptionsManga()
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 14(mangas?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(41+len(name)+len(opt), []string{
       SITE, "mangas?search=", languageCheck(name), "&", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return m, resp.StatusCode, nil
+  return m, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -784,40 +600,27 @@ func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, 
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
-func (f *FastId) SearchRanobe() (api.Manga, error) {
+func (f *FastId) SearchRanobe() (api.Manga, int, error) {
   var m api.Manga
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(ranobe/) + ?(id)
     concat.Url(33+len(str_id), []string{
       SITE, "ranobe/", str_id,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return m, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return m, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return m, err
+    return m, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return m, err
+    return m, status, err
   }
 
-  return m, nil
+  return m, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -878,38 +681,25 @@ func (f *FastId) SearchRanobe() (api.Manga, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_manga_ranobe
 func (c *Configuration) SearchRanobes(name string, r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
-  var client = &http.Client{}
 
   opt := r.OptionsRanobe()
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 14(ranobe?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(41+len(name)+len(opt), []string{
       SITE, "ranobe?search=", languageCheck(name), "&", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return m, resp.StatusCode, nil
+  return m, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -919,35 +709,22 @@ func (c *Configuration) SearchRanobes(name string, r Result) ([]api.Mangas, int,
 // Search by user is case sensitive.
 func (c *Configuration) FastIdUser(name string) (*FastId, int, error) {
   var u api.Users
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 6(users/) + ?(name)
     concat.Url(32+len(name), []string{
-      SITE, "users/", languageCheck(name)}), 10,
+      SITE, "users/", languageCheck(name)}), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &u); err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+    return &FastId{Id: 0, Conf: *c, Err: err}, status, err
   }
 
-  return &FastId{Id: u.Id, Conf: *c, Err: err}, resp.StatusCode, nil
+  return &FastId{Id: u.Id, Conf: *c, Err: err}, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -957,41 +734,28 @@ func (c *Configuration) FastIdUser(name string) (*FastId, int, error) {
 // Search by user is case sensitive.
 func (c *Configuration) FastIdAnime(name string) (*FastId, int, error) {
   var a []api.Animes
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 14(animes?search=) + ?(name)
     concat.Url(40+len(name), []string{
-      SITE, "animes?search=", languageCheck(name)}), 10,
+      SITE, "animes?search=", languageCheck(name)}), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &a); err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+    return &FastId{Id: 0, Conf: *c, Err: err}, status, err
   }
 
   // if len == 0; we get panic: runtime error.
   // To avoid a crash, process the error here.
   //
   // There is no point in processing the error. there is no place to catch it.
-  if len(a) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, resp.StatusCode, nil }
+  if len(a) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, status, nil }
 
-  return &FastId{Id: a[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
+  return &FastId{Id: a[0].Id, Conf: *c, Err: nil}, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1001,40 +765,28 @@ func (c *Configuration) FastIdAnime(name string) (*FastId, int, error) {
 // Search by user is case sensitive.
 func (c *Configuration) FastIdManga(name string) (*FastId, int, error) {
   var m []api.Mangas
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 14(mangas?search=) + ?(name)
     concat.Url(40+len(name), []string{
-      SITE, "mangas?search=", languageCheck(name)}), 10,
+      SITE, "mangas?search=", languageCheck(name)}), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
-  }
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+    return &FastId{Id: 0, Conf: *c, Err: err}, status, err
   }
 
   // if len == 0; we get panic: runtime error.
   // To avoid a crash, process the error here.
   //
   // There is no point in processing the error. there is no place to catch it.
-  if len(m) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, resp.StatusCode, nil }
+  if len(m) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, status, nil }
 
-  return &FastId{Id: m[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
+  return &FastId{Id: m[0].Id, Conf: *c, Err: nil}, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1044,40 +796,28 @@ func (c *Configuration) FastIdManga(name string) (*FastId, int, error) {
 // Search by user is case sensitive.
 func (c *Configuration) FastIdRanobe(name string) (*FastId, int, error) {
   var m []api.Mangas
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 14(ranobe?search=) + ?(name)
     concat.Url(40+len(name), []string{
-      SITE, "ranobe?search=", languageCheck(name)}), 10,
+      SITE, "ranobe?search=", languageCheck(name)}), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
-  }
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+    return &FastId{Id: 0, Conf: *c, Err: err}, status, err
   }
 
   // if len == 0; we get panic: runtime error.
   // To avoid a crash, process the error here.
   //
   // There is no point in processing the error. there is no place to catch it.
-  if len(m) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, resp.StatusCode, nil }
+  if len(m) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, status, nil }
 
-  return &FastId{Id: m[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
+  return &FastId{Id: m[0].Id, Conf: *c, Err: nil}, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1087,40 +827,28 @@ func (c *Configuration) FastIdRanobe(name string) (*FastId, int, error) {
 // Search by user is case sensitive.
 func (c *Configuration) FastIdClub(name string) (*FastId, int, error) {
   var cl []api.Clubs
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 13(clubs?search=) + ?(name)
     concat.Url(39+len(name), []string{
-      SITE, "clubs?search=", languageCheck(name)}), 10,
+      SITE, "clubs?search=", languageCheck(name)}), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
-  }
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &cl); err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+    return &FastId{Id: 0, Conf: *c, Err: err}, status, err
   }
 
   // if len == 0; we get panic: runtime error.
   // To avoid a crash, process the error here.
   //
   // There is no point in processing the error. there is no place to catch it.
-  if len(cl) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, resp.StatusCode, nil }
+  if len(cl) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, status, nil }
 
-  return &FastId{Id: cl[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
+  return &FastId{Id: cl[0].Id, Conf: *c, Err: nil}, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1130,41 +858,29 @@ func (c *Configuration) FastIdClub(name string) (*FastId, int, error) {
 // Search by user is case sensitive.
 func (c *Configuration) FastIdCharacter(name string) (*FastId, int, error) {
   var ch []api.CharacterInfo
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 25(characters/search?search=) + ?(name)
     concat.Url(51+len(name), []string{
       SITE, "characters/search?search=", languageCheck(name),
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
-  }
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &ch); err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+    return &FastId{Id: 0, Conf: *c, Err: err}, status, err
   }
 
   // if len == 0; we get panic: runtime error.
   // To avoid a crash, process the error here.
   //
   // There is no point in processing the error. there is no place to catch it.
-  if len(ch) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, resp.StatusCode, nil }
+  if len(ch) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, status, nil }
 
-  return &FastId{Id: ch[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
+  return &FastId{Id: ch[0].Id, Conf: *c, Err: nil}, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1174,41 +890,29 @@ func (c *Configuration) FastIdCharacter(name string) (*FastId, int, error) {
 // Search by user is case sensitive.
 func (c *Configuration) FastIdPeople(name string) (*FastId, int, error) {
   var ap []api.AllPeople
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 21(people/search?search=) + ?(name)
     concat.Url(47+len(name), []string{
       SITE, "people/search?search=", languageCheck(name),
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
-  }
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &ap); err != nil {
-    return &FastId{Id: 0, Conf: *c, Err: err}, resp.StatusCode, err
+    return &FastId{Id: 0, Conf: *c, Err: err}, status, err
   }
 
   // if len == 0; we get panic: runtime error.
   // To avoid a crash, process the error here.
   //
   // There is no point in processing the error. there is no place to catch it.
-  if len(ap) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, resp.StatusCode, nil }
+  if len(ap) == 0 { return &FastId{Id: 0, Conf: *c, Err: nil}, status, nil }
 
-  return &FastId{Id: ap[0].Id, Conf: *c, Err: nil}, resp.StatusCode, nil
+  return &FastId{Id: ap[0].Id, Conf: *c, Err: nil}, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1216,40 +920,27 @@ func (c *Configuration) FastIdPeople(name string) (*FastId, int, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/anime_screenshots
-func (f *FastId) SearchAnimeScreenshots() ([]api.AnimeScreenshots, error) {
+func (f *FastId) SearchAnimeScreenshots() ([]api.AnimeScreenshots, int, error) {
   var s []api.AnimeScreenshots
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(animes/) + ?(id) + 12(/screenshots)
     concat.Url(45+len(str_id), []string{
       SITE, "animes/", str_id, "/screenshots",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &s); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return s, nil
+  return s, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1257,39 +948,27 @@ func (f *FastId) SearchAnimeScreenshots() ([]api.AnimeScreenshots, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/franchise
-func (f *FastId) SearchAnimeFranchise() (api.Franchise, error) {
+func (f *FastId) SearchAnimeFranchise() (api.Franchise, int, error) {
   var ff api.Franchise
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(animes/) + ?(id) + 10(/franchise)
     concat.Url(43+len(str_id), []string{
       SITE, "animes/", str_id, "/franchise",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return ff, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return ff, err
-  }
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return ff, err
+    return ff, status, err
   }
 
   if err := json.Unmarshal(data, &ff); err != nil {
-    return ff, err
+    return ff, status, err
   }
 
-  return ff, nil
+  return ff, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1297,39 +976,27 @@ func (f *FastId) SearchAnimeFranchise() (api.Franchise, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/franchise
-func (f *FastId) SearchMangaFranchise() (api.Franchise, error) {
+func (f *FastId) SearchMangaFranchise() (api.Franchise, int, error) {
   var ff api.Franchise
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(mangas/) + ?(id) + 10(/franchise)
     concat.Url(43+len(str_id), []string{
       SITE, "mangas/", str_id, "/franchise",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return ff, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return ff, err
-  }
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return ff, err
+    return ff, status, err
   }
 
   if err := json.Unmarshal(data, &ff); err != nil {
-    return ff, err
+    return ff, status, err
   }
 
-  return ff, nil
+  return ff, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1337,39 +1004,27 @@ func (f *FastId) SearchMangaFranchise() (api.Franchise, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/franchise
-func (f *FastId) SearchRanobeFranchise() (api.Franchise, error) {
+func (f *FastId) SearchRanobeFranchise() (api.Franchise, int, error) {
   var ff api.Franchise
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(ranobe/) + ?(id) + 10(/franchise)
     concat.Url(43+len(str_id), []string{
       SITE, "ranobe/", str_id, "/franchise",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return ff, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return ff, err
-  }
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return ff, err
+    return ff, status, err
   }
 
   if err := json.Unmarshal(data, &ff); err != nil {
-    return ff, err
+    return ff, status, err
   }
 
-  return ff, nil
+  return ff, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1377,39 +1032,27 @@ func (f *FastId) SearchRanobeFranchise() (api.Franchise, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/external_links
-func (f *FastId) SearchAnimeExternalLinks() ([]api.ExternalLinks, error) {
+func (f *FastId) SearchAnimeExternalLinks() ([]api.ExternalLinks, int, error) {
   var el []api.ExternalLinks
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(animes/) + ?(id) + 15(/external_links)
     concat.Url(48+len(str_id), []string{
       SITE, "animes/", str_id, "/external_links",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &el); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return el, nil
+  return el, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1417,39 +1060,27 @@ func (f *FastId) SearchAnimeExternalLinks() ([]api.ExternalLinks, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/external_links
-func (f *FastId) SearchMangaExternalLinks() ([]api.ExternalLinks, error) {
+func (f *FastId) SearchMangaExternalLinks() ([]api.ExternalLinks, int, error) {
   var el []api.ExternalLinks
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(mangas/) + ?(id) + 15(/external_links)
     concat.Url(48+len(str_id), []string{
       SITE, "mangas/", str_id, "/external_links",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &el); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return el, nil
+  return el, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1457,39 +1088,27 @@ func (f *FastId) SearchMangaExternalLinks() ([]api.ExternalLinks, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/external_links
-func (f *FastId) SearchRanobeExternalLinks() ([]api.ExternalLinks, error) {
+func (f *FastId) SearchRanobeExternalLinks() ([]api.ExternalLinks, int, error) {
   var el []api.ExternalLinks
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(ranobe/) + ?(id) + 15(/external_links)
     concat.Url(48+len(str_id), []string{
       SITE, "ranobe/", str_id, "/external_links",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &el); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return el, nil
+  return el, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1497,40 +1116,27 @@ func (f *FastId) SearchRanobeExternalLinks() ([]api.ExternalLinks, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/similar
-func (f *FastId) SearchSimilarAnime() ([]api.Animes, error) {
+func (f *FastId) SearchSimilarAnime() ([]api.Animes, int, error) {
   var a []api.Animes
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(animes/) + ?(id) + 8(/similar)
     concat.Url(41+len(str_id), []string{
       SITE, "animes/", str_id, "/similar",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &a); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return a, nil
+  return a, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1538,40 +1144,27 @@ func (f *FastId) SearchSimilarAnime() ([]api.Animes, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/similar
-func (f *FastId) SearchSimilarManga() ([]api.Mangas, error) {
+func (f *FastId) SearchSimilarManga() ([]api.Mangas, int, error) {
   var m []api.Mangas
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(mangas/) + ?(id) + 8(/similar)
     concat.Url(41+len(str_id), []string{
       SITE, "mangas/", str_id, "/similar",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return m, nil
+  return m, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1579,40 +1172,27 @@ func (f *FastId) SearchSimilarManga() ([]api.Mangas, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/similar
-func (f *FastId) SearchSimilarRanobe() ([]api.Mangas, error) {
+func (f *FastId) SearchSimilarRanobe() ([]api.Mangas, int, error) {
   var m []api.Mangas
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(ranobe/) + ?(id) + 8(/similar)
     concat.Url(41+len(str_id), []string{
       SITE, "ranobe/", str_id, "/similar",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return m, nil
+  return m, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1620,40 +1200,27 @@ func (f *FastId) SearchSimilarRanobe() ([]api.Mangas, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/related
-func (f *FastId) SearchRelatedAnime() ([]api.RelatedAnimes, error) {
+func (f *FastId) SearchRelatedAnime() ([]api.RelatedAnimes, int, error) {
   var a []api.RelatedAnimes
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(animes/) + ?(id) + 8(/related)
     concat.Url(41+len(str_id), []string{
       SITE, "animes/", str_id, "/related",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &a); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return a, nil
+  return a, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1661,40 +1228,27 @@ func (f *FastId) SearchRelatedAnime() ([]api.RelatedAnimes, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/related
-func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, error) {
+func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, int, error) {
   var m []api.RelatedMangas
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(mangas/) + ?(id) + 8(/related)
     concat.Url(41+len(str_id), []string{
       SITE, "mangas/", str_id, "/related",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return m, nil
+  return m, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -1702,40 +1256,27 @@ func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/related
-func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, error) {
+func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, int, error) {
   var m []api.RelatedMangas
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(ranobe/) + ?(id) + 8(/related)
     concat.Url(41+len(str_id), []string{
       SITE, "ranobe/", str_id, "/related",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return m, nil
+  return m, status, nil
 }
 
 // FIXME: Limit always returns +1 of the given number.
@@ -1753,38 +1294,25 @@ func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
 func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, error) {
   var cl []api.Clubs
-  var client = &http.Client{}
 
   opt := r.OptionsOnlyPageLimit(100000, 30)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 13(clubs?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(40+len(name)+len(opt), []string{
       SITE, "clubs?search=", languageCheck(name), "&", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &cl); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return cl, resp.StatusCode, nil
+  return cl, status, nil
 }
 
 // FIXME: The limit does not work and always gives the maximum amount.
@@ -1798,41 +1326,28 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
-func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
+func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, int, error) {
   var a []api.Animes
-  var client = &http.Client{}
 
   opt := r.OptionsOnlyPageLimit(100000, 20)
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(clubs/) + ?(id) + 8(/animes?) + ?(Result)
     concat.Url(40+len(str_id)+len(opt), []string{
       SITE, "clubs/", str_id, "/animes?", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &a); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return a, nil
+  return a, status, nil
 }
 
 // FIXME: The limit does not work and always gives the maximum amount.
@@ -1846,41 +1361,28 @@ func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
-func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
+func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
-  var client = &http.Client{}
 
   opt := r.OptionsOnlyPageLimit(100000, 20)
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(clubs/) + ?(id) + 8(/mangas?) + ?(Result)
     concat.Url(40+len(str_id)+len(opt), []string{
       SITE, "clubs/", str_id, "/mangas?", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return m, nil
+  return m, status, nil
 }
 
 // FIXME: The limit does not work and always gives the maximum amount.
@@ -1894,41 +1396,28 @@ func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
-func (f *FastId) SearchClubRanobe(r Result) ([]api.Mangas, error) {
+func (f *FastId) SearchClubRanobe(r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
-  var client = &http.Client{}
 
   opt := r.OptionsOnlyPageLimit(100000, 20)
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(clubs/) + ?(id) + 8(/ranobe?) + ?(Result)
     concat.Url(40+len(str_id)+len(opt), []string{
       SITE, "clubs/", str_id, "/ranobe?", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return m, nil
+  return m, status, nil
 }
 
 // FIXME: The limit does not work and always gives the maximum amount.
@@ -1942,41 +1431,28 @@ func (f *FastId) SearchClubRanobe(r Result) ([]api.Mangas, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
-func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
+func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, int, error) {
   var ci []api.CharacterInfo
-  var client = &http.Client{}
 
   opt := r.OptionsOnlyPageLimit(100000, 20)
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(clubs/) + ?(id) + 12(/characters?) + ?(Result)
     concat.Url(44+len(str_id)+len(opt), []string{
       SITE, "clubs/", str_id, "/characters?", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &ci); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return ci, nil
+  return ci, status, nil
 }
 
 // FIXME: The limit does not work and always gives the maximum amount.
@@ -1990,41 +1466,28 @@ func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
-func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
+func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, int, error) {
   var cc []api.Clubs
-  var client = &http.Client{}
 
   opt := r.OptionsOnlyPageLimit(100000, 30)
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(clubs/) + ?(id) + 7(/clubs?) + ?(Result)
     concat.Url(39+len(str_id)+len(opt), []string{
       SITE, "clubs/", str_id, "/clubs?", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &cc); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return cc, nil
+  return cc, status, nil
 }
 
 // FIXME: The limit does not work and always gives the maximum amount.
@@ -2038,41 +1501,28 @@ func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
-func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, error) {
+func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, int, error) {
   var cc []api.ClubCollections
-  var client = &http.Client{}
 
   opt := r.OptionsOnlyPageLimit(100000, 4)
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(clubs/) + ?(id) + 13(/collections?) + ?(Result)
     concat.Url(45+len(str_id)+len(opt), []string{
       SITE, "clubs/", str_id, "/collections?", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &cc); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return cc, nil
+  return cc, status, nil
 }
 
 // FIXME: Limit always returns +1 of the given number.
@@ -2086,41 +1536,28 @@ func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, error) 
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
-func (f *FastId) SearchClubMembers(r Result) ([]api.UserFriends, error) {
+func (f *FastId) SearchClubMembers(r Result) ([]api.UserFriends, int, error) {
   var uf []api.UserFriends
-  var client = &http.Client{}
 
   opt := r.OptionsOnlyPageLimit(100000, 100)
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(clubs/) + ?(id) + 9(/members?) + ?(Result)
     concat.Url(41+len(str_id)+len(opt), []string{
       SITE, "clubs/", str_id, "/members?", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &uf); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return uf, nil
+  return uf, status, nil
 }
 
 // FIXME: Limit always returns +1 of the given number.
@@ -2134,41 +1571,28 @@ func (f *FastId) SearchClubMembers(r Result) ([]api.UserFriends, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
-func (f *FastId) SearchClubImages(r Result) ([]api.ClubImages, error) {
+func (f *FastId) SearchClubImages(r Result) ([]api.ClubImages, int, error) {
   var cm []api.ClubImages
-  var client = &http.Client{}
 
   opt := r.OptionsOnlyPageLimit(100000, 100)
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(clubs/) + ?(id) + 8(/images?) + ?(Result)
     concat.Url(40+len(str_id)+len(opt), []string{
       SITE, "clubs/", str_id, "/images?", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &cm); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return cm, nil
+  return cm, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -2177,29 +1601,20 @@ func (f *FastId) SearchClubImages(r Result) ([]api.ClubImages, error) {
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
 func (f *FastId) ClubJoin() (int, error) {
-  var client = &http.Client{}
-
   str_id := strconv.Itoa(f.Id)
 
-  post, cancel, err := NewPostRequestWithCancel(
+  _, status, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     // 26(SITE) + 6(clubs/) + ?(id) + 5(/join)
     concat.Url(37+len(str_id), []string{
       SITE, "clubs/", str_id, "/join",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return 0, err
+    return status, err
   }
-  defer cancel()
 
-  resp, err := client.Do(post)
-  if err != nil {
-    return resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  return resp.StatusCode, nil
+  return status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -2208,31 +1623,24 @@ func (f *FastId) ClubJoin() (int, error) {
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/club
 func (f *FastId) ClubLeave() (int, error) {
-  var client = &http.Client{}
-
   str_id := strconv.Itoa(f.Id)
 
-  post, cancel, err := NewPostRequestWithCancel(
+  _, status, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     // 26(SITE) + 6(clubs/) + ?(id) + 6(/leave)
     concat.Url(38+len(str_id), []string{
       SITE, "clubs/", str_id, "/leave",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return 0, err
+    return status, err
   }
-  defer cancel()
 
-  resp, err := client.Do(post)
-  if err != nil {
-    return resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  return resp.StatusCode, nil
+  return status, nil
 }
 
+// Only the application needs to be specified in SetConfiguration().
+//
 // As a result, we return a complete list of all achievements.
 //
 // Next comes the filtering through "NekoSearch" and the error about obtaining
@@ -2241,40 +1649,27 @@ func (f *FastId) ClubLeave() (int, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/achievements
-func (f *FastId) SearchAchievement() ([]api.Achievements, error) {
+func (f *FastId) SearchAchievement() ([]api.Achievements, int, error) {
   var a []api.Achievements
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 21(achievements?user_id=) + ?(id)
     concat.Url(47+len(str_id), []string{
       SITE, "achievements?user_id=", str_id,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &a); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return a, nil
+  return a, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -2282,39 +1677,26 @@ func (f *FastId) SearchAchievement() ([]api.Achievements, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/video
-func (f *FastId) SearchAnimeVideos() ([]api.AnimeVideos, error) {
+func (f *FastId) SearchAnimeVideos() ([]api.AnimeVideos, int, error) {
   var v []api.AnimeVideos
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     concat.Url(40+len(str_id), []string{
       SITE, "animes/", str_id, "/videos",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &v); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return v, nil
+  return v, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -2322,40 +1704,27 @@ func (f *FastId) SearchAnimeVideos() ([]api.AnimeVideos, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/roles
-func (f *FastId) SearchAnimeRoles() ([]api.Roles, error) {
+func (f *FastId) SearchAnimeRoles() ([]api.Roles, int, error) {
   var r []api.Roles
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(animes/) + ?(id) + 6(/roles)
     concat.Url(39+len(str_id), []string{
       SITE, "animes/", str_id, "/roles",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &r); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return r, nil
+  return r, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -2363,40 +1732,27 @@ func (f *FastId) SearchAnimeRoles() ([]api.Roles, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/roles
-func (f *FastId) SearchMangaRoles() ([]api.Roles, error) {
+func (f *FastId) SearchMangaRoles() ([]api.Roles, int, error) {
   var r []api.Roles
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(mangas/) + ?(id) + 6(/roles)
     concat.Url(39+len(str_id), []string{
       SITE, "mangas/", str_id, "/roles",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &r); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return r, nil
+  return r, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -2404,40 +1760,27 @@ func (f *FastId) SearchMangaRoles() ([]api.Roles, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/roles
-func (f *FastId) SearchRanobeRoles() ([]api.Roles, error) {
+func (f *FastId) SearchRanobeRoles() ([]api.Roles, int, error) {
   var r []api.Roles
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(ranobe/) + ?(id) + 6(/roles)
     concat.Url(39+len(str_id), []string{
       SITE, "ranobe/", str_id, "/roles",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &r); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return r, nil
+  return r, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -2447,34 +1790,22 @@ func (f *FastId) SearchRanobeRoles() ([]api.Roles, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/bans
 func (c *Configuration) SearchBans() ([]api.Bans, int, error) {
   var b []api.Bans
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 4(bans)
-    concat.Url(30, []string{SITE, "bans"}), 10,
+    concat.Url(30, []string{SITE, "bans"}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &b); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return b, resp.StatusCode, nil
+  return b, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -2489,36 +1820,24 @@ func (c *Configuration) SearchBans() ([]api.Bans, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/calendar
 func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
   var ca []api.Calendar
-  var client = &http.Client{}
 
   opt := r.OptionsCalendar()
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 9(calendar?) + ?(Result)
-    concat.Url(35+len(opt), []string{SITE, "calendar?", opt}), 10,
+    concat.Url(35+len(opt), []string{SITE, "calendar?", opt}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &ca); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return ca, resp.StatusCode, nil
+  return ca, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -2532,35 +1851,22 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/genres
 func (c *Configuration) SearchGenres(name string) ([]api.Genres, int, error) {
   var g []api.Genres
-  var client = &http.Client{}
 
-
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 12(genres?kind=) + ?(name)
-    concat.Url(38+len(name), []string{SITE, "genres?kind=", name}), 10,
+    concat.Url(38+len(name), []string{SITE, "genres?kind=", name}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &g); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return g, resp.StatusCode, nil
+  return g, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -2570,34 +1876,22 @@ func (c *Configuration) SearchGenres(name string) ([]api.Genres, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/studios
 func (c *Configuration) SearchStudios() ([]api.Studios, int, error) {
   var s []api.Studios
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 7(studios)
-    concat.Url(33, []string{SITE, "studios"}), 10,
+    concat.Url(33, []string{SITE, "studios"}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &s); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return s, resp.StatusCode, nil
+  return s, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -2607,34 +1901,22 @@ func (c *Configuration) SearchStudios() ([]api.Studios, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/publishers
 func (c *Configuration) SearchPublishers() ([]api.Publishers, int, error) {
   var p []api.Publishers
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 10(publishers)
-    concat.Url(36, []string{SITE, "publishers"}), 10,
+    concat.Url(36, []string{SITE, "publishers"}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &p); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return p, resp.StatusCode, nil
+  return p, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -2644,34 +1926,22 @@ func (c *Configuration) SearchPublishers() ([]api.Publishers, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/forums
 func (c *Configuration) SearchForums() ([]api.Forums, int, error) {
   var f []api.Forums
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 6(forums)
-    concat.Url(32, []string{SITE, "forums"}), 10,
+    concat.Url(32, []string{SITE, "forums"}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &f); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return f, resp.StatusCode, nil
+  return f, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -2679,40 +1949,27 @@ func (c *Configuration) SearchForums() ([]api.Forums, int, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/add_remove_friend
-func (f *FastId) AddFriend() (api.FriendRequest, error) {
+func (f *FastId) AddFriend() (api.FriendRequest, int, error) {
   var ff api.FriendRequest
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  post, cancel, err := NewPostRequestWithCancel(
+  data, status, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     // 26(SITE) + 8(friends/) + ?(id)
     concat.Url(34+len(str_id), []string{
       SITE, "friends/", str_id,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return ff, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(post)
-  if err != nil {
-    return ff, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return ff, err
+    return ff, status, err
   }
 
   if err := json.Unmarshal(data, &ff); err != nil {
-    return ff, err
+    return ff, status, err
   }
 
-  return ff, nil
+  return ff, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -2720,40 +1977,27 @@ func (f *FastId) AddFriend() (api.FriendRequest, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/add_remove_friend
-func (f *FastId) RemoveFriend() (api.FriendRequest, error) {
+func (f *FastId) RemoveFriend() (api.FriendRequest, int, error) {
   var ff api.FriendRequest
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  remove, cancel, err := NewDeleteRequestWithCancel(
+  data, status, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     // 26(SITE) + 8(friends/) + ?(id)
     concat.Url(34+len(str_id), []string{
       SITE, "friends/", str_id,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return ff, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(remove)
-  if err != nil {
-    return ff, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return ff, err
+    return ff, status, err
   }
 
   if err := json.Unmarshal(data, &ff); err != nil {
-    return ff, err
+    return ff, status, err
   }
 
-  return ff, nil
+  return ff, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -2763,40 +2007,27 @@ func (f *FastId) RemoveFriend() (api.FriendRequest, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/messages
-func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
+func (f *FastId) UserUnreadMessages() (api.UnreadMessages, int, error) {
   var um api.UnreadMessages
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
+  data, status, err := NewGetRequestWithCancelAndBearer(
     f.Conf.Application, f.Conf.AccessToken,
     // 26(SITE) + 6(users/) + ?(id) + 16(/unread_messages)
     concat.Url(48+len(str_id), []string{
       SITE, "users/", str_id, "/unread_messages",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return um, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return um, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return um, err
+    return um, status, err
   }
 
   if err := json.Unmarshal(data, &um); err != nil {
-    return um, err
+    return um, status, err
   }
 
-  return um, nil
+  return um, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -2812,41 +2043,28 @@ func (f *FastId) UserUnreadMessages() (api.UnreadMessages, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/messages
-func (f *FastId) UserMessages(r Result) ([]api.Messages, error) {
+func (f *FastId) UserMessages(r Result) ([]api.Messages, int, error) {
   var m []api.Messages
-  var client = &http.Client{}
 
   opt := r.OptionsMessages()
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
+  data, status, err := NewGetRequestWithCancelAndBearer(
     f.Conf.Application, f.Conf.AccessToken,
     // 26(SITE) + 6(users/) + ?(id) + 10(/messages?) + ?(Result)
     concat.Url(42+len(str_id)+len(opt), []string{
       SITE, "users/", str_id, "/messages?", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return m, nil
+  return m, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -2856,34 +2074,22 @@ func (f *FastId) UserMessages(r Result) ([]api.Messages, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
 func (c *Configuration) SearchConstantsAnime() (api.Constants, int, error) {
   var ca api.Constants
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 15(constants/anime)
-    concat.Url(41, []string{SITE, "constants/anime"}), 10,
+    concat.Url(41, []string{SITE, "constants/anime"}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return ca, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return ca, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return ca, resp.StatusCode, err
+    return ca, status, err
   }
 
   if err := json.Unmarshal(data, &ca); err != nil {
-    return ca, resp.StatusCode, err
+    return ca, status, err
   }
 
-  return ca, resp.StatusCode, nil
+  return ca, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -2893,34 +2099,22 @@ func (c *Configuration) SearchConstantsAnime() (api.Constants, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
 func (c *Configuration) SearchConstantsManga() (api.Constants, int, error) {
   var cm api.Constants
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 15(constants/manga)
-    concat.Url(41, []string{SITE, "constants/manga"}), 10,
+    concat.Url(41, []string{SITE, "constants/manga"}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return cm, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return cm, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return cm, resp.StatusCode, err
+    return cm, status, err
   }
 
   if err := json.Unmarshal(data, &cm); err != nil {
-    return cm, resp.StatusCode, err
+    return cm, status, err
   }
 
-  return cm, resp.StatusCode, nil
+  return cm, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -2930,34 +2124,22 @@ func (c *Configuration) SearchConstantsManga() (api.Constants, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
 func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, int, error) {
   var ur api.ConstantsUserRate
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 19(constants/user_rate)
-    concat.Url(45, []string{SITE, "constants/user_rate"}), 10,
+    concat.Url(45, []string{SITE, "constants/user_rate"}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return ur, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return ur, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return ur, resp.StatusCode, err
+    return ur, status, err
   }
 
   if err := json.Unmarshal(data, &ur); err != nil {
-    return ur, resp.StatusCode, err
+    return ur, status, err
   }
 
-  return ur, resp.StatusCode, nil
+  return ur, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -2967,34 +2149,22 @@ func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, int, e
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
 func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, int, error) {
   var cc api.ConstantsClub
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 14(constants/club)
-    concat.Url(40, []string{SITE, "constants/club"}), 10,
+    concat.Url(40, []string{SITE, "constants/club"}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return cc, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return cc, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return cc, resp.StatusCode, err
+    return cc, status, err
   }
 
   if err := json.Unmarshal(data, &cc); err != nil {
-    return cc, resp.StatusCode, err
+    return cc, status, err
   }
 
-  return cc, resp.StatusCode, nil
+  return cc, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -3004,34 +2174,22 @@ func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/constants
 func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, error) {
   var cs []api.ConstantsSmileys
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 17(constants/smileys)
-    concat.Url(43, []string{SITE, "constants/smileys"}), 10,
+    concat.Url(43, []string{SITE, "constants/smileys"}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &cs); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return cs, resp.StatusCode, nil
+  return cs, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -3099,38 +2257,25 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, e
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/random
 func (c *Configuration) RandomAnimes(r Result) ([]api.Animes, int, error) {
   var a []api.Animes
-  var client = &http.Client{}
 
   opt := r.OptionsRandomAnime()
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 20(animes?order=random&) + ?(Result)
     concat.Url(46+len(opt), []string{
       SITE, "animes?order=random&", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &a); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return a, resp.StatusCode, nil
+  return a, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -3183,38 +2328,25 @@ func (c *Configuration) RandomAnimes(r Result) ([]api.Animes, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/random
 func (c *Configuration) RandomMangas(r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
-  var client = &http.Client{}
 
   opt := r.OptionsRandomManga()
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 20(mangas?order=random&) + ?(Result)
     concat.Url(46+len(opt), []string{
       SITE, "mangas?order=random&", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return m, resp.StatusCode, nil
+  return m, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -3260,38 +2392,25 @@ func (c *Configuration) RandomMangas(r Result) ([]api.Mangas, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/random
 func (c *Configuration) RandomRanobes(r Result) ([]api.Mangas, int, error) {
   var m []api.Mangas
-  var client = &http.Client{}
 
   opt := r.OptionsRandomRanobe()
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 20(ranobe?order=random&) + ?(Result)
     concat.Url(46+len(opt), []string{
       SITE, "ranobe?order=random&", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return m, resp.StatusCode, nil
+  return m, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -3299,40 +2418,27 @@ func (c *Configuration) RandomRanobes(r Result) ([]api.Mangas, int, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/character
-func (f *FastId) SearchCharacter() (api.Character, error) {
+func (f *FastId) SearchCharacter() (api.Character, int, error) {
   var ch api.Character
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 11(characters/) + ?(id)
     concat.Url(37+len(str_id), []string{
       SITE, "characters/", str_id,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return ch, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return ch, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return ch, err
+    return ch, status, err
   }
 
   if err := json.Unmarshal(data, &ch); err != nil {
-    return ch, err
+    return ch, status, err
   }
 
-  return ch, nil
+  return ch, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -3344,35 +2450,23 @@ func (f *FastId) SearchCharacter() (api.Character, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/character
 func (c *Configuration) SearchCharacters(name string) ([]api.CharacterInfo, int, error) {
   var ci []api.CharacterInfo
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 25(characters/search?search=) + ?(name)
     concat.Url(51+len(name), []string{SITE,
-      "characters/search?search=", languageCheck(name)}), 10,
+      "characters/search?search=", languageCheck(name)}),
+      MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &ci); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return ci, resp.StatusCode, nil
+  return ci, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -3380,39 +2474,27 @@ func (c *Configuration) SearchCharacters(name string) ([]api.CharacterInfo, int,
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/people
-func (f *FastId) SearchPeople() (api.People, error) {
+func (f *FastId) SearchPeople() (api.People, int, error) {
   var p api.People
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(people/) + ?(id)
     concat.Url(33+len(str_id), []string{
       SITE, "people/", str_id,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return p, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return p, err
-  }
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return p, err
+    return p, status, err
   }
 
   if err := json.Unmarshal(data, &p); err != nil {
-    return p, err
+    return p, status, err
   }
 
-  return p, nil
+  return p, status, nil
 }
 
 // FIXME: Page and limit not supprted, idk why. Check later.
@@ -3431,36 +2513,24 @@ func (f *FastId) SearchPeople() (api.People, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/people
 func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, int, error) {
   var ap []api.AllPeople
-  var client = &http.Client{}
 
   opt := r.OptionsPeople()
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     concat.Url(48+len(name)+len(opt), []string{
       SITE, "people/search?search=", languageCheck(name), "&", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &ap); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return ap, resp.StatusCode, nil
+  return ap, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -3479,42 +2549,29 @@ func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, i
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/favorites
-func (f *FastId) FavoritesCreate(linked_type, kind string) (api.Favorites, error) {
+func (f *FastId) FavoritesCreate(linked_type, kind string) (api.Favorites, int, error) {
   var fa api.Favorites
-  var client = &http.Client{}
 
   if linked_type != FAVORITES_LINKED_TYPE_PERSON { kind = "" }
 
   str_id := strconv.Itoa(f.Id)
 
-  post, cancel, err := NewPostRequestWithCancel(
+  data, status, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     // 26(SITE) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id) + 1(/) + ?(kind)
     concat.Url(38+len(linked_type)+len(str_id)+len(kind), []string{
       SITE, "favorites/", linked_type, "/", str_id, "/", kind,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return fa, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(post)
-  if err != nil {
-    return fa, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return fa, err
+    return fa, status, err
   }
 
   if err := json.Unmarshal(data, &fa); err != nil {
-    return fa, err
+    return fa, status, err
   }
 
-  return fa, nil
+  return fa, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -3528,40 +2585,27 @@ func (f *FastId) FavoritesCreate(linked_type, kind string) (api.Favorites, error
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/favorites
-func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
+func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, int, error) {
   var ff api.Favorites
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  remove, cancel, err := NewDeleteRequestWithCancel(
+  data, status, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     // 26(SITE) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id)
     concat.Url(37+len(linked_type)+len(str_id), []string{
       SITE, "favorites/", linked_type, "/", str_id,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return ff, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(remove)
-  if err != nil {
-    return ff, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return ff, err
+    return ff, status, err
   }
 
   if err := json.Unmarshal(data, &ff); err != nil {
-    return ff, err
+    return ff, status, err
   }
 
-  return ff, nil
+  return ff, status, nil
 }
 
 // FIXME: https://github.com/heycatch/goshikimori/issues/14
@@ -3576,29 +2620,20 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, error) {
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/favorites
 func (f *FastId) FavoritesReorder(position int) (int, error) {
-  var client = &http.Client{}
-
   str_id := strconv.Itoa(f.Id)
 
-  post, cancel, err := NewReorderPostRequestWithCancel(
+  _, status, err := NewReorderPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     // 26(SITE) + 10(favorites/) + ?(id) + 8(/reorder)
     concat.Url(44+len(str_id), []string{
       SITE, "favorites/", str_id, "/reorder",
-    }), position, 10,
+    }), position, MAX_EXPECTATION,
   )
   if err != nil {
-    return 0, err
+    return status, err
   }
-  defer cancel()
 
-  resp, err := client.Do(post)
-  if err != nil {
-    return resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  return resp.StatusCode, nil
+  return status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -3606,40 +2641,27 @@ func (f *FastId) FavoritesReorder(position int) (int, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/ignore
-func (f *FastId) AddIgnoreUser() (api.IgnoreUser, error) {
+func (f *FastId) AddIgnoreUser() (api.IgnoreUser, int, error) {
   var i api.IgnoreUser
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  post, cancel, err := NewPostRequestWithCancel(
+  data, status, err := NewPostRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     // 26(SITE) + 9(v2/users/) + ?(id) + 7(/ignore)
     concat.Url(42+len(str_id), []string{
       SITE, "v2/users/", str_id, "/ignore",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return i, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(post)
-  if err != nil {
-    return i, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return i, err
+    return i, status, err
   }
 
   if err := json.Unmarshal(data, &i); err != nil {
-    return i, err
+    return i, status, err
   }
 
-  return i, nil
+  return i, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -3647,40 +2669,27 @@ func (f *FastId) AddIgnoreUser() (api.IgnoreUser, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/ignore
-func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, error) {
+func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, int, error) {
   var i api.IgnoreUser
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  remove, cancel, err := NewDeleteRequestWithCancel(
+  data, status, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     // 26(SITE) + 9(v2/users/) + ?(id) + 7(/ignore)
     concat.Url(42+len(str_id), []string{
       SITE, "v2/users/", str_id, "/ignore",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return i, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(remove)
-  if err != nil {
-    return i, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return i, err
+    return i, status, err
   }
 
   if err := json.Unmarshal(data, &i); err != nil {
-    return i, err
+    return i, status, err
   }
 
-  return i, nil
+  return i, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -3690,33 +2699,22 @@ func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/dialogs
 func (c *Configuration) Dialogs() ([]api.Dialogs, int, error) {
   var d []api.Dialogs
-  var client = &http.Client{}
 
-  get, cancel, err := NewGetRequestWithCancel(
+  data, status, err := NewGetRequestWithCancelAndBearer(
     c.Application, c.AccessToken,
     // 26(SITE) + 7(dialogs)
-    concat.Url(33, []string{SITE, "dialogs"}), 10,
+    concat.Url(33, []string{SITE, "dialogs"}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &d); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return d, resp.StatusCode, nil
+  return d, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -3726,40 +2724,27 @@ func (c *Configuration) Dialogs() ([]api.Dialogs, int, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/dialogs
-func (f *FastId) SearchDialogs() ([]api.SearchDialogs, error) {
+func (f *FastId) SearchDialogs() ([]api.SearchDialogs, int, error) {
   var sd []api.SearchDialogs
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
+  data, status, err := NewGetRequestWithCancelAndBearer(
     f.Conf.Application, f.Conf.AccessToken,
     // 26(SITE) + 8(dialogs/) + ?(id)
     concat.Url(34+len(str_id), []string{
       SITE, "dialogs/", str_id,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &sd); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return sd, nil
+  return sd, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -3769,41 +2754,28 @@ func (f *FastId) SearchDialogs() ([]api.SearchDialogs, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/dialogs
-func (f *FastId) DeleteDialogs() (api.FriendRequest, error) {
+func (f *FastId) DeleteDialogs() (api.FriendRequest, int, error) {
   var fr api.FriendRequest
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  remove, cancel, err := NewDeleteRequestWithCancel(
+  data, status, err := NewDeleteRequestWithCancel(
     f.Conf.Application, f.Conf.AccessToken,
     // 26(SITE) + 8(dialogs/) + ?(id)
     concat.Url(34+len(str_id), []string{
       SITE, "dialogs/", str_id,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return fr, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(remove)
-  if err != nil {
-    return fr, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return fr, err
+    return fr, status, err
   }
 
   if err := json.Unmarshal(data, &fr); err != nil {
     // Original error message from api/v1.
-    return fr, errors.New("не найдено ни одного сообщения для удаления")
+    return fr, status, errors.New("не найдено ни одного сообщения для удаления")
   }
 
-  return fr, nil
+  return fr, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -3811,72 +2783,45 @@ func (f *FastId) DeleteDialogs() (api.FriendRequest, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/user
-func (f *FastId) UserBriefInfo() (api.Info, error) {
+func (f *FastId) UserBriefInfo() (api.Info, int, error) {
   var i api.Info
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 6(users/) + ?(id) + 5(/info)
     concat.Url(37+len(str_id), []string{
       SITE, "users/", str_id, "/info",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return i, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return i, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return i, err
+    return i, status, err
   }
 
   if err := json.Unmarshal(data, &i); err != nil {
-    return i, err
+    return i, status, err
   }
 
-  return i, nil
+  return i, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
 //
 // https://github.com/heycatch/goshikimori/issues/26
 func (c *Configuration) SignOut() (string, int, error) {
-  var client = &http.Client{}
-
-  post, cancel, err := NewPostRequestWithCancel(
+  data, status, err := NewPostRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 14(users/sign_out)
     concat.Url(40, []string{
       SITE, "users/sign_out",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return "", 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(post)
-  if err != nil {
-    return "", resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return "", resp.StatusCode, err
+    return string(data), status, err
   }
 
-  return string(data), resp.StatusCode, nil
+  return string(data), status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -3889,37 +2834,24 @@ func (c *Configuration) SignOut() (string, int, error) {
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/active_users
 func (c *Configuration) ActiveUsers() ([]int, int, error) {
-  var client = &http.Client{}
   ids := make([]int, 0)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 18(stats/active_users)
     concat.Url(44, []string{
       SITE, "stats/active_users",
-    }), 40,
+    }), CUSTOM_MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &ids); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return ids, resp.StatusCode, nil
+  return ids, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -3931,41 +2863,28 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
-func (f *FastId) SearchTopicsAnime(r Result) ([]api.Topics, error) {
+func (f *FastId) SearchTopicsAnime(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
-  var client = &http.Client{}
 
   opt := r.OptionsOnlyPageLimit(100000, 30)
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(animes/) + ?(id) + 8(/topics?) + ?(Result)
     concat.Url(41+len(str_id)+len(opt), []string{
       SITE, "animes/", str_id, "/topics?", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &t); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return t, nil
+  return t, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -3977,41 +2896,28 @@ func (f *FastId) SearchTopicsAnime(r Result) ([]api.Topics, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
-func (f *FastId) SearchTopicsManga(r Result) ([]api.Topics, error) {
+func (f *FastId) SearchTopicsManga(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
-  var client = &http.Client{}
 
   opt := r.OptionsOnlyPageLimit(100000, 30)
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(mangas/) + ?(id) + 8(/topics?) + ?(Result)
     concat.Url(41+len(str_id)+len(opt), []string{
       SITE, "mangas/", str_id, "/topics?", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &t); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return t, nil
+  return t, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -4023,41 +2929,28 @@ func (f *FastId) SearchTopicsManga(r Result) ([]api.Topics, error) {
 // More information can be found in the [example].
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
-func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, error) {
+func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
-  var client = &http.Client{}
 
   opt := r.OptionsOnlyPageLimit(100000, 30)
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    f.Conf.Application, f.Conf.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    f.Conf.Application,
     // 26(SITE) + 7(ranobe/) + ?(id) + 8(/topics?) + ?(Result)
     concat.Url(41+len(str_id)+len(opt), []string{
       SITE, "ranobe/", str_id, "/topics?", opt,
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &t); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
-  return t, nil
+  return t, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -4091,36 +2984,24 @@ func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
 func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
-  var client = &http.Client{}
 
   opt := r.OptionsTopics()
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 7(topics?) + ?(Result)
-    concat.Url(33+len(opt), []string{SITE, "topics?", opt}), 10,
+    concat.Url(33+len(opt), []string{SITE, "topics?", opt}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &t); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return t, resp.StatusCode, nil
+  return t, status, nil
 }
 
 // FIXME: Limit always returns +1 of the given number.
@@ -4136,36 +3017,24 @@ func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
 func (c *Configuration) SearchTopicsUpdates(r Result) ([]api.TopicsUpdates, int, error) {
   var t []api.TopicsUpdates
-  var client = &http.Client{}
 
   opt := r.OptionsOnlyPageLimit(100000, 30)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 15(topics/updates?) + ?(Result)
-    concat.Url(41+len(opt), []string{SITE, "topics/updates?", opt}), 10,
+    concat.Url(41+len(opt), []string{SITE, "topics/updates?", opt}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &t); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return t, resp.StatusCode, nil
+  return t, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -4178,36 +3047,24 @@ func (c *Configuration) SearchTopicsUpdates(r Result) ([]api.TopicsUpdates, int,
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
 func (c *Configuration) SearchTopicsHot(r Result) ([]api.Topics, int, error) {
   var t []api.Topics
-  var client = &http.Client{}
 
   opt := r.OptionsTopicsHot()
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 11(topics/hot?) + ?(Result)
-    concat.Url(37+len(opt), []string{SITE, "topics/hot?", opt}), 10,
+    concat.Url(37+len(opt), []string{SITE, "topics/hot?", opt}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &t); err != nil {
-    return nil, resp.StatusCode, err
+    return nil, status, err
   }
 
-  return t, resp.StatusCode, nil
+  return t, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -4219,36 +3076,24 @@ func (c *Configuration) SearchTopicsHot(r Result) ([]api.Topics, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
 func (c *Configuration) SearchTopicsId(id int) (api.TopicsId, int, error) {
   var t api.TopicsId
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(id)
 
-  get, cancel, err := NewGetRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGetRequestWithCancel(
+    c.Application,
     // 26(SITE) + 7(topics/) + ?(id)
-    concat.Url(33+len(str_id), []string{SITE, "topics/", str_id}), 10,
+    concat.Url(33+len(str_id), []string{SITE, "topics/", str_id}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return t, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return t, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return t, resp.StatusCode, err
+    return t, status, err
   }
 
   if err := json.Unmarshal(data, &t); err != nil {
-    return t, resp.StatusCode, err
+    return t, status, err
   }
 
-  return t, resp.StatusCode, nil
+  return t, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -4260,38 +3105,25 @@ func (c *Configuration) SearchTopicsId(id int) (api.TopicsId, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
 func (c *Configuration) AddIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
   var i api.IgnoreTopic
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(id)
 
-  post, cancel, err := NewPostRequestWithCancel(
+  data, status, err := NewPostRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 10(v2/topics/) + ?(id) + 7(/ignore)
     concat.Url(43+len(str_id), []string{
       SITE, "v2/topics/", str_id, "/ignore",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
     return i, 0, err
   }
-  defer cancel()
-
-  resp, err := client.Do(post)
-  if err != nil {
-    return i, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return i, resp.StatusCode, err
-  }
 
   if err := json.Unmarshal(data, &i); err != nil {
-    return i, resp.StatusCode, err
+    return i, status, err
   }
 
-  return i, resp.StatusCode, nil
+  return i, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -4303,38 +3135,25 @@ func (c *Configuration) AddIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/topics
 func (c *Configuration) RemoveIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
   var i api.IgnoreTopic
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(id)
 
-  remove, cancel, err := NewDeleteRequestWithCancel(
+  data, status, err := NewDeleteRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 10(v2/topics/) + ?(id) + 7(/ignore)
     concat.Url(43+len(str_id), []string{
       SITE, "v2/topics/", str_id, "/ignore",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
     return i, 0, err
   }
-  defer cancel()
-
-  resp, err := client.Do(remove)
-  if err != nil {
-    return i, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return i, resp.StatusCode, err
-  }
 
   if err := json.Unmarshal(data, &i); err != nil {
-    return i, resp.StatusCode, err
+    return i, status, err
   }
 
-  return i, resp.StatusCode, nil
+  return i, status, nil
 }
 
 // Only the application needs to be specified in SetConfiguration().
@@ -4345,35 +3164,23 @@ func (c *Configuration) RemoveIgnoreTopic(id int) (api.IgnoreTopic, int, error) 
 //
 // [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
 func (c *Configuration) SearchGraphql(schema string) (api.GraphQL, int, error) {
-  var client = &http.Client{}
   var g api.GraphQL
 
-  post, cancel, err := NewPostRequestWithCancel(
-    c.Application, c.AccessToken,
+  data, status, err := NewGraphQLPostRequestWithCancel(
+    c.Application,
     // 26(SITE) + ?(schema)
-    concat.Url(26+len(schema), []string{SITE, schema}), 10,
+    concat.Url(26+len(schema), []string{SITE, schema}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return g, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(post)
-  if err != nil {
-    return g, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return g, resp.StatusCode, err
+    return g, status, err
   }
 
   if err := json.Unmarshal(data, &g); err != nil {
-    return g, resp.StatusCode, err
+    return g, status, err
   }
 
-  return g, resp.StatusCode, nil
+  return g, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -4388,37 +3195,24 @@ func (c *Configuration) SearchGraphql(schema string) (api.GraphQL, int, error) {
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/message
 func (c *Configuration) ReadMessage(id int) (api.Messages, int, error) {
-  var client = &http.Client{}
   var m api.Messages
 
   str_id := strconv.Itoa(id)
 
-  get, cancel, err := NewGetRequestWithCancel(
+  data, status, err := NewGetRequestWithCancelAndBearer(
     c.Application, c.AccessToken,
     // 26(SITE) + 9(messages/) + ?(id)
-    concat.Url(35+len(str_id), []string{SITE, "messages/", str_id}), 10,
+    concat.Url(35+len(str_id), []string{SITE, "messages/", str_id}), MAX_EXPECTATION,
   )
   if err != nil {
-    return m, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return m, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return m, resp.StatusCode, err
+    return m, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return m, resp.StatusCode, err
+    return m, status, err
   }
 
-  return m, resp.StatusCode, nil
+  return m, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -4439,35 +3233,23 @@ func (c *Configuration) ReadMessage(id int) (api.Messages, int, error) {
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/message
 func (c *Configuration) SendMessage(from_id, to_id int, message string) (api.Messages, int, error) {
-  var client = &http.Client{}
   var m api.Messages
 
-  post, cancel, err := NewSendMessagePostRequestWithCancel(
+  data, status, err := NewSendMessagePostRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 8(messages)
-    concat.Url(34, []string{SITE, "messages"}), message, from_id, to_id, 10,
+    concat.Url(34, []string{SITE, "messages"}),
+    message, from_id, to_id, MAX_EXPECTATION,
   )
   if err != nil {
-    return m, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(post)
-  if err != nil {
-    return m, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return m, resp.StatusCode, err
+    return m, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return m, resp.StatusCode, err
+    return m, status, err
   }
 
-  return m, resp.StatusCode, nil
+  return m, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -4484,37 +3266,25 @@ func (c *Configuration) SendMessage(from_id, to_id int, message string) (api.Mes
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/message
 func (c *Configuration) ChangeMessage(id int, message string) (api.Messages, int, error) {
-  var client = &http.Client{}
   var m api.Messages
 
   str_id := strconv.Itoa(id)
 
-  put, cancel, err := NewChangeMessagePutRequestWithCancel(
+  data, status, err := NewChangeMessagePutRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 9(messages/) + ?(id)
-    concat.Url(35+len(str_id), []string{SITE, "messages/", str_id}), message, 10,
+    concat.Url(35+len(str_id), []string{SITE, "messages/", str_id}),
+    message, MAX_EXPECTATION,
   )
   if err != nil {
-    return m, 0, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(put)
-  if err != nil {
-    return m, resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return m, resp.StatusCode, err
+    return m, status, err
   }
 
   if err := json.Unmarshal(data, &m); err != nil {
-    return m, resp.StatusCode, err
+    return m, status, err
   }
 
-  return m, resp.StatusCode, nil
+  return m, status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -4527,27 +3297,19 @@ func (c *Configuration) ChangeMessage(id int, message string) (api.Messages, int
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/message
 func (c *Configuration) DeleteMessage(id int) (int, error) {
-  var client = &http.Client{}
-
   str_id := strconv.Itoa(id)
 
-  del, cancel, err := NewDeleteMessageDeleteRequestWithCancel(
+  _, status, err := NewDeleteMessageDeleteRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 9(messages/) + ?(id)
-    concat.Url(35+len(str_id), []string{SITE, "messages/", str_id}), 10,
+    concat.Url(35+len(str_id), []string{SITE, "messages/", str_id}),
+    MAX_EXPECTATION,
   )
   if err != nil {
-    return 0, err
+    return status, err
   }
-  defer cancel()
 
-  resp, err := client.Do(del)
-  if err != nil {
-    return resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  return resp.StatusCode, nil
+  return status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -4566,27 +3328,18 @@ func (c *Configuration) DeleteMessage(id int) (int, error) {
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/message
 func (c *Configuration) MarkReadMessages(ids string, is_read int) (int, error) {
-  var client = &http.Client{}
-
-  post, cancel, err := NewMarkReadPostRequestWithCancel(
+  _, status, err := NewMarkReadPostRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 18(messages/mark_read)
     concat.Url(44, []string{
       SITE, "messages/mark_read",
-    }), ids, is_read, 10,
+    }), ids, is_read, MAX_EXPECTATION,
   )
   if err != nil {
-    return 0, err
+    return status, err
   }
-  defer cancel()
 
-  resp, err := client.Do(post)
-  if err != nil {
-    return resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  return resp.StatusCode, nil
+  return status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -4599,51 +3352,38 @@ func (c *Configuration) MarkReadMessages(ids string, is_read int) (int, error) {
 // UNREAD_MESSAGES_IDS_NOTIFICATIONS;
 //
 // Empty array to be filled with ids for messages.
-func (f *FastId) UnreadMessagesIds(name string) ([]int, error) {
+func (f *FastId) UnreadMessagesIds(name string) ([]int, int, error) {
   var um api.UnreadMessages
-  var client = &http.Client{}
 
   str_id := strconv.Itoa(f.Id)
 
-  get, cancel, err := NewGetRequestWithCancel(
+  data, status, err := NewGetRequestWithCancelAndBearer(
     f.Conf.Application, f.Conf.AccessToken,
     // 26(SITE) + 6(users/) + ?(id) + 16(/unread_messages)
     concat.Url(48+len(str_id), []string{
       SITE, "users/", str_id, "/unread_messages",
-    }), 10,
+    }), MAX_EXPECTATION,
   )
   if err != nil {
-    return nil, err
-  }
-  defer cancel()
-
-  resp, err := client.Do(get)
-  if err != nil {
-    return nil, err
-  }
-  defer resp.Body.Close()
-
-  data, err := io.ReadAll(resp.Body)
-  if err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   if err := json.Unmarshal(data, &um); err != nil {
-    return nil, err
+    return nil, status, err
   }
 
   switch name {
   case "messages":
-    if um.Messages == 0 { return nil, errors.New("unread messages not found") }
-    return make([]int, um.Messages), nil
+    if um.Messages == 0 { return nil, status, errors.New("unread messages not found") }
+    return make([]int, um.Messages), status, nil
   case "news":
-    if um.News == 0 { return nil, errors.New("unread news not found") }
-    return make([]int, um.News), nil
+    if um.News == 0 { return nil, status, errors.New("unread news not found") }
+    return make([]int, um.News), status, nil
   case "notifications":
-    if um.Notifications == 0 { return nil, errors.New("unread notifications not found") }
-    return make([]int, um.Notifications), nil
+    if um.Notifications == 0 { return nil, status, errors.New("unread notifications not found") }
+    return make([]int, um.Notifications), status, nil
   default:
-    return nil, errors.New("wrong name... try messages, news or notifications")
+    return nil, status, errors.New("wrong name... try messages, news or notifications")
   }
 }
 
@@ -4661,25 +3401,17 @@ func (f *FastId) UnreadMessagesIds(name string) ([]int, error) {
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/message
 func (c *Configuration) ReadAllMessages(name string) (int, error) {
-  var client = &http.Client{}
-
-  post, cancel, err := NewReadDeleteAllPostRequestWithCancel(
+  _, status, err := NewReadDeleteAllPostRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 17(messages/read_all)
-    concat.Url(43, []string{SITE, "messages/read_all"}), name, 10,
+    concat.Url(43, []string{SITE, "messages/read_all"}),
+    name, MAX_EXPECTATION,
   )
   if err != nil {
-    return 0, err
+    return status, err
   }
-  defer cancel()
 
-  resp, err := client.Do(post)
-  if err != nil {
-    return resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  return resp.StatusCode, nil
+  return status, nil
 }
 
 // In SetConfiguration(), you must specify the application and the token.
@@ -4696,23 +3428,15 @@ func (c *Configuration) ReadAllMessages(name string) (int, error) {
 //
 // [example]: https://github.com/heycatch/goshikimori/blob/master/examples/message
 func (c *Configuration) DeleteAllMessages(name string) (int, error) {
-  var client = &http.Client{}
-
-  post, cancel, err := NewReadDeleteAllPostRequestWithCancel(
+  _, status, err := NewReadDeleteAllPostRequestWithCancel(
     c.Application, c.AccessToken,
     // 26(SITE) + 19(messages/delete_all)
-    concat.Url(45, []string{SITE, "messages/delete_all"}), name, 10,
+    concat.Url(45, []string{SITE, "messages/delete_all"}),
+    name, MAX_EXPECTATION,
   )
   if err != nil {
     return 0, err
   }
-  defer cancel()
 
-  resp, err := client.Do(post)
-  if err != nil {
-    return resp.StatusCode, err
-  }
-  defer resp.Body.Close()
-
-  return resp.StatusCode, nil
+  return status, nil
 }

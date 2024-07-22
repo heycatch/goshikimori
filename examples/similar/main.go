@@ -22,8 +22,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  a, err := fast_anime.SearchSimilarAnime()
-  if err != nil {
+  a, status, err := fast_anime.SearchSimilarAnime()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -41,8 +41,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  m, err := fast_manga.SearchSimilarManga()
-  if err != nil {
+  m, status, err := fast_manga.SearchSimilarManga()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -60,8 +60,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  r, err := fast_ranobe.SearchSimilarRanobe()
-  if err != nil {
+  r, status, err := fast_ranobe.SearchSimilarRanobe()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }

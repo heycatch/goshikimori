@@ -21,8 +21,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  a, err := fast_anime.SearchAnimeRoles()
-  if err != nil {
+  a, status, err := fast_anime.SearchAnimeRoles()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -42,8 +42,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  m, err := fast_manga.SearchMangaRoles()
-  if err != nil {
+  m, status, err := fast_manga.SearchMangaRoles()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -63,8 +63,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  r, err := fast_ranobe.SearchRanobeRoles()
-  if err != nil {
+  r, status, err := fast_ranobe.SearchRanobeRoles()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }

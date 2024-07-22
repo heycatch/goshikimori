@@ -22,9 +22,9 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  fa, err := fast_anime.SearchAnimeFranchise()
-  if err != nil {
-    fmt.Println(err)
+  fa, status, err := fast_anime.SearchAnimeFranchise()
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
   if len(fa.Nodes) == 0 {
@@ -41,9 +41,9 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  fm, err := fast_manga.SearchMangaFranchise()
-  if err != nil {
-    fmt.Println(err)
+  fm, status, err := fast_manga.SearchMangaFranchise()
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
   if len(fm.Nodes) == 0 {
@@ -60,9 +60,9 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  fr, err := fast_ranobe.SearchRanobeFranchise()
-  if err != nil {
-    fmt.Println(err)
+  fr, status, err := fast_ranobe.SearchRanobeFranchise()
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
   if len(fr.Nodes) == 0 {

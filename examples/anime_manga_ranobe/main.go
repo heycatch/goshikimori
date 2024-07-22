@@ -20,9 +20,9 @@ func foundAnime() {
     fmt.Println(status, err)
     return
   }
-  res, err := fast.SearchAnime()
-  if err != nil {
-    fmt.Println(err)
+  res, status, err := fast.SearchAnime()
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
   }
   fmt.Println(
     res.Id, res.Name, res.Description, res.Released_on, res.Score,
@@ -58,9 +58,9 @@ func foundManga() {
     fmt.Println(status, err)
     return
   }
-  res, err := fast.SearchManga()
-  if err != nil {
-    fmt.Println(err)
+  res, status, err := fast.SearchManga()
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
   fmt.Println(
@@ -96,9 +96,9 @@ func foundRanobe() {
     fmt.Println(status, err)
     return
   }
-  res, err := fast.SearchRanobe()
-  if err != nil {
-    fmt.Println(err)
+  res, status, err := fast.SearchRanobe()
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
   fmt.Println(

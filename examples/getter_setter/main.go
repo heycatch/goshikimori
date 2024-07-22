@@ -21,8 +21,8 @@ func main() {
     fmt.Println(err)
     return
   }
-  brief, err := fast.UserBriefInfo()
-  if err != nil {
+  brief, status, err := fast.UserBriefInfo()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -32,8 +32,8 @@ func main() {
   fmt.Println(fast.Id) // fmt.Println(fast.GetFastId())
   // Quick id change.
   new_fast := c.SetFastId(1) // fmt.Println(new_fast.Id)
-  new_brief, err := new_fast.UserBriefInfo()
-  if err != nil {
+  new_brief, status, err := new_fast.UserBriefInfo()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }

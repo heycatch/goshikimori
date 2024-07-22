@@ -38,9 +38,9 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  uc, err := fast.SearchUserClubs()
-  if err != nil || len(uc) == 0 {
-    fmt.Println(err)
+  uc, status, err := fast.SearchUserClubs()
+  if status != 200 || err != nil || len(uc) == 0 {
+    fmt.Println(status, err)
     return
   }
   for _, v := range uc {
@@ -48,9 +48,9 @@ func main() {
   }
   // user friends
   ufo := &g.Options{Page: 1, Limit: 5}
-  uf, err := fast.SearchUserFriends(ufo)
-  if err != nil || len(uf) == 0{
-    fmt.Println(err)
+  uf, status, err := fast.SearchUserFriends(ufo)
+  if status != 200 || err != nil || len(uf) == 0{
+    fmt.Println(status, err)
     return
   }
   for _, v := range uf {
@@ -58,27 +58,27 @@ func main() {
   }
   // search anime and manga rates
   oar := &g.Options{Page: 1, Limit: 5, Status: g.MY_LIST_COMPLETED, Censored: true}
-  ar, err := fast.SearchUserAnimeRates(oar)
-  if err != nil || len(ar) == 0 {
-    fmt.Println(err)
+  ar, status, err := fast.SearchUserAnimeRates(oar)
+  if status != 200 || err != nil || len(ar) == 0 {
+    fmt.Println(status, err)
     return
   }
   for _, v := range ar {
     fmt.Println(v.Status, v.Anime.Name, v.Episodes, v.Score)
   }
   omr := &g.Options{Page: 1, Limit: 5, Censored: true}
-  mr, err := fast.SearchUserMangaRates(omr)
-  if err != nil || len(mr) == 0 {
-    fmt.Println(err)
+  mr, status, err := fast.SearchUserMangaRates(omr)
+  if status != 200 || err != nil || len(mr) == 0 {
+    fmt.Println(status, err)
     return
   }
   for _, v := range mr {
     fmt.Println(v.Status, v.Manga.Name, v.Chapters, v.Volumes, v.Score)
   }
   // search favourites: anime, manga, characters, people, mangakas, seyu and producers
-  suf, err := fast.SearchUserFavourites()
-  if err != nil || len(suf.Animes) == 0 || len(suf.Mangas) == 0 {
-    fmt.Println(err)
+  suf, status, err := fast.SearchUserFavourites()
+  if status != 200 || err != nil || len(suf.Animes) == 0 || len(suf.Mangas) == 0 {
+    fmt.Println(status, err)
     return
   }
   for _, v := range suf.Animes {
@@ -89,18 +89,18 @@ func main() {
   }
   // user history
   ouh := &g.Options{Page: 1, Limit: 10, Target_id: 33206, Target_type: g.TARGET_TYPE_ANIME}
-  uh, err := fast.SearchUserHistory(ouh)
-  if err != nil || len(uh) == 0 {
-    fmt.Println(err)
+  uh, status, err := fast.SearchUserHistory(ouh)
+  if status != 200 || err != nil || len(uh) == 0 {
+    fmt.Println(status, err)
     return
   }
   for _, v := range uh {
     fmt.Println(v.Id, v.Description, v.Target.Russian, v.Target.Episodes)
   }
   // user bans
-  ub, err := fast.SearchUserBans()
-  if err != nil || len(ub) == 0 {
-    fmt.Println(err)
+  ub, status, err := fast.SearchUserBans()
+  if status != 200 || err != nil || len(ub) == 0 {
+    fmt.Println(status, err)
     return
   }
   for _, v := range ub {
@@ -109,9 +109,9 @@ func main() {
     )
   }
   // Brief user information
-  fi, err := fast.UserBriefInfo()
-  if err != nil || fi.Id == 0 {
-    fmt.Println(err)
+  fi, status, err := fast.UserBriefInfo()
+  if status != 200 || err != nil || fi.Id == 0 {
+    fmt.Println(status, err)
     return
   }
   fmt.Println(fi.Id, fi.Name, fi.Last_online_at, fi.Full_years, fi.Birth_on)

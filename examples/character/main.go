@@ -32,8 +32,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  ch_anime, err := anime.SearchCharacter()
-  if err != nil {
+  ch_anime, status, err := anime.SearchCharacter()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -48,8 +48,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  ch_manga, err := manga.SearchCharacter()
-  if err != nil {
+  ch_manga, status, err := manga.SearchCharacter()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }

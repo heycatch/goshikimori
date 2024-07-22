@@ -20,9 +20,9 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  ignore, err := fast.AddIgnoreUser()
-  //ignore, err := fast.RemoveIgnoreUser()
-  if err != nil {
+  ignore, status, err := fast.AddIgnoreUser()
+  //ignore, status, err := fast.RemoveIgnoreUser()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }

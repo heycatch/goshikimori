@@ -40,8 +40,8 @@ func main() {
   }
 
   // Finding anime titles in the club.
-  sca, err := fast_spok.SearchClubAnimes(o)
-  if err != nil {
+  sca, status, err := fast_spok.SearchClubAnimes(o)
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -54,8 +54,8 @@ func main() {
   }
 
   // Finding manga titles in the club.
-  scm, err := fast_spok.SearchClubMangas(o)
-  if err != nil {
+  scm, status, err := fast_spok.SearchClubMangas(o)
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -68,8 +68,8 @@ func main() {
   }
 
   // Finding ranobe titles in the club.
-  scr, err := fast_spok.SearchClubRanobe(o)
-  if err != nil {
+  scr, status, err := fast_spok.SearchClubRanobe(o)
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -82,8 +82,8 @@ func main() {
   }
 
   // Club members.
-  scmem, err := fast_spok.SearchClubMembers(o)
-  if err != nil {
+  scmem, status, err := fast_spok.SearchClubMembers(o)
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -96,8 +96,8 @@ func main() {
   }
 
   // Club characters.
-  scc, err := fast_spok.SearchClubCharacters(o)
-  if err != nil {
+  scc, status, err := fast_spok.SearchClubCharacters(o)
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -116,8 +116,8 @@ func main() {
   }
 
   // Club clubs.
-  scl, err := fast_cude.SearchClubClubs(o)
-  if err != nil {
+  scl, status, err := fast_cude.SearchClubClubs(o)
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -130,8 +130,8 @@ func main() {
   }
 
   // Club images.
-  sci, err := fast_cude.SearchClubImages(o)
-  if err != nil {
+  sci, status, err := fast_cude.SearchClubImages(o)
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -144,8 +144,8 @@ func main() {
   }
 
   // Club collections.
-  sccl, err := fast_cude.SearchClubCollections(o)
-  if err != nil {
+  sccl, status, err := fast_cude.SearchClubCollections(o)
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }

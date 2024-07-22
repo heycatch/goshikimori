@@ -21,8 +21,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  fra, err := fast_anime.SearchAnimeExternalLinks()
-  if err != nil {
+  fra, status, err := fast_anime.SearchAnimeExternalLinks()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -39,8 +39,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  frm, err := fast_manga.SearchMangaExternalLinks()
-  if err != nil {
+  frm, status, err := fast_manga.SearchMangaExternalLinks()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -57,8 +57,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  frr, err := fast_ranobe.SearchRanobeExternalLinks()
-  if err != nil {
+  frr, status, err := fast_ranobe.SearchRanobeExternalLinks()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }

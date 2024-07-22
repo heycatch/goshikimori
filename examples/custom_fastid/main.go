@@ -28,9 +28,9 @@ func main() {
   // Override the ID.
   custom_fast := c.SetFastId(me.Id)
   // Find the user's friends.
-  friends, err := custom_fast.SearchUserFriends(&g.Options{Page: 1, Limit: 5})
-  if err != nil {
-    fmt.Println(err)
+  friends, status, err := custom_fast.SearchUserFriends(&g.Options{Page: 1, Limit: 5})
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
   for _, v := range friends {
@@ -51,11 +51,11 @@ func main() {
       // Override the ID.
       custom_fast := c.SetFastId(v.Id)
       // Search for completed anime from the user.
-      anime_rates, err := custom_fast.SearchUserAnimeRates(&g.Options{
+      anime_rates, status, err := custom_fast.SearchUserAnimeRates(&g.Options{
         Page: 1, Limit: 50, Status: "completed",
       })
-      if err != nil {
-        fmt.Println(err)
+      if status != 200 || err != nil {
+        fmt.Println(status, err)
         return
       }
       for _, v := range anime_rates {

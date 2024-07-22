@@ -83,7 +83,7 @@ func TestAchievements(t *testing.T) {
 
   c := conf()
   fast, _, _ := c.FastIdUser("arctica")
-  u, _ := fast.SearchAchievement()
+  u, _, _ := fast.SearchAchievement()
   neko, _ := NekoSearch("Hellsing")
 
   for _, v := range u {
@@ -100,7 +100,7 @@ func TestAchievements(t *testing.T) {
 func TestAnimeVideos(t *testing.T) {
   c := conf()
   fast, _, _ := c.FastIdAnime("initial d first stage")
-  a, _ := fast.SearchAnimeVideos()
+  a, _, _ := fast.SearchAnimeVideos()
 
   for _, v := range a {
     if v.Id == 24085 {
@@ -118,7 +118,7 @@ func TestUserUnreadMessages(t *testing.T) {
 
   c := conf()
   fast, _, _ := c.FastIdUser("arctica")
-  um, _ := fast.UserUnreadMessages()
+  um, _, _ := fast.UserUnreadMessages()
 
   if um.News > 0 || um.News == 0 {
     t.Logf("Found: %d news", um.News)

@@ -38,8 +38,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  sd, err := fast.SearchDialogs()
-  if err != nil {
+  sd, status, err := fast.SearchDialogs()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -54,8 +54,8 @@ func main() {
     )
   }
   // delete a special dialogs
-  dd, err := fast.DeleteDialogs()
-  if err != nil {
+  dd, status, err := fast.DeleteDialogs()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }

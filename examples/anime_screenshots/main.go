@@ -20,9 +20,9 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  s, err := fast.SearchAnimeScreenshots()
-  if err != nil {
-    fmt.Println(err)
+  s, status, err := fast.SearchAnimeScreenshots()
+  if status != 200 || err != nil {
+    fmt.Println(status, err)
     return
   }
   if len(s) == 0 {

@@ -31,8 +31,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  p, err := fast.SearchPeople()
-  if err != nil {
+  p, status, err := fast.SearchPeople()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }

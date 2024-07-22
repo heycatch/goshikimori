@@ -20,8 +20,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  a, err := fast.SearchAchievement()
-  if err != nil {
+  a, status, err := fast.SearchAchievement()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }

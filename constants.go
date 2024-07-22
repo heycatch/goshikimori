@@ -1,6 +1,11 @@
 package goshikimori
 
+import "time"
+
 const (
+  MAX_EXPECTATION time.Duration = 10
+  CUSTOM_MAX_EXPECTATION time.Duration = 40
+
   SITE string = "https://shikimori.one/api/"
 
   TARGET_TYPE_ANIME string = "Anime"

@@ -20,7 +20,7 @@ func TestPeople(t *testing.T) {
   c := conf()
 
   fastc, _, _ := c.FastIdPeople("Ая Хирано")
-  pc, _ := fastc.SearchPeople()
+  pc, _, _ := fastc.SearchPeople()
 
   if pc.Id == 4 && pc.Job_title == "Сэйю"  {
     t.Logf("%s - found (Cyrillic alphabet)", pc.Name)
@@ -29,7 +29,7 @@ func TestPeople(t *testing.T) {
   }
 
   fastl, _, _ := c.FastIdPeople("Aya Hirano")
-  pl, _ := fastl.SearchPeople()
+  pl, _, _ := fastl.SearchPeople()
 
   if pl.Id == 4 && pl.Job_title == "Сэйю"  {
     t.Logf("%s - found (Latin alphabet)", pl.Name)
@@ -42,7 +42,7 @@ func TestCharacter(t *testing.T) {
   c := conf()
 
   fastc, _, _ := c.FastIdCharacter("Такуми Усуи")
-  pc, _ := fastc.SearchCharacter()
+  pc, _, _ := fastc.SearchCharacter()
 
   if pc.Id == 14523 && pc.Altname == "Perverted Alien" {
     t.Logf("%s - found (Cyrillic alphabet)", pc.Name)
@@ -51,7 +51,7 @@ func TestCharacter(t *testing.T) {
   }
 
   fastl, _, _ := c.FastIdCharacter("Takumi Usui")
-  pl, _ := fastl.SearchCharacter()
+  pl, _, _ := fastl.SearchCharacter()
 
   if pl.Id == 14523 && pl.Altname == "Perverted Alien" {
     t.Logf("%s - found (Latin alphabet)", pl.Name)

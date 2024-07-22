@@ -22,10 +22,10 @@ func readMessage() {
     fmt.Println(status, err)
     return
   }
-  messages, err := fast.UserMessages(&g.Options{
+  messages, status, err := fast.UserMessages(&g.Options{
     Type: g.MESSAGE_TYPE_INBOX, Page: 1, Limit: 10,
   })
-  if err != nil {
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -68,7 +68,7 @@ func readMessage() {
     fmt.Println(status, err)
     return
   }
-  sd, err := f.SearchDialogs()
+  sd, status, err := f.SearchDialogs()
   if status != 200 || err != nil {
     fmt.Println(status, err)
     return
@@ -157,16 +157,16 @@ func markReadUnreadMessages() {
     return
   }
 
-  ids, err := fast.UnreadMessagesIds("messages")
-  if err != nil {
+  ids, status, err := fast.UnreadMessagesIds("messages")
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
 
-  messages, err := fast.UserMessages(&g.Options{
+  messages, status, err := fast.UserMessages(&g.Options{
     Type: g.MESSAGE_TYPE_INBOX, Page: 1, Limit: 10,
   })
-  if err != nil {
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }

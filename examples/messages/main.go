@@ -21,10 +21,10 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  m, err := fast.UserMessages(&g.Options{
+  m, status, err := fast.UserMessages(&g.Options{
     Type: g.MESSAGE_TYPE_NEWS, Page: 1, Limit: 10,
   })
-  if err != nil {
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -36,8 +36,8 @@ func main() {
     fmt.Println(v.Id, v.Kind, v.HTMLBody, v.Created_at)
   }
   // show user unread messages counts
-  um, err := fast.UserUnreadMessages()
-  if err != nil {
+  um, status, err := fast.UserUnreadMessages()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }

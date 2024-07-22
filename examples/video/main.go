@@ -20,8 +20,8 @@ func main() {
     fmt.Println(status, err)
     return
   }
-  w, err := fast.SearchAnimeVideos()
-  if err != nil {
+  w, status, err := fast.SearchAnimeVideos()
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }

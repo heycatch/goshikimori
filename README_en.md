@@ -59,7 +59,6 @@ http://localhost:1337/pkg/github.com/heycatch/goshikimori
 * Open [issue](https://github.com/heycatch/goshikimori/issues).
 ```bash
 # Current tasks and problems in the code can be viewed in the terminal using the command.
-git grep TODO
-git grep FIXME
-git grep NOTES
+git grep -c -e "TODO" -e "FIXME" -e "NOTES" -- . -- graphql/ -- concat/ -- api/ && \
+git grep -n -e "TODO" -e "FIXME" -e "NOTES" -- . -- graphql/ -- concat/ -- api/
 ```

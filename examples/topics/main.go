@@ -23,8 +23,8 @@ func main() {
     return
   }
   a := &g.Options{Page: 1, Limit: 10}
-  topic_anime, err := fast_anime.SearchTopicsAnime(a)
-  if err != nil {
+  topic_anime, status, err := fast_anime.SearchTopicsAnime(a)
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -39,8 +39,8 @@ func main() {
     return
   }
   m := &g.Options{Page: 1, Limit: 10}
-  topic_manga, err := fast_manga.SearchTopicsManga(m)
-  if err != nil {
+  topic_manga, status, err := fast_manga.SearchTopicsManga(m)
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
@@ -55,8 +55,8 @@ func main() {
     return
   }
   r := &g.Options{Page: 1, Limit: 10}
-  topic_ranobe, err := fast_ranobe.SearchTopicsRanobe(r)
-  if err != nil {
+  topic_ranobe, status, err := fast_ranobe.SearchTopicsRanobe(r)
+  if status != 200 || err != nil {
     fmt.Println(err)
     return
   }
