@@ -6,7 +6,9 @@
 ```golang
 package main
 
-import ( g "github.com/heycatch/goshikimori" )
+import (
+  g "github.com/heycatch/goshikimori"
+)
 
 /*
 
@@ -29,8 +31,8 @@ import ( g "github.com/heycatch/goshikimori" )
 PRIVATE_KEY можно оставить пустым.
 
 func config() *g.Configuration {
-  return g.SetConfiguratuib(
-    "MY_APPLICATION",
+  return g.SetConfiguration(
+    "APPLICATION_NAME",
     "",
   )
 }
@@ -46,9 +48,9 @@ func config() *g.Configuration {
 для тех или иных операций.
 
 func config() *g.Configuration {
-  return g.SetConfiguratuib(
-    "MY_APPLICATION",
-    "MY_PRIVATE_KEY",
+  return g.SetConfiguration(
+    "APPLICATION_NAME",
+    "PRIVATE_KEY",
   )
 }
 

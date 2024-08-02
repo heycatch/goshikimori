@@ -6,7 +6,9 @@
 ```golang
 package main
 
-import ( g "github.com/heycatch/goshikimori" )
+import (
+  g "github.com/heycatch/goshikimori"
+)
 
 /*
 
@@ -28,8 +30,8 @@ the APPLICATION_NAME field will suffice, and the
 PRIVATE_KEY can be left blank.
 
 func config() *g.Configuration {
-  return g.SetConfiguratuib(
-    "MY_APPLICATION",
+  return g.SetConfiguration(
+    "APPLICATION_NAME",
     "",
   )
 }
@@ -45,9 +47,9 @@ have access rights (what it can do on your behalf)
 for certain operations.
 
 func config() *g.Configuration {
-  return g.SetConfiguratuib(
-    "MY_APPLICATION",
-    "MY_PRIVATE_KEY",
+  return g.SetConfiguration(
+    "APPLICATION_NAME",
+    "PRIVATE_KEY",
   )
 }
 
