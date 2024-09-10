@@ -237,3 +237,60 @@ func main() {
   }
 }
 ```
+```golang
+package main
+
+import (
+  "fmt"
+
+  shiki "github.com/heycatch/goshikimori"
+  graph "github.com/heycatch/goshikimori/graphql"
+)
+
+func config() *shiki.Configuration {
+  return shiki.SetConfiguration(
+    "APPLICATION_NAME",
+    "PRIVATE_KEY",
+  )
+}
+
+func main() {
+  c := config()
+
+  // The first parameter is the values of the userRates; values: "id",
+  // "text", "score", "createdAt", "anime{name}",
+  // The second parameter is the user Id; userId: 181833.
+  // In the third parameter, we introduce an auxiliary function that
+  // will separate the two additional fields: "order: {field: id, order: desc}".
+  // Now let's move on to the interface:
+  //    1) page: 1;
+  //    2) limit: 2;
+  //    3) status: completed;
+  //    4) targetType: Anime;
+  //
+  // The available values can be found in the function description: graph.Values();
+  // The available interface parameters can be found in the function description: graph.UserRatesSchema();
+  schema, err := graph.UserRatesSchema(
+    graph.Values("id", "text", "score", "createdAt", "anime{name}"),
+    181833, graph.UserRatesOrder(shiki.GRAPHQL_ORDER_FIELD_ID, shiki.GRAPHQL_ORDER_ORDER_DESC),
+    1, 10, shiki.MY_LIST_COMPLETED, shiki.TARGET_TYPE_ANIME,
+  )
+  if err != nil {
+    fmt.Println(err)
+    return
+  }
+
+  ur, status, err := c.SearchGraphql(schema)
+  if status != 200 || err != nil {
+    fmt.Println(err)
+    return
+  }
+
+  // Here you can track errors received during server response.
+  fmt.Println(ur.Errors)
+  // Standard output of our search, nothing new.
+  for _, v := range ur.Data.UserRates {
+    fmt.Println(v.Id, v.Text, v.Score, v.CreatedAt, v.Anime.Name)
+  }
+}
+```

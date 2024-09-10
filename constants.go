@@ -188,4 +188,9 @@ const (
   UNREAD_MESSAGES_IDS_NEWS string = "news"
   UNREAD_MESSAGES_IDS_MESSAGES string = "messages"
   UNREAD_MESSAGES_IDS_NOTIFICATIONS string = "notifications"
+
+  GRAPHQL_ORDER_FIELD_ID string = "id"
+  GRAPHQL_ORDER_FIELD_UPDATED_AT string = "updated_at"
+  GRAPHQL_ORDER_ORDER_ASC string = "asc"
+  GRAPHQL_ORDER_ORDER_DESC string = "desc"
 )

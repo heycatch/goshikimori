@@ -10,6 +10,7 @@ type Data struct {
   Mangas     []MangasGraphQL     `json:"mangas"`
   Characters []CharactersGraphQL `json:"characters"`
   People     []PeopleGraphQL     `json:"people"`
+  UserRates  []UserRatesGraphQL  `json:"userrates"`
 }
 
 type MessageGraphQL struct {
@@ -98,6 +99,30 @@ type MangasGraphQL struct {
   Description       string                  `json:"description"`
   DescriptionHTML   string                  `json:"descriptionHtml"`
   DescriptionSource string                  `json:"descriptionSource"`
+}
+
+type UserRatesGraphQL struct {
+  Anime     AnimesGraphQL          `json:"anime"`
+  Manga     MangasGraphQL          `json:"manga"`
+  Id        string                 `json:"id"`
+  Text      string                 `json:"text"`
+  CreatedAt string                 `json:"createdAt"`
+  UpdatedAt string                 `json:"updatedAt"`
+  Rewatches int                    `json:"rewatches"`
+  Score     float32                `json:"score"`
+  Status    UserRatesStatusGraphQL `json:"status"`
+  Episodes  int                    `json:"episodes"`
+  Chapters  int                    `json:"chapters"`
+  Volumes   int                    `json:"volumes"`
+}
+
+type UserRatesStatusGraphQL struct {
+  Planned    string `json:"planned"`
+  Watching   string `json:"watching"`
+  Rewatching string `json:"rewatching"`
+  Completed  string `json:"completed"`
+  On_hold    string `json:"on_hold"`
+  Dropped    string `json:"dropped"`
 }
 
 type AiredOnGraphQL struct {

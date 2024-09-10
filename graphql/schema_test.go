@@ -83,3 +83,29 @@ func TestPeopleSchema(t *testing.T) {
     t.Error("Normal PeopleSchema failed")
   }
 }
+
+func TestUserRatesSchema(t *testing.T) {
+  pass := `graphql?query={userRates(userId: 181833, page: 1, limit: 10, status: completed, targetType: Anime, order: { field: id, order: desc }){id text score createdAt anime {name} }}`
+  normal, _ := UserRatesSchema(
+    Values("id", "text", "score", "createdAt", "anime {name}"),
+    181833, UserRatesOrder("id", "desc"),
+    1, 10, "completed", "Anime",
+  )
+  if normal == pass {
+    t.Log("Normal UserRatesSchema passed")
+  } else {
+    t.Error("Normal UserRatesSchema failed")
+  }
+
+  pass_empty := `graphql?query={userRates(userId: 181833, page: 1, limit: 1){id}}`
+  empty, _ := UserRatesSchema(
+    Values(""),
+    181833, "",
+    1, 1, "", "",
+  )
+  if empty == pass_empty {
+    t.Log("Empty UserRatesSchema passed")
+  } else {
+    t.Error("Empty UserRatesSchema failed")
+  }
+}

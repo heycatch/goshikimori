@@ -75,7 +75,7 @@ func Values(input ...string) string {
 //
 // 'Options' settings:
 //  - Page: >= 1;
-//  - Limit: 50 maximum;
+//  - Limit: <= 50;
 //
 //  - Order:
 //
@@ -231,8 +231,7 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
   }
 
   // 36(graphql?query={animes(search: " "){}}) + ?(name) + ?(paramterOptions) + ?(value)
-  max_len := 36 + len(name) + len(parameterOptions.String()) + len(values)
-  return concat.Url(max_len, []string{
+  return concat.Url(36 + len(name) + len(parameterOptions.String()) + len(values), []string{
     "graphql?query={animes(search: \"", name, "\"",
     parameterOptions.String(), ")",
     "{", values, "}}",
@@ -249,7 +248,7 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
 //
 // 'Options' settings:
 //  - Page: >= 1;
-//  - Limit: 50 maximum;
+//  - Limit: <= 50;
 //
 //  - Order:
 //
@@ -376,8 +375,7 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
   }
 
   // 36(graphql?query={mangas(search: " "){}}) + ?(name) + ?(paramterOptions) + ?(value)
-  max_len := 36 + len(name) + len(parameterOptions.String()) + len(values)
-  return concat.Url(max_len, []string{
+  return concat.Url(36 + len(name) + len(parameterOptions.String()) + len(values), []string{
     "graphql?query={mangas(search: \"", name, "\"",
     parameterOptions.String(), ")",
     "{", values, "}}",
@@ -390,7 +388,7 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
 //
 // 'Options' settings:
 //  - Page: >= 1;
-//  - Limit: 50 maximum;
+//  - Limit: <= 50;
 //
 // How to use and all the information you need [here].
 //
@@ -418,8 +416,7 @@ func CharacterSchema(values string, name string, options ...interface{}) (string
   }
 
   // 40(graphql?query={characters(search: " "){}}) + ?(name) + ?(paramterOptions) + ?(value)
-  max_len := 40 + len(name) + len(parameterOptions.String()) + len(values)
-  return concat.Url(max_len, []string{
+  return concat.Url(40 + len(name) + len(parameterOptions.String()) + len(values), []string{
     "graphql?query={characters(search: \"", name, "\"",
     parameterOptions.String(), ")",
     "{", values, "}}",
@@ -432,7 +429,7 @@ func CharacterSchema(values string, name string, options ...interface{}) (string
 //
 // 'Options' settings:
 //  - Page: >= 1;
-//  - Limit: 50 maximum;
+//  - Limit: <= 50;
 //  - isSeyu: true, false;
 //  - isMangaka: true, false;
 //  - isProducer: true, false;
@@ -481,9 +478,111 @@ func PeopleSchema(values string, name string, options ...interface{}) (string, e
   }
 
   // 36(graphql?query={people(search: " "){}}) + ?(name) + ?(paramterOptions) + ?(value)
-  max_len := 36 + len(name) + len(parameterOptions.String()) + len(values)
-  return concat.Url(max_len, []string{
+  return concat.Url(36 + len(name) + len(parameterOptions.String()) + len(values), []string{
     "graphql?query={people(search: \"", name, "\"",
+    parameterOptions.String(), ")",
+    "{", values, "}}",
+  }), nil
+}
+
+// Auxiliary function for UserRatesSchema().
+//
+//  - Filed:
+//
+//  > GRAPHQL_ORDER_FIELD_ID, GRAPHQL_ORDER_FIELD_UPDATED_AT;
+//
+//  - Order:
+//
+//  > GRAPHQL_ORDER_ORDER_ASC, GRAPHQL_ORDER_ORDER_DESC;
+//
+// How to use and all the information you need [here].
+//
+// [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
+func UserRatesOrder(field, order string) string {
+  var res bytes.Buffer
+
+  if field != "" {
+    res.WriteString(", order: { field: ")
+    res.WriteString(field)
+    if order != "" {
+      res.WriteString(", order: ")
+      res.WriteString(order)
+    }
+    res.WriteString(" }")
+  } else {
+    if order != "" {
+      res.WriteString(", order: { order: ")
+      res.WriteString(order)
+    }
+  }
+
+  return res.String()
+}
+
+// Values: parameters we want to receive from the server.
+//
+// UserId: user id.
+//
+// Order: string(can be blank to skip this option);
+//
+// 'Options' settings:
+//  - Page: >= 1;
+//  - Limit: <= 50;
+//
+//  - Status:
+//
+//  > MY_LIST_PLANNED, MY_LIST_WATCHING, MY_LIST_REWATCHING,
+//  MY_LIST_COMPLETED, MY_LIST_ON_HOLD, MY_LIST_DROPPED;
+//
+//  - TargetType:
+//
+//  > TARGET_TYPE_ANIME, TARGET_TYPE_MANGA;
+//
+// How to use and all the information you need [here].
+//
+// [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
+func UserRatesSchema(values string, userId int,
+    order string, options ...interface{}) (string, error) {
+  var parameterOptions bytes.Buffer
+
+  id := strconv.Itoa(userId)
+
+  for i, option := range options {
+    switch i {
+    case 0:
+      page, ok := option.(int)
+      if ok && page >= 1 {
+        parameterOptions.WriteString(", page: ")
+        parameterOptions.WriteString(strconv.Itoa(page))
+      }
+    case 1:
+      limit, ok := option.(int)
+      if ok && limit >= 1 && limit <= 50 {
+        parameterOptions.WriteString(", limit: ")
+        parameterOptions.WriteString(strconv.Itoa(limit))
+      }
+    case 2:
+      status, ok := option.(string)
+      if ok && status != "" {
+        parameterOptions.WriteString(", status: ")
+        parameterOptions.WriteString(status)
+      }
+    case 3:
+      targetType, ok := option.(string)
+      if ok && targetType != "" {
+        parameterOptions.WriteString(", targetType: ")
+        parameterOptions.WriteString(targetType)
+      }
+    default:
+      return "", errors.New("one of the parameters is entered incorrectly, check sequence or spelling errors")
+    }
+  }
+
+  if order != "" { parameterOptions.WriteString(order) }
+
+  // 37(graphql?query={userRates(userId: ){}}) + ?(name) + ?(paramterOptions) + ?(value)
+  return concat.Url(37 + len(id) + len(parameterOptions.String()) + len(values), []string{
+    "graphql?query={userRates(userId: ", id,
     parameterOptions.String(), ")",
     "{", values, "}}",
   }), nil
