@@ -271,7 +271,7 @@ func main() {
   // The available values can be found in the function description: graph.Values();
   // The available interface parameters can be found in the function description: graph.UserRatesSchema();
   schema, err := graph.UserRatesSchema(
-    graph.Values("id", "text", "score", "createdAt", "anime{name}"),
+    graph.Values("id", "text", "score", "createdAt", "anime{id name}"),
     181833, graph.UserRatesOrder(shiki.GRAPHQL_ORDER_FIELD_ID, shiki.GRAPHQL_ORDER_ORDER_DESC),
     1, 10, shiki.MY_LIST_COMPLETED, shiki.TARGET_TYPE_ANIME,
   )
@@ -290,7 +290,7 @@ func main() {
   fmt.Println(ur.Errors)
   // Standard output of our search, nothing new.
   for _, v := range ur.Data.UserRates {
-    fmt.Println(v.Id, v.Text, v.Score, v.CreatedAt, v.Anime.Name)
+    fmt.Println(v.Id, v.Text, v.Score, v.CreatedAt, v.Anime.Id, v.Anime.Name)
   }
 }
 ```

@@ -102,27 +102,18 @@ type MangasGraphQL struct {
 }
 
 type UserRatesGraphQL struct {
-  Anime     AnimesGraphQL          `json:"anime"`
-  Manga     MangasGraphQL          `json:"manga"`
-  Id        string                 `json:"id"`
-  Text      string                 `json:"text"`
-  CreatedAt string                 `json:"createdAt"`
-  UpdatedAt string                 `json:"updatedAt"`
-  Rewatches int                    `json:"rewatches"`
-  Score     float32                `json:"score"`
-  Status    UserRatesStatusGraphQL `json:"status"`
-  Episodes  int                    `json:"episodes"`
-  Chapters  int                    `json:"chapters"`
-  Volumes   int                    `json:"volumes"`
-}
-
-type UserRatesStatusGraphQL struct {
-  Planned    string `json:"planned"`
-  Watching   string `json:"watching"`
-  Rewatching string `json:"rewatching"`
-  Completed  string `json:"completed"`
-  On_hold    string `json:"on_hold"`
-  Dropped    string `json:"dropped"`
+  Anime     AnimesGraphQL `json:"anime"`
+  Manga     MangasGraphQL `json:"manga"`
+  Id        string        `json:"id"`
+  Text      string        `json:"text"`
+  CreatedAt string        `json:"createdAt"`
+  UpdatedAt string        `json:"updatedAt"`
+  Rewatches int           `json:"rewatches"`
+  Score     int           `json:"score"`
+  Status    string        `json:"status"`
+  Episodes  int           `json:"episodes"`
+  Chapters  int           `json:"chapters"`
+  Volumes   int           `json:"volumes"`
 }
 
 type AiredOnGraphQL struct {
