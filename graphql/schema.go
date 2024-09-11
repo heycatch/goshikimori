@@ -513,6 +513,7 @@ func UserRatesOrder(field, order string) string {
     if order != "" {
       res.WriteString(", order: { order: ")
       res.WriteString(order)
+      res.WriteString(" }")
     }
   }
 
