@@ -48,6 +48,11 @@ import (
 //  - id malId name russian japanese synonyms url isSeyu isMangaka isProducer website createdAt updatedAt
 //  - birthOn{year month day date} deceasedOn{year month day date}
 //  - poster{id originalUrl mainUrl}
+//
+// Available userrate options:
+//  - id text createdAt updatedAt rewatches score status episodes chapters volumes 
+//  - anime{...} // All parameters from the "Available anime options:"
+//  - manga{...} // All parameters from the "Available manga options:"
 func Values(input ...string) string {
   var res bytes.Buffer
 

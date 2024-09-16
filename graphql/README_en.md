@@ -258,7 +258,7 @@ func main() {
   c := config()
 
   // The first parameter is the values of the userRates; values: "id",
-  // "text", "score", "createdAt", "anime{name}",
+  // "text", "score", "createdAt", "anime{id name}",
   // The second parameter is the user Id; userId: 181833.
   // In the third parameter, we introduce an auxiliary function that
   // will separate the two additional fields: "order: {field: id, order: desc}".
