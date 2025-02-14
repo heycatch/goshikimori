@@ -2,7 +2,6 @@ package concat
 
 import (
   "bytes"
-  "unsafe"
   "strconv"
   "strings"
 
@@ -80,20 +79,17 @@ func Url(max_len int, slice []string) string {
   var offset int
   res := make([]byte, max_len)
   for i := range slice {
-    offset += copy(res[offset:], []byte(slice[i]))
+    offset += copy(res[offset:], slice[i])
   }
-  return *(*string)(unsafe.Pointer(&res))
+  return string(res[:offset])
 }
 
 // Quick creation of a bearer token.
 func Bearer(token string) string {
-  var offset int
   res := make([]byte, 7 + len(token))
-  array := [2]string{"Bearer ", token}
-  for i := range array {
-    offset += copy(res[offset:], []byte(array[i]))
-  }
-  return *(*string)(unsafe.Pointer(&res))
+  copy(res, "Bearer ")
+  copy(res[7:], token)
+  return string(res)
 }
 
 // Converting a slice to a []byte using a bytes.Buffer.

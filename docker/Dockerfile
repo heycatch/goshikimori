@@ -8,7 +8,7 @@ RUN apt update && apt install -y wget && \
 wget https://go.dev/dl/go1.22.2.linux-amd64.tar.gz && \
 tar -C /usr/local/ -xzf go1.22.2.linux-amd64.tar.gz
 
-ENV PATH $PATH:/usr/local/go/bin
+ENV PATH=$PATH:/usr/local/go/bin
 
 RUN go install -v golang.org/x/tools/cmd/godoc@latest && \
 ln -sf /root/go/bin/godoc /usr/local/bin/godoc

@@ -2,7 +2,7 @@
 
 ### О проекте
 Небольшая библиотека для взаимодействия с шикимори, написанная на языке golang.
-* Работа с API происходит только через `OAuth2`. \
+* Работа с API происходит через `OAuth2`. \
 И начать нужно с ознакомления документации [первые шаги](https://github.com/heycatch/goshikimori/blob/master/examples/first_steps/README.md).
 * Никаких зависимостей от других библиотек.
 * Для тестов и сборки используется утилита [GNU make](https://www.gnu.org/software/make/manual/make.html).
@@ -24,11 +24,10 @@ go get github.com/heycatch/goshikimori
 ```bash
 # Способ #1: Используя докер.
 git clone git@github.com:heycatch/goshikimori.git && cd goshikimori
-make docker-build
-make docker-start
+make docker
 
 # Открыть в браузере.
-http://localhost:1337/pkg/github.com/heycatch/goshikimori
+http://localhost:1337/pkg/github.com/heycatch/goshikimori/
 ```
 ```bash
 # Способ #2(Linux): Установка godoc.

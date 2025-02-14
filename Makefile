@@ -10,7 +10,8 @@ refresh :=
 auth_code :=
 
 list:
-	@grep '^[^#[:space:]].*:' Makefile
+	@echo "Available commands"
+	@grep '^[^#[:space:]].*:' Makefile | grep -v ':=' | grep -v '^.PHONY' | grep -v '^default:' | grep -v '^docker-' | awk '/^docker:/ {print "docker:"; next} {print}'
 
 doc:
 	godoc -http=:1337 -goroot=.
@@ -21,6 +22,8 @@ docker-build:
 docker-start:
 	docker run -d -p 1337:1337 shikimori-docs
 
+docker: docker-build docker-start
+
 test:
 	go test -v
 	go test -v ./concat
@@ -28,12 +31,6 @@ test:
 
 bench:
 	go test -bench=./concat
-
-analysis:
-	go run -gcflags=-m cmd/main.go
-
-run:
-	go run cmd/main.go
 
 graphql-request:
 	curl -X POST https://shikimori.one/api/graphql \

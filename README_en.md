@@ -2,7 +2,7 @@
 
 ### About
 A small library for interacting with shikimori, written in golang.
-* Work with API occurs only through `OAuth2`. \
+* Work with API occurs through `OAuth2`. \
 And you have to start by familiarizing yourself
 with the documentation [first steps](https://github.com/heycatch/goshikimori/blob/master/examples/first_steps/README_en.md).
 * No dependencies on other libraries.
@@ -26,11 +26,10 @@ Or you can use the page from the official Go pkg
 ```bash
 # Method #1: Use docker.
 git clone git@github.com:heycatch/goshikimori.git && cd goshikimori
-make docker-build
-make docker-start
+make docker
 
 # Open in browser.
-http://localhost:1337/pkg/github.com/heycatch/goshikimori
+http://localhost:1337/pkg/github.com/heycatch/goshikimori/
 ```
 ```bash
 # Method #2(Linux): Install godoc.
