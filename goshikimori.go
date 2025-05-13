@@ -2826,6 +2826,9 @@ func (c *Configuration) SignOut() (string, int, error) {
   return string(data), status, nil
 }
 
+// If we get a json unmarshal type error, it is a server-side error, namely:
+// ["PG::DiskFull: ERROR:  could not resize shared memory segment \"/PostgreSQL.1559179908\" to 16777216 bytes: No space left on device\n"]
+//
 // Only the application needs to be specified in SetConfiguration().
 //
 // Users having at least 1 completed animes and active during last month.
@@ -2843,7 +2846,7 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
     // 26(SITE) + 18(stats/active_users)
     concat.Url(44, []string{
       SITE, "stats/active_users",
-    }), CUSTOM_MAX_EXPECTATION,
+    }), CUSTOM_MAX_EXPECTATION_ACTIVE_USERS,
   )
   if err != nil {
     return nil, status, err
@@ -3172,7 +3175,7 @@ func (c *Configuration) SearchGraphql(schema string) (api.GraphQL, int, error) {
     c.Application,
     // 26(SITE) + ?(schema)
     concat.Url(26+len(schema), []string{SITE, schema}),
-    CUSTOM_MAX_EXPECTATION,
+    CUSTOM_MAX_EXPECTATION_GRAPHQL,
   )
   if err != nil {
     return g, status, err
