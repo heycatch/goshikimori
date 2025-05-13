@@ -13,6 +13,7 @@ package goshikimori
 import (
   "encoding/json"
   "errors"
+  "net/url"
   "strconv"
 
   "github.com/heycatch/goshikimori/api"
@@ -34,7 +35,7 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
   data, status, err := NewGetRequestWithCancel(
     c.Application,
     // 26(SITE) + 6(users/) + ?(name)
-    concat.Url(32+len(name), []string{SITE, "users/", languageCheck(name)}),
+    concat.Url(32+len(name), []string{SITE, "users/", url.QueryEscape(name)}),
     MAX_EXPECTATION,
   )
   if err != nil {
@@ -72,7 +73,7 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, er
     c.Application,
     // 26(SITE) + 13(users?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(40+len(name)+len(opt), []string{
-      SITE, "users?search=", languageCheck(name), "&", opt,
+      SITE, "users?search=", url.QueryEscape(name), "&", opt,
     }), MAX_EXPECTATION,
   )
   if err != nil {
@@ -466,7 +467,7 @@ func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, 
     c.Application,
     // 26(SITE) + 14(animes?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(41+len(name)+len(opt), []string{
-      SITE, "animes?search=", languageCheck(name), "&", opt,
+      SITE, "animes?search=", url.QueryEscape(name), "&", opt,
     }), MAX_EXPECTATION,
   )
   if err != nil {
@@ -581,7 +582,7 @@ func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, 
     c.Application,
     // 26(SITE) + 14(mangas?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(41+len(name)+len(opt), []string{
-      SITE, "mangas?search=", languageCheck(name), "&", opt,
+      SITE, "mangas?search=", url.QueryEscape(name), "&", opt,
     }), MAX_EXPECTATION,
   )
   if err != nil {
@@ -688,7 +689,7 @@ func (c *Configuration) SearchRanobes(name string, r Result) ([]api.Mangas, int,
     c.Application,
     // 26(SITE) + 14(ranobe?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(41+len(name)+len(opt), []string{
-      SITE, "ranobe?search=", languageCheck(name), "&", opt,
+      SITE, "ranobe?search=", url.QueryEscape(name), "&", opt,
     }), MAX_EXPECTATION,
   )
   if err != nil {
@@ -714,7 +715,7 @@ func (c *Configuration) FastIdUser(name string) (*FastId, int, error) {
     c.Application,
     // 26(SITE) + 6(users/) + ?(name)
     concat.Url(32+len(name), []string{
-      SITE, "users/", languageCheck(name)}), MAX_EXPECTATION,
+      SITE, "users/", url.QueryEscape(name)}), MAX_EXPECTATION,
   )
   if err != nil {
     return nil, status, err
@@ -739,7 +740,7 @@ func (c *Configuration) FastIdAnime(name string) (*FastId, int, error) {
     c.Application,
     // 26(SITE) + 14(animes?search=) + ?(name)
     concat.Url(40+len(name), []string{
-      SITE, "animes?search=", languageCheck(name)}), MAX_EXPECTATION,
+      SITE, "animes?search=", url.QueryEscape(name)}), MAX_EXPECTATION,
   )
   if err != nil {
     return nil, status, err
@@ -770,7 +771,7 @@ func (c *Configuration) FastIdManga(name string) (*FastId, int, error) {
     c.Application,
     // 26(SITE) + 14(mangas?search=) + ?(name)
     concat.Url(40+len(name), []string{
-      SITE, "mangas?search=", languageCheck(name)}), MAX_EXPECTATION,
+      SITE, "mangas?search=", url.QueryEscape(name)}), MAX_EXPECTATION,
   )
   if err != nil {
     return nil, status, err
@@ -801,7 +802,7 @@ func (c *Configuration) FastIdRanobe(name string) (*FastId, int, error) {
     c.Application,
     // 26(SITE) + 14(ranobe?search=) + ?(name)
     concat.Url(40+len(name), []string{
-      SITE, "ranobe?search=", languageCheck(name)}), MAX_EXPECTATION,
+      SITE, "ranobe?search=", url.QueryEscape(name)}), MAX_EXPECTATION,
   )
   if err != nil {
     return nil, status, err
@@ -832,7 +833,7 @@ func (c *Configuration) FastIdClub(name string) (*FastId, int, error) {
     c.Application,
     // 26(SITE) + 13(clubs?search=) + ?(name)
     concat.Url(39+len(name), []string{
-      SITE, "clubs?search=", languageCheck(name)}), MAX_EXPECTATION,
+      SITE, "clubs?search=", url.QueryEscape(name)}), MAX_EXPECTATION,
   )
   if err != nil {
     return nil, status, err
@@ -863,7 +864,7 @@ func (c *Configuration) FastIdCharacter(name string) (*FastId, int, error) {
     c.Application,
     // 26(SITE) + 25(characters/search?search=) + ?(name)
     concat.Url(51+len(name), []string{
-      SITE, "characters/search?search=", languageCheck(name),
+      SITE, "characters/search?search=", url.QueryEscape(name),
     }), MAX_EXPECTATION,
   )
   if err != nil {
@@ -890,12 +891,13 @@ func (c *Configuration) FastIdCharacter(name string) (*FastId, int, error) {
 // Search by user is case sensitive.
 func (c *Configuration) FastIdPeople(name string) (*FastId, int, error) {
   var ap []api.AllPeople
+  // testing
 
   data, status, err := NewGetRequestWithCancel(
     c.Application,
     // 26(SITE) + 21(people/search?search=) + ?(name)
     concat.Url(47+len(name), []string{
-      SITE, "people/search?search=", languageCheck(name),
+      SITE, "people/search?search=", url.QueryEscape(name),
     }), MAX_EXPECTATION,
   )
   if err != nil {
@@ -1301,7 +1303,7 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
     c.Application,
     // 26(SITE) + 13(clubs?search=) + ?(name) + 1(&) + ?(Result)
     concat.Url(40+len(name)+len(opt), []string{
-      SITE, "clubs?search=", languageCheck(name), "&", opt,
+      SITE, "clubs?search=", url.QueryEscape(name), "&", opt,
     }), MAX_EXPECTATION,
   )
   if err != nil {
@@ -2455,7 +2457,7 @@ func (c *Configuration) SearchCharacters(name string) ([]api.CharacterInfo, int,
     c.Application,
     // 26(SITE) + 25(characters/search?search=) + ?(name)
     concat.Url(51+len(name), []string{SITE,
-      "characters/search?search=", languageCheck(name)}),
+      "characters/search?search=", url.QueryEscape(name)}),
       MAX_EXPECTATION,
   )
   if err != nil {
@@ -2519,7 +2521,7 @@ func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, i
   data, status, err := NewGetRequestWithCancel(
     c.Application,
     concat.Url(48+len(name)+len(opt), []string{
-      SITE, "people/search?search=", languageCheck(name), "&", opt,
+      SITE, "people/search?search=", url.QueryEscape(name), "&", opt,
     }), MAX_EXPECTATION,
   )
   if err != nil {
@@ -3170,7 +3172,7 @@ func (c *Configuration) SearchGraphql(schema string) (api.GraphQL, int, error) {
     c.Application,
     // 26(SITE) + ?(schema)
     concat.Url(26+len(schema), []string{SITE, schema}),
-    MAX_EXPECTATION,
+    CUSTOM_MAX_EXPECTATION,
   )
   if err != nil {
     return g, status, err

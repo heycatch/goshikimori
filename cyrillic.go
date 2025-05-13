@@ -5,6 +5,8 @@ import (
   "unicode"
 )
 
+// DEPRECATED (issue #42)
+//
 // url.QueryEscape() breaks Cyrillic with spaces, and without it,
 // Latin with spaces breaks, so there is this intermediate function
 // that solves this problem and there are no more errors.

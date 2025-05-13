@@ -4,7 +4,7 @@ import "time"
 
 const (
   MAX_EXPECTATION time.Duration = 10
-  CUSTOM_MAX_EXPECTATION time.Duration = 40
+  CUSTOM_MAX_EXPECTATION time.Duration = 1
 
   SITE string = "https://shikimori.one/api/"
 

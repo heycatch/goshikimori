@@ -1,23 +1,25 @@
 package goshikimori
 
 import (
-  "io"
   "bytes"
   "context"
-  "strconv"
+  "io"
   "net/http"
+  "strconv"
   "time"
 
   "github.com/heycatch/goshikimori/concat"
 )
 
 // Return the date as bytes.
+//
+// If the context time is exceeded returns -1.
 func sendRequest(req *http.Request) ([]byte, int, error) {
   var client = &http.Client{}
 
   resp, err := client.Do(req)
   if err != nil {
-    return nil, resp.StatusCode, err
+    return nil, -1, err
   }
   defer resp.Body.Close()
 
