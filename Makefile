@@ -32,6 +32,9 @@ test:
 bench:
 	go test -bench=./concat
 
+fmt:
+	gofmt -w .
+
 graphql-request:
 	curl -X POST https://shikimori.one/api/graphql \
 	-H "User-Agent: $(App)" \

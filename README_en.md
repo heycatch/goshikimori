@@ -58,6 +58,7 @@ http://localhost:1337/pkg/github.com/heycatch/goshikimori
 * Open [issue](https://github.com/heycatch/goshikimori/issues).
 ```bash
 # Current tasks and problems in the code can be viewed in the terminal using the command.
+# Before submitting a pull-request, if using specific indentations, use the 'make fmt' command.
 git grep -c -e "TODO" -e "FIXME" -e "NOTES" -- . -- graphql/ -- concat/ -- api/ && \
 git grep -n -e "TODO" -e "FIXME" -e "NOTES" -- . -- graphql/ -- concat/ -- api/
 ```

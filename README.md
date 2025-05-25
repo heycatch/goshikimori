@@ -56,6 +56,7 @@ http://localhost:1337/pkg/github.com/heycatch/goshikimori
 * Открыть [проблему](https://github.com/heycatch/goshikimori/issues).
 ```bash
 # Текущие задачи и проблемы в коде можно посмотреть в терминале с помощью команды.
+# Перед отправкой пулл реквеста, если используете специфичные отступы, использовать команду make fmt.
 git grep -c -e "TODO" -e "FIXME" -e "NOTES" -- . -- graphql/ -- concat/ -- api/ && \
 git grep -n -e "TODO" -e "FIXME" -e "NOTES" -- . -- graphql/ -- concat/ -- api/
 ```

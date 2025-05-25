@@ -1,8 +1,8 @@
 package goshikimori
 
 import (
-  "net/url"
-  "unicode"
+	"net/url"
+	"unicode"
 )
 
 // DEPRECATED (issue #42)
@@ -11,10 +11,10 @@ import (
 // Latin with spaces breaks, so there is this intermediate function
 // that solves this problem and there are no more errors.
 func languageCheck(target string) string {
-  for i := 0; i < len(target); i++ {
-    if target[i] > unicode.MaxASCII {
-      return target
-    }
-  }
-  return url.QueryEscape(target)
+	for i := 0; i < len(target); i++ {
+		if target[i] > unicode.MaxASCII {
+			return target
+		}
+	}
+	return url.QueryEscape(target)
 }

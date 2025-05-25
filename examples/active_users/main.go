@@ -1,24 +1,26 @@
 package main
 
 import (
-  "fmt"
+	"fmt"
 
-  g "github.com/heycatch/goshikimori"
+	g "github.com/heycatch/goshikimori"
 )
 
 func config() *g.Configuration {
-  return g.SetConfiguration(
-    "APPLICATION_NAME",
-    "PRIVATE_KEY",
-  )
+	return g.SetConfiguration(
+		"APPLICATION_NAME",
+		"PRIVATE_KEY",
+	)
 }
 
 func main() {
-  c := config()
-  result, status, err := c.ActiveUsers()
-  if err != nil {
-    fmt.Println(err)
-    return
-  }
-  if status == 200 { fmt.Println(result) }
+	c := config()
+	result, status, err := c.ActiveUsers()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	if status == 200 {
+		fmt.Println(result)
+	}
 }
