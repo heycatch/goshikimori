@@ -151,7 +151,7 @@ func Values(input ...string) string {
 // How to use and all the information you need [here].
 //
 // [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
-func AnimeSchema(values string, name string, options ...interface{}) (string, error) {
+func AnimeSchema(values string, name string, options ...any) (string, error) {
 	var parameterOptions bytes.Buffer
 
 	for i, option := range options {
@@ -313,7 +313,7 @@ func AnimeSchema(values string, name string, options ...interface{}) (string, er
 // How to use and all the information you need [here].
 //
 // [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
-func MangaSchema(values string, name string, options ...interface{}) (string, error) {
+func MangaSchema(values string, name string, options ...any) (string, error) {
 	var parameterOptions bytes.Buffer
 
 	for i, option := range options {
@@ -408,7 +408,7 @@ func MangaSchema(values string, name string, options ...interface{}) (string, er
 // How to use and all the information you need [here].
 //
 // [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
-func CharacterSchema(values string, name string, options ...interface{}) (string, error) {
+func CharacterSchema(values string, name string, options ...any) (string, error) {
 	var parameterOptions bytes.Buffer
 
 	for i, option := range options {
@@ -452,7 +452,7 @@ func CharacterSchema(values string, name string, options ...interface{}) (string
 // How to use and all the information you need [here].
 //
 // [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
-func PeopleSchema(values string, name string, options ...interface{}) (string, error) {
+func PeopleSchema(values string, name string, options ...any) (string, error) {
 	var parameterOptions bytes.Buffer
 
 	for i, option := range options {
@@ -559,8 +559,7 @@ func UserRatesOrder(field, order string) string {
 // How to use and all the information you need [here].
 //
 // [here]: https://github.com/heycatch/goshikimori/blob/master/graphql/README.md
-func UserRatesSchema(values string, userId int,
-	order string, options ...interface{}) (string, error) {
+func UserRatesSchema(values string, userId int, order string, options ...any) (string, error) {
 	var parameterOptions bytes.Buffer
 
 	id := strconv.Itoa(userId)

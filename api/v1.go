@@ -625,21 +625,21 @@ type AllPeople struct {
 	Birthday: same as the Birth_on;
 */
 type People struct {
-	Id             int             `json:"id"`
-	Name           string          `json:"name"`
-	Russian        string          `json:"russian"`
-	Image          AnimeSize       `json:"image"`
-	Url            string          `json:"url"`
-	Japanese       string          `json:"japanese"`
-	Job_title      string          `json:"job_title"`
-	Birth_on       Birth           `json:"birth_on"`
-	Website        string          `json:"website"`
-	Groupped_roles [][]interface{} `json:"groupped_roles"`
-	Roles          []RolesPeople   `json:"roles"`
-	Works          []WorksPeople   `json:"works"`
-	Topic_id       int             `json:"topic_id"`
-	Updated_at     time.Time       `json:"updated_at"`
-	Thread_id      int             `json:"thread_id"`
+	Id             int           `json:"id"`
+	Name           string        `json:"name"`
+	Russian        string        `json:"russian"`
+	Image          AnimeSize     `json:"image"`
+	Url            string        `json:"url"`
+	Japanese       string        `json:"japanese"`
+	Job_title      string        `json:"job_title"`
+	Birth_on       Birth         `json:"birth_on"`
+	Website        string        `json:"website"`
+	Groupped_roles [][]any       `json:"groupped_roles"`
+	Roles          []RolesPeople `json:"roles"`
+	Works          []WorksPeople `json:"works"`
+	Topic_id       int           `json:"topic_id"`
+	Updated_at     time.Time     `json:"updated_at"`
+	Thread_id      int           `json:"thread_id"`
 }
 
 type ClubImages struct {

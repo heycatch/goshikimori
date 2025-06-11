@@ -33,7 +33,6 @@ type AnimesGraphQL struct {
 	Synonyms          []string                `json:"synonyms"`
 	Kind              string                  `json:"kind"`
 	Rating            string                  `json:"rating"`
-	Score             float32                 `json:"score"`
 	Status            string                  `json:"status"`
 	Episodes          int                     `json:"episodes"`
 	EpisodesAired     int                     `json:"episodesAired"`
@@ -49,7 +48,6 @@ type AnimesGraphQL struct {
 	CreatedAt         string                  `json:"createdAt"`
 	UpdatedAt         string                  `json:"updatedAt"`
 	NextEpisodeAt     string                  `json:"nextEpisodeAt"`
-	IsCensored        bool                    `json:"isCensored"`
 	Genres            []GenresGraphQL         `json:"genres"`
 	Studios           []StudiosGraphQL        `json:"studios"`
 	PersonRoles       []PersonRolesGraphQL    `json:"personRoles"`
@@ -62,6 +60,8 @@ type AnimesGraphQL struct {
 	Description       string                  `json:"description"`
 	DescriptionHTML   string                  `json:"descriptionHtml"`
 	DescriptionSource string                  `json:"descriptionSource"`
+	Score             float32                 `json:"score"`
+	IsCensored        bool                    `json:"isCensored"`
 }
 
 /*
@@ -79,7 +79,6 @@ type MangasGraphQL struct {
 	Japanese          string                  `json:"japanese"`
 	Synonyms          []string                `json:"synonyms"`
 	Kind              string                  `json:"kind"`
-	Score             float32                 `json:"score"`
 	Status            string                  `json:"status"`
 	Volumes           int                     `json:"volumes"`
 	Chapters          int                     `json:"chapters"`
@@ -90,7 +89,6 @@ type MangasGraphQL struct {
 	Licensors         []string                `json:"licensors"`
 	CreatedAt         string                  `json:"createdAt"`
 	UpdatedAt         string                  `json:"updatedAt"`
-	IsCensored        bool                    `json:"isCensored"`
 	Genres            []GenresGraphQL         `json:"genres"`
 	Publishers        []ObjectInfo            `json:"publishers"`
 	PersonRoles       []PersonRolesGraphQL    `json:"personRoles"`
@@ -101,6 +99,8 @@ type MangasGraphQL struct {
 	Description       string                  `json:"description"`
 	DescriptionHTML   string                  `json:"descriptionHtml"`
 	DescriptionSource string                  `json:"descriptionSource"`
+	Score             float32                 `json:"score"`
+	IsCensored        bool                    `json:"isCensored"`
 }
 
 type UserRatesGraphQL struct {

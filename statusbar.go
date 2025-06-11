@@ -9,15 +9,18 @@ import (
 type conv float32
 
 type StatusBar struct {
-	Percent, Current, Total int
-	Rate, Graph             string
-	Wait                    time.Duration
+	Percent int
+	Current int
+	Total   int
+	Rate    string
+	Graph   string
+	Wait    time.Duration
 }
 
 func (s *StatusBar) settings(length int, symbol string, wait time.Duration) {
 	s.Total = length
 	s.Graph = symbol
-	s.Wait = wait
+	s.Wait  = wait
 }
 
 func (s *StatusBar) run() {
@@ -37,5 +40,5 @@ func (s *StatusBar) run() {
 		time.Sleep(s.Wait * time.Second)
 	}
 
-	fmt.Println() // Is needed to move it to a new line at the end.
+	fmt.Println()
 }

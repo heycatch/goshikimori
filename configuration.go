@@ -8,7 +8,8 @@ import (
 )
 
 type Configuration struct {
-	Application, AccessToken string
+	Application string
+	AccessToken string
 }
 
 type FastId struct {
@@ -55,30 +56,42 @@ func SetConfiguration(appname, token string) *Configuration {
 }
 
 type Options struct {
-	Order, Kind, Status, Season, Rating,
-	Type, Target_type, Duration, Mylist,
-	Forum, Linked_type string
-	Page, Limit, Score, Linked_id, Target_id int
-	Censored                                 bool
-	Genre_v2                                 []int
+	Order       string
+	Kind        string
+	Status      string
+	Season      string
+	Rating      string
+	Type        string
+	Target_type string
+	Duration    string
+	Mylist      string
+	Forum       string
+	Linked_type string
+	Page        int
+	Limit       int
+	Score       int
+	Linked_id   int
+	Target_id   int
+	Genre_v2    []int
+	Censored    bool
 }
 
 type Result interface {
 	OptionsOnlyPageLimit(int, int) string
-	OptionsAnime() string
-	OptionsManga() string
-	OptionsRanobe() string
-	OptionsCalendar() string
-	OptionsAnimeRates() string
-	OptionsMangaRates() string
-	OptionsUserHistory() string
-	OptionsMessages() string
-	OptionsPeople() string
-	OptionsTopics() string
-	OptionsTopicsHot() string
-	OptionsRandomAnime() string
-	OptionsRandomManga() string
-	OptionsRandomRanobe() string
+	OptionsAnime()                 string
+	OptionsManga()                 string
+	OptionsRanobe()                string
+	OptionsCalendar()              string
+	OptionsAnimeRates()            string
+	OptionsMangaRates()            string
+	OptionsUserHistory()           string
+	OptionsMessages()              string
+	OptionsPeople()                string
+	OptionsTopics()                string
+	OptionsTopicsHot()             string
+	OptionsRandomAnime()           string
+	OptionsRandomManga()           string
+	OptionsRandomRanobe()          string
 }
 
 func (o *Options) OptionsOnlyPageLimit(page, limit int) string {
