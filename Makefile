@@ -30,7 +30,7 @@ test:
 	go vet .
 
 bench:
-	go test -bench=./concat
+	cd bench && go test -bench . -benchmem
 
 fmt:
 	gofmt -w .

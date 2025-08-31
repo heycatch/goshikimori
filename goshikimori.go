@@ -18,6 +18,7 @@ import (
 
 	"github.com/heycatch/goshikimori/api"
 	"github.com/heycatch/goshikimori/concat"
+	"github.com/heycatch/goshikimori/consts"
 )
 
 // Only the application needs to be specified in SetConfiguration().
@@ -34,9 +35,9 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 6(users/) + ?(name)
-		concat.Url(32+len(name), []string{SITE, "users/", url.QueryEscape(name)}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 6(users/) + ?(name)
+		concat.Url(32+len(name), []string{consts.SITE, "users/", url.QueryEscape(name)}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return u, status, err
@@ -49,7 +50,7 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
 	return u, status, nil
 }
 
-// FIXME: Limit always returns +1 of the given number.
+// FIXME (heycatch): Limit always returns +1 of the given number.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -67,14 +68,14 @@ func (c *Configuration) SearchUser(name string) (api.Users, int, error) {
 func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, error) {
 	var u []api.Users
 
-	opt := r.OptionsOnlyPageLimit(100000, 100)
+	opt := r.OptionsOnlyPageLimitV2()
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 13(users?search=) + ?(name) + 1(&) + ?(Result)
+		// 26(consts.SITE) + 13(users?search=) + ?(name) + 1(&) + ?(Result)
 		concat.Url(40+len(name)+len(opt), []string{
-			SITE, "users?search=", url.QueryEscape(name), "&", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "users?search=", url.QueryEscape(name), "&", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -99,16 +100,15 @@ func (c *Configuration) SearchUsers(name string, r Result) ([]api.Users, int, er
 func (f *FastId) SearchUserFriends(r Result) ([]api.UserFriends, int, error) {
 	var uf []api.UserFriends
 
-	// 26(SITE) + 6(users/) + ?(id) + 9(/friends?) + ?(Result)
-	opt := r.OptionsOnlyPageLimit(100000, 100)
+	opt := r.OptionsOnlyPageLimitV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(users/) + ?(id) + 9(/friends?) + ?(Result)
+		// 26(consts.SITE) + 6(users/) + ?(id) + 9(/friends?) + ?(Result)
 		concat.Url(41+len(str_id)+len(opt), []string{
-			SITE, "users/", str_id, "/friends?" + opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "users/", str_id, "/friends?" + opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -133,10 +133,10 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(users/) + ?(id) + 6(/clubs)
+		// 26(consts.SITE) + 6(users/) + ?(id) + 6(/clubs)
 		concat.Url(38+len(str_id), []string{
-			SITE, "users/", str_id, "/clubs",
-		}), MAX_EXPECTATION,
+			consts.SITE, "users/", str_id, "/clubs",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -149,7 +149,7 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, int, error) {
 	return uc, status, nil
 }
 
-// FIXME: Limit always returns +1 of the given number.
+// FIXME (heycatch): Limit always returns +1 of the given number.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -174,15 +174,15 @@ func (f *FastId) SearchUserClubs() ([]api.Clubs, int, error) {
 func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, int, error) {
 	var ar []api.UserAnimeRates
 
-	opt := r.OptionsAnimeRates()
+	opt := r.OptionsAnimeRatesV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(users/) + ?(id) + 13(/anime_rates?) + ?(Result)
+		// 26(consts.SITE) + 6(users/) + ?(id) + 13(/anime_rates?) + ?(Result)
 		concat.Url(45+len(str_id)+len(opt), []string{
-			SITE, "users/", str_id, "/anime_rates?" + opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "users/", str_id, "/anime_rates?" + opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -195,7 +195,7 @@ func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, int, erro
 	return ar, status, nil
 }
 
-// FIXME: Limit always returns +1 of the given number.
+// FIXME (heycatch): Limit always returns +1 of the given number.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -212,15 +212,15 @@ func (f *FastId) SearchUserAnimeRates(r Result) ([]api.UserAnimeRates, int, erro
 func (f *FastId) SearchUserMangaRates(r Result) ([]api.UserMangaRates, int, error) {
 	var mr []api.UserMangaRates
 
-	opt := r.OptionsMangaRates()
+	opt := r.OptionsMangaRatesV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(users/) + ?(id) + 13(/manga_rates?) + ?(Result)
+		// 26(consts.SITE) + 6(users/) + ?(id) + 13(/manga_rates?) + ?(Result)
 		concat.Url(45+len(str_id)+len(opt), []string{
-			SITE, "users/", str_id, "/manga_rates?" + opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "users/", str_id, "/manga_rates?" + opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -245,10 +245,10 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(users/) + ?(id) + 11(/favourites)
+		// 26(consts.SITE) + 6(users/) + ?(id) + 11(/favourites)
 		concat.Url(43+len(str_id), []string{
-			SITE, "users/", str_id, "/favourites",
-		}), MAX_EXPECTATION,
+			consts.SITE, "users/", str_id, "/favourites",
+		}),consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return uf, status, err
@@ -261,7 +261,7 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, int, error) {
 	return uf, status, nil
 }
 
-// FIXME: Limit always returns +1 of the given number.
+// FIXME (heycatch): Limit always returns +1 of the given number.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -283,15 +283,15 @@ func (f *FastId) SearchUserFavourites() (api.UserFavourites, int, error) {
 func (f *FastId) SearchUserHistory(r Result) ([]api.UserHistory, int, error) {
 	var uh []api.UserHistory
 
-	opt := r.OptionsUserHistory()
+	opt := r.OptionsUserHistoryV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(users/) + ?(id) + 9(/history?) + ?(Result)
+		// 26(consts.SITE) + 6(users/) + ?(id) + 9(/history?) + ?(Result)
 		concat.Url(41+len(str_id)+len(opt), []string{
-			SITE, "users/", str_id, "/history?", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "users/", str_id, "/history?", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -316,10 +316,10 @@ func (f *FastId) SearchUserBans() ([]api.Bans, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(users/) + ?(id) + 5(/bans)
+		// 26(consts.SITE) + 6(users/) + ?(id) + 5(/bans)
 		concat.Url(37+len(str_id), []string{
-			SITE, "users/", str_id, "/bans",
-		}), MAX_EXPECTATION,
+			consts.SITE, "users/", str_id, "/bans",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -342,9 +342,9 @@ func (c *Configuration) WhoAmi() (api.Who, int, error) {
 
 	data, status, err := NewGetRequestWithCancelAndBearer(
 		c.Application, c.AccessToken,
-		// 26(SITE) + 12(users/whoami)
-		concat.Url(38, []string{SITE, "users/whoami"}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 12(users/whoami)
+		concat.Url(38, []string{consts.SITE, "users/whoami"}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return w, status, err
@@ -369,10 +369,10 @@ func (f *FastId) SearchAnime() (api.Anime, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(animes/) + ?(id)
+		// 26(consts.SITE) + 7(animes/) + ?(id)
 		concat.Url(33+len(str_id), []string{
-			SITE, "animes/", str_id,
-		}), MAX_EXPECTATION,
+			consts.SITE, "animes/", str_id,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return a, status, err
@@ -471,14 +471,14 @@ func (f *FastId) SearchAnime() (api.Anime, int, error) {
 func (c *Configuration) SearchAnimes(name string, r Result) ([]api.Animes, int, error) {
 	var a []api.Animes
 
-	opt := r.OptionsAnime()
+	opt := r.OptionsAnimeV2()
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 14(animes?search=) + ?(name) + 1(&) + ?(Result)
+		// 26(consts.SITE) + 14(animes?search=) + ?(name) + 1(&) + ?(Result)
 		concat.Url(41+len(name)+len(opt), []string{
-			SITE, "animes?search=", url.QueryEscape(name), "&", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "animes?search=", url.QueryEscape(name), "&", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -503,10 +503,10 @@ func (f *FastId) SearchManga() (api.Manga, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(mangas/) + ?(id)
+		// 26(consts.SITE) + 7(mangas/) + ?(id)
 		concat.Url(33+len(str_id), []string{
-			SITE, "mangas/", str_id,
-		}), MAX_EXPECTATION,
+			consts.SITE, "mangas/", str_id,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return m, status, err
@@ -590,14 +590,14 @@ func (f *FastId) SearchManga() (api.Manga, int, error) {
 func (c *Configuration) SearchMangas(name string, r Result) ([]api.Mangas, int, error) {
 	var m []api.Mangas
 
-	opt := r.OptionsManga()
+	opt := r.OptionsMangaV2()
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 14(mangas?search=) + ?(name) + 1(&) + ?(Result)
+		// 26(consts.SITE) + 14(mangas?search=) + ?(name) + 1(&) + ?(Result)
 		concat.Url(41+len(name)+len(opt), []string{
-			SITE, "mangas?search=", url.QueryEscape(name), "&", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "mangas?search=", url.QueryEscape(name), "&", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -622,10 +622,10 @@ func (f *FastId) SearchRanobe() (api.Manga, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(ranobe/) + ?(id)
+		// 26(consts.SITE) + 7(ranobe/) + ?(id)
 		concat.Url(33+len(str_id), []string{
-			SITE, "ranobe/", str_id,
-		}), MAX_EXPECTATION,
+			consts.SITE, "ranobe/", str_id,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return m, status, err
@@ -701,14 +701,14 @@ func (f *FastId) SearchRanobe() (api.Manga, int, error) {
 func (c *Configuration) SearchRanobes(name string, r Result) ([]api.Mangas, int, error) {
 	var m []api.Mangas
 
-	opt := r.OptionsRanobe()
+	opt := r.OptionsRanobeV2()
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 14(ranobe?search=) + ?(name) + 1(&) + ?(Result)
+		// 26(consts.SITE) + 14(ranobe?search=) + ?(name) + 1(&) + ?(Result)
 		concat.Url(41+len(name)+len(opt), []string{
-			SITE, "ranobe?search=", url.QueryEscape(name), "&", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "ranobe?search=", url.QueryEscape(name), "&", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -731,9 +731,9 @@ func (c *Configuration) FastIdUser(name string) (*FastId, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 6(users/) + ?(name)
+		// 26(consts.SITE) + 6(users/) + ?(name)
 		concat.Url(32+len(name), []string{
-			SITE, "users/", url.QueryEscape(name)}), MAX_EXPECTATION,
+			consts.SITE, "users/", url.QueryEscape(name)}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -756,9 +756,9 @@ func (c *Configuration) FastIdAnime(name string) (*FastId, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 14(animes?search=) + ?(name)
+		// 26(consts.SITE) + 14(animes?search=) + ?(name)
 		concat.Url(40+len(name), []string{
-			SITE, "animes?search=", url.QueryEscape(name)}), MAX_EXPECTATION,
+			consts.SITE, "animes?search=", url.QueryEscape(name)}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -789,9 +789,9 @@ func (c *Configuration) FastIdManga(name string) (*FastId, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 14(mangas?search=) + ?(name)
+		// 26(consts.SITE) + 14(mangas?search=) + ?(name)
 		concat.Url(40+len(name), []string{
-			SITE, "mangas?search=", url.QueryEscape(name)}), MAX_EXPECTATION,
+			consts.SITE, "mangas?search=", url.QueryEscape(name)}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -822,9 +822,9 @@ func (c *Configuration) FastIdRanobe(name string) (*FastId, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 14(ranobe?search=) + ?(name)
+		// 26(consts.SITE) + 14(ranobe?search=) + ?(name)
 		concat.Url(40+len(name), []string{
-			SITE, "ranobe?search=", url.QueryEscape(name)}), MAX_EXPECTATION,
+			consts.SITE, "ranobe?search=", url.QueryEscape(name)}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -855,9 +855,9 @@ func (c *Configuration) FastIdClub(name string) (*FastId, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 13(clubs?search=) + ?(name)
+		// 26(consts.SITE) + 13(clubs?search=) + ?(name)
 		concat.Url(39+len(name), []string{
-			SITE, "clubs?search=", url.QueryEscape(name)}), MAX_EXPECTATION,
+			consts.SITE, "clubs?search=", url.QueryEscape(name)}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -888,10 +888,10 @@ func (c *Configuration) FastIdCharacter(name string) (*FastId, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 25(characters/search?search=) + ?(name)
+		// 26(consts.SITE) + 25(characters/search?search=) + ?(name)
 		concat.Url(51+len(name), []string{
-			SITE, "characters/search?search=", url.QueryEscape(name),
-		}), MAX_EXPECTATION,
+			consts.SITE, "characters/search?search=", url.QueryEscape(name),
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -923,10 +923,10 @@ func (c *Configuration) FastIdPeople(name string) (*FastId, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 21(people/search?search=) + ?(name)
+		// 26(consts.SITE) + 21(people/search?search=) + ?(name)
 		concat.Url(47+len(name), []string{
-			SITE, "people/search?search=", url.QueryEscape(name),
-		}), MAX_EXPECTATION,
+			consts.SITE, "people/search?search=", url.QueryEscape(name),
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -959,10 +959,10 @@ func (f *FastId) SearchAnimeScreenshots() ([]api.AnimeScreenshots, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(animes/) + ?(id) + 12(/screenshots)
+		// 26(consts.SITE) + 7(animes/) + ?(id) + 12(/screenshots)
 		concat.Url(45+len(str_id), []string{
-			SITE, "animes/", str_id, "/screenshots",
-		}), MAX_EXPECTATION,
+			consts.SITE, "animes/", str_id, "/screenshots",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -987,10 +987,10 @@ func (f *FastId) SearchAnimeFranchise() (api.Franchise, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(animes/) + ?(id) + 10(/franchise)
+		// 26(consts.SITE) + 7(animes/) + ?(id) + 10(/franchise)
 		concat.Url(43+len(str_id), []string{
-			SITE, "animes/", str_id, "/franchise",
-		}), MAX_EXPECTATION,
+			consts.SITE, "animes/", str_id, "/franchise",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return ff, status, err
@@ -1015,10 +1015,10 @@ func (f *FastId) SearchMangaFranchise() (api.Franchise, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(mangas/) + ?(id) + 10(/franchise)
+		// 26(consts.SITE) + 7(mangas/) + ?(id) + 10(/franchise)
 		concat.Url(43+len(str_id), []string{
-			SITE, "mangas/", str_id, "/franchise",
-		}), MAX_EXPECTATION,
+			consts.SITE, "mangas/", str_id, "/franchise",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return ff, status, err
@@ -1043,10 +1043,10 @@ func (f *FastId) SearchRanobeFranchise() (api.Franchise, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(ranobe/) + ?(id) + 10(/franchise)
+		// 26(consts.SITE) + 7(ranobe/) + ?(id) + 10(/franchise)
 		concat.Url(43+len(str_id), []string{
-			SITE, "ranobe/", str_id, "/franchise",
-		}), MAX_EXPECTATION,
+			consts.SITE, "ranobe/", str_id, "/franchise",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return ff, status, err
@@ -1071,10 +1071,10 @@ func (f *FastId) SearchAnimeExternalLinks() ([]api.ExternalLinks, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(animes/) + ?(id) + 15(/external_links)
+		// 26(consts.SITE) + 7(animes/) + ?(id) + 15(/external_links)
 		concat.Url(48+len(str_id), []string{
-			SITE, "animes/", str_id, "/external_links",
-		}), MAX_EXPECTATION,
+			consts.SITE, "animes/", str_id, "/external_links",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1099,10 +1099,10 @@ func (f *FastId) SearchMangaExternalLinks() ([]api.ExternalLinks, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(mangas/) + ?(id) + 15(/external_links)
+		// 26(consts.SITE) + 7(mangas/) + ?(id) + 15(/external_links)
 		concat.Url(48+len(str_id), []string{
-			SITE, "mangas/", str_id, "/external_links",
-		}), MAX_EXPECTATION,
+			consts.SITE, "mangas/", str_id, "/external_links",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1127,10 +1127,10 @@ func (f *FastId) SearchRanobeExternalLinks() ([]api.ExternalLinks, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(ranobe/) + ?(id) + 15(/external_links)
+		// 26(consts.SITE) + 7(ranobe/) + ?(id) + 15(/external_links)
 		concat.Url(48+len(str_id), []string{
-			SITE, "ranobe/", str_id, "/external_links",
-		}), MAX_EXPECTATION,
+			consts.SITE, "ranobe/", str_id, "/external_links",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1155,10 +1155,10 @@ func (f *FastId) SearchSimilarAnime() ([]api.Animes, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(animes/) + ?(id) + 8(/similar)
+		// 26(consts.SITE) + 7(animes/) + ?(id) + 8(/similar)
 		concat.Url(41+len(str_id), []string{
-			SITE, "animes/", str_id, "/similar",
-		}), MAX_EXPECTATION,
+			consts.SITE, "animes/", str_id, "/similar",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1183,10 +1183,10 @@ func (f *FastId) SearchSimilarManga() ([]api.Mangas, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(mangas/) + ?(id) + 8(/similar)
+		// 26(consts.SITE) + 7(mangas/) + ?(id) + 8(/similar)
 		concat.Url(41+len(str_id), []string{
-			SITE, "mangas/", str_id, "/similar",
-		}), MAX_EXPECTATION,
+			consts.SITE, "mangas/", str_id, "/similar",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1211,10 +1211,10 @@ func (f *FastId) SearchSimilarRanobe() ([]api.Mangas, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(ranobe/) + ?(id) + 8(/similar)
+		// 26(consts.SITE) + 7(ranobe/) + ?(id) + 8(/similar)
 		concat.Url(41+len(str_id), []string{
-			SITE, "ranobe/", str_id, "/similar",
-		}), MAX_EXPECTATION,
+			consts.SITE, "ranobe/", str_id, "/similar",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1239,10 +1239,10 @@ func (f *FastId) SearchRelatedAnime() ([]api.RelatedAnimes, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(animes/) + ?(id) + 8(/related)
+		// 26(consts.SITE) + 7(animes/) + ?(id) + 8(/related)
 		concat.Url(41+len(str_id), []string{
-			SITE, "animes/", str_id, "/related",
-		}), MAX_EXPECTATION,
+			consts.SITE, "animes/", str_id, "/related",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1267,10 +1267,10 @@ func (f *FastId) SearchRelatedManga() ([]api.RelatedMangas, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(mangas/) + ?(id) + 8(/related)
+		// 26(consts.SITE) + 7(mangas/) + ?(id) + 8(/related)
 		concat.Url(41+len(str_id), []string{
-			SITE, "mangas/", str_id, "/related",
-		}), MAX_EXPECTATION,
+			consts.SITE, "mangas/", str_id, "/related",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1295,10 +1295,10 @@ func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(ranobe/) + ?(id) + 8(/related)
+		// 26(consts.SITE) + 7(ranobe/) + ?(id) + 8(/related)
 		concat.Url(41+len(str_id), []string{
-			SITE, "ranobe/", str_id, "/related",
-		}), MAX_EXPECTATION,
+			consts.SITE, "ranobe/", str_id, "/related",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1311,7 +1311,7 @@ func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, int, error) {
 	return m, status, nil
 }
 
-// FIXME: Limit always returns +1 of the given number.
+// FIXME (heycatch): Limit always returns +1 of the given number.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -1327,14 +1327,14 @@ func (f *FastId) SearchRelatedRanobe() ([]api.RelatedMangas, int, error) {
 func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, error) {
 	var cl []api.Clubs
 
-	opt := r.OptionsOnlyPageLimit(100000, 30)
+	opt := r.OptionsOnlyPageLimitV2()
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 13(clubs?search=) + ?(name) + 1(&) + ?(Result)
+		// 26(consts.SITE) + 13(clubs?search=) + ?(name) + 1(&) + ?(Result)
 		concat.Url(40+len(name)+len(opt), []string{
-			SITE, "clubs?search=", url.QueryEscape(name), "&", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "clubs?search=", url.QueryEscape(name), "&", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1347,7 +1347,7 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
 	return cl, status, nil
 }
 
-// FIXME: The limit does not work and always gives the maximum amount.
+// FIXME (heycatch): The limit does not work and always gives the maximum amount.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -1361,15 +1361,15 @@ func (c *Configuration) SearchClubs(name string, r Result) ([]api.Clubs, int, er
 func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, int, error) {
 	var a []api.Animes
 
-	opt := r.OptionsOnlyPageLimit(100000, 20)
+	opt := r.OptionsOnlyPageLimitV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(clubs/) + ?(id) + 8(/animes?) + ?(Result)
+		// 26(consts.SITE) + 6(clubs/) + ?(id) + 8(/animes?) + ?(Result)
 		concat.Url(40+len(str_id)+len(opt), []string{
-			SITE, "clubs/", str_id, "/animes?", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "clubs/", str_id, "/animes?", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1382,7 +1382,7 @@ func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, int, error) {
 	return a, status, nil
 }
 
-// FIXME: The limit does not work and always gives the maximum amount.
+// FIXME (heycatch): The limit does not work and always gives the maximum amount.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -1396,15 +1396,15 @@ func (f *FastId) SearchClubAnimes(r Result) ([]api.Animes, int, error) {
 func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, int, error) {
 	var m []api.Mangas
 
-	opt := r.OptionsOnlyPageLimit(100000, 20)
+	opt := r.OptionsOnlyPageLimitV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(clubs/) + ?(id) + 8(/mangas?) + ?(Result)
+		// 26(consts.SITE) + 6(clubs/) + ?(id) + 8(/mangas?) + ?(Result)
 		concat.Url(40+len(str_id)+len(opt), []string{
-			SITE, "clubs/", str_id, "/mangas?", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "clubs/", str_id, "/mangas?", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1417,7 +1417,7 @@ func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, int, error) {
 	return m, status, nil
 }
 
-// FIXME: The limit does not work and always gives the maximum amount.
+// FIXME (heycatch): The limit does not work and always gives the maximum amount.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -1431,15 +1431,15 @@ func (f *FastId) SearchClubMangas(r Result) ([]api.Mangas, int, error) {
 func (f *FastId) SearchClubRanobe(r Result) ([]api.Mangas, int, error) {
 	var m []api.Mangas
 
-	opt := r.OptionsOnlyPageLimit(100000, 20)
+	opt := r.OptionsOnlyPageLimitV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(clubs/) + ?(id) + 8(/ranobe?) + ?(Result)
+		// 26(consts.SITE) + 6(clubs/) + ?(id) + 8(/ranobe?) + ?(Result)
 		concat.Url(40+len(str_id)+len(opt), []string{
-			SITE, "clubs/", str_id, "/ranobe?", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "clubs/", str_id, "/ranobe?", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1452,7 +1452,7 @@ func (f *FastId) SearchClubRanobe(r Result) ([]api.Mangas, int, error) {
 	return m, status, nil
 }
 
-// FIXME: The limit does not work and always gives the maximum amount.
+// FIXME (heycatch): The limit does not work and always gives the maximum amount.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -1466,15 +1466,15 @@ func (f *FastId) SearchClubRanobe(r Result) ([]api.Mangas, int, error) {
 func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, int, error) {
 	var ci []api.CharacterInfo
 
-	opt := r.OptionsOnlyPageLimit(100000, 20)
+	opt := r.OptionsOnlyPageLimitV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(clubs/) + ?(id) + 12(/characters?) + ?(Result)
+		// 26(consts.SITE) + 6(clubs/) + ?(id) + 12(/characters?) + ?(Result)
 		concat.Url(44+len(str_id)+len(opt), []string{
-			SITE, "clubs/", str_id, "/characters?", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "clubs/", str_id, "/characters?", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1487,7 +1487,7 @@ func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, int, error
 	return ci, status, nil
 }
 
-// FIXME: The limit does not work and always gives the maximum amount.
+// FIXME (heycatch): The limit does not work and always gives the maximum amount.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -1501,15 +1501,15 @@ func (f *FastId) SearchClubCharacters(r Result) ([]api.CharacterInfo, int, error
 func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, int, error) {
 	var cc []api.Clubs
 
-	opt := r.OptionsOnlyPageLimit(100000, 30)
+	opt := r.OptionsOnlyPageLimitV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(clubs/) + ?(id) + 7(/clubs?) + ?(Result)
+		// 26(consts.SITE) + 6(clubs/) + ?(id) + 7(/clubs?) + ?(Result)
 		concat.Url(39+len(str_id)+len(opt), []string{
-			SITE, "clubs/", str_id, "/clubs?", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "clubs/", str_id, "/clubs?", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1522,7 +1522,7 @@ func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, int, error) {
 	return cc, status, nil
 }
 
-// FIXME: The limit does not work and always gives the maximum amount.
+// FIXME (heycatch): The limit does not work and always gives the maximum amount.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -1536,15 +1536,15 @@ func (f *FastId) SearchClubClubs(r Result) ([]api.Clubs, int, error) {
 func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, int, error) {
 	var cc []api.ClubCollections
 
-	opt := r.OptionsOnlyPageLimit(100000, 4)
+	opt := r.OptionsOnlyPageLimitV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(clubs/) + ?(id) + 13(/collections?) + ?(Result)
+		// 26(consts.SITE) + 6(clubs/) + ?(id) + 13(/collections?) + ?(Result)
 		concat.Url(45+len(str_id)+len(opt), []string{
-			SITE, "clubs/", str_id, "/collections?", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "clubs/", str_id, "/collections?", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1557,7 +1557,7 @@ func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, int, er
 	return cc, status, nil
 }
 
-// FIXME: Limit always returns +1 of the given number.
+// FIXME (heycatch): Limit always returns +1 of the given number.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -1571,15 +1571,15 @@ func (f *FastId) SearchClubCollections(r Result) ([]api.ClubCollections, int, er
 func (f *FastId) SearchClubMembers(r Result) ([]api.UserFriends, int, error) {
 	var uf []api.UserFriends
 
-	opt := r.OptionsOnlyPageLimit(100000, 100)
+	opt := r.OptionsOnlyPageLimitV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(clubs/) + ?(id) + 9(/members?) + ?(Result)
+		// 26(consts.SITE) + 6(clubs/) + ?(id) + 9(/members?) + ?(Result)
 		concat.Url(41+len(str_id)+len(opt), []string{
-			SITE, "clubs/", str_id, "/members?", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "clubs/", str_id, "/members?", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1592,7 +1592,7 @@ func (f *FastId) SearchClubMembers(r Result) ([]api.UserFriends, int, error) {
 	return uf, status, nil
 }
 
-// FIXME: Limit always returns +1 of the given number.
+// FIXME (heycatch): Limit always returns +1 of the given number.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -1606,15 +1606,15 @@ func (f *FastId) SearchClubMembers(r Result) ([]api.UserFriends, int, error) {
 func (f *FastId) SearchClubImages(r Result) ([]api.ClubImages, int, error) {
 	var cm []api.ClubImages
 
-	opt := r.OptionsOnlyPageLimit(100000, 100)
+	opt := r.OptionsOnlyPageLimitV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(clubs/) + ?(id) + 8(/images?) + ?(Result)
+		// 26(consts.SITE) + 6(clubs/) + ?(id) + 8(/images?) + ?(Result)
 		concat.Url(40+len(str_id)+len(opt), []string{
-			SITE, "clubs/", str_id, "/images?", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "clubs/", str_id, "/images?", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1637,10 +1637,10 @@ func (f *FastId) ClubJoin() (int, error) {
 
 	_, status, err := NewPostRequestWithCancel(
 		f.Conf.Application, f.Conf.AccessToken,
-		// 26(SITE) + 6(clubs/) + ?(id) + 5(/join)
+		// 26(consts.SITE) + 6(clubs/) + ?(id) + 5(/join)
 		concat.Url(37+len(str_id), []string{
-			SITE, "clubs/", str_id, "/join",
-		}), MAX_EXPECTATION,
+			consts.SITE, "clubs/", str_id, "/join",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return status, err
@@ -1659,10 +1659,10 @@ func (f *FastId) ClubLeave() (int, error) {
 
 	_, status, err := NewPostRequestWithCancel(
 		f.Conf.Application, f.Conf.AccessToken,
-		// 26(SITE) + 6(clubs/) + ?(id) + 6(/leave)
+		// 26(consts.SITE) + 6(clubs/) + ?(id) + 6(/leave)
 		concat.Url(38+len(str_id), []string{
-			SITE, "clubs/", str_id, "/leave",
-		}), MAX_EXPECTATION,
+			consts.SITE, "clubs/", str_id, "/leave",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return status, err
@@ -1688,10 +1688,10 @@ func (f *FastId) SearchAchievement() ([]api.Achievements, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 21(achievements?user_id=) + ?(id)
+		// 26(consts.SITE) + 21(achievements?user_id=) + ?(id)
 		concat.Url(47+len(str_id), []string{
-			SITE, "achievements?user_id=", str_id,
-		}), MAX_EXPECTATION,
+			consts.SITE, "achievements?user_id=", str_id,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1717,8 +1717,8 @@ func (f *FastId) SearchAnimeVideos() ([]api.AnimeVideos, int, error) {
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
 		concat.Url(40+len(str_id), []string{
-			SITE, "animes/", str_id, "/videos",
-		}), MAX_EXPECTATION,
+			consts.SITE, "animes/", str_id, "/videos",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1743,10 +1743,10 @@ func (f *FastId) SearchAnimeRoles() ([]api.Roles, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(animes/) + ?(id) + 6(/roles)
+		// 26(consts.SITE) + 7(animes/) + ?(id) + 6(/roles)
 		concat.Url(39+len(str_id), []string{
-			SITE, "animes/", str_id, "/roles",
-		}), MAX_EXPECTATION,
+			consts.SITE, "animes/", str_id, "/roles",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1771,10 +1771,10 @@ func (f *FastId) SearchMangaRoles() ([]api.Roles, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(mangas/) + ?(id) + 6(/roles)
+		// 26(consts.SITE) + 7(mangas/) + ?(id) + 6(/roles)
 		concat.Url(39+len(str_id), []string{
-			SITE, "mangas/", str_id, "/roles",
-		}), MAX_EXPECTATION,
+			consts.SITE, "mangas/", str_id, "/roles",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1799,10 +1799,10 @@ func (f *FastId) SearchRanobeRoles() ([]api.Roles, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(ranobe/) + ?(id) + 6(/roles)
+		// 26(consts.SITE) + 7(ranobe/) + ?(id) + 6(/roles)
 		concat.Url(39+len(str_id), []string{
-			SITE, "ranobe/", str_id, "/roles",
-		}), MAX_EXPECTATION,
+			consts.SITE, "ranobe/", str_id, "/roles",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1825,9 +1825,9 @@ func (c *Configuration) SearchBans() ([]api.Bans, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 4(bans)
-		concat.Url(30, []string{SITE, "bans"}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 4(bans)
+		concat.Url(30, []string{consts.SITE, "bans"}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1857,9 +1857,9 @@ func (c *Configuration) SearchCalendar(r Result) ([]api.Calendar, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 9(calendar?) + ?(Result)
-		concat.Url(35+len(opt), []string{SITE, "calendar?", opt}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 9(calendar?) + ?(Result)
+		concat.Url(35+len(opt), []string{consts.SITE, "calendar?", opt}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1886,9 +1886,9 @@ func (c *Configuration) SearchGenres(name string) ([]api.Genres, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 12(genres?kind=) + ?(name)
-		concat.Url(38+len(name), []string{SITE, "genres?kind=", name}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 12(genres?kind=) + ?(name)
+		concat.Url(38+len(name), []string{consts.SITE, "genres?kind=", name}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1911,9 +1911,9 @@ func (c *Configuration) SearchStudios() ([]api.Studios, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 7(studios)
-		concat.Url(33, []string{SITE, "studios"}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 7(studios)
+		concat.Url(33, []string{consts.SITE, "studios"}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1936,9 +1936,9 @@ func (c *Configuration) SearchPublishers() ([]api.Publishers, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 10(publishers)
-		concat.Url(36, []string{SITE, "publishers"}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 10(publishers)
+		concat.Url(36, []string{consts.SITE, "publishers"}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1961,9 +1961,9 @@ func (c *Configuration) SearchForums() ([]api.Forums, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 6(forums)
-		concat.Url(32, []string{SITE, "forums"}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 6(forums)
+		concat.Url(32, []string{consts.SITE, "forums"}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -1988,10 +1988,10 @@ func (f *FastId) AddFriend() (api.FriendRequest, int, error) {
 
 	data, status, err := NewPostRequestWithCancel(
 		f.Conf.Application, f.Conf.AccessToken,
-		// 26(SITE) + 8(friends/) + ?(id)
+		// 26(consts.SITE) + 8(friends/) + ?(id)
 		concat.Url(34+len(str_id), []string{
-			SITE, "friends/", str_id,
-		}), MAX_EXPECTATION,
+			consts.SITE, "friends/", str_id,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return ff, status, err
@@ -2016,10 +2016,10 @@ func (f *FastId) RemoveFriend() (api.FriendRequest, int, error) {
 
 	data, status, err := NewDeleteRequestWithCancel(
 		f.Conf.Application, f.Conf.AccessToken,
-		// 26(SITE) + 8(friends/) + ?(id)
+		// 26(consts.SITE) + 8(friends/) + ?(id)
 		concat.Url(34+len(str_id), []string{
-			SITE, "friends/", str_id,
-		}), MAX_EXPECTATION,
+			consts.SITE, "friends/", str_id,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return ff, status, err
@@ -2046,10 +2046,10 @@ func (f *FastId) UserUnreadMessages() (api.UnreadMessages, int, error) {
 
 	data, status, err := NewGetRequestWithCancelAndBearer(
 		f.Conf.Application, f.Conf.AccessToken,
-		// 26(SITE) + 6(users/) + ?(id) + 16(/unread_messages)
+		// 26(consts.SITE) + 6(users/) + ?(id) + 16(/unread_messages)
 		concat.Url(48+len(str_id), []string{
-			SITE, "users/", str_id, "/unread_messages",
-		}), MAX_EXPECTATION,
+			consts.SITE, "users/", str_id, "/unread_messages",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return um, status, err
@@ -2081,15 +2081,15 @@ func (f *FastId) UserUnreadMessages() (api.UnreadMessages, int, error) {
 func (f *FastId) UserMessages(r Result) ([]api.Messages, int, error) {
 	var m []api.Messages
 
-	opt := r.OptionsMessages()
+	opt := r.OptionsMessagesV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancelAndBearer(
 		f.Conf.Application, f.Conf.AccessToken,
-		// 26(SITE) + 6(users/) + ?(id) + 10(/messages?) + ?(Result)
+		// 26(consts.SITE) + 6(users/) + ?(id) + 10(/messages?) + ?(Result)
 		concat.Url(42+len(str_id)+len(opt), []string{
-			SITE, "users/", str_id, "/messages?", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "users/", str_id, "/messages?", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -2112,9 +2112,9 @@ func (c *Configuration) SearchConstantsAnime() (api.Constants, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 15(constants/anime)
-		concat.Url(41, []string{SITE, "constants/anime"}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 15(constants/anime)
+		concat.Url(41, []string{consts.SITE, "constants/anime"}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return ca, status, err
@@ -2137,9 +2137,9 @@ func (c *Configuration) SearchConstantsManga() (api.Constants, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 15(constants/manga)
-		concat.Url(41, []string{SITE, "constants/manga"}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 15(constants/manga)
+		concat.Url(41, []string{consts.SITE, "constants/manga"}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return cm, status, err
@@ -2162,9 +2162,9 @@ func (c *Configuration) SearchConstantsUserRate() (api.ConstantsUserRate, int, e
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 19(constants/user_rate)
-		concat.Url(45, []string{SITE, "constants/user_rate"}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 19(constants/user_rate)
+		concat.Url(45, []string{consts.SITE, "constants/user_rate"}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return ur, status, err
@@ -2187,9 +2187,9 @@ func (c *Configuration) SearchConstantsClub() (api.ConstantsClub, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 14(constants/club)
-		concat.Url(40, []string{SITE, "constants/club"}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 14(constants/club)
+		concat.Url(40, []string{consts.SITE, "constants/club"}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return cc, status, err
@@ -2212,9 +2212,9 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, e
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 17(constants/smileys)
-		concat.Url(43, []string{SITE, "constants/smileys"}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 17(constants/smileys)
+		concat.Url(43, []string{consts.SITE, "constants/smileys"}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -2297,14 +2297,14 @@ func (c *Configuration) SearchConstantsSmileys() ([]api.ConstantsSmileys, int, e
 func (c *Configuration) RandomAnimes(r Result) ([]api.Animes, int, error) {
 	var a []api.Animes
 
-	opt := r.OptionsRandomAnime()
+	opt := r.OptionsAnimeV2()
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 20(animes?order=random&) + ?(Result)
+		// 26(consts.SITE) + 20(animes?order=random&) + ?(Result)
 		concat.Url(46+len(opt), []string{
-			SITE, "animes?order=random&", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "animes?order=random&", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -2372,14 +2372,14 @@ func (c *Configuration) RandomAnimes(r Result) ([]api.Animes, int, error) {
 func (c *Configuration) RandomMangas(r Result) ([]api.Mangas, int, error) {
 	var m []api.Mangas
 
-	opt := r.OptionsRandomManga()
+	opt := r.OptionsMangaV2()
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 20(mangas?order=random&) + ?(Result)
+		// 26(consts.SITE) + 20(mangas?order=random&) + ?(Result)
 		concat.Url(46+len(opt), []string{
-			SITE, "mangas?order=random&", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "mangas?order=random&", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -2438,14 +2438,14 @@ func (c *Configuration) RandomMangas(r Result) ([]api.Mangas, int, error) {
 func (c *Configuration) RandomRanobes(r Result) ([]api.Mangas, int, error) {
 	var m []api.Mangas
 
-	opt := r.OptionsRandomRanobe()
+	opt := r.OptionsRanobeV2()
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 20(ranobe?order=random&) + ?(Result)
+		// 26(consts.SITE) + 20(ranobe?order=random&) + ?(Result)
 		concat.Url(46+len(opt), []string{
-			SITE, "ranobe?order=random&", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "ranobe?order=random&", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -2470,10 +2470,10 @@ func (f *FastId) SearchCharacter() (api.Character, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 11(characters/) + ?(id)
+		// 26(consts.SITE) + 11(characters/) + ?(id)
 		concat.Url(37+len(str_id), []string{
-			SITE, "characters/", str_id,
-		}), MAX_EXPECTATION,
+			consts.SITE, "characters/", str_id,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return ch, status, err
@@ -2498,10 +2498,10 @@ func (c *Configuration) SearchCharacters(name string) ([]api.CharacterInfo, int,
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 25(characters/search?search=) + ?(name)
-		concat.Url(51+len(name), []string{SITE,
+		// 26(consts.SITE) + 25(characters/search?search=) + ?(name)
+		concat.Url(51+len(name), []string{consts.SITE,
 			"characters/search?search=", url.QueryEscape(name)}),
-		MAX_EXPECTATION,
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -2526,10 +2526,10 @@ func (f *FastId) SearchPeople() (api.People, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(people/) + ?(id)
+		// 26(consts.SITE) + 7(people/) + ?(id)
 		concat.Url(33+len(str_id), []string{
-			SITE, "people/", str_id,
-		}), MAX_EXPECTATION,
+			consts.SITE, "people/", str_id,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return p, status, err
@@ -2542,7 +2542,7 @@ func (f *FastId) SearchPeople() (api.People, int, error) {
 	return p, status, nil
 }
 
-// FIXME: Page and limit not supprted, idk why. Check later.
+// FIXME (heycatch): Page and limit not supprted, idk why. Check later.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -2560,13 +2560,13 @@ func (f *FastId) SearchPeople() (api.People, int, error) {
 func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, int, error) {
 	var ap []api.AllPeople
 
-	opt := r.OptionsPeople()
+	opt := r.OptionsPeopleV2()
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
 		concat.Url(48+len(name)+len(opt), []string{
-			SITE, "people/search?search=", url.QueryEscape(name), "&", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "people/search?search=", url.QueryEscape(name), "&", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -2598,7 +2598,7 @@ func (c *Configuration) SearchPeoples(name string, r Result) ([]api.AllPeople, i
 func (f *FastId) FavoritesCreate(linked_type, kind string) (api.Favorites, int, error) {
 	var fa api.Favorites
 
-	if linked_type != FAVORITES_LINKED_TYPE_PERSON {
+	if linked_type != consts.FAVORITES_LINKED_TYPE_PERSON {
 		kind = ""
 	}
 
@@ -2606,10 +2606,10 @@ func (f *FastId) FavoritesCreate(linked_type, kind string) (api.Favorites, int, 
 
 	data, status, err := NewPostRequestWithCancel(
 		f.Conf.Application, f.Conf.AccessToken,
-		// 26(SITE) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id) + 1(/) + ?(kind)
+		// 26(consts.SITE) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id) + 1(/) + ?(kind)
 		concat.Url(38+len(linked_type)+len(str_id)+len(kind), []string{
-			SITE, "favorites/", linked_type, "/", str_id, "/", kind,
-		}), MAX_EXPECTATION,
+			consts.SITE, "favorites/", linked_type, "/", str_id, "/", kind,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return fa, status, err
@@ -2640,10 +2640,10 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, int, error)
 
 	data, status, err := NewDeleteRequestWithCancel(
 		f.Conf.Application, f.Conf.AccessToken,
-		// 26(SITE) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id)
+		// 26(consts.SITE) + 10(favorites/) + ?(linked_type) + 1(/) + ?(id)
 		concat.Url(37+len(linked_type)+len(str_id), []string{
-			SITE, "favorites/", linked_type, "/", str_id,
-		}), MAX_EXPECTATION,
+			consts.SITE, "favorites/", linked_type, "/", str_id,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return ff, status, err
@@ -2656,7 +2656,7 @@ func (f *FastId) FavoritesDelete(linked_type string) (api.Favorites, int, error)
 	return ff, status, nil
 }
 
-// FIXME: https://github.com/heycatch/goshikimori/issues/14
+// FIXME (heycatch): https://github.com/heycatch/goshikimori/issues/14
 //
 // In SetConfiguration(), you must specify the application and the token.
 //
@@ -2672,10 +2672,10 @@ func (f *FastId) FavoritesReorder(position int) (int, error) {
 
 	_, status, err := NewReorderPostRequestWithCancel(
 		f.Conf.Application, f.Conf.AccessToken,
-		// 26(SITE) + 10(favorites/) + ?(id) + 8(/reorder)
+		// 26(consts.SITE) + 10(favorites/) + ?(id) + 8(/reorder)
 		concat.Url(44+len(str_id), []string{
-			SITE, "favorites/", str_id, "/reorder",
-		}), position, MAX_EXPECTATION,
+			consts.SITE, "favorites/", str_id, "/reorder",
+		}), position, consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return status, err
@@ -2696,10 +2696,10 @@ func (f *FastId) AddIgnoreUser() (api.IgnoreUser, int, error) {
 
 	data, status, err := NewPostRequestWithCancel(
 		f.Conf.Application, f.Conf.AccessToken,
-		// 26(SITE) + 9(v2/users/) + ?(id) + 7(/ignore)
+		// 26(consts.SITE) + 9(v2/users/) + ?(id) + 7(/ignore)
 		concat.Url(42+len(str_id), []string{
-			SITE, "v2/users/", str_id, "/ignore",
-		}), MAX_EXPECTATION,
+			consts.SITE, "v2/users/", str_id, "/ignore",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return i, status, err
@@ -2724,10 +2724,10 @@ func (f *FastId) RemoveIgnoreUser() (api.IgnoreUser, int, error) {
 
 	data, status, err := NewDeleteRequestWithCancel(
 		f.Conf.Application, f.Conf.AccessToken,
-		// 26(SITE) + 9(v2/users/) + ?(id) + 7(/ignore)
+		// 26(consts.SITE) + 9(v2/users/) + ?(id) + 7(/ignore)
 		concat.Url(42+len(str_id), []string{
-			SITE, "v2/users/", str_id, "/ignore",
-		}), MAX_EXPECTATION,
+			consts.SITE, "v2/users/", str_id, "/ignore",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return i, status, err
@@ -2750,9 +2750,9 @@ func (c *Configuration) Dialogs() ([]api.Dialogs, int, error) {
 
 	data, status, err := NewGetRequestWithCancelAndBearer(
 		c.Application, c.AccessToken,
-		// 26(SITE) + 7(dialogs)
-		concat.Url(33, []string{SITE, "dialogs"}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 7(dialogs)
+		concat.Url(33, []string{consts.SITE, "dialogs"}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -2779,10 +2779,10 @@ func (f *FastId) SearchDialogs() ([]api.SearchDialogs, int, error) {
 
 	data, status, err := NewGetRequestWithCancelAndBearer(
 		f.Conf.Application, f.Conf.AccessToken,
-		// 26(SITE) + 8(dialogs/) + ?(id)
+		// 26(consts.SITE) + 8(dialogs/) + ?(id)
 		concat.Url(34+len(str_id), []string{
-			SITE, "dialogs/", str_id,
-		}), MAX_EXPECTATION,
+			consts.SITE, "dialogs/", str_id,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -2809,10 +2809,10 @@ func (f *FastId) DeleteDialogs() (api.FriendRequest, int, error) {
 
 	data, status, err := NewDeleteRequestWithCancel(
 		f.Conf.Application, f.Conf.AccessToken,
-		// 26(SITE) + 8(dialogs/) + ?(id)
+		// 26(consts.SITE) + 8(dialogs/) + ?(id)
 		concat.Url(34+len(str_id), []string{
-			SITE, "dialogs/", str_id,
-		}), MAX_EXPECTATION,
+			consts.SITE, "dialogs/", str_id,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return fr, status, err
@@ -2838,10 +2838,10 @@ func (f *FastId) UserBriefInfo() (api.Info, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 6(users/) + ?(id) + 5(/info)
+		// 26(consts.SITE) + 6(users/) + ?(id) + 5(/info)
 		concat.Url(37+len(str_id), []string{
-			SITE, "users/", str_id, "/info",
-		}), MAX_EXPECTATION,
+			consts.SITE, "users/", str_id, "/info",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return i, status, err
@@ -2857,19 +2857,19 @@ func (f *FastId) UserBriefInfo() (api.Info, int, error) {
 // In SetConfiguration(), you must specify the application and the token.
 //
 // https://github.com/heycatch/goshikimori/issues/26
-func (c *Configuration) SignOut() (string, int, error) {
+func (c *Configuration) SignOut() ([]byte, int, error) {
 	data, status, err := NewPostRequestWithCancel(
 		c.Application, c.AccessToken,
-		// 26(SITE) + 14(users/sign_out)
+		// 26(consts.SITE) + 14(users/sign_out)
 		concat.Url(40, []string{
-			SITE, "users/sign_out",
-		}), MAX_EXPECTATION,
+			consts.SITE, "users/sign_out",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
-		return string(data), status, err
+		return data, status, err
 	}
 
-	return string(data), status, nil
+	return data, status, nil
 }
 
 // If we get a json unmarshal type error, it is a server-side error, namely:
@@ -2889,10 +2889,10 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 18(stats/active_users)
+		// 26(consts.SITE) + 18(stats/active_users)
 		concat.Url(44, []string{
-			SITE, "stats/active_users",
-		}), CUSTOM_MAX_EXPECTATION_ACTIVE_USERS,
+			consts.SITE, "stats/active_users",
+		}), consts.CUSTOM_MAX_EXPECTATION_ACTIVE_USERS,
 	)
 	if err != nil {
 		return nil, status, err
@@ -2917,15 +2917,15 @@ func (c *Configuration) ActiveUsers() ([]int, int, error) {
 func (f *FastId) SearchTopicsAnime(r Result) ([]api.Topics, int, error) {
 	var t []api.Topics
 
-	opt := r.OptionsOnlyPageLimit(100000, 30)
+	opt := r.OptionsOnlyPageLimitV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(animes/) + ?(id) + 8(/topics?) + ?(Result)
+		// 26(consts.SITE) + 7(animes/) + ?(id) + 8(/topics?) + ?(Result)
 		concat.Url(41+len(str_id)+len(opt), []string{
-			SITE, "animes/", str_id, "/topics?", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "animes/", str_id, "/topics?", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -2950,15 +2950,15 @@ func (f *FastId) SearchTopicsAnime(r Result) ([]api.Topics, int, error) {
 func (f *FastId) SearchTopicsManga(r Result) ([]api.Topics, int, error) {
 	var t []api.Topics
 
-	opt := r.OptionsOnlyPageLimit(100000, 30)
+	opt := r.OptionsOnlyPageLimitV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(mangas/) + ?(id) + 8(/topics?) + ?(Result)
+		// 26(consts.SITE) + 7(mangas/) + ?(id) + 8(/topics?) + ?(Result)
 		concat.Url(41+len(str_id)+len(opt), []string{
-			SITE, "mangas/", str_id, "/topics?", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "mangas/", str_id, "/topics?", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -2983,15 +2983,15 @@ func (f *FastId) SearchTopicsManga(r Result) ([]api.Topics, int, error) {
 func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, int, error) {
 	var t []api.Topics
 
-	opt := r.OptionsOnlyPageLimit(100000, 30)
+	opt := r.OptionsOnlyPageLimitV2()
 	str_id := strconv.Itoa(f.Id)
 
 	data, status, err := NewGetRequestWithCancel(
 		f.Conf.Application,
-		// 26(SITE) + 7(ranobe/) + ?(id) + 8(/topics?) + ?(Result)
+		// 26(consts.SITE) + 7(ranobe/) + ?(id) + 8(/topics?) + ?(Result)
 		concat.Url(41+len(str_id)+len(opt), []string{
-			SITE, "ranobe/", str_id, "/topics?", opt,
-		}), MAX_EXPECTATION,
+			consts.SITE, "ranobe/", str_id, "/topics?", opt,
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -3014,7 +3014,7 @@ func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, int, error) {
 //
 //   - Forum:
 //
-//     > TOPIC_FORUM_ALL, TOPIC_FORUM_COSPLAY, TOPIC_FORUM_ANIMANGA, TOPIC_FORUM_SITE,
+//     > TOPIC_FORUM_ALL, TOPIC_FORUM_COSPLAY, TOPIC_FORUM_ANIMANGA, TOPIC_FORUM_consts.SITE,
 //     TOPIC_FORUM_GAMES, TOPIC_FORUM_VN, TOPIC_FORUM_CONTEST, TOPIC_FORUM_OFFTOPIC,
 //     TOPIC_FORUM_CLUBS, TOPIC_FORUM_MYCLUBS, TOPIC_FORUM_CRITIQUES,
 //     TOPIC_FORUM_NEWS, TOPIC_FORUM_COLLECTIONS, TOPIC_FORUM_ARTICLES;
@@ -3039,13 +3039,13 @@ func (f *FastId) SearchTopicsRanobe(r Result) ([]api.Topics, int, error) {
 func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
 	var t []api.Topics
 
-	opt := r.OptionsTopics()
+	opt := r.OptionsTopicsV2()
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 7(topics?) + ?(Result)
-		concat.Url(33+len(opt), []string{SITE, "topics?", opt}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 7(topics?) + ?(Result)
+		concat.Url(33+len(opt), []string{consts.SITE, "topics?", opt}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -3058,7 +3058,7 @@ func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
 	return t, status, nil
 }
 
-// FIXME: Limit always returns +1 of the given number.
+// FIXME (heycatch): Limit always returns +1 of the given number.
 //
 // Only the application needs to be specified in SetConfiguration().
 //
@@ -3072,13 +3072,13 @@ func (c *Configuration) SearchTopics(r Result) ([]api.Topics, int, error) {
 func (c *Configuration) SearchTopicsUpdates(r Result) ([]api.TopicsUpdates, int, error) {
 	var t []api.TopicsUpdates
 
-	opt := r.OptionsOnlyPageLimit(100000, 30)
+	opt := r.OptionsOnlyPageLimitV2()
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 15(topics/updates?) + ?(Result)
-		concat.Url(41+len(opt), []string{SITE, "topics/updates?", opt}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 15(topics/updates?) + ?(Result)
+		concat.Url(41+len(opt), []string{consts.SITE, "topics/updates?", opt}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -3102,13 +3102,13 @@ func (c *Configuration) SearchTopicsUpdates(r Result) ([]api.TopicsUpdates, int,
 func (c *Configuration) SearchTopicsHot(r Result) ([]api.Topics, int, error) {
 	var t []api.Topics
 
-	opt := r.OptionsTopicsHot()
+	opt := r.OptionsTopicsHotV2()
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 11(topics/hot?) + ?(Result)
-		concat.Url(37+len(opt), []string{SITE, "topics/hot?", opt}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 11(topics/hot?) + ?(Result)
+		concat.Url(37+len(opt), []string{consts.SITE, "topics/hot?", opt}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -3135,9 +3135,9 @@ func (c *Configuration) SearchTopicsId(id int) (api.TopicsId, int, error) {
 
 	data, status, err := NewGetRequestWithCancel(
 		c.Application,
-		// 26(SITE) + 7(topics/) + ?(id)
-		concat.Url(33+len(str_id), []string{SITE, "topics/", str_id}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 7(topics/) + ?(id)
+		concat.Url(33+len(str_id), []string{consts.SITE, "topics/", str_id}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return t, status, err
@@ -3164,10 +3164,10 @@ func (c *Configuration) AddIgnoreTopic(id int) (api.IgnoreTopic, int, error) {
 
 	data, status, err := NewPostRequestWithCancel(
 		c.Application, c.AccessToken,
-		// 26(SITE) + 10(v2/topics/) + ?(id) + 7(/ignore)
+		// 26(consts.SITE) + 10(v2/topics/) + ?(id) + 7(/ignore)
 		concat.Url(43+len(str_id), []string{
-			SITE, "v2/topics/", str_id, "/ignore",
-		}), MAX_EXPECTATION,
+			consts.SITE, "v2/topics/", str_id, "/ignore",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return i, 0, err
@@ -3194,10 +3194,10 @@ func (c *Configuration) RemoveIgnoreTopic(id int) (api.IgnoreTopic, int, error) 
 
 	data, status, err := NewDeleteRequestWithCancel(
 		c.Application, c.AccessToken,
-		// 26(SITE) + 10(v2/topics/) + ?(id) + 7(/ignore)
+		// 26(consts.SITE) + 10(v2/topics/) + ?(id) + 7(/ignore)
 		concat.Url(43+len(str_id), []string{
-			SITE, "v2/topics/", str_id, "/ignore",
-		}), MAX_EXPECTATION,
+			consts.SITE, "v2/topics/", str_id, "/ignore",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return i, 0, err
@@ -3222,9 +3222,9 @@ func (c *Configuration) SearchGraphql(schema string) (api.GraphQL, int, error) {
 
 	data, status, err := NewGraphQLPostRequestWithCancel(
 		c.Application,
-		// 26(SITE) + ?(schema)
-		concat.Url(26+len(schema), []string{SITE, schema}),
-		CUSTOM_MAX_EXPECTATION_GRAPHQL,
+		// 26(consts.SITE) + ?(schema)
+		concat.Url(26+len(schema), []string{consts.SITE, schema}),
+		consts.CUSTOM_MAX_EXPECTATION_GRAPHQL,
 	)
 	if err != nil {
 		return g, status, err
@@ -3255,8 +3255,8 @@ func (c *Configuration) ReadMessage(id int) (api.Messages, int, error) {
 
 	data, status, err := NewGetRequestWithCancelAndBearer(
 		c.Application, c.AccessToken,
-		// 26(SITE) + 9(messages/) + ?(id)
-		concat.Url(35+len(str_id), []string{SITE, "messages/", str_id}), MAX_EXPECTATION,
+		// 26(consts.SITE) + 9(messages/) + ?(id)
+		concat.Url(35+len(str_id), []string{consts.SITE, "messages/", str_id}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return m, status, err
@@ -3291,9 +3291,9 @@ func (c *Configuration) SendMessage(from_id, to_id int, message string) (api.Mes
 
 	data, status, err := NewSendMessagePostRequestWithCancel(
 		c.Application, c.AccessToken,
-		// 26(SITE) + 8(messages)
-		concat.Url(34, []string{SITE, "messages"}),
-		message, from_id, to_id, MAX_EXPECTATION,
+		// 26(consts.SITE) + 8(messages)
+		concat.Url(34, []string{consts.SITE, "messages"}),
+		message, from_id, to_id, consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return m, status, err
@@ -3326,9 +3326,9 @@ func (c *Configuration) ChangeMessage(id int, message string) (api.Messages, int
 
 	data, status, err := NewChangeMessagePutRequestWithCancel(
 		c.Application, c.AccessToken,
-		// 26(SITE) + 9(messages/) + ?(id)
-		concat.Url(35+len(str_id), []string{SITE, "messages/", str_id}),
-		message, MAX_EXPECTATION,
+		// 26(consts.SITE) + 9(messages/) + ?(id)
+		concat.Url(35+len(str_id), []string{consts.SITE, "messages/", str_id}),
+		message, consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return m, status, err
@@ -3355,9 +3355,9 @@ func (c *Configuration) DeleteMessage(id int) (int, error) {
 
 	_, status, err := NewDeleteMessageDeleteRequestWithCancel(
 		c.Application, c.AccessToken,
-		// 26(SITE) + 9(messages/) + ?(id)
-		concat.Url(35+len(str_id), []string{SITE, "messages/", str_id}),
-		MAX_EXPECTATION,
+		// 26(consts.SITE) + 9(messages/) + ?(id)
+		concat.Url(35+len(str_id), []string{consts.SITE, "messages/", str_id}),
+		consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return status, err
@@ -3384,10 +3384,10 @@ func (c *Configuration) DeleteMessage(id int) (int, error) {
 func (c *Configuration) MarkReadMessages(ids string, is_read int) (int, error) {
 	_, status, err := NewMarkReadPostRequestWithCancel(
 		c.Application, c.AccessToken,
-		// 26(SITE) + 18(messages/mark_read)
+		// 26(consts.SITE) + 18(messages/mark_read)
 		concat.Url(44, []string{
-			SITE, "messages/mark_read",
-		}), ids, is_read, MAX_EXPECTATION,
+			consts.SITE, "messages/mark_read",
+		}), ids, is_read, consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return status, err
@@ -3413,10 +3413,10 @@ func (f *FastId) UnreadMessagesIds(name string) ([]int, int, error) {
 
 	data, status, err := NewGetRequestWithCancelAndBearer(
 		f.Conf.Application, f.Conf.AccessToken,
-		// 26(SITE) + 6(users/) + ?(id) + 16(/unread_messages)
+		// 26(consts.SITE) + 6(users/) + ?(id) + 16(/unread_messages)
 		concat.Url(48+len(str_id), []string{
-			SITE, "users/", str_id, "/unread_messages",
-		}), MAX_EXPECTATION,
+			consts.SITE, "users/", str_id, "/unread_messages",
+		}), consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return nil, status, err
@@ -3463,9 +3463,9 @@ func (f *FastId) UnreadMessagesIds(name string) ([]int, int, error) {
 func (c *Configuration) ReadAllMessages(name string) (int, error) {
 	_, status, err := NewReadDeleteAllPostRequestWithCancel(
 		c.Application, c.AccessToken,
-		// 26(SITE) + 17(messages/read_all)
-		concat.Url(43, []string{SITE, "messages/read_all"}),
-		name, MAX_EXPECTATION,
+		// 26(consts.SITE) + 17(messages/read_all)
+		concat.Url(43, []string{consts.SITE, "messages/read_all"}),
+		name, consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return status, err
@@ -3490,9 +3490,9 @@ func (c *Configuration) ReadAllMessages(name string) (int, error) {
 func (c *Configuration) DeleteAllMessages(name string) (int, error) {
 	_, status, err := NewReadDeleteAllPostRequestWithCancel(
 		c.Application, c.AccessToken,
-		// 26(SITE) + 19(messages/delete_all)
-		concat.Url(45, []string{SITE, "messages/delete_all"}),
-		name, MAX_EXPECTATION,
+		// 26(consts.SITE) + 19(messages/delete_all)
+		concat.Url(45, []string{consts.SITE, "messages/delete_all"}),
+		name, consts.MAX_EXPECTATION,
 	)
 	if err != nil {
 		return 0, err

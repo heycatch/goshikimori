@@ -63,7 +63,7 @@ func Values(input ...string) string {
 		return "id"
 	}
 
-	// TODO: add keyword checks and the keyword is "full" to add everything.
+	// TODO (heycatch): add keyword checks and the keyword is "full" to add everything.
 	for i := 0; i < len(input); i++ {
 		res.WriteString(input[i])
 		res.WriteString(" ")
@@ -607,4 +607,4 @@ func UserRatesSchema(values string, userId int, order string, options ...any) (s
 	}), nil
 }
 
-// TODO: create query with variables.
+// TODO (heycatch): create query with variables.

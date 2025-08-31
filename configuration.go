@@ -3,8 +3,10 @@ package goshikimori
 import (
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/heycatch/goshikimori/concat"
+	"github.com/heycatch/goshikimori/consts"
 )
 
 type Configuration struct {
@@ -92,8 +94,27 @@ type Result interface {
 	OptionsRandomAnime()           string
 	OptionsRandomManga()           string
 	OptionsRandomRanobe()          string
+
+	OptionsOnlyPageLimitV2() string
+	OptionsAnimeV2()         string
+	OptionsMangaV2()         string
+	OptionsRanobeV2()        string
+	OptionsCalendarV2()      string
+	OptionsAnimeRatesV2()    string
+	OptionsMangaRatesV2()    string
+	OptionsUserHistoryV2()   string
+	OptionsMessagesV2()      string
+	OptionsPeopleV2()        string
+	OptionsTopicsV2()        string
+	OptionsTopicsHotV2()     string
 }
 
+// TODO: (heycatch) abandon url.QueryEscape in the future.
+func encodeParamEscaped(key, value string) string {
+	return url.QueryEscape(key) + "=" + url.QueryEscape(value)
+}
+
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsOnlyPageLimit(page, limit int) string {
 	v := url.Values{}
 
@@ -107,6 +128,27 @@ func (o *Options) OptionsOnlyPageLimit(page, limit int) string {
 	return v.Encode()
 }
 
+func (o *Options) OptionsOnlyPageLimitV2() string {
+	var numBuf []byte
+	var sb strings.Builder
+	pairs := make([]string, 0, 2)
+
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Page), 10)
+	pairs = append(pairs, encodeParamEscaped("page", string(numBuf)))
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Limit), 10)
+	pairs = append(pairs, encodeParamEscaped("limit", string(numBuf)))
+
+	for i, p := range pairs {
+		if i > 0 {
+			sb.WriteByte('&')
+		}
+		sb.WriteString(p)
+	}
+
+	return sb.String()
+}
+
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsTopics() string {
 	v := url.Values{}
 
@@ -128,6 +170,31 @@ func (o *Options) OptionsTopics() string {
 	return v.Encode()
 }
 
+func (o *Options) OptionsTopicsV2() string {
+	var numBuf []byte
+	var sb strings.Builder
+	pairs := make([]string, 0, 5)
+
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Page), 10)
+	pairs = append(pairs, encodeParamEscaped("page", string(numBuf)))
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Limit), 10)
+	pairs = append(pairs, encodeParamEscaped("limit", string(numBuf)))
+	pairs = append(pairs, encodeParamEscaped("forum", o.Forum))
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Linked_id), 10)
+	pairs = append(pairs, encodeParamEscaped("linked_id", string(numBuf)))
+	pairs = append(pairs, encodeParamEscaped("linked_type", o.Linked_type))
+
+	for i, p := range pairs {
+		if i > 0 {
+			sb.WriteByte('&')
+		}
+		sb.WriteString(p)
+	}
+
+	return sb.String()
+}
+
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsMessages() string {
 	v := url.Values{}
 
@@ -139,7 +206,7 @@ func (o *Options) OptionsMessages() string {
 	}
 	// The type is required.
 	if o.Type == "" {
-		v.Add("type", MESSAGE_TYPE_NEWS)
+		v.Add("type", consts.MESSAGE_TYPE_NEWS)
 	} else {
 		v.Add("type", o.Type)
 	}
@@ -147,6 +214,28 @@ func (o *Options) OptionsMessages() string {
 	return v.Encode()
 }
 
+func (o *Options) OptionsMessagesV2() string {
+	var numBuf []byte
+	var sb strings.Builder
+	pairs := make([]string, 0, 3)
+
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Page), 10)
+	pairs = append(pairs, encodeParamEscaped("page", string(numBuf)))
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Limit), 10)
+	pairs = append(pairs, encodeParamEscaped("limit", string(numBuf)))
+	pairs = append(pairs, encodeParamEscaped("type", o.Type))
+
+	for i, p := range pairs {
+		if i > 0 {
+			sb.WriteByte('&')
+		}
+		sb.WriteString(p)
+	}
+
+	return sb.String()
+}
+
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsUserHistory() string {
 	v := url.Values{}
 
@@ -166,6 +255,30 @@ func (o *Options) OptionsUserHistory() string {
 	return v.Encode()
 }
 
+func (o *Options) OptionsUserHistoryV2() string {
+	var numBuf []byte
+	var sb strings.Builder
+	pairs := make([]string, 0, 4)
+
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Page), 10)
+	pairs = append(pairs, encodeParamEscaped("page", string(numBuf)))
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Limit), 10)
+	pairs = append(pairs, encodeParamEscaped("limit", string(numBuf)))
+	pairs = append(pairs, encodeParamEscaped("target_type", o.Target_type))
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Target_id), 10)
+	pairs = append(pairs, encodeParamEscaped("target_id", string(numBuf)))
+
+	for i, p := range pairs {
+		if i > 0 {
+			sb.WriteByte('&')
+		}
+		sb.WriteString(p)
+	}
+
+	return sb.String()
+}
+
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsAnime() string {
 	v := url.Values{}
 
@@ -209,6 +322,53 @@ func (o *Options) OptionsAnime() string {
 	return v.Encode()
 }
 
+func (o *Options) OptionsAnimeV2() string {
+	var numBuf []byte
+	var sb strings.Builder
+	pairs := make([]string, 0, 12)
+
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Page), 10)
+	pairs = append(pairs, encodeParamEscaped("page", string(numBuf)))
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Limit), 10)
+	pairs = append(pairs, encodeParamEscaped("limit", string(numBuf)))
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Score), 10)
+	pairs = append(pairs, encodeParamEscaped("score", string(numBuf)))
+	pairs = append(pairs, encodeParamEscaped("order", o.Order))
+	pairs = append(pairs, encodeParamEscaped("kind", o.Kind))
+	pairs = append(pairs, encodeParamEscaped("status", o.Status))
+	pairs = append(pairs, encodeParamEscaped("season", o.Season))
+	pairs = append(pairs, encodeParamEscaped("rating", o.Rating))
+	pairs = append(pairs, encodeParamEscaped("duration", o.Duration))
+	pairs = append(pairs, encodeParamEscaped("mylist", o.Mylist))
+	if o.Censored {
+		pairs = append(pairs, encodeParamEscaped("censored", "true"))
+	} else {
+		pairs = append(pairs, encodeParamEscaped("censored", "false"))
+	}
+	if genre := concat.MapGenresAnime(o.Genre_v2); genre != "" {
+		pairs = append(pairs, encodeParamEscaped("genre_v2", genre))
+	}
+
+	totalLength := 0
+	for _, p := range pairs {
+		totalLength += len(p) + 1
+	}
+	if totalLength > 0 {
+		totalLength--
+	}
+	sb.Grow(totalLength)
+
+	for i, p := range pairs {
+		if i > 0 {
+			sb.WriteByte('&')
+		}
+		sb.WriteString(p)
+	}
+
+	return sb.String()
+}
+
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsManga() string {
 	v := url.Values{}
 
@@ -246,6 +406,51 @@ func (o *Options) OptionsManga() string {
 	return v.Encode()
 }
 
+func (o *Options) OptionsMangaV2() string {
+	var numBuf []byte
+	var sb strings.Builder
+	pairs := make([]string, 0, 10)
+
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Page), 10)
+	pairs = append(pairs, encodeParamEscaped("page", string(numBuf)))
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Limit), 10)
+	pairs = append(pairs, encodeParamEscaped("limit", string(numBuf)))
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Score), 10)
+	pairs = append(pairs, encodeParamEscaped("score", string(numBuf)))
+	pairs = append(pairs, encodeParamEscaped("order", o.Order))
+	pairs = append(pairs, encodeParamEscaped("kind", o.Kind))
+	pairs = append(pairs, encodeParamEscaped("status", o.Status))
+	pairs = append(pairs, encodeParamEscaped("season", o.Season))
+	pairs = append(pairs, encodeParamEscaped("mylist", o.Mylist))
+	if o.Censored {
+		pairs = append(pairs, encodeParamEscaped("censored", "true"))
+	} else {
+		pairs = append(pairs, encodeParamEscaped("censored", "false"))
+	}
+	if genre := concat.MapGenresAnime(o.Genre_v2); genre != "" {
+		pairs = append(pairs, encodeParamEscaped("genre_v2", genre))
+	}
+
+	totalLength := 0
+	for _, p := range pairs {
+		totalLength += len(p) + 1
+	}
+	if totalLength > 0 {
+		totalLength--
+	}
+	sb.Grow(totalLength)
+
+	for i, p := range pairs {
+		if i > 0 {
+			sb.WriteByte('&')
+		}
+		sb.WriteString(p)
+	}
+
+	return sb.String()
+}
+
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsRanobe() string {
 	v := url.Values{}
 
@@ -280,6 +485,51 @@ func (o *Options) OptionsRanobe() string {
 	return v.Encode()
 }
 
+func (o *Options) OptionsRanobeV2() string {
+	var numBuf []byte
+	var sb strings.Builder
+	pairs := make([]string, 0, 10)
+
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Page), 10)
+	pairs = append(pairs, encodeParamEscaped("page", string(numBuf)))
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Limit), 10)
+	pairs = append(pairs, encodeParamEscaped("limit", string(numBuf)))
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Score), 10)
+	pairs = append(pairs, encodeParamEscaped("score", string(numBuf)))
+	pairs = append(pairs, encodeParamEscaped("order", o.Order))
+	pairs = append(pairs, encodeParamEscaped("kind", o.Kind))
+	pairs = append(pairs, encodeParamEscaped("status", o.Status))
+	pairs = append(pairs, encodeParamEscaped("season", o.Season))
+	pairs = append(pairs, encodeParamEscaped("mylist", o.Mylist))
+	if o.Censored {
+		pairs = append(pairs, encodeParamEscaped("censored", "true"))
+	} else {
+		pairs = append(pairs, encodeParamEscaped("censored", "false"))
+	}
+	if genre := concat.MapGenresAnime(o.Genre_v2); genre != "" {
+		pairs = append(pairs, encodeParamEscaped("genre_v2", genre))
+	}
+
+	totalLength := 0
+	for _, p := range pairs {
+		totalLength += len(p) + 1
+	}
+	if totalLength > 0 {
+		totalLength--
+	}
+	sb.Grow(totalLength)
+
+	for i, p := range pairs {
+		if i > 0 {
+			sb.WriteByte('&')
+		}
+		sb.WriteString(p)
+	}
+
+	return sb.String()
+}
+
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsCalendar() string {
 	v := url.Values{}
 
@@ -288,6 +538,27 @@ func (o *Options) OptionsCalendar() string {
 	return v.Encode()
 }
 
+func (o *Options) OptionsCalendarV2() string {
+	var sb strings.Builder
+	pairs := make([]string, 0, 1)
+
+	if o.Censored {
+		pairs = append(pairs, encodeParamEscaped("censored", "true"))
+	} else {
+		pairs = append(pairs, encodeParamEscaped("censored", "false"))
+	}
+
+	for i, p := range pairs {
+		if i > 0 {
+			sb.WriteByte('&')
+		}
+		sb.WriteString(p)
+	}
+
+	return sb.String()
+}
+
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsAnimeRates() string {
 	v := url.Values{}
 
@@ -305,7 +576,33 @@ func (o *Options) OptionsAnimeRates() string {
 	return v.Encode()
 }
 
-// FIXME: The manga has no status, ranobe is missing.
+func (o *Options) OptionsAnimeRatesV2() string {
+	var numBuf []byte
+	var sb strings.Builder
+	pairs := make([]string, 0, 4)
+
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Page), 10)
+	pairs = append(pairs, encodeParamEscaped("page", string(numBuf)))
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Limit), 10)
+	pairs = append(pairs, encodeParamEscaped("limit", string(numBuf)))
+	pairs = append(pairs, encodeParamEscaped("status", o.Status))
+	if o.Censored {
+		pairs = append(pairs, encodeParamEscaped("censored", "true"))
+	} else {
+		pairs = append(pairs, encodeParamEscaped("censored", "false"))
+	}
+
+	for i, p := range pairs {
+		if i > 0 {
+			sb.WriteByte('&')
+		}
+		sb.WriteString(p)
+	}
+
+	return sb.String()
+}
+
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsMangaRates() string {
 	v := url.Values{}
 
@@ -320,6 +617,34 @@ func (o *Options) OptionsMangaRates() string {
 	return v.Encode()
 }
 
+// FIXME: (heycatch) The manga has no status, ranobe is missing.
+// https://shikimori.one/api/doc/1.0/users/manga_rates.html
+func (o *Options) OptionsMangaRatesV2() string {
+	var numBuf []byte
+	var sb strings.Builder
+	pairs := make([]string, 0, 3)
+
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Page), 10)
+	pairs = append(pairs, encodeParamEscaped("page", string(numBuf)))
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Limit), 10)
+	pairs = append(pairs, encodeParamEscaped("limit", string(numBuf)))
+	if o.Censored {
+		pairs = append(pairs, encodeParamEscaped("censored", "true"))
+	} else {
+		pairs = append(pairs, encodeParamEscaped("censored", "false"))
+	}
+
+	for i, p := range pairs {
+		if i > 0 {
+			sb.WriteByte('&')
+		}
+		sb.WriteString(p)
+	}
+
+	return sb.String()
+}
+
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsPeople() string {
 	v := url.Values{}
 
@@ -330,6 +655,23 @@ func (o *Options) OptionsPeople() string {
 	return v.Encode()
 }
 
+func (o *Options) OptionsPeopleV2() string {
+	var sb strings.Builder
+	pairs := make([]string, 0, 1)
+
+	pairs = append(pairs, encodeParamEscaped("kind", o.Kind))
+
+	for i, p := range pairs {
+		if i > 0 {
+			sb.WriteByte('&')
+		}
+		sb.WriteString(p)
+	}
+
+	return sb.String()
+}
+
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsTopicsHot() string {
 	v := url.Values{}
 
@@ -340,6 +682,25 @@ func (o *Options) OptionsTopicsHot() string {
 	return v.Encode()
 }
 
+func (o *Options) OptionsTopicsHotV2() string {
+	var numBuf []byte
+	var sb strings.Builder
+	pairs := make([]string, 0, 1)
+
+	numBuf = strconv.AppendInt(numBuf[:0], int64(o.Limit), 10)
+	pairs = append(pairs, encodeParamEscaped("limit", string(numBuf)))
+
+	for i, p := range pairs {
+		if i > 0 {
+			sb.WriteByte('&')
+		}
+		sb.WriteString(p)
+	}
+
+	return sb.String()
+}
+
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsRandomAnime() string {
 	v := url.Values{}
 
@@ -377,6 +738,7 @@ func (o *Options) OptionsRandomAnime() string {
 	return v.Encode()
 }
 
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsRandomManga() string {
 	v := url.Values{}
 
@@ -408,6 +770,7 @@ func (o *Options) OptionsRandomManga() string {
 	return v.Encode()
 }
 
+// NOTE: (heycatch) DEPRECATED and will be removed from future versions.
 func (o *Options) OptionsRandomRanobe() string {
 	v := url.Values{}
 

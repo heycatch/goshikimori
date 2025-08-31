@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	g "github.com/heycatch/goshikimori"
+	"github.com/heycatch/goshikimori/consts"
 )
 
 func config() *g.Configuration {
@@ -21,7 +22,7 @@ func main() {
 		return
 	}
 	// add/remove favorites anime.
-	fa, status, err := fast_anime.FavoritesCreate(g.FAVORITES_LINKED_TYPE_ANIME, "")
+	fa, status, err := fast_anime.FavoritesCreate(consts.FAVORITES_LINKED_TYPE_ANIME, "")
 	//fa, status, err := fast_anime.FavoritesDelete("Anime")
 	if status != 200 || err != nil {
 		fmt.Println(err)
@@ -35,7 +36,7 @@ func main() {
 		fmt.Println(status, err)
 		return
 	}
-	fm, status, err := fast_manga.FavoritesCreate(g.FAVORITES_LINKED_TYPE_MANGA, "")
+	fm, status, err := fast_manga.FavoritesCreate(consts.FAVORITES_LINKED_TYPE_MANGA, "")
 	//fm, status, err := fast_manga.FavoritesDelete("Manga")
 	if status != 200 || err != nil {
 		fmt.Println(err)
@@ -49,7 +50,7 @@ func main() {
 		fmt.Println(status, err)
 		return
 	}
-	fr, status, err := fast_ranobe.FavoritesCreate(g.FAVORITES_LINKED_TYPE_RANOBE, "")
+	fr, status, err := fast_ranobe.FavoritesCreate(consts.FAVORITES_LINKED_TYPE_RANOBE, "")
 	//fr, status, err := fast_ranobe.FavoritesDelete("Ranobe")
 	if status != 200 || err != nil {
 		fmt.Println(err)
@@ -64,7 +65,7 @@ func main() {
 		return
 	}
 	fp, status, err := fast_person.FavoritesCreate(
-		g.FAVORITES_LINKED_TYPE_PERSON, g.FAVORITES_KIND_SEYU,
+		consts.FAVORITES_LINKED_TYPE_PERSON, consts.FAVORITES_KIND_SEYU,
 	)
 	//fp, status, err := fast_person.FavoritesDelete("Person")
 	if status != 200 || err != nil {
@@ -79,7 +80,7 @@ func main() {
 		fmt.Println(status, err)
 		return
 	}
-	fc, status, err := fast_character.FavoritesCreate(g.FAVORITES_LINKED_TYPE_CHARACTER, "")
+	fc, status, err := fast_character.FavoritesCreate(consts.FAVORITES_LINKED_TYPE_CHARACTER, "")
 	//fc, status, err := fast_character.FavoritesDelete("Character")
 	if status != 200 || err != nil {
 		fmt.Println(err)

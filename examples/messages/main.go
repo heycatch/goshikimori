@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	g "github.com/heycatch/goshikimori"
+	"github.com/heycatch/goshikimori/consts"
 )
 
 func config() *g.Configuration {
@@ -22,7 +23,7 @@ func main() {
 		return
 	}
 	m, status, err := fast.UserMessages(&g.Options{
-		Type: g.MESSAGE_TYPE_NEWS, Page: 1, Limit: 10,
+		Type: consts.MESSAGE_TYPE_NEWS, Page: 1, Limit: 10,
 	})
 	if status != 200 || err != nil {
 		fmt.Println(err)

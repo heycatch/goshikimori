@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/heycatch/goshikimori/consts"
 	graph "github.com/heycatch/goshikimori/graphql"
 )
 
@@ -172,8 +173,8 @@ func TestAnimeGraphql(t *testing.T) {
 	a, _, _ := c.SearchGraphql(sch)
 
 	for _, v := range a.Data.Animes {
-		if v.Id == "185" && v.MalId == "185" && v.Rating == ANIME_RATING_PG_13 &&
-			v.Kind == ANIME_KIND_TV && v.Episodes == 26 {
+		if v.Id == "185" && v.MalId == "185" && v.Rating == consts.ANIME_RATING_PG_13 &&
+			v.Kind == consts.ANIME_KIND_TV && v.Episodes == 26 {
 			t.Logf("%s - found", v.Name)
 		} else {
 			t.Error("AnimeGraphql not found")
@@ -190,8 +191,8 @@ func TestMangaGraphQL(t *testing.T) {
 	m, _, _ := c.SearchGraphql(s)
 
 	for _, v := range m.Data.Mangas {
-		if v.Id == "375" && v.MalId == "375" && v.Kind == MANGA_KIND_MANGA &&
-			v.Status == MANGA_STATUS_RELEASED && v.Volumes == 48 {
+		if v.Id == "375" && v.MalId == "375" && v.Kind == consts.MANGA_KIND_MANGA &&
+			v.Status == consts.MANGA_STATUS_RELEASED && v.Volumes == 48 {
 			t.Logf("%s - found", v.Name)
 		} else {
 			t.Error("MangaGraphql not found")

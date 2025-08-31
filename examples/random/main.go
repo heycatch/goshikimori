@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	g "github.com/heycatch/goshikimori"
+	"github.com/heycatch/goshikimori/consts"
 )
 
 func config() *g.Configuration {
@@ -17,9 +18,8 @@ func main() {
 	c := config()
 
 	a, status, err := c.RandomAnimes(&g.Options{
-		Limit: 5, Score: 5, Kind: g.ANIME_KIND_TV,
-		Status: g.ANIME_STATUS_RELEASED,
-		Season: "", Rating: "", Duration: "", Mylist: "",
+		Limit: 5, Score: 5, Kind: consts.ANIME_KIND_TV,
+		Status: consts.ANIME_STATUS_RELEASED,
 		Censored: false, Genre_v2: []int{10, 539},
 	})
 	if status != 200 || err != nil {
@@ -34,9 +34,8 @@ func main() {
 	}
 
 	m, status, err := c.RandomMangas(&g.Options{
-		Limit: 5, Score: 8, Kind: g.MANGA_KIND_MANGA,
-		Status: g.MANGA_STATUS_RELEASED,
-		Mylist: "", Season: "", Censored: false, Genre_v2: nil,
+		Limit: 5, Score: 8, Kind: consts.MANGA_KIND_MANGA,
+		Status: consts.MANGA_STATUS_RELEASED, Censored: false,
 	})
 	if status != 200 || err != nil {
 		fmt.Println(status, err)
@@ -50,8 +49,7 @@ func main() {
 	}
 
 	r, status, err := c.RandomRanobes(&g.Options{
-		Limit: 5, Score: 8, Status: g.MANGA_STATUS_RELEASED, Mylist: "",
-		Season: "", Censored: false, Genre_v2: nil,
+		Limit: 5, Score: 8, Status: consts.MANGA_STATUS_RELEASED, Censored: false,
 	})
 	if status != 200 || err != nil {
 		fmt.Println(status, err)

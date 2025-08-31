@@ -1,4 +1,4 @@
-package goshikimori
+package consts
 
 import "time"
 

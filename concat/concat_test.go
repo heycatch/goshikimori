@@ -71,28 +71,3 @@ func TestMapGenresManga(t *testing.T) {
 		t.Error("MapGenresManga failed")
 	}
 }
-
-func BenchmarkIdsToString(b *testing.B) {
-	b.StartTimer()
-	for i := 0; i < b.N; i++ {
-		_ = IdsToString([]int{1336, 1337, 1338, 1339, 1400})
-	}
-	b.StopTimer()
-}
-
-func BenchmarkUrl(b *testing.B) {
-	b.StartTimer()
-	for i := 0; i < b.N; i++ {
-		_ = Url(46, []string{"https://shikimori.one/api/", "users/", "search=arctica"})
-	}
-	b.StopTimer()
-}
-
-func BenchmarkGenres(b *testing.B) {
-	b.StartTimer()
-	for i := 0; i < b.N; i++ {
-		_ = MapGenresAnime([]int{2, 14, 10, 10, 12})
-		//_ = MapGenresManga([]int{49, 59, 51, 51, 73})
-	}
-	b.StopTimer()
-}

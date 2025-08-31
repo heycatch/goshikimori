@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	g "github.com/heycatch/goshikimori"
+	"github.com/heycatch/goshikimori/consts"
 )
 
 func config() *g.Configuration {
@@ -65,7 +66,7 @@ func main() {
 	}
 
 	// Search topics.
-	o := &g.Options{Page: 1, Limit: 1, Forum: g.TOPIC_FORUM_ANIMANGA}
+	o := &g.Options{Page: 1, Limit: 1, Forum: consts.TOPIC_FORUM_ANIMANGA}
 	t, status, err := c.SearchTopics(o)
 	if status != 200 || err != nil {
 		fmt.Println(status, err)
